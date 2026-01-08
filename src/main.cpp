@@ -259,6 +259,13 @@ static std::vector<Option> defOpts = {
         SillyTier::Low,
     },
     {
+        "flipped",
+        "FLIPPED",
+        "Sometimes while playing, your screen will do a flip!\n<cy>Credit: Cheeseworks</c>",
+        category::obstructive,
+        SillyTier::High,
+    },
+    {
         "friends",
         "Friends",
         "Random friends fly across your screen while you play a level!\n<cy>Credit: Cheeseworks</c>",

@@ -420,6 +420,23 @@
                 "big-arrow-step": 20
             }
         },
+        "flipped-chance": {
+            "type": "int",
+            "name": "Flip Chance",
+            "description": "<cj>FLIPPED!</c> - Chance of your screen flipping mid-game.",
+            "default": 10,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
         "size_changer-chance": {
             "type": "int",
             "name": "Size Changer Chance",

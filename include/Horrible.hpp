@@ -61,7 +61,7 @@ namespace horrible {
         void registerOption(Option const& option);
 
         /**
-         * Returns the array of all registered options
+         * Returns a reference to the array of all registered options
          *
          * @returns An array of every registered option, main and external
          */
@@ -87,7 +87,7 @@ namespace horrible {
         bool setOption(std::string_view id, bool enable) const;
 
         /**
-         * Returns the array of all registered categories
+         * Returns a reference to the array of all registered categories
          *
          * @returns An array of every category name
          */
