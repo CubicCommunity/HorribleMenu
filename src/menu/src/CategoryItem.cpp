@@ -39,7 +39,7 @@ bool CategoryItem::init(CCSize const& size, std::string_view category) {
 
     if (!CCMenu::init()) return false;
 
-    setID(str::join(str::split(str::filter(str::toLower(category.data()), "abcdefghijklmnopqrstuvwxyz0123456789 "), " "), "-"));
+    setID(str::join(str::split(str::filter(str::toLower(category.data()), "abcdefghijklmnopqrstuvwxyz0123456789-_./ "), " "), "-"));
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
