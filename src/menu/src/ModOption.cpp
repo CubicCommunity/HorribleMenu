@@ -42,21 +42,21 @@ bool ModOption::init(CCSize const& size, Option const& option) {
     if (!CCMenu::init()) return false;
 
     setID(m_impl->m_option.id);
-    setScaledContentSize(size);
+    setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
     auto bg = CCScale9Sprite::create("square02_001.png");
     bg->setID("background");
     bg->setScale(0.5f);
     bg->setAnchorPoint({ 0, 0 });
-    bg->setContentSize({ getScaledContentWidth() * 2.f, getScaledContentHeight() * 2.f });
+    bg->setContentSize(getScaledContentSize() * 2.f);
     bg->setOpacity(40);
 
     addChild(bg, -1);
 
     // Horizontal layout: [toggle] [name] [info]
     float padding = 5.f;
-    float yCenter = getContentSize().height / 2.f;
+    float yCenter = getScaledContentHeight() / 2.f;
 
     float x = padding;
 
@@ -150,7 +150,7 @@ bool ModOption::init(CCSize const& size, Option const& option) {
         addChild(idLabel);
     };
 
-    x += nameLabel->getScaledContentSize().width + 15.f;
+    x += nameLabel->getScaledContentWidth() + 15.f;
 
     auto helpBtnSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
     helpBtnSprite->setScale(0.75f);
@@ -163,7 +163,7 @@ bool ModOption::init(CCSize const& size, Option const& option) {
     );
     helpBtn->setID("help-btn");
     helpBtn->setAnchorPoint({ 0.5f, 0.5f });
-    helpBtn->setPosition({ getContentSize().width - padding - 10.f, yCenter });
+    helpBtn->setPosition({ getScaledContentWidth() - padding - 10.f, yCenter });
 
     addChild(helpBtn);
 

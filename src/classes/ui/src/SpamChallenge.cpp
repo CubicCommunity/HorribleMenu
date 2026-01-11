@@ -121,7 +121,7 @@ void SpamChallenge::setSuccess(bool v) {
     auto symbol = CCSprite::createWithSpriteFrameName(v ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");
     symbol->setScale(0.f);
-    symbol->setPosition({ getScaledContentWidth() / 2.f, getScaledContentHeight() / 2.f });
+    symbol->setPosition(getScaledContentSize() / 2.f);
 
     addChild(symbol, 9);
     symbol->runAction(CCSequence::createWithTwoActions(

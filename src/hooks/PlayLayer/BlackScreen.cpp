@@ -37,7 +37,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
 
             auto blackScreen = CCScale9Sprite::create("square02_001.png");
             blackScreen->setContentSize({ winSize.width + 10.f, winSize.height + 10.f });
-            blackScreen->setPosition({ winSize.width / 2.f, winSize.height / 2.f });
+            blackScreen->setPosition(winSize / 2.f);
             blackScreen->setID("black_screen"_spr);
 
             m_uiLayer->addChild(blackScreen, 99);

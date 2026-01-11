@@ -299,6 +299,8 @@ $execute{
         log::info("Done registering {} default options!", defOpts.size());
 
         defOpts.clear();
+        defOpts.shrink_to_fit();
+
         log::debug("Cleaned up default option array");
     } else {
         log::error("Failed to get OptionManager");

@@ -11,7 +11,7 @@ protected:
     bool m_enabled;
 
 public:
-    CategoryEvent(std::string_view id, bool enabled = false);
+    CategoryEvent(std::string id, bool enabled = false);
 
     std::string const& getId() const;
     bool isEnabled() const;

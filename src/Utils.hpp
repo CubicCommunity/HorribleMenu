@@ -47,7 +47,7 @@ namespace horrible {
 
     namespace str = geode::utils::string; // Shortcut for geode::utils::string
 
-    // Default horrible categories
+    // Default option categories
     namespace category {
         inline constexpr const char* playerlife = "Player Life";
         inline constexpr const char* jumpscares = "Jumpscares";

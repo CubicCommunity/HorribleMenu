@@ -279,7 +279,7 @@ void MathQuiz::onAnswerClicked(CCObject* sender) {
         feedbackLabel->setScale(0.125f);
         feedbackLabel->setAnchorPoint({ 0.5, 0.5 });
         feedbackLabel->setAlignment(kCCTextAlignmentCenter);
-        feedbackLabel->setPosition({ winSize.width / 2.f, winSize.height / 2.f });
+        feedbackLabel->setPosition(winSize / 2.f);
         feedbackLabel->setColor(correct ? colors::green : colors::red);
 
         addChild(feedbackLabel, 9);
@@ -366,7 +366,7 @@ void MathQuiz::update(float dt) {
         feedbackLabel->setID("feedback-label");
         feedbackLabel->setAnchorPoint({ 0.5, 0.5 });
         feedbackLabel->setAlignment(kCCTextAlignmentCenter);
-        feedbackLabel->setPosition({ winSize.width / 2.f, winSize.height / 2.f });
+        feedbackLabel->setPosition(winSize / 2.f);
         feedbackLabel->setScale(0.1f);
         feedbackLabel->setColor(colors::red);
 
@@ -417,7 +417,7 @@ bool Richard::init() {
     addChild(m_impl->m_sprite);
 
     setContentSize(m_impl->m_sprite->getScaledContentSize());
-    m_impl->m_sprite->setPosition({ getScaledContentWidth() / 2.f, getScaledContentHeight() / 2.f });
+    m_impl->m_sprite->setPosition(getScaledContentSize() / 2.f);
 
     return true;
 };

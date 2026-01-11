@@ -63,7 +63,7 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                                 auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
                                 percLabel->setID("percentage");
-                                percLabel->setPosition({ ss->getScaledContentWidth() / 2.f, ss->getScaledContentHeight() / 2.f });
+                                percLabel->setPosition(ss->getScaledContentSize() / 2.f);
                                 percLabel->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
                                 percLabel->ignoreAnchorPointForPosition(false);
                                 percLabel->setAnchorPoint({ 0, 0 });

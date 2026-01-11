@@ -69,7 +69,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
 
     if (auto menu = getButtonMenu()) {
         menu->setAnchorPoint({ 0.5, 0.5 });
-        menu->setPosition({ getScaledContentWidth() / 2.f, getScaledContentHeight() / 2.f });
+        menu->setPosition(getScaledContentSize() / 2.f);
         menu->setContentSize({ getScaledContentWidth(), 0.f });
 
         menu->addChildAtPosition(m_impl->button, Anchor::Center);

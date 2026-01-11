@@ -41,7 +41,7 @@ bool HorribleMenuPopup::setup() {
     setID("options"_spr);
     setTitle("Horrible Options");
 
-    auto mainLayerSize = m_mainLayer->getContentSize();
+    auto mainLayerSize = m_mainLayer->getScaledContentSize();
 
     auto categoryListBg = CCScale9Sprite::create("square02_001.png");
     categoryListBg->setScale(0.5f);
@@ -206,7 +206,7 @@ bool HorribleMenuPopup::setup() {
         menu_selector(HorribleMenuPopup::openSeriesPage)
     );
     seriesBtn->setID("horrible-mods-series-btn");
-    seriesBtn->setPosition({ mainLayerSize.width - 20.f, mainLayerSize.height - 20.f });
+    seriesBtn->setPosition(mainLayerSize - 20.f);
 
     m_buttonMenu->addChild(seriesBtn);
 

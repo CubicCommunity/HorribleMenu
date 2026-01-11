@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-CategoryEvent::CategoryEvent(std::string_view id, bool enabled) : m_id(id), m_enabled(enabled) {};
+CategoryEvent::CategoryEvent(std::string id, bool enabled) : m_id(std::move(id)), m_enabled(enabled) {};
 
 std::string const& CategoryEvent::getId() const {
     return m_id;
@@ -39,15 +39,15 @@ bool CategoryItem::init(CCSize const& size, std::string_view category) {
 
     if (!CCMenu::init()) return false;
 
-    setID(str::join(str::split(str::toLower(category.data()), " "), "-"));
-    setScaledContentSize(size);
+    setID(str::join(str::split(str::filter(str::toLower(category.data()), "abcdefghijklmnopqrstuvwxyz0123456789 "), " "), "-"));
+    setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
     auto bg = CCScale9Sprite::create("square02_001.png");
     bg->setID("background");
     bg->setScale(0.2f);
     bg->setAnchorPoint({ 0, 0 });
-    bg->setContentSize({ getScaledContentWidth() * 5.f, getScaledContentHeight() * 5.f });
+    bg->setContentSize(getScaledContentSize() * 5.f);
     bg->setOpacity(40);
 
     addChild(bg, -1);

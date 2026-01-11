@@ -54,7 +54,7 @@ bool FloatingButton::init() {
 
     setContentSize(m_impl->m_sprite->getScaledContentSize());
 
-    m_impl->m_sprite->setPosition({ getScaledContentWidth() / 2.f, getScaledContentHeight() / 2.f });
+    m_impl->m_sprite->setPosition(getScaledContentSize() / 2.f);
 
     setScale(m_impl->m_scale); // set initial scale
     setOpacity(m_impl->m_opacity); // set initial opacity
