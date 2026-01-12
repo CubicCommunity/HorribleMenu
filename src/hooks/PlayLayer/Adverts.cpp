@@ -27,11 +27,13 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     };
 
     void showAd(float) {
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
 
-            if (m_fields->m_ad) {
-                m_fields->m_ad->removeMeAndCleanup();
-                m_fields->m_ad = nullptr;
+        if (f->enabled) {
+
+            if (f->m_ad) {
+                f->m_ad->removeMeAndCleanup();
+                f->m_ad = nullptr;
             };
 
 #ifdef GEODE_IS_WINDOWS
@@ -39,8 +41,8 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
             CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
             if (auto popup = RandomAd::create()) {
-                m_fields->m_ad = popup;
-                m_fields->m_ad->show();
+                f->m_ad = popup;
+                f->m_ad->show();
             };
         };
 

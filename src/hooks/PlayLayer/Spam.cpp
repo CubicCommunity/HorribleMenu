@@ -26,27 +26,29 @@ class $modify(SpamPlayLayer, PlayLayer) {
     };
 
     void doSpam(float) {
-        if (m_fields->enabled && !m_isPracticeMode) {
+        auto f = m_fields.self();
+
+        if (f->enabled && !m_isPracticeMode) {
             log::info("Showing spam challenge");
 
             if (auto spam = SpamChallenge::create()) {
-                m_fields->m_currentSpam = spam;
+                f->m_currentSpam = spam;
 
                 // clear pointer on close / handle correct/wrong answer
-                m_fields->m_currentSpam->setCallback([this](bool success) {
+                f->m_currentSpam->setCallback([this, f](bool success) {
                     nextSpam();
                     if (!success) resetLevelFromStart();
 
-                    if (m_fields->m_currentSpam) m_fields->m_currentSpam->removeMeAndCleanup();
-                    m_fields->m_currentSpam = nullptr;
-                                                     });
+                    if (f->m_currentSpam) f->m_currentSpam->removeMeAndCleanup();
+                    f->m_currentSpam = nullptr;
+                                              });
 
 #ifdef GEODE_IS_WINDOWS
                 CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
-                m_uiLayer->addChild(m_fields->m_currentSpam, 99);
+                m_uiLayer->addChild(f->m_currentSpam, 99);
             };
-        } else if (m_fields->enabled) {
+        } else if (f->enabled) {
             nextSpam();
         };
     };
@@ -54,13 +56,15 @@ class $modify(SpamPlayLayer, PlayLayer) {
     void destroyPlayer(PlayerObject * player, GameObject * object) {
         PlayLayer::destroyPlayer(player, object);
 
+        auto f = m_fields.self();
+
         if (m_player1->m_isDead) {
-            if (m_fields->m_currentSpam) {
-                m_fields->m_currentSpam->removeMeAndCleanup();
+            if (f->m_currentSpam) {
+                f->m_currentSpam->removeMeAndCleanup();
                 nextSpam();
             };
 
-            m_fields->m_currentSpam = nullptr;
+            f->m_currentSpam = nullptr;
         };
     };
 };

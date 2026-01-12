@@ -16,10 +16,12 @@ class $modify(RandomSpeedPlayerObject, PlayerObject) {
     bool pushButton(PlayerButton button) {
         if (!PlayerObject::pushButton(button)) return false;
 
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             int rnd = randng::tiny();
 
-            if (rnd <= m_fields->chance) {
+            if (rnd <= f->chance) {
                 // randomly choose a new speed between 10% and 200%
                 m_playerSpeed = randng::get(200.f, 10.f) / 100.f;
                 log::debug("Changed player speed to {}", m_playerSpeed);

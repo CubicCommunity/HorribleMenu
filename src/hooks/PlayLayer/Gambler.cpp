@@ -18,11 +18,13 @@ class $modify(GamblerPlayLayer, PlayLayer) {
     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
         if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             log::debug("gambler enabled");
 
             // check every frame so we can detect each percentage change
-            if (!m_fields->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.f);
+            if (!f->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.f);
         };
 
         return true;
@@ -42,10 +44,12 @@ class $modify(GamblerPlayLayer, PlayLayer) {
     };
 
     void gamblerCheck(float) {
-        if (!m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (!f->enabled) {
             int percentage = getCurrentPercentInt();
             // detect the moment the player first reaches or crosses 95
-            if (percentage == 95 && !m_fields->triggered) {
+            if (percentage == 95 && !f->triggered) {
                 // roll a random number between 0 and 1
                 int roll = randng::fast() % 2;
 
@@ -60,12 +64,12 @@ class $modify(GamblerPlayLayer, PlayLayer) {
                     // force player to jump
                     GJBaseGameLayer::get()->handleButton(true, 1, true);
 
-                    m_fields->triggered = true;
-                    m_fields->tricked = true;
+                    f->triggered = true;
+                    f->tricked = true;
                 } else {
                     log::info("Gambler won the bet! instant win.");
                     levelComplete();
-                    m_fields->triggered = true;
+                    f->triggered = true;
                 };
             };
         };

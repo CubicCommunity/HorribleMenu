@@ -22,17 +22,19 @@ class $modify(StickyPlayerObject, PlayerObject) {
     bool init(int player, int ship, GJBaseGameLayer * gameLayer, CCLayer * layer, bool playLayer) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
-        if (m_fields->enabled) {
-            m_fields->enabled = playLayer;
+        auto f = m_fields.self();
+
+        if (f->enabled) {
+            f->enabled = playLayer;
 
             if (auto pl = PlayLayer::get()) {
-                m_fields->m_clickLabel = CCLabelBMFont::create("Press again to un-stick!", "bigFont.fnt", pl->getScaledContentWidth() - 12.5f);
-                m_fields->m_clickLabel->setID("sticky-alert"_spr);
-                m_fields->m_clickLabel->setScale(0.625f);
-                m_fields->m_clickLabel->setAlignment(kCCTextAlignmentCenter);
-                m_fields->m_clickLabel->setAnchorPoint({ 0.5, 0 });
-                m_fields->m_clickLabel->setPosition({ pl->getScaledContentWidth() / 2.f, 25.f });
-                m_fields->m_clickLabel->setVisible(false);
+                f->m_clickLabel = CCLabelBMFont::create("Press again to un-stick!", "bigFont.fnt", pl->getScaledContentWidth() - 12.5f);
+                f->m_clickLabel->setID("sticky-alert"_spr);
+                f->m_clickLabel->setScale(0.625f);
+                f->m_clickLabel->setAlignment(kCCTextAlignmentCenter);
+                f->m_clickLabel->setAnchorPoint({ 0.5, 0 });
+                f->m_clickLabel->setPosition({ pl->getScaledContentWidth() / 2.f, 25.f });
+                f->m_clickLabel->setVisible(false);
 
                 auto seq = CCSequence::create(
                     CCCallFunc::create(this, callfunc_selector(StickyPlayerObject::stickyCol1)),
@@ -42,22 +44,26 @@ class $modify(StickyPlayerObject, PlayerObject) {
                     nullptr
                 );
 
-                pl->addChild(m_fields->m_clickLabel, 9);
-                m_fields->m_clickLabel->runAction(CCRepeatForever::create(seq));
+                pl->addChild(f->m_clickLabel, 9);
+                f->m_clickLabel->runAction(CCRepeatForever::create(seq));
             };
 
-            m_fields->m_onGround = onGround();
+            f->m_onGround = onGround();
         };
 
         return true;
     };
 
     void stickyCol1() {
-        if (m_fields->m_clickLabel) m_fields->m_clickLabel->setColor(colors::yellow);
+        auto f = m_fields.self();
+
+        if (f->m_clickLabel) f->m_clickLabel->setColor(colors::yellow);
     };
 
     void stickyCol2() {
-        if (m_fields->m_clickLabel) m_fields->m_clickLabel->setColor(colors::white);
+        auto f = m_fields.self();
+
+        if (f->m_clickLabel) f->m_clickLabel->setColor(colors::white);
     };
 
     bool onGround() {
@@ -66,33 +72,37 @@ class $modify(StickyPlayerObject, PlayerObject) {
     };
 
     void hitGround(GameObject * object, bool notFlipped) {
-        auto wasOnGround = m_fields->m_onGround;
+        auto f = m_fields.self();
+
+        auto wasOnGround = f->m_onGround;
         PlayerObject::hitGround(object, notFlipped);
         auto nowOnGround = onGround();
 
-        if (m_fields->enabled && m_hasEverJumped) {
+        if (f->enabled && m_hasEverJumped) {
             if (!wasOnGround && nowOnGround) {
-                if (randng::fast() < m_fields->chance) {
-                    m_fields->m_defSpeed = m_playerSpeed;
+                if (randng::fast() < f->chance) {
+                    f->m_defSpeed = m_playerSpeed;
                     m_playerSpeed = 0.f;
-                    if (m_fields->m_clickLabel) m_fields->m_clickLabel->setVisible(true);
+                    if (f->m_clickLabel) f->m_clickLabel->setVisible(true);
                 };
             };
 
-            m_fields->m_onGround = nowOnGround;
+            f->m_onGround = nowOnGround;
         };
     };
 
     bool pushButton(PlayerButton button) {
         if (!PlayerObject::pushButton(button)) return false;
 
-        if (m_fields->enabled) {
-            if (m_playerSpeed <= 0.f && m_fields->m_onGround) {
-                m_playerSpeed = m_fields->m_defSpeed;
-                if (m_fields->m_clickLabel) m_fields->m_clickLabel->setVisible(false);
+        auto f = m_fields.self();
+
+        if (f->enabled) {
+            if (m_playerSpeed <= 0.f && f->m_onGround) {
+                m_playerSpeed = f->m_defSpeed;
+                if (f->m_clickLabel) f->m_clickLabel->setVisible(false);
             };
 
-            m_fields->m_onGround = onGround();
+            f->m_onGround = onGround();
         };
 
         return true;

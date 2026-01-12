@@ -21,22 +21,28 @@ class $modify(SleepyPlayerObject, PlayerObject) {
     bool init(int player, int ship, GJBaseGameLayer * gameLayer, CCLayer * layer, bool playLayer) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
-        if (m_fields->enabled && playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+        auto f = m_fields.self();
+
+        if (f->enabled && playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), randng::get(30.f, 5.f) * chanceToDelayPct(f->chance));
 
         return true;
     };
 
     void startSleepTimer(float) {
-        if (m_fields->enabled) scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), randng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
+        auto f = m_fields.self();
+
+        if (f->enabled) scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), randng::get(15.f, 3.f) * chanceToDelayPct(f->chance));
     };
 
     void wakeUpSchedule(float) {
         log::debug("Waking the player up");
 
-        m_fields->m_sleepy = false;
-        m_fields->m_waking = true;
+        auto f = m_fields.self();
 
-        m_playerSpeed = m_fields->m_defSpeed; // snap back to original speed
+        f->m_sleepy = false;
+        f->m_waking = true;
+
+        m_playerSpeed = f->m_defSpeed; // snap back to original speed
 
         scheduleOnce(schedule_selector(SleepyPlayerObject::fullyWakeUpSchedule), 5.f);
     };
@@ -53,14 +59,16 @@ class $modify(SleepyPlayerObject, PlayerObject) {
     };
 
     void asleep(float) {
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             // player sleepy if not already in any stage
             auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
-            if (!m_fields->m_sleepy && !m_fields->m_waking && onGround) {
+            if (!f->m_sleepy && !f->m_waking && onGround) {
                 log::debug("Making the player m_sleepy");
 
-                m_fields->m_defSpeed = m_playerSpeed; // capture original speed
-                m_fields->m_sleepy = true;
+                f->m_defSpeed = m_playerSpeed; // capture original speed
+                f->m_sleepy = true;
 
                 scheduleOnce(schedule_selector(SleepyPlayerObject::startSleepTimer), 0.25f);
 
@@ -69,14 +77,16 @@ class $modify(SleepyPlayerObject, PlayerObject) {
             };
         } else {
             // wake up
-            if (m_fields->m_sleepy || m_fields->m_waking) m_fields->m_waking = false;
+            if (f->m_sleepy || f->m_waking) f->m_waking = false;
         };
     };
 
     void fallAsleep(float dt) {
+        auto f = m_fields.self();
+
         // decelerate to 0 speed
-        if (m_fields->m_sleepy) {
-            auto decelRate = m_fields->m_defSpeed / 5.f; // decel to 0 in 5s
+        if (f->m_sleepy) {
+            auto decelRate = f->m_defSpeed / 5.f; // decel to 0 in 5s
             m_playerSpeed -= decelRate * dt;
 
             if (m_playerSpeed <= 0.f) {

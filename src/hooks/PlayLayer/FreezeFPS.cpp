@@ -13,19 +13,19 @@ class $modify(FreezePlayLayer, PlayLayer) {
         int chance = options::getChance("freeze");
     };
 
-    bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
 
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             if (auto gm = GameManager::sharedState()) {
                 int rnd = randng::fast();
-                if (rnd % 100 < m_fields->chance) capFPS(1.f);
+                if (rnd % 100 < f->chance) capFPS(1.f);
             };
         } else {
             log::warn("Random freezing at 90% is disabled");
         };
-
-        return true;
     };
 
     void pauseGame(bool p0) {

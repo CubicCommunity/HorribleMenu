@@ -14,10 +14,12 @@ class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {
     };
 
     void handleButton(bool down, int button, bool isPlayer1) {
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             if (button == 1) {
                 int rnd = randng::fast();
-                if (rnd <= m_fields->chance) return GJBaseGameLayer::handleButton(false, button, isPlayer1);
+                if (rnd <= f->chance) return GJBaseGameLayer::handleButton(false, button, isPlayer1);
             };
         };
 

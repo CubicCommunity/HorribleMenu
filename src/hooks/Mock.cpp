@@ -20,12 +20,14 @@ class $modify(MockMenuLayer, MenuLayer) {
     bool init() {
         if (!MenuLayer::init()) return false;
 
+        auto f = m_fields.self();
+
         // show a lazysprite for the first png found in the save dir
-        if (m_fields->enabled) {
+        if (f->enabled) {
             int rnd = randng::fast();
             log::debug("mock chance {}", rnd);
 
-            if (rnd <= m_fields->chance) {
+            if (rnd <= f->chance) {
                 auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
                 auto const mockConfig = file::readJson(fs::path(mockConfigPath));
 

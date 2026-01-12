@@ -14,14 +14,16 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
     };
 
     void destroyPlayer(PlayerObject * p0, GameObject * p1) {
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             // ignore the anti-cheat spike lmao
             if (p1 == m_anticheatSpike && p0 && !p0->m_isDead) return;
 
             int rnd = randng::fast();
             log::debug("crash destroy chance {}", rnd);
 
-            if (rnd <= m_fields->chance) {
+            if (rnd <= f->chance) {
                 log::warn("ur game crash hehehehehehehe");
 
                 PlayLayer::destroyPlayer(p0, p1);

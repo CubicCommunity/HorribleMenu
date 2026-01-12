@@ -21,7 +21,9 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 
     bool pushButton(PlayerButton p0) {
         if (auto pl = PlayLayer::get()) {
-            if (m_fields->enabled) {
+            auto f = m_fields.self();
+
+            if (f->enabled) {
                 int rnd = randng::fast();
                 log::debug("player teleport chance {}", rnd);
 
@@ -33,21 +35,21 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 
                 auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
                 // dementia
-                if (rnd <= m_fields->chance) {
-                    setPosition({ m_fields->lastX, m_fields->lastY });
-                    log::debug("player has dementia to ({}, {}), play time {}", m_fields->lastX, m_fields->lastY, m_fields->lastMusicTime);
+                if (rnd <= f->chance) {
+                    setPosition({ f->lastX, f->lastY });
+                    log::debug("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
 
                     // set the music time back to the last recorded time
-                    if (musicChannel) musicChannel->setPosition(m_fields->lastMusicTime, FMOD_TIMEUNIT_MS);
+                    if (musicChannel) musicChannel->setPosition(f->lastMusicTime, FMOD_TIMEUNIT_MS);
 
                     return PlayerObject::pushButton(p0);
                 } else if (onGround) { // save the position only if on ground
-                    m_fields->lastX = getPositionX();
-                    m_fields->lastY = getPositionY();
+                    f->lastX = getPositionX();
+                    f->lastY = getPositionY();
 
-                    m_fields->lastMusicTime = fmod->getMusicTimeMS(1);
+                    f->lastMusicTime = fmod->getMusicTimeMS(1);
 
-                    log::debug("position recorded to ({}, {}) and music time {}", m_fields->lastX, m_fields->lastY, m_fields->lastMusicTime);
+                    log::debug("position recorded to ({}, {}) and music time {}", f->lastX, f->lastY, f->lastMusicTime);
                 };
             };
         };

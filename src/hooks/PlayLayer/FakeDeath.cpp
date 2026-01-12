@@ -16,11 +16,13 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
     };
 
     void destroyPlayer(PlayerObject * player, GameObject * game) {
+        auto f = m_fields.self();
+
         // Show explosion visual effect but do not kill the player
-        if (m_fields->enabled) {
+        if (f->enabled) {
             // ignore the anti-cheat spike lmao
             if (game == m_anticheatSpike && player && !player->m_isDead) return PlayLayer::destroyPlayer(player, game);
-            if (!m_fields->m_destroyingObject) m_fields->m_destroyingObject = game;
+            if (!f->m_destroyingObject) f->m_destroyingObject = game;
 
             // @geode-ignore(unknown-resource)
             FMODAudioEngine::sharedEngine()->playEffectAsync("explode_11.ogg");

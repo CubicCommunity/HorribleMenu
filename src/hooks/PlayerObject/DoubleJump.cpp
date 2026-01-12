@@ -15,13 +15,15 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
     };
 
     bool pushButton(PlayerButton p0) {
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             if (p0 == PlayerButton::Jump) {
-                if (m_isOnGround) m_fields->m_jumps = 0;
-                if (!m_isOnGround) m_fields->m_jumps++;
+                if (m_isOnGround) f->m_jumps = 0;
+                if (!m_isOnGround) f->m_jumps++;
             };
 
-            m_isOnGround = m_fields->m_jumps < 2;
+            m_isOnGround = f->m_jumps < 2;
         };
 
         return PlayerObject::pushButton(p0);

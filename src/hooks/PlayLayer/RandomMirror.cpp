@@ -21,8 +21,10 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
     };
 
     void toggleFlipped(bool p0, bool p1) {
-        m_fields->isFlipped = p0;
-        log::debug("{}", m_fields->isFlipped ? "flipped" : "unflipped");
+        auto f = m_fields.self();
+
+        f->isFlipped = p0;
+        log::debug("{}", f->isFlipped ? "flipped" : "unflipped");
 
         PlayLayer::toggleFlipped(p0, p1);
     };
@@ -33,8 +35,10 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
     };
 
     void flipPortal(float) {
-        if (m_fields->enabled) {
-            toggleFlipped(!m_fields->isFlipped, false);
+        auto f = m_fields.self();
+
+        if (f->enabled) {
+            toggleFlipped(!f->isFlipped, false);
             scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 2.5f);
         };
     };

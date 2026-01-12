@@ -12,8 +12,8 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
         bool enabled = options::get("black_screen");
     };
 
-    bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
 
         int rnd = randng::get(5);
         log::info("playlayer init called {}", rnd);
@@ -25,8 +25,6 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
 
             scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);
         };
-
-        return true;
     };
 
     void showBlackScreen(float) {

@@ -26,10 +26,12 @@ class $modify(FlippedPlayLayer, PlayLayer) {
     };
 
     void flip(float) {
-        if (m_fields->enabled && !m_fields->flipping) {
-            if (randng::tiny() > m_fields->chance) return;
+        auto f = m_fields.self();
 
-            m_fields->flipping = true;
+        if (f->enabled && !f->flipping) {
+            if (randng::tiny() > f->chance) return;
+
+            f->flipping = true;
             log::debug("flipping the playlayer");
 
             auto action = CCSequence::createWithTwoActions(

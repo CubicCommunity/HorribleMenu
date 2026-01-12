@@ -16,11 +16,13 @@ class $modify(ForceLevelsPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        if (m_fields->enabled) {
-            int rnd = randng::fast(); // random float between 0 and 100
-            log::debug("scene rng {} chance {}", rnd, m_fields->chance);
+        auto f = m_fields.self();
 
-            if (rnd <= m_fields->chance) {
+        if (f->enabled) {
+            int rnd = randng::fast(); // random float between 0 and 100
+            log::debug("scene rng {} chance {}", rnd, f->chance);
+
+            if (rnd <= f->chance) {
                 log::debug("setting scene upside down");
                 setRotation(-180.f);
             };
