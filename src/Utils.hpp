@@ -6,8 +6,6 @@
 
 #include <cocos2d.h>
 
-#include <Geode/loader/SettingV3.hpp>
-
 #include <Geode/binding/FMODAudioEngine.hpp>
 
 #include <classes/Jumpscares.hpp>

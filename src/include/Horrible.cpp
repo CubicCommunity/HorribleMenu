@@ -24,9 +24,7 @@ ListenerResult HorribleOptionEventFilter::handle(std::function<Callback> fn, Hor
     if (m_ids.empty()) {
         return fn(event);
     } else {
-        for (auto const& id : m_ids) {
-            if (event->getId() == id) return fn(event);
-        };
+        for (auto const& id : m_ids) if (event->getId() == id) return fn(event);
     };
 
     return ListenerResult::Propagate;
@@ -50,10 +48,7 @@ void OptionManager::registerCategory(std::string_view category) {
 };
 
 bool OptionManager::doesOptionExist(std::string_view id) const {
-    for (auto const& option : getOptions()) {
-        if (option.id == id) return true;
-    };
-
+    for (auto const& option : getOptions()) if (option.id == id) return true;
     return false;
 };
 

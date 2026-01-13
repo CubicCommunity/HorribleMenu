@@ -261,7 +261,7 @@ static std::vector<Option> defOpts = {
     {
         "flipped",
         "FLIPPED",
-        "Sometimes while playing, your screen will do a flip!\n<cy>Credit: Cheeseworks</c>",
+        "Sometimes while playing, your entire screen will just do a flip!\n<cy>Credit: Cheeseworks</c>",
         category::obstructive,
         SillyTier::High,
     },

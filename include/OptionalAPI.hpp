@@ -34,9 +34,7 @@ namespace horrible {
             if (m_ids.empty()) {
                 return fn(event);
             } else {
-                for (auto const& id : m_ids) {
-                    if (event->getId() == id) return fn(event);
-                };
+                for (auto const& id : m_ids) if (event->getId() == id) return fn(event);
             };
 
             return geode::ListenerResult::Propagate;

@@ -9,8 +9,8 @@ using namespace geode::prelude;
 class HorribleSettingV3 : public SettingV3 {
 public:
     static Result<std::shared_ptr<SettingV3>> parse(
-        std::string const& key,
-        std::string const& modID,
+        std::string_view key,
+        std::string_view modID,
         matjson::Value const& json
     );
 

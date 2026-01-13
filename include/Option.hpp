@@ -6,7 +6,7 @@
 
 // Container for Horrible Ideas API
 namespace horrible {
-    // How silly a mod option is
+    // How silly an option is
     enum class SillyTier : unsigned int {
         None = 0, // Null
         Low = 1, // Not so silly
@@ -14,7 +14,7 @@ namespace horrible {
         High = 3 // Very silly
     };
 
-    // A horrible mod option
+    // A horrible option
     struct Option {
         std::string id; // Unique ID of the option
         std::string name; // Name of the option
