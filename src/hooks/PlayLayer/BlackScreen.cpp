@@ -15,12 +15,9 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        int rnd = randng::get(5);
-        log::info("playlayer init called {}", rnd);
-
         if (m_fields->enabled) {
             // random delay between 0 and 5 seconds
-            float delay = static_cast<float>(rnd);
+            auto delay = randng::get(5.f);
             log::debug("Black screen will appear after {} seconds", delay);
 
             scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);
@@ -34,17 +31,16 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
             auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
             auto blackScreen = CCScale9Sprite::create("square02_001.png");
+            blackScreen->setID("black_screen"_spr);
             blackScreen->setContentSize({ winSize.width + 10.f, winSize.height + 10.f });
             blackScreen->setPosition(winSize / 2.f);
-            blackScreen->setID("black_screen"_spr);
 
             m_uiLayer->addChild(blackScreen, 99);
 
             // Schedule removal after 0.5 seconds, then schedule to show again after a random delay
-            blackScreen->runAction(CCSequence::create(
+            blackScreen->runAction(CCSequence::createWithTwoActions(
                 CCDelayTime::create(0.25f),
-                CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen)),
-                nullptr
+                CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))
             ));
         };
     };

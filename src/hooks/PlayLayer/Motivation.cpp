@@ -107,7 +107,8 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
         this->template addEventListener<OptionEventFilter>(
             [this, f](OptionEvent* ev) {
-                unscheduleAllSelectors();
+                unschedule(schedule_selector(MotivationPlayLayer::showMessage));
+
                 f->enabled = ev->getToggled();
 
                 if (f->enabled) scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), randng::get(10.f, 3.f));

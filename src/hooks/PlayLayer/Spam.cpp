@@ -20,6 +20,19 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
+                unschedule(schedule_selector(SpamPlayLayer::doSpam));
+
+                f->enabled = ev->getToggled();
+
+                if (f->enabled) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+
+                return ListenerResult::Propagate;
+            },
+            "spam"
+        );
+
         if (f->enabled) nextSpam();
     };
 

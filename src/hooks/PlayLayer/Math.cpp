@@ -20,6 +20,19 @@ class $modify(MathPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
+                unschedule(schedule_selector(MathPlayLayer::doQuiz));
+
+                f->enabled = ev->getToggled();
+
+                if (f->enabled) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+
+                return ListenerResult::Propagate;
+            },
+            "math_quiz"
+        );
+
         if (f->enabled) nextQuiz();
     };
 
