@@ -1,4 +1,4 @@
-#include "../FloatingButton.hpp"
+#include "../OptionMenuButton.hpp"
 
 #include <Utils.hpp>
 
@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class FloatingButton::Impl final {
+class OptionMenuButton::Impl final {
 public:
     bool m_inLevel = horribleMod->getSettingValue<bool>("floating-button-level");
 
@@ -25,13 +25,13 @@ public:
     bool m_isAnimating = false;
 };
 
-FloatingButton::FloatingButton() {
+OptionMenuButton::OptionMenuButton() {
     m_impl = std::make_unique<Impl>();
 };
 
-FloatingButton::~FloatingButton() {};
+OptionMenuButton::~OptionMenuButton() {};
 
-bool FloatingButton::init() {
+bool OptionMenuButton::init() {
     if (!CCLayer::init()) return false;
 
     // get the saved position
@@ -66,16 +66,16 @@ bool FloatingButton::init() {
     return true;
 };
 
-void FloatingButton::setOpacity(GLubyte opacity) {
+void OptionMenuButton::setOpacity(GLubyte opacity) {
     m_impl->m_opacity = opacity;
     if (m_impl->m_sprite) m_impl->m_sprite->setOpacity(isVisible() ? opacity : 0);
 };
 
-void FloatingButton::setShowInLevel(bool show) {
+void OptionMenuButton::setShowInLevel(bool show) {
     m_impl->m_inLevel = show;
 };
 
-void FloatingButton::setScale(float scale) {
+void OptionMenuButton::setScale(float scale) {
     m_impl->m_scale = scale;
 
     if (!m_impl->m_isDragging && !m_impl->m_isAnimating) {
@@ -86,7 +86,7 @@ void FloatingButton::setScale(float scale) {
     };
 };
 
-void FloatingButton::setPosition(CCPoint const& position) {
+void OptionMenuButton::setPosition(CCPoint const& position) {
     if (m_impl->m_sprite) {
         auto halfX = m_impl->m_sprite->getScaledContentWidth() / 2.f;
         auto halfY = m_impl->m_sprite->getScaledContentHeight() / 2.f;
@@ -107,7 +107,7 @@ void FloatingButton::setPosition(CCPoint const& position) {
     };
 };
 
-bool FloatingButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
+bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
     if (m_impl->m_sprite && isVisible()) {
         CCPoint const touchLocation = convertToNodeSpace(touch->getLocation());
 
@@ -124,7 +124,7 @@ bool FloatingButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
                     CCEaseExponentialOut::create(CCScaleTo::create(0.25f, m_impl->m_scale * 0.875f)),
                     CCFadeTo::create(0.25f, 255)
                 ),
-                CCCallFunc::create(this, callfunc_selector(FloatingButton::onScaleEnd))
+                CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd))
             ));
 
             return true; // swallow touch
@@ -134,7 +134,7 @@ bool FloatingButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
     return false;
 };
 
-void FloatingButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
+void OptionMenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
     if (m_impl->m_isDragging) {
         CCPoint const touchLocation = touch->getLocation();
         CCPoint const newLocation = ccpAdd(touchLocation, m_impl->m_dragStartPos);
@@ -145,7 +145,7 @@ void FloatingButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
     };
 };
 
-void FloatingButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
+void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
     if (!m_impl->m_isMoving) menu::open();
 
     // reset state
@@ -166,36 +166,36 @@ void FloatingButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
                 CCFadeTo::create(0.125f, 255),
                 CCEaseElasticOut::create(CCScaleTo::create(0.875f, m_impl->m_scale))
             ),
-            CCCallFunc::create(this, callfunc_selector(FloatingButton::onScaleEnd)),
+            CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd)),
             CCDelayTime::create(1.f),
             CCFadeTo::create(0.5f, m_impl->m_opacity),
             nullptr));
     };
 };
 
-void FloatingButton::onEnter() {
+void OptionMenuButton::onEnter() {
     CCLayer::onEnter();
     setTouchEnabled(true);
 };
 
-void FloatingButton::onScaleEnd() {
+void OptionMenuButton::onScaleEnd() {
     m_impl->m_isAnimating = false;
 };
 
-int64_t FloatingButton::getOpacitySetting() const {
+int64_t OptionMenuButton::getOpacitySetting() const {
     return m_impl->m_opacity;
 };
 
-float FloatingButton::getScaleSetting() const {
+float OptionMenuButton::getScaleSetting() const {
     return m_impl->m_scale;
 };
 
-bool FloatingButton::showInLevel() const {
+bool OptionMenuButton::showInLevel() const {
     return m_impl->m_inLevel;
 };
 
-FloatingButton* FloatingButton::create() {
-    auto ret = new FloatingButton();
+OptionMenuButton* OptionMenuButton::create() {
+    auto ret = new OptionMenuButton();
     if (ret->init()) {
         ret->autorelease();
         return ret;
@@ -205,7 +205,7 @@ FloatingButton* FloatingButton::create() {
     return nullptr;
 };
 
-FloatingButton* FloatingButton::get() {
-    static auto inst = FloatingButton::create();
+OptionMenuButton* OptionMenuButton::get() {
+    static auto inst = OptionMenuButton::create();
     return inst;
 };

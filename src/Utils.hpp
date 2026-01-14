@@ -2,12 +2,6 @@
 
 #include <Horrible.hpp>
 
-#include <fmt/core.h>
-
-#include <cocos2d.h>
-
-#include <Geode/binding/FMODAudioEngine.hpp>
-
 #include <classes/Jumpscares.hpp>
 #include <classes/Menu.hpp>
 #include <classes/Options.hpp>
@@ -16,6 +10,10 @@
 #include <classes/ui/MathQuiz.hpp>
 #include <classes/ui/RandomAd.hpp>
 #include <classes/ui/SpamChallenge.hpp>
+
+#include <cocos2d.h>
+
+#include <Geode/binding/FMODAudioEngine.hpp>
 
 // Additional utility methods for Horrible Ideas
 namespace horrible {

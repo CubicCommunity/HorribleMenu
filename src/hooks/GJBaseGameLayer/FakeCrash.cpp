@@ -28,26 +28,23 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     void scheduler(float) {
         auto f = m_fields.self();
 
-        if (auto pl = PlayLayer::get()) {
-            // log::debug("FakeCrash update tick");
-            if (f->m_enabled && !f->m_inFakeCrash && randng::fast() % f->m_chance == 0) {
-                log::debug("Faking crash");
-                f->m_lastTimeWarp = LevelTools::getLastTimewarp();
+        // log::debug("FakeCrash update tick");
+        if (f->m_enabled && !f->m_inFakeCrash && randng::fast() % f->m_chance == 0) {
+            log::debug("Faking crash");
+            f->m_lastTimeWarp = LevelTools::getLastTimewarp();
 
-                GJBaseGameLayer::updateTimeWarp(0.f);
+            GJBaseGameLayer::updateTimeWarp(0.f);
 
-                f->m_inFakeCrash = true;
-                f->m_fakeCrashStartTime = pl->m_gameState.m_currentProgress;
-            };
+            f->m_inFakeCrash = true;
+            f->m_fakeCrashStartTime = m_gameState.m_currentProgress;
+        };
 
-            if (f->m_inFakeCrash) {
-                float elapsedTime = pl->m_gameState.m_currentProgress - f->m_fakeCrashStartTime;
-                if (elapsedTime >= 5.f) {
-                    log::debug("Reverting timewarp to: {}", f->m_lastTimeWarp);
+        if (f->m_inFakeCrash) {
+            if ((m_gameState.m_currentProgress - f->m_fakeCrashStartTime) >= 5.f) {
+                log::debug("Reverting timewarp to: {}", f->m_lastTimeWarp);
 
-                    GJBaseGameLayer::updateTimeWarp(f->m_lastTimeWarp);
-                    f->m_inFakeCrash = false;
-                };
+                GJBaseGameLayer::updateTimeWarp(f->m_lastTimeWarp);
+                f->m_inFakeCrash = false;
             };
         };
     };

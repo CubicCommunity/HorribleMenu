@@ -35,6 +35,18 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
+                unscheduleAllSelectors();
+                f->enabled = ev->getToggled();
+
+                if (f->enabled) scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
+
+                return ListenerResult::Propagate;
+            },
+            "confetti"
+        );
+
         if (f->enabled) scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
     };
 

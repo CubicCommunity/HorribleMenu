@@ -20,7 +20,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
     };
 
     bool pushButton(PlayerButton p0) {
-        if (auto pl = PlayLayer::get()) {
+        if (m_gameLayer) {
             auto f = m_fields.self();
 
             if (f->enabled) {

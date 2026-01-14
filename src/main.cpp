@@ -1,6 +1,6 @@
 #include <Utils.hpp>
 
-#include <menu/FloatingButton.hpp>
+#include <menu/OptionMenuButton.hpp>
 #include <menu/SettingV3.hpp>
 
 #include <Geode/modify/MenuLayer.hpp>
@@ -307,19 +307,19 @@ $execute{
     };
 
     listenForSettingChanges("floating-button", [](bool value) {
-        if (auto fb = FloatingButton::get()) fb->setVisible(value);
+        if (auto fb = OptionMenuButton::get()) fb->setVisible(value);
                             });
 
     listenForSettingChanges("floating-button-level", [](bool value) {
-        if (auto fb = FloatingButton::get()) fb->setShowInLevel(value);
+        if (auto fb = OptionMenuButton::get()) fb->setShowInLevel(value);
                             });
 
     listenForSettingChanges("floating-button-scale", [](double value) {
-        if (auto fb = FloatingButton::get()) fb->setScale(static_cast<float>(value));
+        if (auto fb = OptionMenuButton::get()) fb->setScale(static_cast<float>(value));
                             });
 
     listenForSettingChanges("floating-button-opacity", [](int64_t value) {
-        if (auto fb = FloatingButton::get()) fb->setOpacity(value);
+        if (auto fb = OptionMenuButton::get()) fb->setOpacity(value);
                             });
 
     (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
@@ -329,7 +329,7 @@ class $modify(HIMenuLayer, MenuLayer) {
     bool init() {
         if (!MenuLayer::init()) return false;
 
-        if (auto fb = FloatingButton::get()) SceneManager::get()->keepAcrossScenes(fb);
+        if (auto fb = OptionMenuButton::get()) SceneManager::get()->keepAcrossScenes(fb);
 
         if (auto gm = GameManager::get()) {
             // get and store user current fps
@@ -383,14 +383,14 @@ class $modify(HIPlayLayer, PlayLayer) {
     };
 
     void toggleButton(bool toggle = false) {
-        if (auto fb = FloatingButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>("floating-button") && (fb->showInLevel() || toggle));
+        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>("floating-button") && (fb->showInLevel() || toggle));
     };
 };
 
 class $modify(HIPauseLayer, PauseLayer) {
     void customSetup() {
         PauseLayer::customSetup();
-        if (auto fb = FloatingButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>("floating-button"));
+        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>("floating-button"));
     };
 };
 

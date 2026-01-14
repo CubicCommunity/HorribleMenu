@@ -7,23 +7,23 @@
 using namespace geode::prelude;
 using namespace horrible;
 
-HorribleOptionEvent::HorribleOptionEvent(std::string id, bool toggled) : m_id(std::move(id)), m_toggled(toggled) {};
+OptionEvent::OptionEvent(std::string id, bool toggled) : m_id(std::move(id)), m_toggled(toggled) {};
 
-std::string const& HorribleOptionEvent::getId() const {
+std::string const& OptionEvent::getId() const {
     return m_id;
 };
 
-bool HorribleOptionEvent::getToggled() const {
+bool OptionEvent::getToggled() const {
     return m_toggled;
 };
 
-HorribleOptionEventFilter::HorribleOptionEventFilter(std::string id) : m_ids({ std::move(id) }) {};
-HorribleOptionEventFilter::HorribleOptionEventFilter(std::vector<std::string> ids) : m_ids(std::move(ids)) {};
+OptionEventFilter::OptionEventFilter(std::string id) : m_ids({ std::move(id) }) {};
+OptionEventFilter::OptionEventFilter(std::vector<std::string> ids) : m_ids(std::move(ids)) {};
 
-HorribleOptionEventFilter::HorribleOptionEventFilter(CCNode*, std::string id) : m_ids({ std::move(id) }) {};
-HorribleOptionEventFilter::HorribleOptionEventFilter(CCNode*, std::vector<std::string> ids) : m_ids(std::move(ids)) {};
+OptionEventFilter::OptionEventFilter(CCNode*, std::string id) : m_ids({ std::move(id) }) {};
+OptionEventFilter::OptionEventFilter(CCNode*, std::vector<std::string> ids) : m_ids(std::move(ids)) {};
 
-ListenerResult HorribleOptionEventFilter::handle(std::function<Callback> fn, HorribleOptionEvent* event) {
+ListenerResult OptionEventFilter::handle(std::function<Callback> fn, OptionEvent* event) {
     if (m_ids.empty()) {
         return fn(event);
     } else {
@@ -79,10 +79,10 @@ bool OptionManager::getOption(std::string_view id) const {
 };
 
 bool OptionManager::setOption(std::string_view id, bool enable) const {
-    auto event = new HorribleOptionEvent(id.data(), enable);
+    auto event = new OptionEvent(id.data(), enable);
     event->postFromMod(Mod::get());
 
-    auto eventV2 = new HorribleOptionEventV2(id.data(), enable);
+    auto eventV2 = new OptionEventV2(id.data(), enable);
     eventV2->postFromMod(Mod::get());
 
     return Mod::get()->setSavedValue(id.data(), enable);

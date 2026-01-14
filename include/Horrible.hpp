@@ -47,7 +47,7 @@ namespace horrible {
          */
         bool doesOptionExist(std::string_view id) const;
 
-        friend class HorribleOptionEventFilter;
+        friend class OptionEventFilter;
 
     public:
         // Get option manager singleton

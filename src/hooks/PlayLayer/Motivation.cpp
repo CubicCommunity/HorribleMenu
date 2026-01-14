@@ -105,6 +105,18 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
+                unscheduleAllSelectors();
+                f->enabled = ev->getToggled();
+
+                if (f->enabled) scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), randng::get(10.f, 3.f));
+
+                return ListenerResult::Propagate;
+            },
+            "motivation"
+        );
+
         if (f->enabled) {
             log::debug("Preparing {} motivational messages", Fields::msgs.size());
 

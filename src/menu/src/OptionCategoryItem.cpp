@@ -1,4 +1,4 @@
-#include "../CategoryItem.hpp"
+#include "../OptionCategoryItem.hpp"
 
 #include <Utils.hpp>
 
@@ -21,20 +21,20 @@ ListenerResult CategoryEventFilter::handle(std::function<Callback> fn, CategoryE
     return fn(event);
 };
 
-class CategoryItem::Impl final {
+class OptionCategoryItem::Impl final {
 public:
     std::string m_category = ""; // The category name
 
     CCMenuItemToggler* m_toggler = nullptr; // The toggler for the option
 };
 
-CategoryItem::CategoryItem() {
+OptionCategoryItem::OptionCategoryItem() {
     m_impl = std::make_unique<Impl>();
 };
 
-CategoryItem::~CategoryItem() {};
+OptionCategoryItem::~OptionCategoryItem() {};
 
-bool CategoryItem::init(CCSize const& size, std::string_view category) {
+bool OptionCategoryItem::init(CCSize const& size, std::string_view category) {
     m_impl->m_category = category;
 
     if (!CCMenu::init()) return false;
@@ -62,7 +62,7 @@ bool CategoryItem::init(CCSize const& size, std::string_view category) {
         togglerOff,
         togglerOn,
         this,
-        menu_selector(CategoryItem::onToggle)
+        menu_selector(OptionCategoryItem::onToggle)
     );
     m_impl->m_toggler->setID("toggler");
     m_impl->m_toggler->setAnchorPoint({ 0.5f, 0.5f });
@@ -89,17 +89,17 @@ bool CategoryItem::init(CCSize const& size, std::string_view category) {
     return true;
 };
 
-ListenerResult CategoryItem::OnCategory(std::string_view category, bool enabled) {
+ListenerResult OptionCategoryItem::OnCategory(std::string_view category, bool enabled) {
     if (m_impl->m_toggler) if (category != m_impl->m_category) m_impl->m_toggler->toggle(false);
     return ListenerResult::Propagate;
 };
 
-void CategoryItem::onToggle(CCObject* sender) {
+void OptionCategoryItem::onToggle(CCObject* sender) {
     if (m_impl->m_toggler) CategoryEvent(m_impl->m_category, !m_impl->m_toggler->isOn()).post();
 };
 
-CategoryItem* CategoryItem::create(CCSize const& size, std::string_view category) {
-    auto ret = new CategoryItem();
+OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string_view category) {
+    auto ret = new OptionCategoryItem();
     if (ret->init(size, category)) {
         ret->autorelease();
         return ret;

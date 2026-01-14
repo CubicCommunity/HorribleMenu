@@ -16,7 +16,7 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
     };
 
     bool pushButton(PlayerButton button) {
-        if (auto pl = PlayLayer::get()) {
+        if (m_gameLayer) {
             auto f = m_fields.self();
 
             if (f->enabled) {

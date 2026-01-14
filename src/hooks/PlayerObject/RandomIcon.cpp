@@ -15,7 +15,7 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
     bool pushButton(PlayerButton p0) {
         if (m_fields->enabled) {
             // jump pls
-            if (auto pl = PlayLayer::get(); pl && p0 == PlayerButton::Jump) {
+            if (m_gameLayer && p0 == PlayerButton::Jump) {
                 auto gm = GameManager::sharedState();
                 int rnd = randng::tiny();
 

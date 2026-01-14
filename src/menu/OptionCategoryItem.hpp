@@ -24,7 +24,7 @@ public:
     ListenerResult handle(std::function<Callback> fn, CategoryEvent* event);
 };
 
-class CategoryItem : public CCMenu {
+class OptionCategoryItem : public CCMenu {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
@@ -37,8 +37,8 @@ protected:
         CategoryEventFilter()
     };
 
-    CategoryItem();
-    virtual ~CategoryItem();
+    OptionCategoryItem();
+    virtual ~OptionCategoryItem();
 
     ListenerResult OnCategory(std::string_view category, bool enabled = false);
 
@@ -47,5 +47,5 @@ protected:
     bool init(CCSize const& size, std::string_view category);
 
 public:
-    static CategoryItem* create(CCSize const& size, std::string_view category);
+    static OptionCategoryItem* create(CCSize const& size, std::string_view category);
 };

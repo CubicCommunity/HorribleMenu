@@ -4,23 +4,23 @@
 
 using namespace geode::prelude;
 
-class FloatingButton : public CCLayer {
+class OptionMenuButton : public CCLayer {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
 protected:
-    FloatingButton();
-    virtual ~FloatingButton();
+    OptionMenuButton();
+    virtual ~OptionMenuButton();
 
     void onScaleEnd();
 
     virtual bool init() override;
 
-    static FloatingButton* create();
+    static OptionMenuButton* create();
 
 public:
-    static FloatingButton* get();
+    static OptionMenuButton* get();
 
     void setOpacity(GLubyte opacity);
     void setShowInLevel(bool show);

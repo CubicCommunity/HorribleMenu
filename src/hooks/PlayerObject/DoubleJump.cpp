@@ -19,8 +19,8 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        this->template addEventListener<HorribleOptionEventFilter>(
-            [this, f](HorribleOptionEvent* ev) {
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
                 f->enabled = ev->getToggled();
                 return ListenerResult::Propagate;
             },

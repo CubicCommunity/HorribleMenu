@@ -11,26 +11,26 @@
 #define MY_MOD_ID "arcticwoof.horrible_ideas"
 
 namespace horrible {
-    class HorribleOptionEventV2 : public geode::Event {
+    class OptionEventV2 : public geode::Event {
     private:
         std::string m_id;
         bool m_toggled;
 
     public:
-        HorribleOptionEventV2(std::string id, bool toggled) : m_id(std::move(id)), m_toggled(toggled) {};
+        OptionEventV2(std::string id, bool toggled) : m_id(std::move(id)), m_toggled(toggled) {};
 
         std::string const& getId() const { return m_id; };
         bool getToggled() const { return m_toggled; };
     };
 
-    class HorribleOptionEventFilterV2 : public geode::EventFilter<HorribleOptionEventV2> {
+    class OptionEventFilterV2 : public geode::EventFilter<OptionEventV2> {
     private:
         std::vector<std::string> m_ids;
 
     public:
-        using Callback = geode::ListenerResult(HorribleOptionEventV2*);
+        using Callback = geode::ListenerResult(OptionEventV2*);
 
-        geode::ListenerResult handle(std::function<Callback> fn, HorribleOptionEventV2* event) {
+        geode::ListenerResult handle(std::function<Callback> fn, OptionEventV2* event) {
             if (m_ids.empty()) {
                 return fn(event);
             } else {
@@ -40,9 +40,9 @@ namespace horrible {
             return geode::ListenerResult::Propagate;
         };
 
-        HorribleOptionEventFilterV2() = default;
-        HorribleOptionEventFilterV2(std::string id) : m_ids({ std::move(id) }) {};
-        HorribleOptionEventFilterV2(std::vector<std::string> ids) : m_ids(std::move(ids)) {};
+        OptionEventFilterV2() = default;
+        OptionEventFilterV2(std::string id) : m_ids({ std::move(id) }) {};
+        OptionEventFilterV2(std::vector<std::string> ids) : m_ids(std::move(ids)) {};
     };
 
     class OptionManagerV2 {

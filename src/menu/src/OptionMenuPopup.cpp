@@ -1,7 +1,7 @@
-#include "../HorribleMenuPopup.hpp"
+#include "../OptionMenuPopup.hpp"
 
-#include <menu/ModOption.hpp>
-#include <menu/CategoryItem.hpp>
+#include <menu/OptionItem.hpp>
+#include <menu/OptionCategoryItem.hpp>
 
 #include <Utils.hpp>
 
@@ -15,9 +15,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-HorribleMenuPopup* HorribleMenuPopup::s_inst = nullptr;
+OptionMenuPopup* OptionMenuPopup::s_inst = nullptr;
 
-class HorribleMenuPopup::Impl final {
+class OptionMenuPopup::Impl final {
 public:
     SillyTier s_selectedTier = SillyTier::None;
     std::string s_selectedCategory = "";
@@ -31,13 +31,13 @@ public:
     TextInput* m_searchInput = nullptr;
 };
 
-HorribleMenuPopup::HorribleMenuPopup() {
+OptionMenuPopup::OptionMenuPopup() {
     m_impl = std::make_unique<Impl>();
 };
 
-HorribleMenuPopup::~HorribleMenuPopup() {};
+OptionMenuPopup::~OptionMenuPopup() {};
 
-bool HorribleMenuPopup::setup() {
+bool OptionMenuPopup::setup() {
     setID("options"_spr);
     setTitle("Horrible Options");
 
@@ -67,7 +67,7 @@ bool HorribleMenuPopup::setup() {
     m_impl->m_categoryList->m_contentLayer->setLayout(layoutCategories);
 
     for (auto const& category : options::getAllCategories()) {
-        if (auto categoryItem = CategoryItem::create({ m_impl->m_categoryList->getScaledContentWidth(), 20.f }, category)) m_impl->m_categoryList->m_contentLayer->addChild(categoryItem);
+        if (auto categoryItem = OptionCategoryItem::create({ m_impl->m_categoryList->getScaledContentWidth(), 20.f }, category)) m_impl->m_categoryList->m_contentLayer->addChild(categoryItem);
     };
 
     m_impl->m_categoryList->m_contentLayer->updateLayout();
@@ -151,7 +151,7 @@ bool HorribleMenuPopup::setup() {
             btnSprite->m_label->setColor(filterBtn.color);
             btnSprite->setScale(0.8f);
 
-            if (auto btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(HorribleMenuPopup::filterTierCallback))) {
+            if (auto btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(OptionMenuPopup::filterTierCallback))) {
                 btn->setTag(static_cast<int>(filterBtn.tier));
                 btn->setPosition({ 0.f, fBtnY });
 
@@ -178,7 +178,7 @@ bool HorribleMenuPopup::setup() {
     auto settingsBtn = CCMenuItemSpriteExtra::create(
         settingsBtnSprite,
         this,
-        menu_selector(HorribleMenuPopup::openModSettings)
+        menu_selector(OptionMenuPopup::openModSettings)
     );
     settingsBtn->setID("settings-btn");
 
@@ -190,7 +190,7 @@ bool HorribleMenuPopup::setup() {
     auto resetFiltersBtn = CCMenuItemSpriteExtra::create(
         resetFiltersBtnSprite,
         this,
-        menu_selector(HorribleMenuPopup::resetFilters)
+        menu_selector(OptionMenuPopup::resetFilters)
     );
     resetFiltersBtn->setID("reset-filters-btn");
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
@@ -203,7 +203,7 @@ bool HorribleMenuPopup::setup() {
     auto seriesBtn = CCMenuItemSpriteExtra::create(
         seriesBtnSprite,
         this,
-        menu_selector(HorribleMenuPopup::openSeriesPage)
+        menu_selector(OptionMenuPopup::openSeriesPage)
     );
     seriesBtn->setID("horrible-mods-series-btn");
     seriesBtn->setPosition(mainLayerSize - 20.f);
@@ -217,7 +217,7 @@ bool HorribleMenuPopup::setup() {
     auto supporterBtn = CCMenuItemSpriteExtra::create(
         supporterBtnSprite,
         this,
-        menu_selector(HorribleMenuPopup::openSupporterPopup)
+        menu_selector(OptionMenuPopup::openSupporterPopup)
     );
     supporterBtn->setID("support-btn");
     supporterBtn->setPosition({ mainLayerSize.width - 45.f, mainLayerSize.height - 20.f });
@@ -245,13 +245,13 @@ bool HorribleMenuPopup::setup() {
     return true;
 };
 
-ListenerResult HorribleMenuPopup::OnCategory(std::string_view category, bool enabled) {
+ListenerResult OptionMenuPopup::OnCategory(std::string_view category, bool enabled) {
     m_impl->s_selectedCategory = enabled ? category : "";
     filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
     return ListenerResult::Propagate;
 };
 
-void HorribleMenuPopup::filterOptions(std::vector<Option> const& optList, SillyTier tier, std::string_view category) {
+void OptionMenuPopup::filterOptions(std::vector<Option> const& optList, SillyTier tier, std::string_view category) {
     if (m_impl->m_optionList) {
         m_impl->m_optionList->m_contentLayer->removeAllChildren();
 
@@ -277,7 +277,7 @@ void HorribleMenuPopup::filterOptions(std::vector<Option> const& optList, SillyT
             };
 
             if (tierMatches && categoryMatches && searchMatches) {
-                if (auto modOption = ModOption::create(
+                if (auto modOption = OptionItem::create(
                     { m_impl->m_optionList->m_contentLayer->getScaledContentWidth(),
                      32.5f },
                     opt)) {
@@ -298,7 +298,7 @@ void HorribleMenuPopup::filterOptions(std::vector<Option> const& optList, SillyT
     };
 };
 
-void HorribleMenuPopup::filterTierCallback(CCObject* sender) {
+void OptionMenuPopup::filterTierCallback(CCObject* sender) {
     if (auto btn = typeinfo_cast<CCMenuItemSpriteExtra*>(sender)) {
         SillyTier tier = static_cast<SillyTier>(btn->getTag());
 
@@ -315,7 +315,7 @@ void HorribleMenuPopup::filterTierCallback(CCObject* sender) {
     };
 };
 
-void HorribleMenuPopup::resetFilters(CCObject*) {
+void OptionMenuPopup::resetFilters(CCObject*) {
     createQuickPopup(
         "Reset Filters",
         "Would you like to <cr>reset all search filters</c>?",
@@ -328,11 +328,11 @@ void HorribleMenuPopup::resetFilters(CCObject*) {
         });
 };
 
-void HorribleMenuPopup::openModSettings(CCObject*) {
+void OptionMenuPopup::openModSettings(CCObject*) {
     openSettingsPopup(horribleMod);
 };
 
-void HorribleMenuPopup::openSeriesPage(CCObject*) {
+void OptionMenuPopup::openSeriesPage(CCObject*) {
     createQuickPopup(
         "Horrible Mods",
         "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
@@ -342,31 +342,31 @@ void HorribleMenuPopup::openSeriesPage(CCObject*) {
         });
 };
 
-void HorribleMenuPopup::openSupporterPopup(CCObject*) {
+void OptionMenuPopup::openSupporterPopup(CCObject*) {
     openSupportPopup(horribleMod);
 };
 
-void HorribleMenuPopup::onClose(CCObject* sender) {
+void OptionMenuPopup::onClose(CCObject* sender) {
     s_inst = nullptr;
     Popup<>::onClose(sender);
 };
 
-void HorribleMenuPopup::onExit() {
+void OptionMenuPopup::onExit() {
     s_inst = nullptr;
     Popup<>::onExit();
 };
 
-void HorribleMenuPopup::cleanup() {
+void OptionMenuPopup::cleanup() {
     s_inst = nullptr;
     Popup<>::cleanup();
 };
 
-HorribleMenuPopup* HorribleMenuPopup::get() {
+OptionMenuPopup* OptionMenuPopup::get() {
     return s_inst;
 };
 
-HorribleMenuPopup* HorribleMenuPopup::create() {
-    auto ret = new HorribleMenuPopup();
+OptionMenuPopup* OptionMenuPopup::create() {
+    auto ret = new OptionMenuPopup();
     if (ret->initAnchored(450.f, 280.f)) {
         ret->autorelease();
         s_inst = ret;

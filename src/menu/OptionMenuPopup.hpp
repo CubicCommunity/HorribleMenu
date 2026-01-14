@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CategoryItem.hpp"
+#include "OptionCategoryItem.hpp"
 
 #include <Utils.hpp>
 
@@ -15,20 +15,20 @@ struct FilterBtnInfo {
     ccColor3B color;
 };
 
-class HorribleMenuPopup : public Popup<> {
+class OptionMenuPopup : public Popup<> {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
 protected:
-    static HorribleMenuPopup* s_inst;
+    static OptionMenuPopup* s_inst;
 
-    EventListener<HorribleOptionEventFilter> m_listener = {
-        [](HorribleOptionEvent* event) {
+    EventListener<OptionEventFilter> m_listener = {
+        [](OptionEvent* event) {
             log::debug("{} option of ID '{}'", event->getToggled() ? "Enabled" : "Disabled", event->getId());
             return ListenerResult::Propagate;
         },
-        HorribleOptionEventFilter()
+        OptionEventFilter()
     };
 
     EventListener<CategoryEventFilter> m_catListener = {
@@ -38,8 +38,8 @@ protected:
         CategoryEventFilter()
     };
 
-    HorribleMenuPopup();
-    virtual ~HorribleMenuPopup();
+    OptionMenuPopup();
+    virtual ~OptionMenuPopup();
 
     ListenerResult OnCategory(std::string_view category, bool enabled = true);
 
@@ -59,7 +59,7 @@ protected:
     bool setup() override;
 
 public:
-    static HorribleMenuPopup* create();
+    static OptionMenuPopup* create();
 
-    static HorribleMenuPopup* get();
+    static OptionMenuPopup* get();
 };

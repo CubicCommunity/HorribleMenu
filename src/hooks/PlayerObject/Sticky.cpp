@@ -44,7 +44,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
                     nullptr
                 );
 
-                pl->addChild(f->m_clickLabel, 9);
+                pl->m_uiLayer->addChild(f->m_clickLabel, 9);
                 f->m_clickLabel->runAction(CCRepeatForever::create(seq));
             };
 

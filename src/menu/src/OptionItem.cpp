@@ -1,4 +1,4 @@
-#include "../ModOption.hpp"
+#include "../OptionItem.hpp"
 
 #include <Utils.hpp>
 
@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class ModOption::Impl final {
+class OptionItem::Impl final {
 public:
     bool s_compatible = false; // If this option is compatible with the current platform
 
@@ -22,13 +22,13 @@ public:
     CCMenuItemToggler* m_toggler = nullptr; // The toggler for the option
 };
 
-ModOption::ModOption() {
+OptionItem::OptionItem() {
     m_impl = std::make_unique<Impl>();
 };
 
-ModOption::~ModOption() {};
+OptionItem::~OptionItem() {};
 
-bool ModOption::init(CCSize const& size, Option const& option) {
+bool OptionItem::init(CCSize const& size, Option const& option) {
     m_impl->m_option = option;
 
     // check for compatibility
@@ -70,7 +70,7 @@ bool ModOption::init(CCSize const& size, Option const& option) {
         togglerOff,
         togglerOn,
         this,
-        menu_selector(ModOption::onToggle)
+        menu_selector(OptionItem::onToggle)
     );
     m_impl->m_toggler->setID("toggler");
     m_impl->m_toggler->setAnchorPoint({ 0.5f, 0.5f });
@@ -159,7 +159,7 @@ bool ModOption::init(CCSize const& size, Option const& option) {
     auto helpBtn = CCMenuItemSpriteExtra::create(
         helpBtnSprite,
         this,
-        menu_selector(ModOption::onDescription)
+        menu_selector(OptionItem::onDescription)
     );
     helpBtn->setID("help-btn");
     helpBtn->setAnchorPoint({ 0.5f, 0.5f });
@@ -191,11 +191,11 @@ bool ModOption::init(CCSize const& size, Option const& option) {
     return true;
 };
 
-void ModOption::saveTogglerState() {
+void OptionItem::saveTogglerState() {
     if (m_impl->m_toggler) options::set(m_impl->m_option.id, m_impl->m_toggler->isToggled());
 };
 
-void ModOption::onToggle(CCObject*) {
+void OptionItem::onToggle(CCObject*) {
     if (m_impl->s_compatible) {
         saveTogglerState();
         if (m_impl->m_option.restart) {
@@ -212,7 +212,7 @@ void ModOption::onToggle(CCObject*) {
     };
 };
 
-void ModOption::onDescription(CCObject*) {
+void OptionItem::onDescription(CCObject*) {
     if (auto popup = FLAlertLayer::create(
         m_impl->m_option.name.c_str(),
         m_impl->m_option.description.c_str(),
@@ -220,21 +220,21 @@ void ModOption::onDescription(CCObject*) {
     )) popup->show();
 };
 
-void ModOption::onExit() {
+void OptionItem::onExit() {
     saveTogglerState();
     CCMenu::onExit();
 };
 
-Option ModOption::getOption() const {
+Option OptionItem::getOption() const {
     return m_impl->m_option;
 };
 
-bool ModOption::isCompatible() const {
+bool OptionItem::isCompatible() const {
     return m_impl->s_compatible;
 };
 
-ModOption* ModOption::create(CCSize const& size, Option const& option) {
-    auto ret = new ModOption();
+OptionItem* OptionItem::create(CCSize const& size, Option const& option) {
+    auto ret = new OptionItem();
     if (ret->init(size, option)) {
         ret->autorelease();
         return ret;
