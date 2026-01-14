@@ -11,7 +11,7 @@ namespace horrible {
              *
              * @returns An array of every registered option, main and external
              */
-            std::vector<horrible::Option> const& getAll();
+            std::span<const Option> getAll() noexcept;
 
             /**
              * Returns the toggle state of an option
@@ -20,7 +20,7 @@ namespace horrible {
              *
              * @returns Boolean of the current value
              */
-            bool get(std::string_view id);
+            bool get(std::string_view id) noexcept;
 
             /**
              * Returns the chance value for an option
@@ -46,14 +46,14 @@ namespace horrible {
              *
              * @returns An array of every registered option category, main and external
              */
-            std::vector<std::string> const& getAllCategories();
+            std::span<const std::string> getAllCategories() noexcept;
 
             /**
              * Returns if a category exists or not
              *
              * @param category The exact name of the category to check
              */
-            bool doesCategoryExist(std::string_view category);
+            bool doesCategoryExist(std::string_view category) noexcept;
         };
     };
 };

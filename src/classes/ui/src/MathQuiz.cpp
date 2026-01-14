@@ -299,7 +299,7 @@ void MathQuiz::onAnswerClicked(CCObject* sender) {
     };
 };
 
-bool MathQuiz::hasAnswer(int answer) const {
+bool MathQuiz::hasAnswer(int answer) const noexcept {
     for (auto const& a : m_impl->m_answers) {
         if (a == answer) return true;
     };

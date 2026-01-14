@@ -17,8 +17,8 @@ namespace horrible {
     public:
         OptionEvent(std::string id, bool toggled); // Constructor
 
-        AWCW_HORRIBLE_API_DLL std::string const& getId() const; // Get the unique ID of the option
-        AWCW_HORRIBLE_API_DLL bool getToggled() const; // Get the toggle boolean of the option
+        AWCW_HORRIBLE_API_DLL std::string_view getId() const noexcept; // Get the unique ID of the option
+        AWCW_HORRIBLE_API_DLL bool getToggled() const noexcept; // Get the toggle boolean of the option
     };
 
     // Filter for option toggle event

@@ -292,9 +292,7 @@ $on_mod(Loaded) {
     if (auto om = OptionManager::get()) {
         log::debug("Registering {} default options...", defOpts.size());
 
-        for (auto const& option : defOpts) {
-            om->registerOption(option);
-        };
+        for (auto const& option : defOpts) om->registerOption(option);
 
         log::info("Done registering {} default options!", defOpts.size());
 
@@ -370,10 +368,14 @@ class $modify(HIPlayLayer, PlayLayer) {
 
     // safe mode prevents level completion
     void levelComplete() {
-        if (m_fields->safeMode) {
+        auto f = m_fields.self();
+
+        if (f->safeMode) {
+            log::info("Safe mode is enabled");
+
             bool testMode = m_isTestMode;
 
-            m_isTestMode = true;
+            m_isTestMode = f->safeMode;
             PlayLayer::levelComplete();
             m_isTestMode = testMode;
         } else {

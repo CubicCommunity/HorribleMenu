@@ -9,11 +9,11 @@ using namespace horrible;
 
 OptionEvent::OptionEvent(std::string id, bool toggled) : m_id(std::move(id)), m_toggled(toggled) {};
 
-std::string const& OptionEvent::getId() const {
+std::string_view OptionEvent::getId() const noexcept {
     return m_id;
 };
 
-bool OptionEvent::getToggled() const {
+bool OptionEvent::getToggled() const noexcept {
     return m_toggled;
 };
 
@@ -47,10 +47,11 @@ OptionManager::OptionManager() {
 OptionManager::~OptionManager() {};
 
 void OptionManager::registerCategory(std::string_view category) {
-    if (!utils::string::containsAny(category.data(), getCategories())) m_impl->categories.push_back(category.data());
+    auto cats = getCategories();
+    if (!utils::string::containsAny(category.data(), { cats.begin(), cats.end() })) m_impl->categories.push_back(category.data());
 };
 
-bool OptionManager::doesOptionExist(std::string_view id) const {
+bool OptionManager::doesOptionExist(std::string_view id) const noexcept {
     for (auto const& option : getOptions()) if (option.id == id) return true;
     return false;
 };
@@ -66,19 +67,19 @@ void OptionManager::registerOption(Option const& option) {
     };
 };
 
-std::vector<Option> const& OptionManager::getOptions() const {
+std::span<const Option> OptionManager::getOptions() const noexcept {
     return m_impl->options;
 };
 
-std::vector<std::string> const& OptionManager::getCategories() const {
+std::span<const std::string> OptionManager::getCategories() const noexcept {
     return m_impl->categories;
 };
 
-bool OptionManager::getOption(std::string_view id) const {
+bool OptionManager::getOption(std::string_view id) const noexcept {
     return Mod::get()->getSavedValue<bool>(id.data(), false);
 };
 
-bool OptionManager::setOption(std::string_view id, bool enable) const {
+bool OptionManager::setOption(std::string_view id, bool enable) const noexcept {
     auto event = new OptionEvent(id.data(), enable);
     event->postFromMod(Mod::get());
 
@@ -88,7 +89,7 @@ bool OptionManager::setOption(std::string_view id, bool enable) const {
     return Mod::get()->setSavedValue(id.data(), enable);
 };
 
-OptionManager* OptionManager::get() {
+OptionManager* OptionManager::get() noexcept {
     static auto inst = new OptionManager();
     return inst;
 };

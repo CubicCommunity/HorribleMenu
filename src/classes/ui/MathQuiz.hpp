@@ -27,7 +27,7 @@ namespace horrible {
             void closeAfterFeedback(CCNode* node);
             void onAnswerClicked(CCObject* sender);
 
-            bool hasAnswer(int answer) const;
+            bool hasAnswer(int answer) const noexcept;
 
             void keyBackClicked() override;
             void update(float dt) override;

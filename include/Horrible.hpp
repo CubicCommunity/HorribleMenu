@@ -45,13 +45,13 @@ namespace horrible {
          *
          * @returns Whether this option already exists or not
          */
-        bool doesOptionExist(std::string_view id) const;
+        bool doesOptionExist(std::string_view id) const noexcept;
 
         friend class OptionEventFilter;
 
     public:
         // Get option manager singleton
-        static OptionManager* get();
+        static OptionManager* get() noexcept;
 
         /**
          * Register a new option
@@ -65,7 +65,7 @@ namespace horrible {
          *
          * @returns An array of every registered option, main and external
          */
-        std::vector<Option> const& getOptions() const;
+        std::span<const Option> getOptions() const noexcept;
 
         /**
          * Returns the toggle state of an option
@@ -74,7 +74,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        bool getOption(std::string_view id) const;
+        bool getOption(std::string_view id) const noexcept;
 
         /**
          * Set the toggle state of an option
@@ -84,13 +84,13 @@ namespace horrible {
          *
          * @returns Boolean of the old value
          */
-        bool setOption(std::string_view id, bool enable) const;
+        bool setOption(std::string_view id, bool enable) const noexcept;
 
         /**
          * Returns a reference to the array of all registered categories
          *
          * @returns An array of every category name
          */
-        std::vector<std::string> const& getCategories() const;
+        std::span<const std::string> getCategories() const noexcept;
     };
 };

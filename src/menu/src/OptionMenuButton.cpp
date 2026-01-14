@@ -182,15 +182,15 @@ void OptionMenuButton::onScaleEnd() {
     m_impl->m_isAnimating = false;
 };
 
-int64_t OptionMenuButton::getOpacitySetting() const {
+int64_t OptionMenuButton::getOpacitySetting() const noexcept {
     return m_impl->m_opacity;
 };
 
-float OptionMenuButton::getScaleSetting() const {
+float OptionMenuButton::getScaleSetting() const noexcept {
     return m_impl->m_scale;
 };
 
-bool OptionMenuButton::showInLevel() const {
+bool OptionMenuButton::showInLevel() const noexcept {
     return m_impl->m_inLevel;
 };
 
@@ -205,7 +205,7 @@ OptionMenuButton* OptionMenuButton::create() {
     return nullptr;
 };
 
-OptionMenuButton* OptionMenuButton::get() {
+OptionMenuButton* OptionMenuButton::get() noexcept {
     static auto inst = OptionMenuButton::create();
     return inst;
 };

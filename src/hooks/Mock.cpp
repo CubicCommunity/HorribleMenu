@@ -114,6 +114,20 @@ class $modify(MockPlayLayer, PlayLayer) {
         bool enabled = options::get("mock");
     };
 
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
+
+        auto f = m_fields.self();
+
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
+                f->enabled = ev->getToggled();
+                return ListenerResult::Propagate;
+            },
+            "mock"
+        );
+    };
+
     void showNewBest(bool newReward, int orbs, int diamonds, bool demonKey, bool noRetry, bool noTitle) {
         int id = m_level->m_levelID;
         int percentage = m_level->m_normalPercent;

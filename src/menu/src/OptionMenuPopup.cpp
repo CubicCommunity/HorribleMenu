@@ -139,10 +139,10 @@ bool OptionMenuPopup::setup() {
     filterMenu->setAnchorPoint({ 0.5, 1 });
     filterMenu->setPosition({ filterMenuBg->getPositionX(), mainLayerSize.height - 65.f });
 
-    std::vector<FilterBtnInfo> const filterBtns = {
-        {SillyTier::Low, "Low", colors::green},
-        {SillyTier::Medium, "Medium", colors::yellow},
-        {SillyTier::High, "High", colors::red}
+    constexpr SillyFilter filterBtns[] = {
+        { SillyTier::Low, "Low", colors::green },
+        { SillyTier::Medium, "Medium", colors::yellow },
+        { SillyTier::High, "High", colors::red },
     };
 
     auto fBtnY = 0.f;
@@ -167,7 +167,7 @@ bool OptionMenuPopup::setup() {
     };
 
     // get the options data
-    filterOptions(options::getAll());
+    filterOptions(std::span<const Option>(options::getAll()));
 
     m_mainLayer->addChild(filterMenu);
 
@@ -247,11 +247,11 @@ bool OptionMenuPopup::setup() {
 
 ListenerResult OptionMenuPopup::OnCategory(std::string_view category, bool enabled) {
     m_impl->s_selectedCategory = enabled ? category : "";
-    filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
+    filterOptions(std::span<const Option>(options::getAll()), m_impl->s_selectedTier, m_impl->s_selectedCategory);
     return ListenerResult::Propagate;
 };
 
-void OptionMenuPopup::filterOptions(std::vector<Option> const& optList, SillyTier tier, std::string_view category) {
+void OptionMenuPopup::filterOptions(std::span<const Option>  optList, SillyTier tier, std::string_view category) {
     if (m_impl->m_optionList) {
         m_impl->m_optionList->m_contentLayer->removeAllChildren();
 
@@ -309,7 +309,7 @@ void OptionMenuPopup::filterTierCallback(CCObject* sender) {
             m_impl->s_selectedTier = tier;
         };
 
-        filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
+        filterOptions(std::span<const Option>(options::getAll()), m_impl->s_selectedTier, m_impl->s_selectedCategory);
     } else {
         log::error("Filter button cast failed");
     };
@@ -361,7 +361,7 @@ void OptionMenuPopup::cleanup() {
     Popup<>::cleanup();
 };
 
-OptionMenuPopup* OptionMenuPopup::get() {
+OptionMenuPopup* OptionMenuPopup::get() noexcept {
     return s_inst;
 };
 

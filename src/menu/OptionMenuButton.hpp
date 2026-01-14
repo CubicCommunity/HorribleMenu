@@ -20,7 +20,7 @@ protected:
     static OptionMenuButton* create();
 
 public:
-    static OptionMenuButton* get();
+    static OptionMenuButton* get() noexcept;
 
     void setOpacity(GLubyte opacity);
     void setShowInLevel(bool show);
@@ -35,7 +35,7 @@ public:
     virtual void ccTouchMoved(CCTouch* touch, CCEvent* event) override;
     virtual void ccTouchEnded(CCTouch* touch, CCEvent* event) override;
 
-    int64_t getOpacitySetting() const;
-    float getScaleSetting() const;
-    bool showInLevel() const;
+    int64_t getOpacitySetting() const noexcept;
+    float getScaleSetting() const noexcept;
+    bool showInLevel() const noexcept;
 };

@@ -9,11 +9,11 @@ using namespace horrible::prelude;
 
 CategoryEvent::CategoryEvent(std::string id, bool enabled) : m_id(std::move(id)), m_enabled(enabled) {};
 
-std::string const& CategoryEvent::getId() const {
+std::string_view CategoryEvent::getId() const noexcept {
     return m_id;
 };
 
-bool CategoryEvent::isEnabled() const {
+bool CategoryEvent::isEnabled() const noexcept {
     return m_enabled;
 };
 

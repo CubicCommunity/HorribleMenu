@@ -9,16 +9,16 @@
 using namespace geode::prelude;
 using namespace horrible;
 
-struct FilterBtnInfo {
-    SillyTier tier;
-    const char* label;
-    ccColor3B color;
-};
-
 class OptionMenuPopup : public Popup<> {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
+
+    struct SillyFilter {
+        SillyTier tier;
+        const char* label;
+        ccColor3B color;
+    };
 
 protected:
     static OptionMenuPopup* s_inst;
@@ -43,7 +43,7 @@ protected:
 
     ListenerResult OnCategory(std::string_view category, bool enabled = true);
 
-    void filterOptions(std::vector<Option> const& optList, SillyTier tier = SillyTier::None, std::string_view category = "");
+    void filterOptions(std::span<const Option>  optList, SillyTier tier = SillyTier::None, std::string_view category = "");
     void filterTierCallback(CCObject*);
 
     void resetFilters(CCObject*);
@@ -61,5 +61,5 @@ protected:
 public:
     static OptionMenuPopup* create();
 
-    static OptionMenuPopup* get();
+    static OptionMenuPopup* get() noexcept;
 };

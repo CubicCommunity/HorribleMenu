@@ -6,7 +6,7 @@
 ---
 
 ## About
-This silly lil' mod adds a mod menu filled to the brim with **over 30 crazy troll options** to mess around with! Spice up your gameplay by adding some truly terrible features to absolutely wreck your entire game.
+This silly lil' mod adds a mod menu filled to the brim with **over 35 crazy troll options** to mess around with! Spice up your gameplay by adding some truly terrible features to absolutely wreck your entire game.
 
 ---
 

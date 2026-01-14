@@ -18,6 +18,14 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
 
         auto f = m_fields.self();
 
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
+                f->enabled = ev->getToggled();
+                return ListenerResult::Propagate;
+            },
+            "achieve"
+        );
+
         if (f->enabled) {
             if (auto fmod = FMODAudioEngine::sharedEngine()) {
                 int rnd = randng::fast();

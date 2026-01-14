@@ -5,14 +5,12 @@
 using namespace horrible;
 using namespace horrible::util;
 
-std::vector<Option> const& options::getAll() {
+std::span<const Option> options::getAll() noexcept {
     if (auto om = OptionManager::get()) return om->getOptions();
-
-    static const std::vector<Option> ret;
-    return ret;
+    return {};
 };
 
-bool options::get(std::string_view id) {
+bool options::get(std::string_view id) noexcept {
     if (auto om = OptionManager::get()) return om->getOption(id);
     return false;
 };
@@ -26,13 +24,14 @@ bool options::set(std::string_view id, bool enable) {
     return false;
 };
 
-std::vector<std::string> const& options::getAllCategories() {
+std::span<const std::string> options::getAllCategories() noexcept {
     if (auto om = OptionManager::get()) return om->getCategories();
 
     static const std::vector<std::string> ret;
     return ret;
 };
 
-bool options::doesCategoryExist(std::string_view category) {
-    return str::containsAny(category.data(), getAllCategories());
+bool options::doesCategoryExist(std::string_view category) noexcept {
+    auto cats = getAllCategories();
+    return str::containsAny(category.data(), { cats.begin(), cats.end() });
 };

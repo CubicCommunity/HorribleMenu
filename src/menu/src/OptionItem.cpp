@@ -225,11 +225,11 @@ void OptionItem::onExit() {
     CCMenu::onExit();
 };
 
-Option OptionItem::getOption() const {
+Option OptionItem::getOption() const noexcept {
     return m_impl->m_option;
 };
 
-bool OptionItem::isCompatible() const {
+bool OptionItem::isCompatible() const noexcept {
     return m_impl->s_compatible;
 };
 

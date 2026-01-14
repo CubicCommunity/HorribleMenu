@@ -19,8 +19,8 @@ namespace horrible {
     public:
         OptionEventV2(std::string id, bool toggled) : m_id(std::move(id)), m_toggled(toggled) {};
 
-        std::string const& getId() const { return m_id; };
-        bool getToggled() const { return m_toggled; };
+        std::string_view getId() const noexcept { return m_id; };
+        bool getToggled() const noexcept { return m_toggled; };
     };
 
     class OptionEventFilterV2 : public geode::EventFilter<OptionEventV2> {

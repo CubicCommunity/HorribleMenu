@@ -13,8 +13,8 @@ protected:
 public:
     CategoryEvent(std::string id, bool enabled = false);
 
-    std::string const& getId() const;
-    bool isEnabled() const;
+    std::string_view getId() const noexcept;
+    bool isEnabled() const noexcept;
 };
 
 // Filter for option toggle event
