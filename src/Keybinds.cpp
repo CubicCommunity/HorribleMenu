@@ -9,7 +9,7 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 using namespace keybinds;
 
-$execute{
+$on_mod(Loaded) {
     if (auto bm = BindManager::get()) {
         bm->registerBindable({
             "popup"_spr,
@@ -21,11 +21,11 @@ $execute{
             "Horrible Ideas",
                              });
 
-            new EventListener([=](InvokeBindEvent* event) {
-                if (event->isDown()) menu::open();
-                return ListenerResult::Propagate;
-                              },
-                              InvokeBindFilter(nullptr, "popup"_spr));
+        new EventListener([=](InvokeBindEvent* event) {
+            if (event->isDown()) menu::open();
+            return ListenerResult::Propagate;
+                          },
+                          InvokeBindFilter(nullptr, "popup"_spr));
     } else {
         log::error("Failed to get keybind manager");
     };

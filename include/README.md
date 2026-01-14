@@ -80,7 +80,7 @@ You can register and check any and as many options as you desire through this AP
 > This way, you can now safely use its methods to work directly with Horrible Ideas's API to handle your own custom options.
 
 #### Registering
-This mod makes it easy for players to access the options they want to use. You can register your own options by using the **`OptionManager::registerOption`** method inside an `$execute` block. You will need to pass one parameter, which is a constructed **`Option`** object for the option you want to register.
+This mod makes it easy for players to access the options they want to use. You can register your own options by using the **`OptionManager::registerOption`** method inside an `$on_mod(Loaded)` block. You will need to pass one parameter, which is a constructed **`Option`** object for the option you want to register.
 
 *Required fields of the **`Option`** struct are, in order: `id`, `name`, `description`, `category`, and `silly`. Optional fields are `restart` and `platforms`.*
 
@@ -88,7 +88,7 @@ This mod makes it easy for players to access the options they want to use. You c
 > Be sure to prefix your option's unique ID with your Geode mod ID by appending **`_spr`** after the end of the string to prevent conflicts with this mod or other mods that may also register options with possibly identical IDs.
 
 ```cpp
-$execute{
+$on_mod(Loaded){
     auto optMgr = OptionManager::get();
 
     optMgr->registerOption({
@@ -107,7 +107,7 @@ You can include optional fields **`restart`** and **`platforms`** as well! Set `
 > Even if `restart` is **enabled** for your option, the global event for it *will still fire* whenever the player changes it mid-game. What this setting does is actually just notify the player that your option will only load after they restart the game.
 
 ```cpp
-$execute{
+$on_mod(Loaded){
     auto optMgr = OptionManager::get();
 
     optMgr->registerOption({
@@ -128,7 +128,7 @@ $execute{
 This will automatically include your option in Horrible Ideas's pre-existing list of options, and will appear in the menu for the player whenever they open it.
 
 #### Handling
-Once you've registered an option on `$execute`, you can use other methods to work with the option.
+Once you've registered an option on `$on_mod(Loaded)`, you can use other methods to work with the option.
 
 ##### Static Conditioning
 You can begin by using **`OptionManager::getOption`** and provide your option's unique ID to check if an option is enabled or disabled.
@@ -239,7 +239,7 @@ You can register and check any and as many options as you desire through this AP
 Here's how you can register your own options through the optional API.
 
 ```cpp
-$execute{
+$on_mod(Loaded){
     auto res = OptionManagerV2::registerOption({
         "optional-something"_spr,
         "Optional Something",
@@ -272,7 +272,7 @@ EventListener<HorribleOptionEventFilterV2> listener = {
 Some common pitfalls may include the following.
 - Forgetting to use `_spr` when defining unique option ID
 - Not returning `ListenerResult::Propagate` in event callbacks
-- Registering options outside the `$execute` block
+- Registering options outside the `$on_mod(Loaded)` block
 
 Always double-check your code to make sure it follows safe practices.
 

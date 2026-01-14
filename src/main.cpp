@@ -288,7 +288,7 @@ static std::vector<Option> defOpts = {
     },
 };
 
-$execute{
+$on_mod(Loaded) {
     if (auto om = OptionManager::get()) {
         log::debug("Registering {} default options...", defOpts.size());
 

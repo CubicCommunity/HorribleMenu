@@ -50,7 +50,7 @@ Want to add your own insane stuff to this mod? You can register your very own ho
 ```cpp
 using namespace horrible;
 
-$execute{
+$on_mod(Loaded){
     OptionManager::get()->registerOption({
         "my-option"_spr,
         "My Very Cool Option!",
