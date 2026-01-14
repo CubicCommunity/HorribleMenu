@@ -17,7 +17,10 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        if (m_fields->enabled) nextSpam();
+
+        auto f = m_fields.self();
+
+        if (f->enabled) nextSpam();
     };
 
     void nextSpam() {
@@ -28,7 +31,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
     void doSpam(float) {
         auto f = m_fields.self();
 
-        if (f->enabled && !m_isPracticeMode) {
+        if (f->enabled && !m_isPracticeMode && !m_hasCompletedLevel) {
             log::info("Showing spam challenge");
 
             if (auto spam = SpamChallenge::create()) {

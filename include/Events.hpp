@@ -2,6 +2,8 @@
 
 #include "Horrible.hpp"
 
+#include <cocos2d.h>
+
 #include <Geode/loader/Event.hpp>
 
 // Container for Horrible Ideas API
@@ -36,7 +38,11 @@ namespace horrible {
         geode::ListenerResult handle(std::function<Callback> fn, HorribleOptionEvent* event);
 
         HorribleOptionEventFilter() = default; // Constructor
+
         HorribleOptionEventFilter(std::string id); // Constructor (listens to one option's toggle)
         HorribleOptionEventFilter(std::vector<std::string> ids); // Constructor (listens to any specified options' toggles)
+
+        HorribleOptionEventFilter(cocos2d::CCNode*, std::string id); // Constructor with target (listens to one option's toggle)
+        HorribleOptionEventFilter(cocos2d::CCNode*, std::vector<std::string> ids); // Constructor with target (listens to any specified options' toggles)
     };
 };

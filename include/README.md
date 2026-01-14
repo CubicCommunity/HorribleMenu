@@ -176,7 +176,7 @@ class $modify(SomethingInterestingMenuLayer, MenuLayer) {
             // implemented logic here
         };
 
-        m_fields->m_optionListener = {
+        this->template addEventListener<HorribleOptionEventFilter>(
             [this](HorribleOptionEvent* event) {
                 if (event->getToggled()) {
                     // handle re-implementation here
@@ -184,8 +184,8 @@ class $modify(SomethingInterestingMenuLayer, MenuLayer) {
 
                 return ListenerResult::Propagate;
             },
-            HorribleOptionEventFilter("something-interesting"_spr)
-        };
+            "something-interesting"_spr
+        );
 
         return true;
     };

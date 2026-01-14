@@ -17,7 +17,10 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        if (m_fields->enabled) nextQuiz();
+
+        auto f = m_fields.self();
+
+        if (f->enabled) nextQuiz();
     };
 
     void nextQuiz() {
@@ -26,7 +29,7 @@ class $modify(MathPlayLayer, PlayLayer) {
     };
 
     void doQuiz(float) {
-        if (m_fields->enabled && m_isPracticeMode) {
+        if (m_fields->enabled && m_isPracticeMode && !m_hasCompletedLevel) {
             log::info("Showing math quiz");
 
             if (auto quiz = MathQuiz::create()) {

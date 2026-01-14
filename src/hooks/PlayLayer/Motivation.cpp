@@ -103,7 +103,9 @@ class $modify(MotivationPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        if (m_fields->enabled) {
+        auto f = m_fields.self();
+
+        if (f->enabled) {
             log::debug("Preparing {} motivational messages", Fields::msgs.size());
 
             auto delay = randng::get(10.f, 3.f);

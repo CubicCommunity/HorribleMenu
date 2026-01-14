@@ -16,14 +16,14 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
     };
 
     bool pushButton(PlayerButton button) {
-        auto f = m_fields.self();
-
         if (auto pl = PlayLayer::get()) {
+            auto f = m_fields.self();
+
             if (f->enabled) {
                 // log::debug("size changer jump detected");
-                int rnd = randng::fast();
-                if (rnd <= f->chance) {
-                    if (f->scaled == true) {
+
+                if (randng::fast() <= f->chance) {
+                    if (f->scaled) {
                         log::debug("change scale big");
                         togglePlayerScale(f->scaled, false);
                         f->scaled = false;

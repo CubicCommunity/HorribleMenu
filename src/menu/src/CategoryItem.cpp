@@ -90,10 +90,7 @@ bool CategoryItem::init(CCSize const& size, std::string_view category) {
 };
 
 ListenerResult CategoryItem::OnCategory(std::string_view category, bool enabled) {
-    if (m_impl->m_toggler) {
-        if (category != m_impl->m_category) m_impl->m_toggler->toggle(false);
-    };
-
+    if (m_impl->m_toggler) if (category != m_impl->m_category) m_impl->m_toggler->toggle(false);
     return ListenerResult::Propagate;
 };
 

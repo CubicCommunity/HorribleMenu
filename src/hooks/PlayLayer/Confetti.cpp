@@ -32,7 +32,10 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        if (m_fields->enabled) scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
+
+        auto f = m_fields.self();
+
+        if (f->enabled) scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
     };
 
     void nextConfetti(float) {
