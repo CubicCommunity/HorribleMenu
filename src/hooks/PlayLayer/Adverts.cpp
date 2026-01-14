@@ -16,7 +16,23 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        nextAd();
+
+        auto f = m_fields.self();
+
+        this->template addEventListener<OptionEventFilter>(
+            [this, f](OptionEvent* ev) {
+                unschedule(schedule_selector(AdvertsPlayLayer::showAd));
+
+                f->enabled = ev->getToggled();
+
+                if (f->enabled) nextAd();
+
+                return ListenerResult::Propagate;
+            },
+            "ads"
+        );
+
+        if (f->enabled) nextAd();
     };
 
     void nextAd() {
@@ -30,11 +46,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (f->enabled) {
-
-            if (f->m_ad) {
-                f->m_ad->removeMeAndCleanup();
-                f->m_ad = nullptr;
-            };
+            if (f->m_ad) f->m_ad->removeMeAndCleanup();
 
 #ifdef GEODE_IS_WINDOWS
             // Show cursor when ad appears
