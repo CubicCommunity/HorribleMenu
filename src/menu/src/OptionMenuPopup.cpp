@@ -167,7 +167,7 @@ bool OptionMenuPopup::setup() {
     };
 
     // get the options data
-    filterOptions(std::span<const Option>(options::getAll()));
+    filterOptions(options::getAll());
 
     m_mainLayer->addChild(filterMenu);
 
@@ -247,7 +247,7 @@ bool OptionMenuPopup::setup() {
 
 ListenerResult OptionMenuPopup::OnCategory(std::string_view category, bool enabled) {
     m_impl->s_selectedCategory = enabled ? category : "";
-    filterOptions(std::span<const Option>(options::getAll()), m_impl->s_selectedTier, m_impl->s_selectedCategory);
+    filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
     return ListenerResult::Propagate;
 };
 
@@ -266,21 +266,20 @@ void OptionMenuPopup::filterOptions(std::span<const Option>  optList, SillyTier 
             // search filter
             auto searchMatches = true;
             if (!m_impl->m_searchText.empty()) {
-                std::string searchLower = m_impl->m_searchText;
-                std::string nameLower = opt.name;
-
-                // convert lowercase stuff
-                searchLower = str::toLower(searchLower);
-                nameLower = str::toLower(nameLower);
+                auto const searchLower = str::toLower(m_impl->m_searchText);
+                auto const nameLower = str::toLower(opt.name);
 
                 searchMatches = str::contains(nameLower, searchLower);
             };
 
             if (tierMatches && categoryMatches && searchMatches) {
                 if (auto modOption = OptionItem::create(
-                    { m_impl->m_optionList->m_contentLayer->getScaledContentWidth(),
-                     32.5f },
-                    opt)) {
+                    {
+                        m_impl->m_optionList->m_contentLayer->getScaledContentWidth(),
+                        32.5f,
+                    },
+                    opt
+                    )) {
                     if (modOption->isCompatible() || m_impl->m_showIncompatible) {
                         m_impl->m_optionList->m_contentLayer->addChild(modOption);
                     } else {
@@ -300,16 +299,13 @@ void OptionMenuPopup::filterOptions(std::span<const Option>  optList, SillyTier 
 
 void OptionMenuPopup::filterTierCallback(CCObject* sender) {
     if (auto btn = typeinfo_cast<CCMenuItemSpriteExtra*>(sender)) {
-        SillyTier tier = static_cast<SillyTier>(btn->getTag());
+        auto tier = static_cast<SillyTier>(btn->getTag());
 
+        m_impl->s_selectedTier = tier;
         // Toggle: clicking same button disables filter
-        if (m_impl->s_selectedTier == tier) {
-            m_impl->s_selectedTier = SillyTier::None;
-        } else {
-            m_impl->s_selectedTier = tier;
-        };
+        if (m_impl->s_selectedTier == tier) m_impl->s_selectedTier = SillyTier::None;
 
-        filterOptions(std::span<const Option>(options::getAll()), m_impl->s_selectedTier, m_impl->s_selectedCategory);
+        filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
     } else {
         log::error("Filter button cast failed");
     };
@@ -320,8 +316,8 @@ void OptionMenuPopup::resetFilters(CCObject*) {
         "Reset Filters",
         "Would you like to <cr>reset all search filters</c>?",
         "Cancel", "OK",
-        [this](bool, bool btn2) {
-            if (btn2) {
+        [this](bool, bool ok) {
+            if (ok) {
                 m_impl->s_selectedTier = SillyTier::None;
                 CategoryEvent("", false).post();
             };
@@ -337,9 +333,10 @@ void OptionMenuPopup::openSeriesPage(CCObject*) {
         "Horrible Mods",
         "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
         "Cancel", "OK",
-        [this](bool, bool btn2) {
-            if (btn2) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
-        });
+        [this](bool, bool ok) {
+            if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
+        }
+    );
 };
 
 void OptionMenuPopup::openSupporterPopup(CCObject*) {

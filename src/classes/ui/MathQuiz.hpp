@@ -6,23 +6,21 @@ using namespace geode::prelude;
 
 namespace horrible {
     namespace ui {
-        enum class MathOperation : unsigned int {
-            Addition = 0,
-            Subtraction = 1,
-            Multiplication = 2,
-            Geometry = 3
-        };
-
         class MathQuiz : public CCBlockLayer, public FLAlertLayerProtocol {
         private:
             class Impl;
             std::unique_ptr<Impl> m_impl;
 
+            enum class MathOperation : unsigned int {
+                Addition = 0,
+                Subtraction = 1,
+                Multiplication = 2,
+                Geometry = 3
+            };
+
         protected:
             MathQuiz();
             virtual ~MathQuiz();
-
-            void onTimeout();
 
             void closeAfterFeedback(CCNode* node);
             void onAnswerClicked(CCObject* sender);
