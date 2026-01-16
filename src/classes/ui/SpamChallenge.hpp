@@ -28,7 +28,7 @@ namespace horrible {
 
             bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;
 
-            void setCallback(std::function<void(bool)> const& cb);
+            void setCallback(std::function<void(bool)> cb);
         };
     };
 };

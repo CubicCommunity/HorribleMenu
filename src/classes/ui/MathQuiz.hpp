@@ -35,7 +35,7 @@ namespace horrible {
         public:
             static MathQuiz* create();
 
-            void setCallback(std::function<void(bool)> const& cb);
+            void setCallback(std::function<void(bool)> cb);
             void setCorrect(bool v);
 
             void closePopup();

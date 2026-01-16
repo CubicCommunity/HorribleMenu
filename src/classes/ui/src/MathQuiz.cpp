@@ -239,8 +239,8 @@ bool MathQuiz::init() {
     return true;
 };
 
-void MathQuiz::setCallback(std::function<void(bool)> const& cb) {
-    m_impl->m_callback = cb;
+void MathQuiz::setCallback(std::function<void(bool)> cb) {
+    m_impl->m_callback = std::move(cb);
 };
 
 void MathQuiz::setCorrect(bool v) {

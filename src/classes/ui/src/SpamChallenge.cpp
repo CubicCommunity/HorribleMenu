@@ -90,8 +90,8 @@ bool SpamChallenge::init() {
     return true;
 };
 
-void SpamChallenge::setCallback(std::function<void(bool)> const& cb) {
-    m_impl->m_callback = cb;
+void SpamChallenge::setCallback(std::function<void(bool)> cb) {
+    m_impl->m_callback = std::move(cb);
 };
 
 bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
