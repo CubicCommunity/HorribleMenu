@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(FreezePlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("freeze");
+        bool enabled = options::get(key::freeze);
     };
 
     void updateProgressbar() {

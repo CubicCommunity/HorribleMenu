@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(BlinkingIconPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("blinking_icon");
+        bool enabled = options::get(key::blinking_icon);
     };
 
     void setupHasCompleted() {

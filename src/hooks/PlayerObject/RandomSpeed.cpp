@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(RandomSpeedPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("random_speed");
-        int chance = options::getChance("random_speed");
+        bool enabled = options::get(key::random_speed);
+        int chance = options::getChance(key::random_speed);
     };
 
     bool pushButton(PlayerButton button) {

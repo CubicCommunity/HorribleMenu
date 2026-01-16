@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(MathPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("math_quiz");
-        int chance = options::getChance("math_quiz");
+        bool enabled = options::get(key::math_quiz);
+        int chance = options::getChance(key::math_quiz);
 
         MathQuiz* m_currentQuiz = nullptr;
     };
@@ -30,7 +30,7 @@ class $modify(MathPlayLayer, PlayLayer) {
 
                 return ListenerResult::Propagate;
             },
-            "math_quiz"
+            key::math_quiz
         );
 
         if (f->enabled) nextQuiz();

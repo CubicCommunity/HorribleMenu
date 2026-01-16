@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(DoubleJumpPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("double_jump");
+        bool enabled = options::get(key::double_jump);
 
         int m_jumps = 0;
     };
@@ -24,7 +24,7 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
                 f->enabled = ev->getToggled();
                 return ListenerResult::Propagate;
             },
-            "double_jump"
+            key::double_jump
         );
 
         return true;

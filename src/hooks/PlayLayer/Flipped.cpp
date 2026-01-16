@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(FlippedPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("flipped");
-        int chance = options::getChance("flipped");
+        bool enabled = options::get(key::flipped);
+        int chance = options::getChance(key::flipped);
 
         bool flipping = false;
     };

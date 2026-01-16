@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(BlackScreenPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("black_screen");
+        bool enabled = options::get(key::black_screen);
     };
 
     void setupHasCompleted() {
@@ -31,7 +31,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
             auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
             auto blackScreen = CCScale9Sprite::create("square02_001.png");
-            blackScreen->setID("black_screen"_spr);
+            blackScreen->setID("blink"_spr);
             blackScreen->setContentSize({ winSize.width + 10.f, winSize.height + 10.f });
             blackScreen->setPosition(winSize / 2.f);
 

@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("upside_down");
-        int chance = options::getChance("upside_down"); // chance as percent
+        bool enabled = options::get(key::upside_down);
+        int chance = options::getChance(key::upside_down); // chance as percent
     };
 
     void setupHasCompleted() {

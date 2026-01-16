@@ -10,8 +10,8 @@ using namespace horrible::prelude;
 
 class $modify(DementiaPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("dementia");
-        int chance = options::getChance("dementia");
+        bool enabled = options::get(key::dementia);
+        int chance = options::getChance(key::dementia);
 
         int lastMusicTime = 0; // last music time in milliseconds
 
@@ -60,7 +60,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 
 class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
     struct Fields {
-        bool enabled = options::get("dementia");
+        bool enabled = options::get(key::dementia);
     };
 
     bool hasBeenActivated() {

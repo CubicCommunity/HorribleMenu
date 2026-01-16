@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(CrashGamePlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("crash_death");
-        int chance = options::getChance("crash_death");
+        bool enabled = options::get(key::crash_death);
+        int chance = options::getChance(key::crash_death);
     };
 
     void destroyPlayer(PlayerObject * p0, GameObject * p1) {

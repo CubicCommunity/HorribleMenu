@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(FakeDeathPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("death");
+        bool enabled = options::get(key::death);
 
         bool m_dontCreateObjects = false;
         GameObject* m_destroyingObject;

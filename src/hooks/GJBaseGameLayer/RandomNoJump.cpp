@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {
     struct Fields {
-        bool enabled = options::get("no_jump");
-        int chance = options::get("no_jump");
+        bool enabled = options::get(key::no_jump);
+        int chance = options::get(key::no_jump);
     };
 
     void handleButton(bool down, int button, bool isPlayer1) {

@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(EarthquakePlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("earthquake");
+        bool enabled = options::get(key::earthquake);
     };
 
     void setupHasCompleted() {

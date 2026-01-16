@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(AchievementCCMenuItem, CCMenuItem) {
     struct Fields {
-        bool enabled = options::get("achieve");
-        int chance = options::getChance("achieve");
+        bool enabled = options::get(key::achieve);
+        int chance = options::getChance(key::achieve);
     };
 
     void activate() {
@@ -23,7 +23,7 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
                 f->enabled = ev->getToggled();
                 return ListenerResult::Propagate;
             },
-            "achieve"
+            key::achieve
         );
 
         if (f->enabled) {

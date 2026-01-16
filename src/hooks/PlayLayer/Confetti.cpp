@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(ConfettiPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("confetti");
+        bool enabled = options::get(key::confetti);
 
         static constexpr auto confettis = std::to_array<const char*>({
             "diffIcon_02_btn_001.png",
@@ -46,7 +46,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
                 return ListenerResult::Propagate;
             },
-            "confetti"
+            key::confetti
         );
 
         if (f->enabled) scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));

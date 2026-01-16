@@ -29,7 +29,7 @@
 
 // class $modify(ParryPlayerObject, PlayerObject) {
 //     struct Fields {
-//         bool enabled = options::get("parry");
+//         bool enabled = options::get(key::parry);
 //     };
 
 //     bool pushButton(PlayerButton p0) {
@@ -49,7 +49,7 @@
 //                 s_pendingPlayer1 = nullptr;
 
 //                 // hide UI
-//                 if (auto bar = static_cast<ProgressBar*>(pl->getChildByID("parry"_spr))) bar->setVisible(false);
+//                 if (auto bar = static_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
 //                 if (auto lbl = static_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
@@ -67,7 +67,7 @@
 //                 s_pendingKiller2 = nullptr;
 //                 s_pendingPlayer2 = nullptr;
 
-//                 if (auto bar = static_cast<ProgressBar*>(pl->getChildByID("parry"_spr))) bar->setVisible(false);
+//                 if (auto bar = static_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
 //                 if (auto lbl = static_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
@@ -83,7 +83,7 @@
 
 // class $modify(ParryPlayLayer, PlayLayer) {
 //     struct Fields {
-//         bool enabled = options::get("parry");
+//         bool enabled = options::get(key::parry);
 
 //         ProgressBar* m_parryBar = nullptr;
 //         CCLabelBMFont* m_parryLabel = nullptr;
@@ -96,7 +96,7 @@
 //         // Create shared UI and hide initially
 //         if (!m_fields->m_parryBar) {
 //             m_fields->m_parryBar = ProgressBar::create();
-//             m_fields->m_parryBar->setID("parry"_spr);
+//             m_fields->m_parryBar->setID(key::parry_spr);
 //             m_fields->m_parryBar->setFillColor(colors::yellow);
 //             m_fields->m_parryBar->setAnchorPoint({ 0.5f, 0.5f });
 //             m_fields->m_parryBar->setVisible(false);

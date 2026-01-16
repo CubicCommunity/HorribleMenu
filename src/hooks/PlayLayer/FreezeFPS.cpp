@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(FreezePlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("freeze");
-        int chance = options::getChance("freeze");
+        bool enabled = options::get(key::freeze);
+        int chance = options::getChance(key::freeze);
     };
 
     void setupHasCompleted() {

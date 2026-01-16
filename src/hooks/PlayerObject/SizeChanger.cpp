@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(SizeChangerPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("size_changer");
-        int chance = options::getChance("size_changer");
+        bool enabled = options::get(key::size_changer);
+        int chance = options::getChance(key::size_changer);
 
         bool scaled = false;
     };

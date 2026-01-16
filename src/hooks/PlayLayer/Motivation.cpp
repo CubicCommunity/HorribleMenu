@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(MotivationPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("motivation");
+        bool enabled = options::get(key::motivation);
 
         static constexpr auto msgs = std::to_array<const char*>({
             "Surprised you haven't quit already.",
@@ -121,7 +121,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
                 return ListenerResult::Propagate;
             },
-            "motivation"
+            key::motivation
         );
 
         if (f->enabled) {

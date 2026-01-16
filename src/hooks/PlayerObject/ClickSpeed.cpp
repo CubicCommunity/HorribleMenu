@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(ClickSpeedPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("click_speed");
+        bool enabled = options::get(key::click_speed);
     };
 
     bool pushButton(PlayerButton p0) {

@@ -43,14 +43,55 @@ namespace horrible {
 
     namespace str = geode::utils::string; // Shortcut for geode::utils::string
 
+    // Default option IDs
+    namespace key {
+        inline constexpr auto oxygen = "oxygen";
+        inline constexpr auto health = "health";
+        inline constexpr auto grief = "grief";
+        inline constexpr auto congregation = "congregation";
+        inline constexpr auto math_quiz = "math_quiz";
+        inline constexpr auto mock = "mock";
+        inline constexpr auto freeze = "freeze";
+        inline constexpr auto spam = "spam";
+        inline constexpr auto achieve = "achieve";
+        inline constexpr auto crash_death = "crash_death";
+        inline constexpr auto confetti = "confetti";
+        inline constexpr auto no_jump = "no_jump";
+        inline constexpr auto gravity = "gravity";
+        inline constexpr auto death = "death";
+        inline constexpr auto upside_down = "upside_down";
+        inline constexpr auto ads = "ads";
+        inline constexpr auto black_screen = "black_screen";
+        inline constexpr auto parry = "parry";
+        inline constexpr auto double_jump = "double_jump";
+        inline constexpr auto sleepy = "sleepy";
+        inline constexpr auto pauses = "pauses";
+        inline constexpr auto ice_level = "ice_level";
+        inline constexpr auto random_mirror = "random_mirror";
+        inline constexpr auto random_speed = "random_speed";
+        inline constexpr auto random_icon = "random_icon";
+        inline constexpr auto blinking_icon = "blinking_icon";
+        inline constexpr auto dementia = "dementia";
+        inline constexpr auto earthquake = "earthquake";
+        inline constexpr auto fake_crash = "fake_crash";
+        inline constexpr auto gambler = "gambler";
+        inline constexpr auto placebo = "placebo";
+        inline constexpr auto click_speed = "click_speed";
+        inline constexpr auto motivation = "motivation";
+        inline constexpr auto flipped = "flipped";
+        inline constexpr auto friends = "friends";
+        inline constexpr auto size_changer = "size_changer";
+        inline constexpr auto timewarp_jump = "timewarp_jump";
+    };
+
     // Default option categories
     namespace category {
-        inline constexpr const char* playerlife = "Player Life";
-        inline constexpr const char* jumpscares = "Jumpscares";
-        inline constexpr const char* randoms = "Randoms";
-        inline constexpr const char* chances = "Chances";
-        inline constexpr const char* obstructive = "Obstructive";
-        inline constexpr const char* misc = "Misc";
+        inline constexpr auto playerlife = "Player Life";
+        inline constexpr auto jumpscares = "Jumpscares";
+        inline constexpr auto randoms = "Randoms";
+        inline constexpr auto chances = "Chances";
+        inline constexpr auto obstructive = "Obstructive";
+        inline constexpr auto misc = "Misc";
     };
 
     // Fast color object references ^w^

@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {
     struct Fields {
-        bool enabled = options::get("timewarp_jump");
+        bool enabled = options::get(key::timewarp_jump);
     };
 
     void handleButton(bool down, int button, bool isPlayer1) {

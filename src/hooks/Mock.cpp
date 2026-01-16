@@ -13,8 +13,8 @@ namespace fs = std::filesystem; // Shortcut for std::filesystem
 
 class $modify(MockMenuLayer, MenuLayer) {
     struct Fields {
-        bool enabled = options::get("mock");
-        int chance = options::getChance("mock");
+        bool enabled = options::get(key::mock);
+        int chance = options::getChance(key::mock);
     };
 
     bool init() {
@@ -52,7 +52,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                         log::info("Displaying {}", pngPath);
 
                         auto ss = LazySprite::create({ 192.f, 108.f });
-                        ss->setID("mock"_spr);
+                        ss->setID("mocked"_spr);
                         ss->setScale(0.25);
                         ss->setAnchorPoint({ 0.5, 0.5 });
                         ss->setPosition({ -192.f, getScaledContentHeight() / 2.f });
@@ -111,7 +111,7 @@ class $modify(MockMenuLayer, MenuLayer) {
 
 class $modify(MockPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("mock");
+        bool enabled = options::get(key::mock);
     };
 
     void setupHasCompleted() {
@@ -124,7 +124,7 @@ class $modify(MockPlayLayer, PlayLayer) {
                 f->enabled = ev->getToggled();
                 return ListenerResult::Propagate;
             },
-            "mock"
+            key::mock
         );
     };
 

@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(AdvertsPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("ads");
+        bool enabled = options::get(key::ads);
 
         RandomAd* m_ad = nullptr;
     };
@@ -29,7 +29,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
 
                 return ListenerResult::Propagate;
             },
-            "ads"
+            key::ads
         );
 
         if (f->enabled) nextAd();

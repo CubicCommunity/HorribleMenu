@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     struct Fields {
-        bool m_enabled = options::get("fake_crash");
-        int m_chance = options::getChance("fake_crash");
+        bool m_enabled = options::get(key::fake_crash);
+        int m_chance = options::getChance(key::fake_crash);
 
         float m_lastTimeWarp = LevelTools::getLastTimewarp();
         bool m_inFakeCrash = false;

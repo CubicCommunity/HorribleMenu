@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(RandomMirrorPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("random_mirror");
-        int chance = options::getChance("random_mirror");
+        bool enabled = options::get(key::random_mirror);
+        int chance = options::getChance(key::random_mirror);
 
         bool isFlipped = false;
     };
@@ -24,7 +24,7 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         f->isFlipped = p0;
-        log::debug("{}", f->isFlipped ? "flipped" : "unflipped");
+        log::debug("{}", f->isFlipped ? key::flipped : "unflipped");
 
         PlayLayer::toggleFlipped(p0, p1);
     };

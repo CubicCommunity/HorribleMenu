@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(RandomIconPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("random_icon");
+        bool enabled = options::get(key::random_icon);
     };
 
     bool pushButton(PlayerButton p0) {

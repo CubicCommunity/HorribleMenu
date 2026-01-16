@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(SpamPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("spam");
-        int chance = options::getChance("spam");
+        bool enabled = options::get(key::spam);
+        int chance = options::getChance(key::spam);
 
         SpamChallenge* m_currentSpam = nullptr;
     };
@@ -30,7 +30,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
                 return ListenerResult::Propagate;
             },
-            "spam"
+            key::spam
         );
 
         if (f->enabled) nextSpam();

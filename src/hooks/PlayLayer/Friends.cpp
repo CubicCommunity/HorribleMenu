@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(FriendsPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("friends");
+        bool enabled = options::get(key::friends);
 
         static constexpr auto friends = std::to_array<const char*>({
             "diffIcon_00_btn_001.png",

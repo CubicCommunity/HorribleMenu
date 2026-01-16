@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(OnIcePlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("ice_level");
+        bool enabled = options::get(key::ice_level);
     };
 
     void update(float p0) {

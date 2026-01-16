@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class $modify(PausePlayerObject, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("pauses");
-        int chance = options::getChance("pauses");
+        bool enabled = options::get(key::pauses);
+        int chance = options::getChance(key::pauses);
     };
 
     void setupHasCompleted() {

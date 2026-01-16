@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class $modify(GravityPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("gravity");
+        bool enabled = options::get(key::gravity);
 
         bool m_isOnSlope = false;
         bool m_wasOnSlope = false;

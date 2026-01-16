@@ -11,7 +11,7 @@ using namespace horrible::prelude;
 void placeboEffect() {
     log::info("Checking for placebo effect...");
 
-    if (options::get("placebo")) {
+    if (options::get(key::placebo)) {
         int rnd = randng::fast();
         log::info("placebo effect roll: {}", rnd);
 
