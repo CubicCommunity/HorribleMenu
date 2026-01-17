@@ -15,8 +15,7 @@ class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {
     void handleButton(bool down, int button, bool isPlayer1) {
         if (m_fields->enabled) {
             if (button == 1 && !down) {
-                int rnd = randng::get(300, 50);
-                auto warpFactor = static_cast<float>(rnd) / 100.f;
+                auto warpFactor = randng::get(300.f, 50.f) / 100.f;
 
                 log::debug("applying time warp factor {}", warpFactor);
                 GJBaseGameLayer::updateTimeWarp(warpFactor);

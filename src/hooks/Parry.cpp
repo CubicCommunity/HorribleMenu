@@ -49,8 +49,8 @@
 //                 s_pendingPlayer1 = nullptr;
 
 //                 // hide UI
-//                 if (auto bar = static_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
-//                 if (auto lbl = static_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
+//                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
+//                 if (auto lbl = typeinfo_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
 
@@ -67,8 +67,8 @@
 //                 s_pendingKiller2 = nullptr;
 //                 s_pendingPlayer2 = nullptr;
 
-//                 if (auto bar = static_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
-//                 if (auto lbl = static_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
+//                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
+//                 if (auto lbl = typeinfo_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
 
