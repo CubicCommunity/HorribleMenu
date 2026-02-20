@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ranges>
+
 #include <Horrible.hpp>
 
 #include <classes/Jumpscares.hpp>
@@ -12,6 +14,8 @@
 #include <classes/ui/SpamChallenge.hpp>
 
 #include <cocos2d.h>
+
+#include <Geode/utils/ZStringView.hpp>
 
 #include <Geode/binding/FMODAudioEngine.hpp>
 
@@ -69,4 +73,30 @@ namespace horrible {
         using namespace ::horrible::ui;
         using namespace ::horrible::util;
     };
+
+    template <typename Map>
+    inline void delegateHooks(geode::ZStringView id, Map& hooks) {
+        if (auto om = OptionManager::get()) {
+            auto value = om->getOption(id);
+
+            std::vector<geode::Hook*> allHooks;
+            for (auto& hook : hooks | std::views::values) {
+                hook->setAutoEnable(value);
+                allHooks.push_back(hook.get());
+            };
+
+            om->addDelegate(
+                id,
+                [allHooks = std::move(allHooks), id, om] {
+                    auto value = om->getOption(id);
+                    for (auto hook : allHooks) (void)hook->toggle(value);
+                }
+            );
+        };
+    };
 };
+
+#define DELEGATE_HOOKS(id) \
+static void onModify(auto& self) { \
+    horrible::delegateHooks(id, self.m_hooks); \
+}

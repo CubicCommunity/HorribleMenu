@@ -42,21 +42,6 @@ bool MathQuiz::init() {
     m_impl->m_numSecond = randng::get(10);
 
     m_impl->m_operation = static_cast<MathOperation>(randng::get(3));
-    switch (m_impl->m_operation) {
-        default: [[fallthrough]];
-
-        case MathOperation::Addition:
-            m_impl->m_correctAnswer = m_impl->m_numFirst + m_impl->m_numSecond;
-            break;
-
-        case MathOperation::Subtraction:
-            m_impl->m_correctAnswer = m_impl->m_numFirst - m_impl->m_numSecond;
-            break;
-
-        case MathOperation::Multiplication:
-            m_impl->m_correctAnswer = m_impl->m_numFirst * m_impl->m_numSecond;
-            break;
-    };
 
     auto const winSize = CCDirector::get()->getWinSize();
 
@@ -119,6 +104,22 @@ bool MathQuiz::init() {
                 break;
         };
 
+        switch (m_impl->m_operation) {
+            default: [[fallthrough]];
+
+            case MathOperation::Addition:
+                m_impl->m_correctAnswer = m_impl->m_numFirst + m_impl->m_numSecond;
+                break;
+
+            case MathOperation::Subtraction:
+                m_impl->m_correctAnswer = m_impl->m_numFirst - m_impl->m_numSecond;
+                break;
+
+            case MathOperation::Multiplication:
+                m_impl->m_correctAnswer = m_impl->m_numFirst * m_impl->m_numSecond;
+                break;
+        };
+
         problemText = fmt::format("{} {} {}", m_impl->m_numFirst, operation, m_impl->m_numSecond);
 
         auto equalsLabel = CCLabelBMFont::create("= ?", "goldFont.fnt", getScaledContentWidth() - 1.25f);
@@ -153,8 +154,6 @@ bool MathQuiz::init() {
     m_impl->m_timeRemaining = m_impl->m_totalTime = 10.f;
     m_impl->m_timer->updateProgress(100.f);
 
-    // Generate 4 answer options with the correct answer randomized
-    m_impl->m_answers.clear();
     m_impl->m_answers.push_back(m_impl->m_correctAnswer);
 
     // Add 3 wrong answers
@@ -165,7 +164,7 @@ bool MathQuiz::init() {
         };
     } else {
         while (m_impl->m_answers.size() < 4) {
-            int wrongAnswer = m_impl->m_correctAnswer + randng::get(10);
+            int wrongAnswer = m_impl->m_correctAnswer + randng::get(10, -5);
             if (wrongAnswer != m_impl->m_correctAnswer && !hasAnswer(wrongAnswer)) m_impl->m_answers.push_back(wrongAnswer);
         };
     };

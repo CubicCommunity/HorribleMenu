@@ -19,6 +19,9 @@
 
 #include <cocos2d.h>
 
+#include <Geode/utils/function.hpp>
+#include <Geode/utils/ZStringView.hpp>
+
 // Container for Horrible Ideas API functions
 namespace horrible {
     // Mod option manager for Horrible Ideas
@@ -26,8 +29,8 @@ namespace horrible {
     private:
         std::vector<Option> m_options; // Array of registered options
         std::vector<std::string> m_categories; // Array of auto-registered categories
+        std::unordered_map<std::string_view, std::vector<std::function<void()>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
 
-    protected:
         /**
          * Register a category if not already registered
          *
@@ -56,6 +59,14 @@ namespace horrible {
         void registerOption(Option option);
 
         /**
+         * Upsert a new hook delegate
+         *
+         * @param id The ID of the option to set the delegate for
+         * @param callback The hook callback to register for this option's delegate
+         */
+        void addDelegate(std::string_view id, std::function<void()>&& callback);
+
+        /**
          * Returns a reference to the array of all registered options
          *
          * @returns An array of every registered option, main and external
@@ -79,7 +90,7 @@ namespace horrible {
          *
          * @returns Boolean of the old value
          */
-        bool setOption(geode::ZStringView id, bool enable) const;
+        bool setOption(std::string_view id, bool enable) const;
 
         /**
          * Returns a reference to the array of all registered categories

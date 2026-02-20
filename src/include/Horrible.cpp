@@ -21,11 +21,16 @@ void OptionManager::registerOption(Option option) {
     if (doesOptionExist(option.id)) {
         log::error("Could not register option '{}' ({}) because it already exists!", option.name, option.id);
     } else {
-        registerCategory(option.category.c_str());
+        registerCategory(option.category);
         m_options.push_back(std::move(option));
 
         log::debug("Registered option {} of category {}", option.id, option.category);
     };
+};
+
+void OptionManager::addDelegate(std::string_view id, std::function<void()>&& callback) {
+    auto thisDelegate = m_delegates[id];
+    void(thisDelegate.push_back(std::move(callback)));
 };
 
 std::span<const Option> OptionManager::getOptions() const noexcept {
@@ -40,12 +45,9 @@ bool OptionManager::getOption(std::string_view id) const noexcept {
     return Mod::get()->getSavedValue<bool>(id, false);
 };
 
-bool OptionManager::setOption(ZStringView id, bool enable) const {
-    auto event = OptionEvent();
-    event.send(id, enable);
-
-    auto eventV2 = OptionEventV2();
-    eventV2.send(id, enable);
+bool OptionManager::setOption(std::string_view id, bool enable) const {
+    auto& callbacks = m_delegates.at(id);
+    for (auto& cb : callbacks) cb();
 
     return Mod::get()->setSavedValue(id, enable);
 };
