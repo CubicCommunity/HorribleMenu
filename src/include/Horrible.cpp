@@ -51,6 +51,8 @@ bool OptionManager::setOption(std::string_view id, bool enable) const {
         for (auto& cb : it->second) cb();
     };
 
+    log::debug("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
+
     return Mod::get()->setSavedValue(id, enable);
 };
 

@@ -189,7 +189,7 @@ bool OptionItem::init(CCSize const& size, Option option) {
 };
 
 void OptionItem::saveTogglerState() {
-    if (m_impl->toggler) options::set(m_impl->option.id, m_impl->toggler->isToggled());
+    if (m_impl->toggler) (void)options::set(m_impl->option.id, m_impl->toggler->isToggled());
 };
 
 void OptionItem::onToggle(CCObject*) {
