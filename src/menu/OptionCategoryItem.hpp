@@ -5,7 +5,7 @@
 using namespace geode::prelude;
 
 // Event for option toggles
-struct CategoryEvent final : Event<CategoryEvent, bool(std::string, bool)> {
+struct CategoryEvent final : Event<CategoryEvent, bool(std::string_view, bool)> {
     using Event::Event;
 };
 
@@ -17,8 +17,6 @@ private:
 protected:
     OptionCategoryItem();
     ~OptionCategoryItem();
-
-    ListenerResult OnCategory(std::string_view category, bool enabled = false);
 
     void onToggle(CCObject* sender);
 

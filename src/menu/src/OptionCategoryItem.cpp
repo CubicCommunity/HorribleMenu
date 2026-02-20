@@ -9,23 +9,20 @@ using namespace horrible::prelude;
 
 class OptionCategoryItem::Impl final {
 public:
-    std::string m_category = ""; // The category name
+    std::string category = ""; // The category name
 
-    CCMenuItemToggler* m_toggler = nullptr; // The toggler for the option
+    CCMenuItemToggler* toggler = nullptr; // The toggler for the option
 };
 
-OptionCategoryItem::OptionCategoryItem() {
-    m_impl = std::make_unique<Impl>();
-};
-
+OptionCategoryItem::OptionCategoryItem() : m_impl(std::make_unique<Impl>()) {};
 OptionCategoryItem::~OptionCategoryItem() {};
 
 bool OptionCategoryItem::init(CCSize const& size, std::string category) {
-    m_impl->m_category = std::move(category);
+    m_impl->category = std::move(category);
 
     if (!CCMenu::init()) return false;
 
-    setID(str::join(str::split(str::filter(str::toLower(m_impl->m_category), "abcdefghijklmnopqrstuvwxyz0123456789-_./ "), " "), "-"));
+    setID(str::join(str::split(str::filter(str::toLower(m_impl->category), "abcdefghijklmnopqrstuvwxyz0123456789-_./ "), " "), "-"));
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
@@ -44,22 +41,22 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     togglerOn->setScale(0.5f);
 
     // toggler for the category
-    m_impl->m_toggler = CCMenuItemToggler::create(
+    m_impl->toggler = CCMenuItemToggler::create(
         togglerOff,
         togglerOn,
         this,
         menu_selector(OptionCategoryItem::onToggle)
     );
-    m_impl->m_toggler->setID("toggler");
-    m_impl->m_toggler->setAnchorPoint({ 0.5f, 0.5f });
-    m_impl->m_toggler->setPosition({ 10.f, getScaledContentHeight() / 2.f });
-    m_impl->m_toggler->setScale(0.875f);
+    m_impl->toggler->setID("toggler");
+    m_impl->toggler->setAnchorPoint({ 0.5f, 0.5f });
+    m_impl->toggler->setPosition({ 10.f, getScaledContentHeight() / 2.f });
+    m_impl->toggler->setScale(0.875f);
 
-    addChild(m_impl->m_toggler);
+    addChild(m_impl->toggler);
 
     // name of the joke
     auto nameLabel = CCLabelBMFont::create(
-        m_impl->m_category.c_str(),
+        m_impl->category.c_str(),
         "goldFont.fnt",
         getScaledContentWidth() - 35.f,
         kCCTextAlignmentLeft
@@ -72,16 +69,18 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
 
     addChild(nameLabel);
 
+    addEventListener(
+        CategoryEvent(),
+        [this](std::string_view category, bool enabled) {
+            if (m_impl->toggler) if (category != m_impl->category) m_impl->toggler->toggle(false);
+        }
+    );
+
     return true;
 };
 
-ListenerResult OptionCategoryItem::OnCategory(std::string_view category, bool enabled) {
-    if (m_impl->m_toggler) if (category != m_impl->m_category) m_impl->m_toggler->toggle(false);
-    return ListenerResult::Propagate;
-};
-
 void OptionCategoryItem::onToggle(CCObject* sender) {
-    if (m_impl->m_toggler) CategoryEvent().send(m_impl->m_category, !m_impl->m_toggler->isOn());
+    if (m_impl->toggler) CategoryEvent().send(m_impl->category, !m_impl->toggler->isOn());
 };
 
 OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string category) {

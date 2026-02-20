@@ -31,7 +31,6 @@ public:
 };
 
 MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {};
-
 MathQuiz::~MathQuiz() {};
 
 bool MathQuiz::init() {

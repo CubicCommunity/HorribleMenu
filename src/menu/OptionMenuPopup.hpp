@@ -23,17 +23,9 @@ private:
 protected:
     static OptionMenuPopup* s_inst;
 
-    // EventListener<CategoryEventFilter> m_catListener = {
-    //     [this](CategoryEvent* event) {
-    //         return OnCategory(event->getId(), event->isEnabled());
-    //     },
-    //     CategoryEventFilter()
-    // };
-
     OptionMenuPopup();
     ~OptionMenuPopup();
 
-    void filterOptions(std::span<const Option> optList, SillyTier tier = SillyTier::None, ZStringView category = "");
     void filterTierCallback(CCObject*);
 
     void resetFilters(CCObject*);

@@ -19,16 +19,62 @@ OptionMenuPopup* OptionMenuPopup::s_inst = nullptr;
 
 class OptionMenuPopup::Impl final {
 public:
-    SillyTier s_selectedTier = SillyTier::None;
-    std::string s_selectedCategory = "";
+    SillyTier selectedTier = SillyTier::None;
+    std::string selectedCategory = "";
 
-    std::string m_searchText = "";
+    std::string searchText = "";
 
-    bool m_showIncompatible = horribleMod->getSettingValue<bool>("show-incompatible");
+    bool showIncompatible = horribleMod->getSettingValue<bool>("show-incompatible");
 
-    ScrollLayer* m_optionList = nullptr;
-    ScrollLayer* m_categoryList = nullptr;
-    TextInput* m_searchInput = nullptr;
+    ScrollLayer* optionList = nullptr;
+    ScrollLayer* categoryList = nullptr;
+    TextInput* searchInput = nullptr;
+
+    void filterOptions(std::span<const Option> optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
+        if (optionList) {
+            optionList->m_contentLayer->removeAllChildren();
+
+            auto useCategory = options::doesCategoryExist(category);
+
+            for (auto const& opt : optList) {
+                // tier filter
+                auto tierMatches = tier == SillyTier::None || tier == opt.silly;
+                // category filter
+                auto categoryMatches = !useCategory || (opt.category == category);
+
+                // search filter
+                auto searchMatches = true;
+                if (!searchText.empty()) {
+                    auto const searchLower = str::toLower(searchText);
+                    auto const nameLower = str::toLower(opt.name);
+
+                    searchMatches = str::contains(nameLower, searchLower);
+                };
+
+                if (tierMatches && categoryMatches && searchMatches) {
+                    if (auto modOption = OptionItem::create(
+                        {
+                            optionList->m_contentLayer->getScaledContentWidth(),
+                            32.5f,
+                        },
+                        opt
+                        )) {
+                        if (modOption->isCompatible() || showIncompatible) {
+                            optionList->m_contentLayer->addChild(modOption);
+                        } else {
+                            log::error("{} is incompatible with the current platform", modOption->getOption().id);
+                            modOption->removeMeAndCleanup();
+                        };
+                    };
+                };
+            };
+
+            optionList->m_contentLayer->updateLayout();
+            optionList->scrollToTop();
+        } else {
+            log::error("Option list layer not found");
+        };
+    };
 };
 
 OptionMenuPopup::OptionMenuPopup() : m_impl(std::make_unique<Impl>()) {};
@@ -58,21 +104,21 @@ bool OptionMenuPopup::init() {
         ->setAutoGrowAxis(categoryListBg->getScaledContentHeight() - 8.75f);
 
     // scroll layer
-    m_impl->m_categoryList = ScrollLayer::create({ categoryListBg->getScaledContentWidth() - 8.75f, categoryListBg->getScaledContentHeight() - 8.75f });
-    m_impl->m_categoryList->setID("categories-list");
-    m_impl->m_categoryList->setAnchorPoint({ 0.5, 0.5 });
-    m_impl->m_categoryList->ignoreAnchorPointForPosition(false);
-    m_impl->m_categoryList->setPosition(categoryListBg->getPosition());
-    m_impl->m_categoryList->m_contentLayer->setLayout(layoutCategories);
+    m_impl->categoryList = ScrollLayer::create({ categoryListBg->getScaledContentWidth() - 8.75f, categoryListBg->getScaledContentHeight() - 8.75f });
+    m_impl->categoryList->setID("categories-list");
+    m_impl->categoryList->setAnchorPoint({ 0.5, 0.5 });
+    m_impl->categoryList->ignoreAnchorPointForPosition(false);
+    m_impl->categoryList->setPosition(categoryListBg->getPosition());
+    m_impl->categoryList->m_contentLayer->setLayout(layoutCategories);
 
     for (auto const& category : options::getAllCategories()) {
-        if (auto categoryItem = OptionCategoryItem::create({ m_impl->m_categoryList->getScaledContentWidth(), 20.f }, category)) m_impl->m_categoryList->m_contentLayer->addChild(categoryItem);
+        if (auto categoryItem = OptionCategoryItem::create({ m_impl->categoryList->getScaledContentWidth(), 20.f }, category)) m_impl->categoryList->m_contentLayer->addChild(categoryItem);
     };
 
-    m_impl->m_categoryList->m_contentLayer->updateLayout();
-    m_impl->m_categoryList->scrollToTop();
+    m_impl->categoryList->m_contentLayer->updateLayout();
+    m_impl->categoryList->scrollToTop();
 
-    m_mainLayer->addChild(m_impl->m_categoryList, 1);
+    m_mainLayer->addChild(m_impl->categoryList, 1);
 
     // Add a background sprite to the popup
     auto optionListBg = CCScale9Sprite::create("square02_001.png");
@@ -90,30 +136,30 @@ bool OptionMenuPopup::init() {
         ->setAutoGrowAxis(optionListBg->getScaledContentHeight() - 10.f);
 
     // scroll layer
-    m_impl->m_optionList = ScrollLayer::create({ optionListBg->getScaledContentWidth() - 10.f, optionListBg->getScaledContentHeight() - 10.f });
-    m_impl->m_optionList->setID("options-list");
-    m_impl->m_optionList->setAnchorPoint({ 0.5, 0.5 });
-    m_impl->m_optionList->ignoreAnchorPointForPosition(false);
-    m_impl->m_optionList->setPosition(optionListBg->getPosition());
-    m_impl->m_optionList->m_contentLayer->setLayout(layoutOptions);
+    m_impl->optionList = ScrollLayer::create({ optionListBg->getScaledContentWidth() - 10.f, optionListBg->getScaledContentHeight() - 10.f });
+    m_impl->optionList->setID("options-list");
+    m_impl->optionList->setAnchorPoint({ 0.5, 0.5 });
+    m_impl->optionList->ignoreAnchorPointForPosition(false);
+    m_impl->optionList->setPosition(optionListBg->getPosition());
+    m_impl->optionList->m_contentLayer->setLayout(layoutOptions);
 
-    m_mainLayer->addChild(m_impl->m_optionList, 9);
+    m_mainLayer->addChild(m_impl->optionList, 9);
 
     // add search bar
-    m_impl->m_searchInput = TextInput::create(optionListBg->getScaledContentWidth(), "Search...", "bigFont.fnt");
-    m_impl->m_searchInput->setID("search-input");
-    m_impl->m_searchInput->setPosition({ optionListBg->getPositionX(), mainLayerSize.height - 52.5f });
+    m_impl->searchInput = TextInput::create(optionListBg->getScaledContentWidth(), "Search...", "bigFont.fnt");
+    m_impl->searchInput->setID("search-input");
+    m_impl->searchInput->setPosition({ optionListBg->getPositionX(), mainLayerSize.height - 52.5f });
 
-    m_impl->m_searchInput->setCallback([this](std::string_view str) {
-        m_impl->m_searchText = str;
-        filterOptions(
+    m_impl->searchInput->setCallback([this](std::string_view str) {
+        m_impl->searchText = str;
+        m_impl->filterOptions(
             options::getAll(),
-            m_impl->s_selectedTier,
-            m_impl->s_selectedCategory
+            m_impl->selectedTier,
+            m_impl->selectedCategory
         );  // lets search this crap
-                                       });
+                                     });
 
-    m_mainLayer->addChild(m_impl->m_searchInput);
+    m_mainLayer->addChild(m_impl->searchInput);
 
     // add a list button background
     auto filterMenuBg = CCScale9Sprite::create("square02_001.png");
@@ -166,7 +212,7 @@ bool OptionMenuPopup::init() {
     };
 
     // get the options data
-    filterOptions(options::getAll());
+    m_impl->filterOptions(options::getAll());
 
     m_mainLayer->addChild(filterMenu);
 
@@ -244,69 +290,23 @@ bool OptionMenuPopup::init() {
     addEventListener(
         CategoryEvent(),
         [this](std::string_view category, bool enabled) {
-            m_impl->s_selectedCategory = enabled ? category : "";
-            filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
+            m_impl->selectedCategory = enabled ? category : "";
+            m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
         }
     );
 
     return true;
 };
 
-void OptionMenuPopup::filterOptions(std::span<const Option> optList, SillyTier tier, ZStringView category) {
-    if (m_impl->m_optionList) {
-        m_impl->m_optionList->m_contentLayer->removeAllChildren();
-
-        auto useCategory = options::doesCategoryExist(category);
-
-        for (auto const& opt : optList) {
-            // tier filter
-            auto tierMatches = tier == SillyTier::None || opt.silly == tier;
-            // category filter
-            auto categoryMatches = !useCategory || (opt.category == category);
-
-            // search filter
-            auto searchMatches = true;
-            if (!m_impl->m_searchText.empty()) {
-                auto const searchLower = str::toLower(m_impl->m_searchText);
-                auto const nameLower = str::toLower(opt.name);
-
-                searchMatches = str::contains(nameLower, searchLower);
-            };
-
-            if (tierMatches && categoryMatches && searchMatches) {
-                if (auto modOption = OptionItem::create(
-                    {
-                        m_impl->m_optionList->m_contentLayer->getScaledContentWidth(),
-                        32.5f,
-                    },
-                    opt
-                    )) {
-                    if (modOption->isCompatible() || m_impl->m_showIncompatible) {
-                        m_impl->m_optionList->m_contentLayer->addChild(modOption);
-                    } else {
-                        log::error("{} is incompatible with the current platform", modOption->getOption().id);
-                        modOption->removeMeAndCleanup();
-                    };
-                };
-            };
-        };
-
-        m_impl->m_optionList->m_contentLayer->updateLayout();
-        m_impl->m_optionList->scrollToTop();
-    } else {
-        log::error("Option list layer not found");
-    };
-};
-
 void OptionMenuPopup::filterTierCallback(CCObject* sender) {
     if (auto btn = typeinfo_cast<CCMenuItemSpriteExtra*>(sender)) {
         auto tier = static_cast<SillyTier>(btn->getTag());
 
-        m_impl->s_selectedTier = tier;
+        m_impl->selectedTier = tier;
         // Toggle: clicking same button disables filter
-        if (m_impl->s_selectedTier == tier) m_impl->s_selectedTier = SillyTier::None;
+        if (m_impl->selectedTier == tier) m_impl->selectedTier = SillyTier::None;
 
-        filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
+        m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
     } else {
         log::error("Filter button cast failed");
     };
@@ -319,7 +319,7 @@ void OptionMenuPopup::resetFilters(CCObject*) {
         "Cancel", "OK",
         [this](bool, bool ok) {
             if (ok) {
-                m_impl->s_selectedTier = SillyTier::None;
+                m_impl->selectedTier = SillyTier::None;
                 CategoryEvent().send("", false);
             };
         });

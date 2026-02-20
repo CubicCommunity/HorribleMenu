@@ -24,7 +24,6 @@ public:
 };
 
 SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {};
-
 SpamChallenge::~SpamChallenge() {};
 
 bool SpamChallenge::init() {

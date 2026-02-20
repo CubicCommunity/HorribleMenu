@@ -56,7 +56,7 @@
             "name": "Options Menu",
             "description": "Key to open the Horrible Options menu.",
             "default": [
-                "Backslash"
+                "\\"
             ],
             "category": "universal"
         },

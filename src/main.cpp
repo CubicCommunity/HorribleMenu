@@ -13,7 +13,7 @@ using namespace horrible::prelude;
 
 $on_game(Loaded) {
     listenForKeybindSettingPresses(
-        "keybind-example",
+        "key-popup",
         [](Keybind const&, bool down, bool repeat, double) {
             if (down && !repeat) menu::open();
         }
