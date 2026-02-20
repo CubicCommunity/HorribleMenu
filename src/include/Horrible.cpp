@@ -46,8 +46,10 @@ bool OptionManager::getOption(std::string_view id) const noexcept {
 };
 
 bool OptionManager::setOption(std::string_view id, bool enable) const {
-    auto& callbacks = m_delegates.at(id);
-    for (auto& cb : callbacks) cb();
+    auto it = m_delegates.find(id);
+    if (it != m_delegates.end()) {
+        for (auto& cb : it->second) cb();
+    };
 
     return Mod::get()->setSavedValue(id, enable);
 };
