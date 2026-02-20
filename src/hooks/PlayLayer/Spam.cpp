@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "spam",
+        "Spam Challenge!",
+        "Sometimes forces a challenge on you to mercilessly spam an input sometimes while playing a level in Normal mode.\n<cy>Credit: Cheeseworks</c>",
+        category::obstructive,
+        SillyTier::High,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(SpamPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::spam);
-        int chance = options::getChance(key::spam);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
 
         SpamChallenge* m_currentSpam = nullptr;
     };
@@ -19,19 +28,6 @@ class $modify(SpamPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                unschedule(schedule_selector(SpamPlayLayer::doSpam));
-
-                f->enabled = ev->getToggled();
-
-                if (f->enabled) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
-
-                return ListenerResult::Propagate;
-            },
-            key::spam
-        );
 
         if (f->enabled) nextSpam();
     };

@@ -7,14 +7,14 @@
 using namespace geode::prelude;
 using namespace horrible;
 
-class OptionItem : public CCMenu {
+class OptionItem final : public CCMenu {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
 protected:
     OptionItem();
-    virtual ~OptionItem();
+    ~OptionItem();
 
     void saveTogglerState();
 
@@ -22,10 +22,10 @@ protected:
     void onDescription(CCObject*);
     void onExit() override;
 
-    bool init(CCSize const& size, Option const& option);
+    bool init(CCSize const& size, Option option);
 
 public:
-    static OptionItem* create(CCSize const& size, Option const& option);
+    static OptionItem* create(CCSize const& size, Option option);
 
     Option getOption() const noexcept;
     bool isCompatible() const noexcept;

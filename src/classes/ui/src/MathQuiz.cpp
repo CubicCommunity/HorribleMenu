@@ -27,12 +27,10 @@ public:
     float m_timeDt = 0.f;
 
     bool m_correct = false;
-    std::function<void(bool)> m_callback = nullptr;
+    Function<void(bool)> m_callback = nullptr;
 };
 
-MathQuiz::MathQuiz() {
-    m_impl = std::make_unique<Impl>();
-};
+MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {};
 
 MathQuiz::~MathQuiz() {};
 
@@ -46,20 +44,19 @@ bool MathQuiz::init() {
 
     m_impl->m_operation = static_cast<MathOperation>(randng::get(3));
     switch (m_impl->m_operation) {
-    case MathOperation::Addition:
-        m_impl->m_correctAnswer = m_impl->m_numFirst + m_impl->m_numSecond;
-        break;
+        default: [[fallthrough]];
 
-    case MathOperation::Subtraction:
-        m_impl->m_correctAnswer = m_impl->m_numFirst - m_impl->m_numSecond;
-        break;
+        case MathOperation::Addition:
+            m_impl->m_correctAnswer = m_impl->m_numFirst + m_impl->m_numSecond;
+            break;
 
-    case MathOperation::Multiplication:
-        m_impl->m_correctAnswer = m_impl->m_numFirst * m_impl->m_numSecond;
-        break;
+        case MathOperation::Subtraction:
+            m_impl->m_correctAnswer = m_impl->m_numFirst - m_impl->m_numSecond;
+            break;
 
-    default:
-        break;
+        case MathOperation::Multiplication:
+            m_impl->m_correctAnswer = m_impl->m_numFirst * m_impl->m_numSecond;
+            break;
     };
 
     auto const winSize = CCDirector::get()->getWinSize();
@@ -108,20 +105,19 @@ bool MathQuiz::init() {
     } else {
         std::string operation;
         switch (m_impl->m_operation) {
-        case MathOperation::Addition:
-            operation = "+";
-            break;
+            default: [[fallthrough]];
 
-        case MathOperation::Subtraction:
-            operation = "-";
-            break;
+            case MathOperation::Addition:
+                operation = "+";
+                break;
 
-        case MathOperation::Multiplication:
-            operation = "x";
-            break;
+            case MathOperation::Subtraction:
+                operation = "-";
+                break;
 
-        default:
-            operation = "?";
+            case MathOperation::Multiplication:
+                operation = "x";
+                break;
         };
 
         problemText = fmt::format("{} {} {}", m_impl->m_numFirst, operation, m_impl->m_numSecond);
@@ -239,7 +235,7 @@ bool MathQuiz::init() {
     return true;
 };
 
-void MathQuiz::setCallback(std::function<void(bool)> cb) {
+void MathQuiz::setCallback(Function<void(bool)> cb) {
     m_impl->m_callback = std::move(cb);
 };
 
@@ -391,7 +387,7 @@ MathQuiz* MathQuiz::create() {
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };
 
@@ -429,6 +425,6 @@ Richard* Richard::create() {
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };

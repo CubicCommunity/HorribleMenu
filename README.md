@@ -16,7 +16,7 @@ This silly lil' mod adds a mod menu filled to the brim with **over 35 crazy trol
 When pressing `\` or by pressing the floating *Horrible Options* button on your screen, a menu will pop up with a list of joke mod options you can toggle anytime on your game to do some interesting things to your gaming experience. You can view more information within the menu itself.
 
 > [!NOTE]
-> *You can customize any keybinds in this mod via the *[Custom Keybinds](https://www.geode-sdk.org/mods/geode.custom-keybinds)* mod.*
+> *You can customize any keybinds in this mod through its settings.*
 
 #### Player Life
 Give the player a limited health-like meter that must always stay above 0 to prevent the player from dying.

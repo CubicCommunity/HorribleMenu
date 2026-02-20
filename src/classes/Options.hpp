@@ -2,6 +2,8 @@
 
 #include <Utils.hpp>
 
+#include <Geode/Geode.hpp>
+
 namespace horrible {
     namespace util {
         // Horrible options utilities
@@ -39,7 +41,7 @@ namespace horrible {
              *
              * @returns Boolean of the old value
              */
-            bool set(std::string_view id, bool enable);
+            bool set(geode::ZStringView id, bool enable);
 
             /**
              * Returns the array of all registered option categories
@@ -53,7 +55,7 @@ namespace horrible {
              *
              * @param category The exact name of the category to check
              */
-            bool doesCategoryExist(std::string_view category) noexcept;
+            bool doesCategoryExist(geode::ZStringView category) noexcept;
         };
     };
 };

@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "death",
+        "Fake Death",
+        "The player's death effect will show without dying.\n<cy>Credit: DragonixGD</c>",
+        category::obstructive,
+        SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(FakeDeathPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::death);
+        bool enabled = options::get(o.id);
 
         bool m_dontCreateObjects = false;
         GameObject* m_destroyingObject;

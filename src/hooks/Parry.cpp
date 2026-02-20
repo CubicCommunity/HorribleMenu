@@ -11,6 +11,8 @@
 // using namespace geode::prelude;
 // using namespace horrible::prelude;
 
+// static constexpr auto id = "parry";
+
 // static GameObject* s_pendingKiller1 = nullptr;
 // static GameObject* s_pendingKiller2 = nullptr;
 
@@ -27,9 +29,19 @@
 
 // constexpr float kParryWindow = 0.5f;  // seconds
 
+    // {
+    //     "parry",
+    //     "Parry Obstacles",
+    //     "Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cy>Credit: Wuffin</c>",
+    //     category::misc,
+    //     SillyTier::Low,
+    //     true,
+    //     {},
+    // },
+
 // class $modify(ParryPlayerObject, PlayerObject) {
 //     struct Fields {
-//         bool enabled = options::get(key::parry);
+//         bool enabled = options::get(id);
 //     };
 
 //     bool pushButton(PlayerButton p0) {
@@ -49,7 +61,7 @@
 //                 s_pendingPlayer1 = nullptr;
 
 //                 // hide UI
-//                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
+//                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(id_spr))) bar->setVisible(false);
 //                 if (auto lbl = typeinfo_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
@@ -67,7 +79,7 @@
 //                 s_pendingKiller2 = nullptr;
 //                 s_pendingPlayer2 = nullptr;
 
-//                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(key::parry_spr))) bar->setVisible(false);
+//                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(id_spr))) bar->setVisible(false);
 //                 if (auto lbl = typeinfo_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
@@ -83,7 +95,7 @@
 
 // class $modify(ParryPlayLayer, PlayLayer) {
 //     struct Fields {
-//         bool enabled = options::get(key::parry);
+//         bool enabled = options::get(id);
 
 //         ProgressBar* m_parryBar = nullptr;
 //         CCLabelBMFont* m_parryLabel = nullptr;
@@ -96,7 +108,7 @@
 //         // Create shared UI and hide initially
 //         if (!m_fields->m_parryBar) {
 //             m_fields->m_parryBar = ProgressBar::create();
-//             m_fields->m_parryBar->setID(key::parry_spr);
+//             m_fields->m_parryBar->setID(id_spr);
 //             m_fields->m_parryBar->setFillColor(colors::yellow);
 //             m_fields->m_parryBar->setAnchorPoint({ 0.5f, 0.5f });
 //             m_fields->m_parryBar->setVisible(false);

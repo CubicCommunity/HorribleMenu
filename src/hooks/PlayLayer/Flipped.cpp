@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "flipped",
+    "FLIPPED",
+    "Sometimes while playing, your entire screen will just do a flip!\n<cy>Credit: Cheeseworks</c>",
+    category::obstructive,
+    SillyTier::High,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(FlippedPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::flipped);
-        int chance = options::getChance(key::flipped);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
 
         bool flipping = false;
     };

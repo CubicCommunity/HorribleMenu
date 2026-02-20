@@ -8,10 +8,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "placebo",
+    "Placebo",
+    "A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cy>Credit: tmdXD</c>",
+    category::misc,
+    SillyTier::High,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 void placeboEffect() {
     log::info("Checking for placebo effect...");
 
-    if (options::get(key::placebo)) {
+    if (options::get(o.id)) {
         int rnd = randng::fast();
         log::info("placebo effect roll: {}", rnd);
 

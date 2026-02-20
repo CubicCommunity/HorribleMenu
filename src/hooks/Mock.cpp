@@ -11,10 +11,24 @@ using namespace horrible::prelude;
 
 namespace fs = std::filesystem; // Shortcut for std::filesystem
 
+inline static Option const o = {
+    "mock",
+    "Mock your 90%+ Fail",
+    "Taunts you in the main me with a screenshot of one of your 90%-99% fails.\n<cy>Credit: Wuffin</c>",
+    category::misc,
+    SillyTier::Medium,
+    false,
+    {
+        PlatformID::Windows,
+        PlatformID::Android,
+    },
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(MockMenuLayer, MenuLayer) {
     struct Fields {
-        bool enabled = options::get(key::mock);
-        int chance = options::getChance(key::mock);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
     };
 
     bool init() {
@@ -111,21 +125,13 @@ class $modify(MockMenuLayer, MenuLayer) {
 
 class $modify(MockPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::mock);
+        bool enabled = options::get(o.id);
     };
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                f->enabled = ev->getToggled();
-                return ListenerResult::Propagate;
-            },
-            key::mock
-        );
     };
 
     void showNewBest(bool newReward, int orbs, int diamonds, bool demonKey, bool noRetry, bool noTitle) {
@@ -165,11 +171,11 @@ class $modify(MockPlayLayer, PlayLayer) {
                         auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
                         // overwrite this field (or add it) with the percent
-                        mockConfigUnwr[utils::numToString(id)] = percentage;
+                        mockConfigUnwr[utils::numToString(o.id)] = percentage;
 
                         toWrite = mockConfigUnwr;
                     } else {
-                        toWrite = matjson::makeObject({ {utils::numToString(id), percentage} });
+                        toWrite = matjson::makeObject({ {utils::numToString(o.id), percentage} });
                     };
 
                     if (!toWrite.isNull()) {
@@ -207,7 +213,7 @@ class $modify(MockPlayLayer, PlayLayer) {
             if (mockConfig.isOk()) {
                 log::debug("Clearing mock record for {}", id);
                 auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
-                mockConfigUnwr[utils::numToString(id)].clear();
+                mockConfigUnwr[utils::numToString(o.id)].clear();
 
                 auto const mockJson = file::writeToJson(mockConfigPath, mockConfigUnwr);
 

@@ -7,20 +7,6 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-CategoryEvent::CategoryEvent(std::string id, bool enabled) : m_id(std::move(id)), m_enabled(enabled) {};
-
-std::string_view CategoryEvent::getId() const noexcept {
-    return m_id;
-};
-
-bool CategoryEvent::isEnabled() const noexcept {
-    return m_enabled;
-};
-
-ListenerResult CategoryEventFilter::handle(std::function<Callback> fn, CategoryEvent* event) {
-    return fn(event);
-};
-
 class OptionCategoryItem::Impl final {
 public:
     std::string m_category = ""; // The category name
@@ -34,12 +20,12 @@ OptionCategoryItem::OptionCategoryItem() {
 
 OptionCategoryItem::~OptionCategoryItem() {};
 
-bool OptionCategoryItem::init(CCSize const& size, std::string_view category) {
-    m_impl->m_category = category;
+bool OptionCategoryItem::init(CCSize const& size, std::string category) {
+    m_impl->m_category = std::move(category);
 
     if (!CCMenu::init()) return false;
 
-    setID(str::join(str::split(str::filter(str::toLower(category.data()), "abcdefghijklmnopqrstuvwxyz0123456789-_./ "), " "), "-"));
+    setID(str::join(str::split(str::filter(str::toLower(m_impl->m_category), "abcdefghijklmnopqrstuvwxyz0123456789-_./ "), " "), "-"));
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
@@ -95,16 +81,16 @@ ListenerResult OptionCategoryItem::OnCategory(std::string_view category, bool en
 };
 
 void OptionCategoryItem::onToggle(CCObject* sender) {
-    if (m_impl->m_toggler) CategoryEvent(m_impl->m_category, !m_impl->m_toggler->isOn()).post();
+    if (m_impl->m_toggler) CategoryEvent().send(m_impl->m_category, !m_impl->m_toggler->isOn());
 };
 
-OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string_view category) {
+OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string category) {
     auto ret = new OptionCategoryItem();
-    if (ret->init(size, category)) {
+    if (ret->init(size, std::move(category))) {
         ret->autorelease();
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };

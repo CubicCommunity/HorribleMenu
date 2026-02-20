@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "size_changer",
+    "Size Changer",
+    "Randomly change the player size every time you jump.\n<cy>Credit: himynameisryan21</c>",
+    category::randoms,
+    SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(SizeChangerPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::size_changer);
-        int chance = options::getChance(key::size_changer);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
 
         bool scaled = false;
     };

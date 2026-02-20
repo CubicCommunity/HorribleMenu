@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "ice_level",
+    "Ice Level",
+    "Makes every surface icy. Slip n' slide!\n<cy>Credit: TimeRed</c>",
+    category::misc,
+    SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(OnIcePlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::ice_level);
+        bool enabled = options::get(o.id);
     };
 
     void update(float p0) {

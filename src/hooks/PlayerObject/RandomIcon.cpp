@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "random_icon",
+        "Random Icon Change",
+        "Randomly change your icon every time you jump.\n<cy>Credit: JompyDoJump</c>",
+        category::randoms,
+        SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(RandomIconPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::random_icon);
+        bool enabled = options::get(o.id);
     };
 
     bool pushButton(PlayerButton p0) {

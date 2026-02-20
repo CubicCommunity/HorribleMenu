@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "fake_crash",
+    "Random Fake Crash",
+    "While playing a level, there's a chance your game will fake a crash.\n<cy>Credit: Timered</c>",
+    category::randoms,
+    SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     struct Fields {
-        bool m_enabled = options::get(key::fake_crash);
-        int m_chance = options::getChance(key::fake_crash);
+        bool m_enabled = options::get(o.id);
+        int m_chance = options::getChance(o.id);
 
         float m_lastTimeWarp = LevelTools::getLastTimewarp();
         bool m_inFakeCrash = false;

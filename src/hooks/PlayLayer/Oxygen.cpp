@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "oxygen",
+        "Oxygen Level",
+        "Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cy>Credit: ArcticWoof</c>",
+        category::playerlife,
+        SillyTier::High,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(OxygenPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("oxygen");
+        bool enabled = options::get(o.id);
 
         bool withHealth = options::get("health");
 
@@ -33,7 +42,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
             if (!f->m_oxygenBar) {
                 f->m_oxygenBar = ProgressBar::create();
-                f->m_oxygenBar->setID("oxygen"_spr);
+                f->m_oxygenBar->setID("oxygen-bar"_spr);
                 f->m_oxygenBar->setFillColor(colors::cyan);
                 f->m_oxygenBar->setAnchorPoint({ 0.5f, 0.5f });
                 f->m_oxygenBar->setPosition({ 10.f, getScaledContentHeight() / 2.f });

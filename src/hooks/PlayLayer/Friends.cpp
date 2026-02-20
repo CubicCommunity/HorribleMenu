@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "friends",
+        "Friends",
+        "Random friends fly across your screen while you play a level!\n<cy>Credit: Cheeseworks</c>",
+        category::obstructive,
+        SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(FriendsPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::friends);
+        bool enabled = options::get(o.id);
 
         static constexpr auto friends = std::to_array<const char*>({
             "diffIcon_00_btn_001.png",

@@ -31,13 +31,12 @@ public:
     TextInput* m_searchInput = nullptr;
 };
 
-OptionMenuPopup::OptionMenuPopup() {
-    m_impl = std::make_unique<Impl>();
-};
-
+OptionMenuPopup::OptionMenuPopup() : m_impl(std::make_unique<Impl>()) {};
 OptionMenuPopup::~OptionMenuPopup() {};
 
-bool OptionMenuPopup::setup() {
+bool OptionMenuPopup::init() {
+    if (!Popup::init(450.f, 280.f)) return false;
+
     setID("options"_spr);
     setTitle("Horrible Options");
 
@@ -242,16 +241,18 @@ bool OptionMenuPopup::setup() {
 
     m_mainLayer->addChild(safeModeLabel, 9);
 
+    addEventListener(
+        CategoryEvent(),
+        [this](std::string_view category, bool enabled) {
+            m_impl->s_selectedCategory = enabled ? category : "";
+            filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
+        }
+    );
+
     return true;
 };
 
-ListenerResult OptionMenuPopup::OnCategory(std::string_view category, bool enabled) {
-    m_impl->s_selectedCategory = enabled ? category : "";
-    filterOptions(options::getAll(), m_impl->s_selectedTier, m_impl->s_selectedCategory);
-    return ListenerResult::Propagate;
-};
-
-void OptionMenuPopup::filterOptions(std::span<const Option>  optList, SillyTier tier, std::string_view category) {
+void OptionMenuPopup::filterOptions(std::span<const Option> optList, SillyTier tier, ZStringView category) {
     if (m_impl->m_optionList) {
         m_impl->m_optionList->m_contentLayer->removeAllChildren();
 
@@ -319,7 +320,7 @@ void OptionMenuPopup::resetFilters(CCObject*) {
         [this](bool, bool ok) {
             if (ok) {
                 m_impl->s_selectedTier = SillyTier::None;
-                CategoryEvent("", false).post();
+                CategoryEvent().send("", false);
             };
         });
 };
@@ -345,17 +346,17 @@ void OptionMenuPopup::openSupporterPopup(CCObject*) {
 
 void OptionMenuPopup::onClose(CCObject* sender) {
     s_inst = nullptr;
-    Popup<>::onClose(sender);
+    Popup::onClose(sender);
 };
 
 void OptionMenuPopup::onExit() {
     s_inst = nullptr;
-    Popup<>::onExit();
+    Popup::onExit();
 };
 
 void OptionMenuPopup::cleanup() {
     s_inst = nullptr;
-    Popup<>::cleanup();
+    Popup::cleanup();
 };
 
 OptionMenuPopup* OptionMenuPopup::get() noexcept {
@@ -364,12 +365,12 @@ OptionMenuPopup* OptionMenuPopup::get() noexcept {
 
 OptionMenuPopup* OptionMenuPopup::create() {
     auto ret = new OptionMenuPopup();
-    if (ret->initAnchored(450.f, 280.f)) {
+    if (ret->init()) {
         ret->autorelease();
         s_inst = ret;
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };

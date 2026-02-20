@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "gravity",
+    "Randomize Gravity",
+    "Every time you jump in a level, gravity force will increase or decrease randomly.\n<cy>Credit: NJAgain</c>",
+    category::randoms,
+    SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(GravityPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::gravity);
+        bool enabled = options::get(o.id);
 
         bool m_isOnSlope = false;
         bool m_wasOnSlope = false;

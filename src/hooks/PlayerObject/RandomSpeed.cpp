@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "random_speed",
+        "Random Speed Change",
+        "Randomly changes your speed while playing a level.\n<cy>Credit: imdissapearinghelp</c>",
+        category::randoms,
+        SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(RandomSpeedPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::random_speed);
-        int chance = options::getChance(key::random_speed);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
     };
 
     bool pushButton(PlayerButton button) {

@@ -9,12 +9,12 @@
 using namespace geode::prelude;
 using namespace horrible;
 
-class OptionMenuPopup : public Popup<> {
+class OptionMenuPopup final : public Popup {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
-    struct SillyFilter {
+    struct SillyFilter final {
         SillyTier tier;
         const char* label;
         ccColor3B color;
@@ -23,27 +23,17 @@ private:
 protected:
     static OptionMenuPopup* s_inst;
 
-    EventListener<OptionEventFilter> m_listener = {
-        [](OptionEvent* event) {
-            log::debug("{} option of ID '{}'", event->getToggled() ? "Enabled" : "Disabled", event->getId());
-            return ListenerResult::Propagate;
-        },
-        OptionEventFilter()
-    };
-
-    EventListener<CategoryEventFilter> m_catListener = {
-        [this](CategoryEvent* event) {
-            return OnCategory(event->getId(), event->isEnabled());
-        },
-        CategoryEventFilter()
-    };
+    // EventListener<CategoryEventFilter> m_catListener = {
+    //     [this](CategoryEvent* event) {
+    //         return OnCategory(event->getId(), event->isEnabled());
+    //     },
+    //     CategoryEventFilter()
+    // };
 
     OptionMenuPopup();
-    virtual ~OptionMenuPopup();
+    ~OptionMenuPopup();
 
-    ListenerResult OnCategory(std::string_view category, bool enabled = true);
-
-    void filterOptions(std::span<const Option>  optList, SillyTier tier = SillyTier::None, std::string_view category = "");
+    void filterOptions(std::span<const Option> optList, SillyTier tier = SillyTier::None, ZStringView category = "");
     void filterTierCallback(CCObject*);
 
     void resetFilters(CCObject*);
@@ -56,7 +46,7 @@ protected:
     void onExit() override;
     void cleanup() override;
 
-    bool setup() override;
+    bool init() override;
 
 public:
     static OptionMenuPopup* create();

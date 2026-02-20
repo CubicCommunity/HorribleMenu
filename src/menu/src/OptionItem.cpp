@@ -28,8 +28,8 @@ OptionItem::OptionItem() {
 
 OptionItem::~OptionItem() {};
 
-bool OptionItem::init(CCSize const& size, Option const& option) {
-    m_impl->m_option = option;
+bool OptionItem::init(CCSize const& size, Option option) {
+    m_impl->m_option = std::move(option);
 
     // check for compatibility
     for (auto const& p : m_impl->m_option.platforms) {
@@ -203,7 +203,11 @@ void OptionItem::onToggle(CCObject*) {
             log::warn("Restart required to apply option {}", m_impl->m_option.id);
         };
 
-        log::info("Option {} now set to {}", m_impl->m_option.name, options::get(m_impl->m_option.id) ? "disabled" : "enabled"); // wtf is it other way around lmao
+        auto now = options::get(m_impl->m_option.id);
+
+        OptionEvent(m_impl->m_option.id).send(m_impl->m_option.id, now);
+
+        log::info("Option {} now set to {}", m_impl->m_option.name, now ? "disabled" : "enabled"); // wtf is it other way around lmao
     } else if (m_impl->m_toggler) {
         Notification::create(fmt::format("{} is unavailable for {}", m_impl->m_option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
         log::error("Option {} is not available for platform {}", m_impl->m_option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
@@ -233,13 +237,13 @@ bool OptionItem::isCompatible() const noexcept {
     return m_impl->s_compatible;
 };
 
-OptionItem* OptionItem::create(CCSize const& size, Option const& option) {
+OptionItem* OptionItem::create(CCSize const& size, Option option) {
     auto ret = new OptionItem();
-    if (ret->init(size, option)) {
+    if (ret->init(size, std::move(option))) {
         ret->autorelease();
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 }; 

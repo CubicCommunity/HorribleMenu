@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "health",
+    "Player Health",
+    "Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cy>Credit: Cheeseworks</c>",
+    category::playerlife,
+    SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(HealthPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get("health");
+        bool enabled = options::get(o.id);
 
         float m_health = 100.f;
 
@@ -27,7 +36,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
             if (!f->m_healthBar) {
                 f->m_healthBar = ProgressBar::create();
-                f->m_healthBar->setID("health"_spr);
+                f->m_healthBar->setID("health-bar"_spr);
                 f->m_healthBar->setFillColor(colors::red);
                 f->m_healthBar->setAnchorPoint({ 0.5f, 0.5f });
                 f->m_healthBar->setPosition({ 10.f, getScaledContentHeight() / 2.f });

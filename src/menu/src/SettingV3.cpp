@@ -7,11 +7,11 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-Result<std::shared_ptr<SettingV3>> HorribleSettingV3::parse(std::string_view key, std::string_view modID, matjson::Value const& json) {
+Result<std::shared_ptr<SettingV3>> HorribleSettingV3::parse(ZStringView key, ZStringView modID, matjson::Value const& json) {
     auto res = std::make_shared<HorribleSettingV3>();
     auto root = checkJson(json, "HorribleSettingV3");
 
-    res->init(key.data(), modID.data(), root);
+    res->init(key, modID, root);
     res->parseNameAndDescription(root);
     res->parseEnableIf(root);
 
@@ -28,7 +28,7 @@ bool HorribleSettingV3::save(matjson::Value&) const {
     return true;
 };
 
-bool HorribleSettingV3::isDefaultValue() const {
+bool HorribleSettingV3::isDefaultValue() const noexcept {
     return true;
 };
 
@@ -44,10 +44,7 @@ public:
     CCMenuItemSpriteExtra* button = nullptr;
 };
 
-HorribleSettingNodeV3::HorribleSettingNodeV3() {
-    m_impl = std::make_unique<Impl>();
-};
-
+HorribleSettingNodeV3::HorribleSettingNodeV3() : m_impl(std::make_unique<Impl>()) {};
 HorribleSettingNodeV3::~HorribleSettingNodeV3() {};
 
 bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, float width) {
@@ -61,10 +58,11 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     );
     m_impl->buttonSprite->setScale(.5f);
 
-    m_impl->button = CCMenuItemSpriteExtra::create(
+    m_impl->button = CCMenuItemExt::createSpriteExtra(
         m_impl->buttonSprite,
-        this,
-        menu_selector(HorribleSettingNodeV3::onButton)
+        [](auto) {
+            menu::open();
+        }
     );
 
     if (auto menu = getButtonMenu()) {
@@ -96,10 +94,6 @@ void HorribleSettingNodeV3::updateState(CCNode* invoker) {
     m_impl->buttonSprite->setColor(shouldEnable ? ccWHITE : ccGRAY);
 };
 
-void HorribleSettingNodeV3::onButton(CCObject*) {
-    menu::open();
-};
-
 void HorribleSettingNodeV3::onCommit() {};
 void HorribleSettingNodeV3::onResetToDefault() {};
 
@@ -110,19 +104,19 @@ HorribleSettingNodeV3* HorribleSettingNodeV3::create(std::shared_ptr<HorribleSet
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };
 
-bool HorribleSettingNodeV3::hasUncommittedChanges() const {
+bool HorribleSettingNodeV3::hasUncommittedChanges() const noexcept {
     return false;
 };
 
-bool HorribleSettingNodeV3::hasNonDefaultValue() const {
+bool HorribleSettingNodeV3::hasNonDefaultValue() const noexcept {
     return false;
 };
 
-std::shared_ptr<HorribleSettingV3> HorribleSettingNodeV3::getSetting() const {
+std::shared_ptr<HorribleSettingV3> HorribleSettingNodeV3::getSetting() const noexcept {
     return std::static_pointer_cast<HorribleSettingV3>(
         SettingNodeV3::getSetting()
     );

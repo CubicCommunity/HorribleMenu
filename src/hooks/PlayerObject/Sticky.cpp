@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "sticky",
+        "Sticky Grounds",
+        "When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cy>Credit: Cheeseworks</c>",
+        category::misc,
+        SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(StickyPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get("sticky");
-        int chance = options::getChance("sticky");
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
 
         float m_defSpeed = 0.f;
 
