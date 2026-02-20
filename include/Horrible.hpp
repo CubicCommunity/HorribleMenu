@@ -22,21 +22,18 @@
 // Container for Horrible Ideas API functions
 namespace horrible {
     // Mod option manager for Horrible Ideas
-    class AWCW_HORRIBLE_API_DLL OptionManager : public cocos2d::CCObject {
+    class AWCW_HORRIBLE_API_DLL OptionManager final : public cocos2d::CCObject {
     private:
-        class Impl; // PImpl class
-        std::unique_ptr<Impl> m_impl; // PImpl pointer
+        std::vector<Option> m_options; // Array of registered options
+        std::vector<std::string> m_categories; // Array of auto-registered categories
 
     protected:
-        OptionManager(); // Constructor
-        virtual ~OptionManager(); // Destructor
-
         /**
          * Register a category if not already registered
          *
          * @param category Name of the category
          */
-        void registerCategory(std::string_view category);
+        void registerCategory(std::string category);
 
         /**
          * Check if an option already exists
@@ -47,8 +44,6 @@ namespace horrible {
          */
         bool doesOptionExist(std::string_view id) const noexcept;
 
-        friend class OptionEventFilter;
-
     public:
         // Get option manager singleton
         static OptionManager* get() noexcept;
@@ -58,14 +53,14 @@ namespace horrible {
          *
          * @param option Constructed option object
          */
-        void registerOption(Option const& option);
+        void registerOption(Option option);
 
         /**
          * Returns a reference to the array of all registered options
          *
          * @returns An array of every registered option, main and external
          */
-        std::span<const Option> getOptions() const noexcept;
+        [[nodiscard]] std::span<const Option> getOptions() const noexcept;
 
         /**
          * Returns the toggle state of an option
@@ -74,7 +69,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        bool getOption(std::string_view id) const noexcept;
+        [[nodiscard]] bool getOption(std::string_view id) const noexcept;
 
         /**
          * Set the toggle state of an option
@@ -84,13 +79,18 @@ namespace horrible {
          *
          * @returns Boolean of the old value
          */
-        bool setOption(std::string_view id, bool enable) const noexcept;
+        bool setOption(geode::ZStringView id, bool enable) const;
 
         /**
          * Returns a reference to the array of all registered categories
          *
          * @returns An array of every category name
          */
-        std::span<const std::string> getCategories() const noexcept;
+        [[nodiscard]] std::span<const std::string> getCategories() const noexcept;
     };
 };
+
+// Statically register an option
+#define REGISTER_HORRIBLE_OPTION(opt) $execute {\
+    if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
+}

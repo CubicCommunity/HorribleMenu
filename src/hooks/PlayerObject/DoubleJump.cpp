@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "double_jump",
+    "Double-Jump",
+    "Allows your character to double-jump in a level.\n<cy>Credit: Cheeseworks</c>",
+    category::misc,
+    SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(DoubleJumpPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::double_jump);
+        bool enabled = options::get(o.id);
 
         int m_jumps = 0;
     };
@@ -18,14 +27,6 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                f->enabled = ev->getToggled();
-                return ListenerResult::Propagate;
-            },
-            key::double_jump
-        );
 
         return true;
     };

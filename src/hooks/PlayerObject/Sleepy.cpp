@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "sleepy",
+        "Sleepy Player",
+        "Your character will occasionally fall asleep while playing.\n<cy>Credit: this_guy_yt</c>",
+        category::misc,
+        SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(SleepyPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::sleepy);
-        int chance = options::getChance(key::sleepy);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
 
         bool m_sleepy = false; // decelerating-to-zero stage
         bool m_waking = false; // 5s buffer stage (cannot be re-slept)

@@ -13,7 +13,7 @@ namespace horrible {
 
         protected:
             SpamChallenge();
-            virtual ~SpamChallenge();
+            ~SpamChallenge();
 
             void closeAfterFeedback(float);
             void setSuccess(bool v);
@@ -28,7 +28,7 @@ namespace horrible {
 
             bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;
 
-            void setCallback(std::function<void(bool)> cb);
+            void setCallback(geode::Function<void(bool)> cb);
         };
     };
 };

@@ -17,7 +17,7 @@ void jumpscares::downloadGrief() {
 
             log::info("Downloading Grief in background");
 
-            glm->downloadLevel(129066933, false);
+            glm->downloadLevel(129066933, false, 0);
             mdm->downloadSong(482872);
         };
     } else {
@@ -35,7 +35,7 @@ void jumpscares::downloadCongregation() {
 
             log::info("Downloading Congregation in background");
 
-            glm->downloadLevel(129066879, false);
+            glm->downloadLevel(129066879, false, 0);
             mdm->downloadSong(895761);
         };
     } else {

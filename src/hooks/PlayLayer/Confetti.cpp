@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "confetti",
+    "Confetti Explosion",
+    "While playing a level, the screen will sometimes cause an explosion of random textures.\n<cy>Credit: Cheeseworks</c>",
+    category::obstructive,
+    SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(ConfettiPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::confetti);
+        bool enabled = options::get(o.id);
 
         static constexpr auto confettis = std::to_array<const char*>({
             "diffIcon_02_btn_001.png",
@@ -34,20 +43,6 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                unschedule(schedule_selector(ConfettiPlayLayer::confetti));
-                unschedule(schedule_selector(ConfettiPlayLayer::nextConfetti));
-
-                f->enabled = ev->getToggled();
-
-                if (f->enabled) scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
-
-                return ListenerResult::Propagate;
-            },
-            key::confetti
-        );
 
         if (f->enabled) scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
     };

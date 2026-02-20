@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "pauses",
+        "Random Pauses",
+        "While playing a level, it will randomly pause itself.\n<cy>Credit: DragonixGD</c>",
+        category::randoms,
+        SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(PausePlayerObject, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::pauses);
-        int chance = options::getChance(key::pauses);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
     };
 
     void setupHasCompleted() {

@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "blinking_icon",
+        "Blinking Icon",
+        "Your icon will start to randomly blink.\n<cy>Credit: DragonixGD</c>",
+        category::obstructive,
+        SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(BlinkingIconPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::blinking_icon);
+        bool enabled = options::get(o.id);
     };
 
     void setupHasCompleted() {

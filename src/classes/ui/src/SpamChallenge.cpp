@@ -20,13 +20,10 @@ public:
     float m_timeDt = 0.f;
 
     bool m_success = false;
-    std::function<void(bool)> m_callback;
+    Function<void(bool)> m_callback;
 };
 
-SpamChallenge::SpamChallenge() {
-    m_impl = std::make_unique<Impl>();
-};
-
+SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {};
 SpamChallenge::~SpamChallenge() {};
 
 bool SpamChallenge::init() {
@@ -90,7 +87,7 @@ bool SpamChallenge::init() {
     return true;
 };
 
-void SpamChallenge::setCallback(std::function<void(bool)> cb) {
+void SpamChallenge::setCallback(Function<void(bool)> cb) {
     m_impl->m_callback = std::move(cb);
 };
 
@@ -171,6 +168,6 @@ SpamChallenge* SpamChallenge::create() {
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };

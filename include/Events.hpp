@@ -2,47 +2,12 @@
 
 #include "Horrible.hpp"
 
-#include <cocos2d.h>
-
 #include <Geode/loader/Event.hpp>
 
 // Container for Horrible Ideas API
 namespace horrible {
     // Event for option toggles
-    class OptionEvent : public geode::Event {
-    private:
-        std::string m_id; // Unique ID of the option
-        bool m_toggled; // Toggle boolean of the option
-
-    public:
-        OptionEvent(std::string id, bool toggled); // Constructor
-
-        AWCW_HORRIBLE_API_DLL std::string_view getId() const noexcept; // Get the unique ID of the option
-        AWCW_HORRIBLE_API_DLL bool getToggled() const noexcept; // Get the toggle boolean of the option
-    };
-
-    // Filter for option toggle event
-    class AWCW_HORRIBLE_API_DLL OptionEventFilter : public geode::EventFilter<OptionEvent> {
-    private:
-        std::vector<std::string> m_ids; // Unique ID of the options to listen to
-
-    public:
-        using Callback = geode::ListenerResult(OptionEvent*);
-
-        /**
-         * Event handler
-         *
-         * @param fn Callback function containing a pointer to the event that fired
-         * @param event Pointer to the event that fired
-         */
-        geode::ListenerResult handle(std::function<Callback> fn, OptionEvent* event);
-
-        OptionEventFilter() = default; // Constructor
-
-        OptionEventFilter(std::string id); // Constructor (listens to one option's toggle)
-        OptionEventFilter(std::vector<std::string> ids); // Constructor (listens to any specified options' toggles)
-
-        OptionEventFilter(cocos2d::CCNode*, std::string id); // Constructor with target (listens to one option's toggle)
-        OptionEventFilter(cocos2d::CCNode*, std::vector<std::string> ids); // Constructor with target (listens to any specified options' toggles)
+    struct OptionEvent final : geode::GlobalEvent<OptionEvent, bool(std::string, bool), std::string> {
+        using GlobalEvent::GlobalEvent;
     };
 };

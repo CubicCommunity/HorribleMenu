@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "click_speed",
+        "Click Player Speed",
+        "Randomly increases or decreases the player speed everytime you jump.\n<cy>Credit: KGplayerA</c>",
+        category::randoms,
+        SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(ClickSpeedPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::click_speed);
+        bool enabled = options::get(o.id);
     };
 
     bool pushButton(PlayerButton p0) {

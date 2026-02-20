@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "earthquake",
+    "Earthquake",
+    "Constantly shakes the camera while playing a level.\n<cy>Credit: ArcticWoof</c>",
+    category::obstructive,
+    SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(EarthquakePlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::earthquake);
+        bool enabled = options::get(o.id);
     };
 
     void setupHasCompleted() {

@@ -9,39 +9,36 @@ using namespace horrible::prelude;
 
 class OptionItem::Impl final {
 public:
-    bool s_compatible = false; // If this option is compatible with the current platform
+    bool compatible = false; // If this option is compatible with the current platform
 
     // The option
-    Option m_option = {
+    Option option = {
         "unk"_spr,
         "Unknown Option",
         "No description provided.",
         "General"
     };
 
-    CCMenuItemToggler* m_toggler = nullptr; // The toggler for the option
+    CCMenuItemToggler* toggler = nullptr; // The toggler for the option
 };
 
-OptionItem::OptionItem() {
-    m_impl = std::make_unique<Impl>();
-};
-
+OptionItem::OptionItem() : m_impl(std::make_unique<Impl>()) {};
 OptionItem::~OptionItem() {};
 
-bool OptionItem::init(CCSize const& size, Option const& option) {
-    m_impl->m_option = option;
+bool OptionItem::init(CCSize const& size, Option option) {
+    m_impl->option = std::move(option);
 
     // check for compatibility
-    for (auto const& p : m_impl->m_option.platforms) {
+    for (auto const& p : m_impl->option.platforms) {
         if (p & GEODE_PLATFORM_TARGET) {
-            m_impl->s_compatible = true;
+            m_impl->compatible = true;
             break;
         };
     };
 
     if (!CCMenu::init()) return false;
 
-    setID(m_impl->m_option.id);
+    setID(m_impl->option.id);
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
@@ -66,27 +63,27 @@ bool OptionItem::init(CCSize const& size, Option const& option) {
     togglerOn->setScale(0.875f);
 
     // toggler for the option
-    m_impl->m_toggler = CCMenuItemToggler::create(
+    m_impl->toggler = CCMenuItemToggler::create(
         togglerOff,
         togglerOn,
         this,
         menu_selector(OptionItem::onToggle)
     );
-    m_impl->m_toggler->setID("toggler");
-    m_impl->m_toggler->setAnchorPoint({ 0.5f, 0.5f });
-    m_impl->m_toggler->setPosition({ x + 12.f, yCenter });
-    m_impl->m_toggler->setScale(0.875f);
+    m_impl->toggler->setID("toggler");
+    m_impl->toggler->setAnchorPoint({ 0.5f, 0.5f });
+    m_impl->toggler->setPosition({ x + 12.f, yCenter });
+    m_impl->toggler->setScale(0.875f);
 
     // Set toggler state based on saved mod option value
-    if (horribleMod) m_impl->m_toggler->toggle(horribleMod->getSavedValue<bool>(m_impl->m_option.id));
+    if (horribleMod) m_impl->toggler->toggle(horribleMod->getSavedValue<bool>(m_impl->option.id));
 
-    addChild(m_impl->m_toggler);
+    addChild(m_impl->toggler);
 
     x += 30.f;
 
     // name of the joke
     auto nameLabel = CCLabelBMFont::create(
-        m_impl->m_option.name.c_str(),
+        m_impl->option.name.c_str(),
         "bigFont.fnt",
         getScaledContentWidth() - 40.f,
         kCCTextAlignmentLeft
@@ -98,7 +95,7 @@ bool OptionItem::init(CCSize const& size, Option const& option) {
     nameLabel->setScale(0.4f);
 
     auto categoryLabel = CCLabelBMFont::create(
-        m_impl->m_option.category.c_str(),
+        m_impl->option.category.c_str(),
         "goldFont.fnt",
         getScaledContentWidth() - 60.f,
         kCCTextAlignmentLeft
@@ -110,8 +107,8 @@ bool OptionItem::init(CCSize const& size, Option const& option) {
     categoryLabel->setOpacity(200);
     categoryLabel->setScale(0.25f);
 
-    // Set color based on m_impl->m_option.Tier
-    switch (m_impl->m_option.silly) {
+    // Set color based on m_impl->option.Tier
+    switch (m_impl->option.silly) {
     case SillyTier::Low: // green
         nameLabel->setColor(colors::green);
         break;
@@ -134,7 +131,7 @@ bool OptionItem::init(CCSize const& size, Option const& option) {
 
     if (horribleMod->getSettingValue<bool>("dev-mode")) {
         auto idLabel = CCLabelBMFont::create(
-            m_impl->m_option.id.c_str(),
+            m_impl->option.id.c_str(),
             "chatFont.fnt",
             getScaledContentWidth() - 20.f,
             kCCTextAlignmentLeft
@@ -167,8 +164,8 @@ bool OptionItem::init(CCSize const& size, Option const& option) {
 
     addChild(helpBtn);
 
-    if (!m_impl->s_compatible) {
-        m_impl->m_toggler->toggle(false);
+    if (!m_impl->compatible) {
+        m_impl->toggler->toggle(false);
 
         togglerOn->setDisplayFrame(togglerOff->displayFrame());
 
@@ -192,30 +189,34 @@ bool OptionItem::init(CCSize const& size, Option const& option) {
 };
 
 void OptionItem::saveTogglerState() {
-    if (m_impl->m_toggler) options::set(m_impl->m_option.id, m_impl->m_toggler->isToggled());
+    if (m_impl->toggler) options::set(m_impl->option.id, m_impl->toggler->isToggled());
 };
 
 void OptionItem::onToggle(CCObject*) {
-    if (m_impl->s_compatible) {
+    if (m_impl->compatible) {
         saveTogglerState();
-        if (m_impl->m_option.restart) {
+        if (m_impl->option.restart) {
             Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
-            log::warn("Restart required to apply option {}", m_impl->m_option.id);
+            log::warn("Restart required to apply option {}", m_impl->option.id);
         };
 
-        log::info("Option {} now set to {}", m_impl->m_option.name, options::get(m_impl->m_option.id) ? "disabled" : "enabled"); // wtf is it other way around lmao
-    } else if (m_impl->m_toggler) {
-        Notification::create(fmt::format("{} is unavailable for {}", m_impl->m_option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
-        log::error("Option {} is not available for platform {}", m_impl->m_option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
+        auto now = options::get(m_impl->option.id);
 
-        m_impl->m_toggler->toggle(false);
+        OptionEvent(m_impl->option.id).send(m_impl->option.id, now);
+
+        log::info("Option {} now set to {}", m_impl->option.name, now ? "disabled" : "enabled"); // wtf is it other way around lmao
+    } else if (m_impl->toggler) {
+        Notification::create(fmt::format("{} is unavailable for {}", m_impl->option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
+        log::error("Option {} is not available for platform {}", m_impl->option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
+
+        m_impl->toggler->toggle(false);
     };
 };
 
 void OptionItem::onDescription(CCObject*) {
     if (auto popup = FLAlertLayer::create(
-        m_impl->m_option.name.c_str(),
-        m_impl->m_option.description.c_str(),
+        m_impl->option.name.c_str(),
+        m_impl->option.description.c_str(),
         "OK"
     )) popup->show();
 };
@@ -226,20 +227,20 @@ void OptionItem::onExit() {
 };
 
 Option OptionItem::getOption() const noexcept {
-    return m_impl->m_option;
+    return m_impl->option;
 };
 
 bool OptionItem::isCompatible() const noexcept {
-    return m_impl->s_compatible;
+    return m_impl->compatible;
 };
 
-OptionItem* OptionItem::create(CCSize const& size, Option const& option) {
+OptionItem* OptionItem::create(CCSize const& size, Option option) {
     auto ret = new OptionItem();
-    if (ret->init(size, option)) {
+    if (ret->init(size, std::move(option))) {
         ret->autorelease();
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 }; 

@@ -7,10 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "math_quiz",
+    "Richard's Math Quiz!",
+    "When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cy>Credit: CyanBoi</c>",
+    category::obstructive,
+    SillyTier::High,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(MathPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::math_quiz);
-        int chance = options::getChance(key::math_quiz);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
 
         MathQuiz* m_currentQuiz = nullptr;
     };
@@ -19,19 +28,6 @@ class $modify(MathPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                unschedule(schedule_selector(MathPlayLayer::doQuiz));
-
-                f->enabled = ev->getToggled();
-
-                if (f->enabled) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
-
-                return ListenerResult::Propagate;
-            },
-            key::math_quiz
-        );
 
         if (f->enabled) nextQuiz();
     };

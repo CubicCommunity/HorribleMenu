@@ -6,18 +6,18 @@
 
 using namespace geode::prelude;
 
-class HorribleSettingV3 : public SettingV3 {
+class HorribleSettingV3 final : public SettingV3 {
 public:
     static Result<std::shared_ptr<SettingV3>> parse(
-        std::string_view key,
-        std::string_view modID,
+        ZStringView key,
+        ZStringView modID,
         matjson::Value const& json
     );
 
     bool load(matjson::Value const& json) override;
     bool save(matjson::Value& json) const override;
 
-    bool isDefaultValue() const override;
+    bool isDefaultValue() const noexcept override;
 
     void reset() override;
 
@@ -31,7 +31,7 @@ private:
 
 protected:
     HorribleSettingNodeV3();
-    virtual ~HorribleSettingNodeV3();
+    ~HorribleSettingNodeV3();
 
     void updateState(CCNode* invoker) override;
     void onButton(CCObject*);
@@ -43,8 +43,8 @@ protected:
 public:
     static HorribleSettingNodeV3* create(std::shared_ptr<HorribleSettingV3> setting, float width);
 
-    bool hasUncommittedChanges() const override;
-    bool hasNonDefaultValue() const override;
+    bool hasUncommittedChanges() const noexcept override;
+    bool hasNonDefaultValue() const noexcept override;
 
-    std::shared_ptr<HorribleSettingV3> getSetting() const;
+    std::shared_ptr<HorribleSettingV3> getSetting() const noexcept;
 };

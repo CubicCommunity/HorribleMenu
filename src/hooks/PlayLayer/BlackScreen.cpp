@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "black_screen",
+    "Black Screen Blink",
+    "The screen can suddenly blink while playing a level.\n<cy>Credit: elite_smiler_ispro</c>",
+    category::obstructive,
+    SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(BlackScreenPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::black_screen);
+        bool enabled = options::get(o.id);
     };
 
     void setupHasCompleted() {

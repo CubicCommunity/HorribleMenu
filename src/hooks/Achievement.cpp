@@ -1,4 +1,5 @@
 #include <Utils.hpp>
+#include <Horrible.hpp>
 
 #include <Geode/Geode.hpp>
 
@@ -7,24 +8,25 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "achieve",
+    "Random Achievements",
+    "Randomly play the achievement sound when clicking buttons.\n<cy>Credit: Cheeseworks</c>",
+    category::randoms,
+    SillyTier::Low
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(AchievementCCMenuItem, CCMenuItem) {
     struct Fields {
-        bool enabled = options::get(key::achieve);
-        int chance = options::getChance(key::achieve);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
     };
 
     void activate() {
         CCMenuItem::activate();
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                f->enabled = ev->getToggled();
-                return ListenerResult::Propagate;
-            },
-            key::achieve
-        );
 
         if (f->enabled) {
             if (auto fmod = FMODAudioEngine::sharedEngine()) {

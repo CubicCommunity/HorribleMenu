@@ -8,10 +8,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+static Option const o = {
+    "dementia",
+    "Dementia",
+    "Chance of the player randomly teleports back. This is more like player lagging to be honest!\n<cy>Credit: imdissapearinghelp</c>",
+    category::misc,
+    SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(DementiaPlayerObject, PlayerObject) {
     struct Fields {
-        bool enabled = options::get(key::dementia);
-        int chance = options::getChance(key::dementia);
+        bool enabled = options::get(o.id);
+        int chance = options::getChance(o.id);
 
         int lastMusicTime = 0; // last music time in milliseconds
 
@@ -60,7 +69,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 
 class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
     struct Fields {
-        bool enabled = options::get(key::dementia);
+        bool enabled = options::get(o.id);
     };
 
     bool hasBeenActivated() {

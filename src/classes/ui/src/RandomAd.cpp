@@ -7,7 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-bool RandomAd::setup() {
+bool RandomAd::init() {
+    if (!Popup::init(375.f, 250.f)) return false;
+
     setID("ad"_spr);
     setTitle("Sponsored");
 
@@ -80,11 +82,11 @@ void RandomAd::onPlayBtn(CCObject*) { // congregation jumpscare
 
 RandomAd* RandomAd::create() {
     auto ret = new RandomAd();
-    if (ret->initAnchored(375.f, 250.f)) {
+    if (ret->init()) {
         ret->autorelease();
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };

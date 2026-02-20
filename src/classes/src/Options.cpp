@@ -19,7 +19,7 @@ int options::getChance(std::string_view id) {
     return static_cast<int>(horribleMod->getSettingValue<int64_t>(fmt::format("{}-chance", id)));
 };
 
-bool options::set(std::string_view id, bool enable) {
+bool options::set(ZStringView id, bool enable) {
     if (auto om = OptionManager::get()) return om->setOption(id, enable);
     return false;
 };
@@ -31,7 +31,7 @@ std::span<const std::string> options::getAllCategories() noexcept {
     return ret;
 };
 
-bool options::doesCategoryExist(std::string_view category) noexcept {
+bool options::doesCategoryExist(ZStringView category) noexcept {
     auto cats = getAllCategories();
-    return str::containsAny(category.data(), { cats.begin(), cats.end() });
+    return str::containsAny(category, { cats.begin(), cats.end() });
 };

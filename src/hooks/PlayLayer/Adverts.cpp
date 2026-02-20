@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+        "ads",
+        "Level Ads",
+        "While playing a level in normal mode, an ad for a random level will pop up on your screen from time to time.\n<cy>Credit: staticGD</c>",
+        category::obstructive,
+        SillyTier::Medium,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(AdvertsPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::ads);
+        bool enabled = options::get(o.id);
 
         RandomAd* m_ad = nullptr;
     };
@@ -18,19 +27,6 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                unschedule(schedule_selector(AdvertsPlayLayer::showAd));
-
-                f->enabled = ev->getToggled();
-
-                if (f->enabled) nextAd();
-
-                return ListenerResult::Propagate;
-            },
-            key::ads
-        );
 
         if (f->enabled) nextAd();
     };

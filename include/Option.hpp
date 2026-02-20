@@ -15,7 +15,7 @@ namespace horrible {
     };
 
     // A horrible option
-    struct Option {
+    struct Option final {
         std::string id; // Unique ID of the option
         std::string name; // Name of the option
         std::string description; // Description of the option

@@ -7,9 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const o = {
+    "motivation",
+    "Motivational Quotes",
+    "You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cy>Credit: Cheeseworks</c>",
+    category::obstructive,
+    SillyTier::Low,
+};
+REGISTER_HORRIBLE_OPTION(o);
+
 class $modify(MotivationPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(key::motivation);
+        bool enabled = options::get(o.id);
 
         static constexpr auto msgs = std::to_array<const char*>({
             "Surprised you haven't quit already.",
@@ -110,19 +119,6 @@ class $modify(MotivationPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         auto f = m_fields.self();
-
-        this->template addEventListener<OptionEventFilter>(
-            [this, f](OptionEvent* ev) {
-                unschedule(schedule_selector(MotivationPlayLayer::showMessage));
-
-                f->enabled = ev->getToggled();
-
-                if (f->enabled) scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), randng::get(10.f, 3.f));
-
-                return ListenerResult::Propagate;
-            },
-            key::motivation
-        );
 
         if (f->enabled) {
             log::debug("Preparing {} motivational messages", Fields::msgs.size());

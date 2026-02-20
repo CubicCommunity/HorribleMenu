@@ -7,13 +7,31 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static Option const oGrief = {
+        "grief",
+        "Get Back on Grief",
+        "A chance at death of forcing you to play Grief.\n<cy>Credit: Sweep</c>",
+        category::jumpscares,
+        SillyTier::High,
+};
+REGISTER_HORRIBLE_OPTION(oGrief);
+
+inline static Option const oCongregation = {
+        "congregation",
+        "Congregation Jumpscare",
+        "A chance at death of forcing you to play Congregation.\n<cy>Credit: StaticGD</c>",
+        category::jumpscares,
+        SillyTier::High,
+};
+REGISTER_HORRIBLE_OPTION(oCongregation);
+
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
     struct Fields {
-        bool griefEnabled = options::get("grief");
-        bool congregEnabled = options::get("congregation");
+        bool griefEnabled = options::get(oGrief.id);
+        bool congregEnabled = options::get(oCongregation.id);
 
-        int griefChance = options::getChance("grief");
-        int congregChance = options::getChance("congregation");
+        int griefChance = options::getChance(oGrief.id);
+        int congregChance = options::getChance(oCongregation.id);
 
         bool m_dontCreateObjects = false;
         GameObject* m_destroyingObject;

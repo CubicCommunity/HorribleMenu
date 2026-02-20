@@ -4,14 +4,14 @@
 
 using namespace geode::prelude;
 
-class OptionMenuButton : public CCLayer {
+class OptionMenuButton final : public CCLayer {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
 protected:
     OptionMenuButton();
-    virtual ~OptionMenuButton();
+    ~OptionMenuButton();
 
     void onScaleEnd();
 

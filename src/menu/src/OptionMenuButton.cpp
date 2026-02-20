@@ -9,26 +9,23 @@ using namespace horrible::prelude;
 
 class OptionMenuButton::Impl final {
 public:
-    bool m_inLevel = horribleMod->getSettingValue<bool>("floating-button-level");
+    bool inLevel = horribleMod->getSettingValue<bool>("floating-button-level");
 
-    float m_scale = static_cast<float>(horribleMod->getSettingValue<double>("floating-button-scale"));
-    int64_t m_opacity = horribleMod->getSettingValue<int64_t>("floating-button-opacity");
+    float scale = static_cast<float>(horribleMod->getSettingValue<double>("floating-button-scale"));
+    int64_t opacity = horribleMod->getSettingValue<int64_t>("floating-button-opacity");
 
-    bool m_isDragging = false;
-    bool m_isMoving = false;
+    bool isDragging = false;
+    bool isMoving = false;
 
-    CCSize const m_screenSize = CCDirector::sharedDirector()->getWinSize();
-    CCPoint m_dragStartPos = { 0, 0 };
+    CCSize const screenSize = CCDirector::sharedDirector()->getWinSize();
+    CCPoint dragStartPos = { 0, 0 };
 
-    Ref<CircleButtonSprite> m_sprite = nullptr;
+    Ref<CircleButtonSprite> sprite = nullptr;
 
-    bool m_isAnimating = false;
+    bool isAnimating = false;
 };
 
-OptionMenuButton::OptionMenuButton() {
-    m_impl = std::make_unique<Impl>();
-};
-
+OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
 OptionMenuButton::~OptionMenuButton() {};
 
 bool OptionMenuButton::init() {
@@ -46,59 +43,59 @@ bool OptionMenuButton::init() {
     setTouchPriority(-512);  // ewww touch priority
     setZOrder(9999);
 
-    m_impl->m_sprite = CircleButtonSprite::createWithSprite(
+    m_impl->sprite = CircleButtonSprite::createWithSprite(
         "icon.png"_spr,
         0.925f
     );
-    m_impl->m_sprite->setAnchorPoint({ 0.5, 0.5 });
+    m_impl->sprite->setAnchorPoint({ 0.5, 0.5 });
 
-    setContentSize(m_impl->m_sprite->getScaledContentSize());
+    setContentSize(m_impl->sprite->getScaledContentSize());
 
-    m_impl->m_sprite->setPosition(getScaledContentSize() / 2.f);
+    m_impl->sprite->setPosition(getScaledContentSize() / 2.f);
 
-    setScale(m_impl->m_scale); // set initial scale
-    setOpacity(m_impl->m_opacity); // set initial opacity
+    setScale(m_impl->scale); // set initial scale
+    setOpacity(m_impl->opacity); // set initial opacity
 
     setVisible(horribleMod->getSettingValue<bool>("floating-button")); // set initial visibility
 
-    addChild(m_impl->m_sprite);
+    addChild(m_impl->sprite);
 
     return true;
 };
 
 void OptionMenuButton::setOpacity(GLubyte opacity) {
-    m_impl->m_opacity = opacity;
-    if (m_impl->m_sprite) m_impl->m_sprite->setOpacity(isVisible() ? opacity : 0);
+    m_impl->opacity = opacity;
+    if (m_impl->sprite) m_impl->sprite->setOpacity(isVisible() ? opacity : 0);
 };
 
 void OptionMenuButton::setShowInLevel(bool show) {
-    m_impl->m_inLevel = show;
+    m_impl->inLevel = show;
 };
 
 void OptionMenuButton::setScale(float scale) {
-    m_impl->m_scale = scale;
+    m_impl->scale = scale;
 
-    if (!m_impl->m_isDragging && !m_impl->m_isAnimating) {
-        if (m_impl->m_sprite) {
-            m_impl->m_sprite->setScale(scale);
-            setContentSize(m_impl->m_sprite->getScaledContentSize());
+    if (!m_impl->isDragging && !m_impl->isAnimating) {
+        if (m_impl->sprite) {
+            m_impl->sprite->setScale(scale);
+            setContentSize(m_impl->sprite->getScaledContentSize());
         };
     };
 };
 
 void OptionMenuButton::setPosition(CCPoint const& position) {
-    if (m_impl->m_sprite) {
-        auto halfX = m_impl->m_sprite->getScaledContentWidth() / 2.f;
-        auto halfY = m_impl->m_sprite->getScaledContentHeight() / 2.f;
+    if (m_impl->sprite) {
+        auto halfX = m_impl->sprite->getScaledContentWidth() / 2.f;
+        auto halfY = m_impl->sprite->getScaledContentHeight() / 2.f;
 
-        auto clampX = std::clamp<float>(position.x, halfX, m_impl->m_screenSize.width - halfX);
-        auto clampY = std::clamp<float>(position.y, halfY, m_impl->m_screenSize.height - halfY);
+        auto clampX = std::clamp<float>(position.x, halfX, m_impl->screenSize.width - halfX);
+        auto clampY = std::clamp<float>(position.y, halfY, m_impl->screenSize.height - halfY);
 
         auto clampPos = ccp(clampX, clampY);
         CCLayer::setPosition(clampPos);
 
         // Save only when not dragging
-        if (!m_impl->m_isDragging) {
+        if (!m_impl->isDragging) {
             horribleMod->setSavedValue<float>("button-x", clampPos.x);
             horribleMod->setSavedValue<float>("button-y", clampPos.y);
         };
@@ -108,20 +105,20 @@ void OptionMenuButton::setPosition(CCPoint const& position) {
 };
 
 bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
-    if (m_impl->m_sprite && isVisible()) {
+    if (m_impl->sprite && isVisible()) {
         CCPoint const touchLocation = convertToNodeSpace(touch->getLocation());
 
-        auto box = m_impl->m_sprite->boundingBox();
+        auto box = m_impl->sprite->boundingBox();
         if (box.containsPoint(touchLocation)) {
-            m_impl->m_isDragging = true;
+            m_impl->isDragging = true;
 
-            m_impl->m_dragStartPos = ccpSub(getPosition(), touch->getLocation());
+            m_impl->dragStartPos = ccpSub(getPosition(), touch->getLocation());
 
-            m_impl->m_sprite->stopAllActions();
-            m_impl->m_isAnimating = true;
-            m_impl->m_sprite->runAction(CCSequence::createWithTwoActions(
+            m_impl->sprite->stopAllActions();
+            m_impl->isAnimating = true;
+            m_impl->sprite->runAction(CCSequence::createWithTwoActions(
                 CCSpawn::createWithTwoActions(
-                    CCEaseExponentialOut::create(CCScaleTo::create(0.25f, m_impl->m_scale * 0.875f)),
+                    CCEaseExponentialOut::create(CCScaleTo::create(0.25f, m_impl->scale * 0.875f)),
                     CCFadeTo::create(0.25f, 255)
                 ),
                 CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd))
@@ -135,40 +132,40 @@ bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
 };
 
 void OptionMenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
-    if (m_impl->m_isDragging) {
+    if (m_impl->isDragging) {
         CCPoint const touchLocation = touch->getLocation();
-        CCPoint const newLocation = ccpAdd(touchLocation, m_impl->m_dragStartPos);
+        CCPoint const newLocation = ccpAdd(touchLocation, m_impl->dragStartPos);
 
         setPosition(newLocation);
 
-        m_impl->m_isMoving = true;
+        m_impl->isMoving = true;
     };
 };
 
 void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
-    if (!m_impl->m_isMoving) menu::open();
+    if (!m_impl->isMoving) menu::open();
 
     // reset state
-    m_impl->m_isDragging = false;
-    m_impl->m_isMoving = false;
+    m_impl->isDragging = false;
+    m_impl->isMoving = false;
 
     // store position
     horribleMod->setSavedValue<float>("button-x", getPosition().x);
     horribleMod->setSavedValue<float>("button-y", getPosition().y);
 
-    m_impl->m_isAnimating = true;
+    m_impl->isAnimating = true;
 
-    if (m_impl->m_sprite) {
+    if (m_impl->sprite) {
         // reset scale
-        m_impl->m_sprite->stopAllActions();
-        m_impl->m_sprite->runAction(CCSequence::create(
+        m_impl->sprite->stopAllActions();
+        m_impl->sprite->runAction(CCSequence::create(
             CCSpawn::createWithTwoActions(
                 CCFadeTo::create(0.125f, 255),
-                CCEaseElasticOut::create(CCScaleTo::create(0.875f, m_impl->m_scale))
+                CCEaseElasticOut::create(CCScaleTo::create(0.875f, m_impl->scale))
             ),
             CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd)),
             CCDelayTime::create(1.f),
-            CCFadeTo::create(0.5f, m_impl->m_opacity),
+            CCFadeTo::create(0.5f, m_impl->opacity),
             nullptr));
     };
 };
@@ -179,19 +176,19 @@ void OptionMenuButton::onEnter() {
 };
 
 void OptionMenuButton::onScaleEnd() {
-    m_impl->m_isAnimating = false;
+    m_impl->isAnimating = false;
 };
 
 int64_t OptionMenuButton::getOpacitySetting() const noexcept {
-    return m_impl->m_opacity;
+    return m_impl->opacity;
 };
 
 float OptionMenuButton::getScaleSetting() const noexcept {
-    return m_impl->m_scale;
+    return m_impl->scale;
 };
 
 bool OptionMenuButton::showInLevel() const noexcept {
-    return m_impl->m_inLevel;
+    return m_impl->inLevel;
 };
 
 OptionMenuButton* OptionMenuButton::create() {
@@ -201,7 +198,7 @@ OptionMenuButton* OptionMenuButton::create() {
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };
 
