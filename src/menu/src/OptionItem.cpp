@@ -195,14 +195,14 @@ bool OptionItem::init(CCSize const& size, Option option) {
 
 void OptionItem::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
-        (void)options::set(m_impl->option.id, !m_impl->toggler->isToggled());
+        auto now = !m_impl->toggler->isToggled();
+        
+        (void)options::set(m_impl->option.id, now);
 
         if (m_impl->option.restart) {
             Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
             log::warn("Restart required to apply option {}", m_impl->option.id);
         };
-
-        auto now = options::get(m_impl->option.id);
 
         log::info("Option {} now set to {}", m_impl->option.name, now ? "disabled" : "enabled"); // wtf is it other way around lmao
     } else if (m_impl->toggler) {
