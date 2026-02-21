@@ -20,7 +20,7 @@ public:
     float m_timeDt = 0.f;
 
     bool m_success = false;
-    Function<void(bool)> m_callback;
+    Function<void(bool)> m_callback = nullptr;
 };
 
 SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {};

@@ -88,11 +88,11 @@ bool OptionMenuPopup::init() {
 
     auto mainLayerSize = m_mainLayer->getScaledContentSize();
 
-    auto categoryListBg = CCScale9Sprite::create("square02_001.png");
-    categoryListBg->setScale(0.5f);
+    auto categoryListBg = NineSlice::create("square02_001.png");
     categoryListBg->setAnchorPoint({ 0.5, 0.5 });
     categoryListBg->setPosition({ mainLayerSize.width - 82.5f, 75.f });
-    categoryListBg->setContentSize({ ((mainLayerSize.width / 3.f) - 10.f) * 2.f, 95.f * 2.f });
+    categoryListBg->setContentSize({ (mainLayerSize.width / 3.f) - 10.f, 95.f });
+    categoryListBg->setScaleMultiplier(0.5f);
     categoryListBg->setOpacity(50);
 
     m_mainLayer->addChild(categoryListBg);
@@ -121,7 +121,7 @@ bool OptionMenuPopup::init() {
     m_mainLayer->addChild(m_impl->categoryList, 1);
 
     // Add a background sprite to the popup
-    auto optionListBg = CCScale9Sprite::create("square02_001.png");
+    auto optionListBg = NineSlice::create("square02_001.png");
     optionListBg->setAnchorPoint({ 0.5, 0.5 });
     optionListBg->setPosition({ (mainLayerSize.width / 2.f) - 77.5f, (mainLayerSize.height / 2.f) - 32.5f });
     optionListBg->setContentSize({ (mainLayerSize.width / 1.5f) - 20.f, mainLayerSize.height - 85.f });
@@ -162,7 +162,7 @@ bool OptionMenuPopup::init() {
     m_mainLayer->addChild(m_impl->searchInput);
 
     // add a list button background
-    auto filterMenuBg = CCScale9Sprite::create("square02_001.png");
+    auto filterMenuBg = NineSlice::create("square02_001.png");
     filterMenuBg->setAnchorPoint({ 0.5, 0.5 });
     filterMenuBg->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f });
     filterMenuBg->setContentSize({ (mainLayerSize.width / 3.f), mainLayerSize.height - 45.f });
@@ -196,8 +196,15 @@ bool OptionMenuPopup::init() {
             btnSprite->m_label->setColor(filterBtn.color);
             btnSprite->setScale(0.8f);
 
-            if (auto btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(OptionMenuPopup::filterTierCallback))) {
-                btn->setTag(static_cast<int>(filterBtn.tier));
+            if (auto btn = CCMenuItemExt::createSpriteExtra(
+                btnSprite,
+                [this, filterBtn](auto) {
+                    // Toggle: clicking same button disables filter
+                    m_impl->selectedTier == filterBtn.tier ? m_impl->selectedTier = SillyTier::None : m_impl->selectedTier = filterBtn.tier;
+
+                    m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
+                }
+            )) {
                 btn->setPosition({ 0.f, fBtnY });
 
                 filterMenu->addChild(btn);
@@ -296,20 +303,6 @@ bool OptionMenuPopup::init() {
     );
 
     return true;
-};
-
-void OptionMenuPopup::filterTierCallback(CCObject* sender) {
-    if (auto btn = typeinfo_cast<CCMenuItemSpriteExtra*>(sender)) {
-        auto tier = static_cast<SillyTier>(btn->getTag());
-
-        m_impl->selectedTier = tier;
-        // Toggle: clicking same button disables filter
-        if (m_impl->selectedTier == tier) m_impl->selectedTier = SillyTier::None;
-
-        m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
-    } else {
-        log::error("Filter button cast failed");
-    };
 };
 
 void OptionMenuPopup::resetFilters(CCObject*) {

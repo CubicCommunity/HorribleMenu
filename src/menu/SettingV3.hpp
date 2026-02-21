@@ -9,8 +9,8 @@ using namespace geode::prelude;
 class HorribleSettingV3 final : public SettingV3 {
 public:
     static Result<std::shared_ptr<SettingV3>> parse(
-        ZStringView key,
-        ZStringView modID,
+        std::string key,
+        std::string modID,
         matjson::Value const& json
     );
 
@@ -34,7 +34,6 @@ protected:
     ~HorribleSettingNodeV3();
 
     void updateState(CCNode* invoker) override;
-    void onButton(CCObject*);
     void onCommit() override;
     void onResetToDefault() override;
 

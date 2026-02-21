@@ -69,15 +69,11 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
     HORRIBLE_DELEGATE_HOOKS(o.id);
 
-    struct Fields {
-        bool enabled = options::get(o.id);
-    };
-
     bool hasBeenActivated() {
-        return m_fields->enabled || EnhancedGameObject::hasBeenActivated();
+        return false;
     };
 
     bool hasBeenActivatedByPlayer(PlayerObject * p0) {
-        return m_fields->enabled || EnhancedGameObject::hasBeenActivatedByPlayer(p0);
+        return false;
     };
 };

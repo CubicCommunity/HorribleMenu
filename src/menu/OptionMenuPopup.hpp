@@ -26,8 +26,6 @@ protected:
     OptionMenuPopup();
     ~OptionMenuPopup();
 
-    void filterTierCallback(CCObject*);
-
     void resetFilters(CCObject*);
 
     void openModSettings(CCObject*);

@@ -34,7 +34,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
 
         auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-        auto blackScreen = CCScale9Sprite::create("square02_001.png");
+        auto blackScreen = NineSlice::create("square02_001.png");
         blackScreen->setID("blink"_spr);
         blackScreen->setContentSize({ winSize.width + 10.f, winSize.height + 10.f });
         blackScreen->setPosition(winSize / 2.f);

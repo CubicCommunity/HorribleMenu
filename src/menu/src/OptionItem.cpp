@@ -42,11 +42,11 @@ bool OptionItem::init(CCSize const& size, Option option) {
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
-    auto bg = CCScale9Sprite::create("square02_001.png");
+    auto bg = NineSlice::create("square02_001.png");
     bg->setID("background");
-    bg->setScale(0.5f);
     bg->setAnchorPoint({ 0, 0 });
-    bg->setContentSize(getScaledContentSize() * 2.f);
+    bg->setContentSize(getScaledContentSize());
+    bg->setScaleMultiplier(0.5f);
     bg->setOpacity(40);
 
     addChild(bg, -1);

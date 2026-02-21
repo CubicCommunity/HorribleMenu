@@ -7,11 +7,11 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-Result<std::shared_ptr<SettingV3>> HorribleSettingV3::parse(ZStringView key, ZStringView modID, matjson::Value const& json) {
+Result<std::shared_ptr<SettingV3>> HorribleSettingV3::parse(std::string key, std::string modID, matjson::Value const& json) {
     auto res = std::make_shared<HorribleSettingV3>();
     auto root = checkJson(json, "HorribleSettingV3");
 
-    res->init(key, modID, root);
+    res->init(std::move(key), std::move(modID), root);
     res->parseNameAndDescription(root);
     res->parseEnableIf(root);
 
