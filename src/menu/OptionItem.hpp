@@ -16,11 +16,8 @@ protected:
     OptionItem();
     ~OptionItem();
 
-    void saveTogglerState();
-
     void onToggle(CCObject*);
     void onDescription(CCObject*);
-    void onExit() override;
 
     bool init(CCSize const& size, Option option);
 

@@ -20,6 +20,11 @@ public:
     };
 
     CCMenuItemToggler* toggler = nullptr; // The toggler for the option
+
+    // Save the current state of the toggler as the option state
+    void saveTogglerState() {
+        if (toggler) (void)options::set(option.id, toggler->isToggled());
+    };
 };
 
 OptionItem::OptionItem() : m_impl(std::make_unique<Impl>()) {};
@@ -182,19 +187,16 @@ bool OptionItem::init(CCSize const& size, Option option) {
         
         helpBtn->setSprite(newHelpBtnSprite);
 
-        saveTogglerState();
+        m_impl->saveTogglerState();
     };
 
     return true;
 };
 
-void OptionItem::saveTogglerState() {
-    if (m_impl->toggler) (void)options::set(m_impl->option.id, m_impl->toggler->isToggled());
-};
-
 void OptionItem::onToggle(CCObject*) {
-    if (m_impl->compatible) {
-        saveTogglerState();
+    if (m_impl->toggler && m_impl->compatible) {
+        (void)options::set(m_impl->option.id, !m_impl->toggler->isToggled());
+
         if (m_impl->option.restart) {
             Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
             log::warn("Restart required to apply option {}", m_impl->option.id);
@@ -217,11 +219,6 @@ void OptionItem::onDescription(CCObject*) {
         m_impl->option.description.c_str(),
         "OK"
     )) popup->show();
-};
-
-void OptionItem::onExit() {
-    saveTogglerState();
-    CCMenu::onExit();
 };
 
 Option OptionItem::getOption() const noexcept {
