@@ -315,7 +315,8 @@ void OptionMenu::resetFilters(CCObject*) {
                 m_impl->selectedTier = SillyTier::None;
                 CategoryEvent().send("", false);
             };
-        });
+        }
+    );
 };
 
 void OptionMenu::openModSettings(CCObject*) {

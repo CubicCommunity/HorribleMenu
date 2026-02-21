@@ -2,6 +2,8 @@
 
 #include "Horrible.hpp"
 
+#include <Geode/Result.hpp>
+
 #include <Geode/loader/Event.hpp>
 #include <Geode/loader/Dispatch.hpp>
 
