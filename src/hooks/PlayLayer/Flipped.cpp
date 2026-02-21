@@ -17,8 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FlippedPlayLayer, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
 
         bool flipping = false;
@@ -26,7 +27,7 @@ class $modify(FlippedPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        if (m_fields->enabled) schedule(schedule_selector(FlippedPlayLayer::flip), 0.125f);
+        schedule(schedule_selector(FlippedPlayLayer::flip), 0.125f);
     };
 
     void flippingEnded() {
@@ -37,7 +38,7 @@ class $modify(FlippedPlayLayer, PlayLayer) {
     void flip(float) {
         auto f = m_fields.self();
 
-        if (f->enabled && !f->flipping) {
+        if (!f->flipping) {
             if (randng::tiny() > f->chance) return;
 
             f->flipping = true;

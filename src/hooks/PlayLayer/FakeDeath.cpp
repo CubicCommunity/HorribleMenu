@@ -17,9 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeDeathPlayLayer, PlayLayer) {
-    struct Fields {
-        bool enabled = options::get(o.id);
+    HORRIBLE_DELEGATE_HOOKS(o.id);
 
+    struct Fields {
         bool m_dontCreateObjects = false;
         GameObject* m_destroyingObject;
     };
@@ -28,34 +28,29 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         // Show explosion visual effect but do not kill the player
-        if (f->enabled) {
-            // ignore the anti-cheat spike lmao
-            if (game == m_anticheatSpike && player && !player->m_isDead) return PlayLayer::destroyPlayer(player, game);
-            if (!f->m_destroyingObject) f->m_destroyingObject = game;
 
-            // @geode-ignore(unknown-resource)
-            FMODAudioEngine::sharedEngine()->playEffectAsync("explode_11.ogg");
-            GJBaseGameLayer::shakeCamera(1.f, 2.f, 1.f);
+        // ignore the anti-cheat spike lmao
+        if (game == m_anticheatSpike && player && !player->m_isDead) return PlayLayer::destroyPlayer(player, game);
+        if (!f->m_destroyingObject) f->m_destroyingObject = game;
 
-            if (m_player1) {
-                log::debug("fake death");
-                m_player1->playDeathEffect();
-                m_player1->resetPlayerIcon();
+        // @geode-ignore(unknown-resource)
+        FMODAudioEngine::sharedEngine()->playEffectAsync("explode_11.ogg");
+        GJBaseGameLayer::shakeCamera(1.f, 2.f, 1.f);
 
-                m_player1->m_isDead = false;
-            };
+        if (m_player1) {
+            log::debug("fake death");
+            m_player1->playDeathEffect();
+            m_player1->resetPlayerIcon();
 
-            if (m_player2) {
-                log::debug("fake death");
-                m_player2->playDeathEffect();
-                m_player2->resetPlayerIcon();
-
-                m_player2->m_isDead = false;
-            };
-
-            return;
+            m_player1->m_isDead = false;
         };
 
-        PlayLayer::destroyPlayer(player, game);
+        if (m_player2) {
+            log::debug("fake death");
+            m_player2->playDeathEffect();
+            m_player2->resetPlayerIcon();
+
+            m_player2->m_isDead = false;
+        };
     };
 };

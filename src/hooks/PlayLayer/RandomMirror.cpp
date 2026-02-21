@@ -17,8 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(RandomMirrorPlayLayer, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
 
         bool isFlipped = false;
@@ -26,7 +27,7 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        if (m_fields->enabled) scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 0.125f);
+        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 0.125f);
     };
 
     void toggleFlipped(bool p0, bool p1) {
@@ -40,15 +41,13 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
 
     void nextFlipPortal(float) {
         log::debug("scheduling flip");
-        if (m_fields->enabled) scheduleOnce(schedule_selector(RandomMirrorPlayLayer::flipPortal), randng::get(10.f, 1.f) * chanceToDelayPct(m_fields->chance));
+        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::flipPortal), randng::get(10.f, 1.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void flipPortal(float) {
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            toggleFlipped(!f->isFlipped, false);
-            scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 2.5f);
-        };
+        toggleFlipped(!f->isFlipped, false);
+        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 2.5f);
     };
 };

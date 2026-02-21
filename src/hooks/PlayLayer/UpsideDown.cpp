@@ -17,8 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id); // chance as percent
     };
 
@@ -27,14 +28,12 @@ class $modify(ForceLevelsPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            int rnd = randng::fast(); // random float between 0 and 100
-            log::debug("scene rng {} chance {}", rnd, f->chance);
+        int rnd = randng::fast(); // random float between 0 and 100
+        log::debug("scene rng {} chance {}", rnd, f->chance);
 
-            if (rnd <= f->chance) {
-                log::debug("setting scene upside down");
-                setRotation(-180.f);
-            };
+        if (rnd <= f->chance) {
+            log::debug("setting scene upside down");
+            setRotation(-180.f);
         };
     };
 };

@@ -17,8 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SpamPlayLayer, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
 
         SpamChallenge* m_currentSpam = nullptr;
@@ -26,21 +27,18 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-
-        auto f = m_fields.self();
-
-        if (f->enabled) nextSpam();
+        nextSpam();
     };
 
     void nextSpam() {
         log::debug("scheduling spam challenge");
-        if (m_fields->enabled && !m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void doSpam(float) {
         auto f = m_fields.self();
 
-        if (f->enabled && !m_isPracticeMode && !m_hasCompletedLevel) {
+        if (!m_isPracticeMode && !m_hasCompletedLevel) {
             log::info("Showing spam challenge");
 
             if (auto spam = SpamChallenge::create()) {
@@ -60,8 +58,6 @@ class $modify(SpamPlayLayer, PlayLayer) {
 #endif
                 m_uiLayer->addChild(f->m_currentSpam, 99);
             };
-        } else if (f->enabled) {
-            nextSpam();
         };
     };
 

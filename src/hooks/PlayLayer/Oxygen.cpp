@@ -17,9 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(OxygenPlayLayer, PlayLayer) {
-    struct Fields {
-        bool enabled = options::get(o.id);
+    HORRIBLE_DELEGATE_HOOKS(o.id);
 
+    struct Fields {
         bool withHealth = options::get("health");
 
         float m_oxygenLevel = 100.f;
@@ -34,44 +34,40 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            f->m_oxygenActive = true;
-            f->m_oxygenLevel = 100.f;
+        f->m_oxygenActive = true;
+        f->m_oxygenLevel = 100.f;
 
-            schedule(schedule_selector(OxygenPlayLayer::decreaseOxygen), 0.1f);
+        schedule(schedule_selector(OxygenPlayLayer::decreaseOxygen), 0.1f);
 
-            if (!f->m_oxygenBar) {
-                f->m_oxygenBar = ProgressBar::create();
-                f->m_oxygenBar->setID("oxygen-bar"_spr);
-                f->m_oxygenBar->setFillColor(colors::cyan);
-                f->m_oxygenBar->setAnchorPoint({ 0.5f, 0.5f });
-                f->m_oxygenBar->setPosition({ 10.f, getScaledContentHeight() / 2.f });
-                f->m_oxygenBar->setRotation(-90.f);
+        if (!f->m_oxygenBar) {
+            f->m_oxygenBar = ProgressBar::create();
+            f->m_oxygenBar->setID("oxygen-bar"_spr);
+            f->m_oxygenBar->setFillColor(colors::cyan);
+            f->m_oxygenBar->setAnchorPoint({ 0.5f, 0.5f });
+            f->m_oxygenBar->setPosition({ 10.f, getScaledContentHeight() / 2.f });
+            f->m_oxygenBar->setRotation(-90.f);
 
-                m_uiLayer->addChild(f->m_oxygenBar, 99);
-            };
-
-            f->m_oxygenBar->updateProgress(f->m_oxygenLevel);
-
-            if (f->withHealth) f->m_oxygenBar->setPositionX(f->m_oxygenBar->getPositionX() + 25.f);
-
-            auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->m_oxygenLevel));
-            if (!f->m_oxygenLabel) {
-                f->m_oxygenLabel = CCLabelBMFont::create(o2.c_str(), "bigFont.fnt");
-                f->m_oxygenLabel->setColor(colors::cyan);
-                f->m_oxygenLabel->setAnchorPoint({ 0.f, 1.f });
-                f->m_oxygenLabel->setPosition({ 2.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f });
-                f->m_oxygenLabel->setScale(0.25f);
-
-                m_uiLayer->addChild(f->m_oxygenLabel, 100);
-            } else {
-                f->m_oxygenLabel->setString(o2.c_str());
-            };
-
-            f->m_oxygenLabel->setPosition({ f->m_oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f });
-        } else {
-            log::warn("Oxygen meter is disabled");
+            m_uiLayer->addChild(f->m_oxygenBar, 99);
         };
+
+        f->m_oxygenBar->updateProgress(f->m_oxygenLevel);
+
+        if (f->withHealth) f->m_oxygenBar->setPositionX(f->m_oxygenBar->getPositionX() + 25.f);
+
+        auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->m_oxygenLevel));
+        if (!f->m_oxygenLabel) {
+            f->m_oxygenLabel = CCLabelBMFont::create(o2.c_str(), "bigFont.fnt");
+            f->m_oxygenLabel->setColor(colors::cyan);
+            f->m_oxygenLabel->setAnchorPoint({ 0.f, 1.f });
+            f->m_oxygenLabel->setPosition({ 2.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f });
+            f->m_oxygenLabel->setScale(0.25f);
+
+            m_uiLayer->addChild(f->m_oxygenLabel, 100);
+        } else {
+            f->m_oxygenLabel->setString(o2.c_str());
+        };
+
+        f->m_oxygenLabel->setPosition({ f->m_oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f });
     };
 
     void decreaseOxygen(float dt) {

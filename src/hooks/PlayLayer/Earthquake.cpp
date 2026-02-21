@@ -17,12 +17,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(EarthquakePlayLayer, PlayLayer) {
-    struct Fields {
-        bool enabled = options::get(o.id);
-    };
+    HORRIBLE_DELEGATE_HOOKS(o.id);
 
     void setupHasCompleted() {
-        if (m_fields->enabled) scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
+        scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
         PlayLayer::setupHasCompleted();
     };
 
@@ -30,16 +28,14 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
         auto delay = randng::get(3.f, 1.f);
         log::debug("scheduling quake in {}s", delay);
 
-        if (m_fields->enabled) scheduleOnce(schedule_selector(EarthquakePlayLayer::quake), delay);
+        scheduleOnce(schedule_selector(EarthquakePlayLayer::quake), delay);
     };
 
     void quake(float) {
-        if (m_fields->enabled) {
-            // shake the camera randomly based on intensity
-            int rnd = randng::fast();
+        // shake the camera randomly based on intensity
+        int rnd = randng::fast();
 
-            shakeCamera(randng::get(5.f, 1.f), randng::get(10.f, 1.f), 0.00875F);
-        };
+        shakeCamera(randng::get(5.f, 1.f), randng::get(10.f, 1.f), 0.00875F);
 
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
     };

@@ -17,8 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FreezePlayLayer, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
     };
 
@@ -27,13 +28,9 @@ class $modify(FreezePlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            if (auto gm = GameManager::sharedState()) {
-                int rnd = randng::fast();
-                if (rnd % 100 < f->chance) capFPS(1.f);
-            };
-        } else {
-            log::warn("Random freezing at 90% is disabled");
+        if (auto gm = GameManager::sharedState()) {
+            int rnd = randng::fast();
+            if (rnd % 100 < f->chance) capFPS(1.f);
         };
     };
 
@@ -77,38 +74,36 @@ class $modify(FreezePlayLayer, PlayLayer) {
     };
 
     void updateProgressbar() {
-        if (m_fields->enabled) {
-            // check if current percentage is less than or equal to 90
-            if (getCurrentPercentInt() >= 90) {
-                auto gm = GameManager::get();
+        // check if current percentage is less than or equal to 90
+        if (getCurrentPercentInt() >= 90) {
+            auto gm = GameManager::get();
 
-                gm->setGameVariable("0116", true);
+            gm->setGameVariable("0116", true);
 
-                // Randomize FPS between 1 and 45
-                int rndFps = randng::get(45, 1); // 1 to 45 inclusive
+            // Randomize FPS between 1 and 45
+            int rndFps = randng::get(45, 1); // 1 to 45 inclusive
 
-                auto interval = 1.f / static_cast<float>(rndFps);
-                if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
+            auto interval = 1.f / static_cast<float>(rndFps);
+            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
 
-                CCDirector::sharedDirector()->setAnimationInterval(interval);
+            CCDirector::sharedDirector()->setAnimationInterval(interval);
 
-                // log::debug("cap fps to {} (interval {})", rndFps, interval);
-            } else {
-                // default to user old fps
-                auto gm = GameManager::get();
+            // log::debug("cap fps to {} (interval {})", rndFps, interval);
+        } else {
+            // default to user old fps
+            auto gm = GameManager::get();
 
-                gm->setGameVariable("0116", true);
+            gm->setGameVariable("0116", true);
 
-                auto oldFPS = horribleMod->getSavedValue<float>("fps");
+            auto oldFPS = horribleMod->getSavedValue<float>("fps");
 
-                // Use seconds per frame, not raw FPS
-                auto interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f); // minimum 10 FPS
-                if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
+            // Use seconds per frame, not raw FPS
+            auto interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f); // minimum 10 FPS
+            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
 
-                CCDirector::sharedDirector()->setAnimationInterval(interval);
+            CCDirector::sharedDirector()->setAnimationInterval(interval);
 
-                // log::debug("reset fps to {} (interval {})", oldFPS, interval);
-            };
+            // log::debug("reset fps to {} (interval {})", oldFPS, interval);
         };
 
         PlayLayer::updateProgressbar();

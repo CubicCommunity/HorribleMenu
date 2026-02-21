@@ -17,8 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(MathPlayLayer, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
 
         MathQuiz* m_currentQuiz = nullptr;
@@ -26,19 +27,16 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-
-        auto f = m_fields.self();
-
-        if (f->enabled) nextQuiz();
+        nextQuiz();
     };
 
     void nextQuiz() {
         log::debug("scheduling math quiz");
-        if (m_fields->enabled && !m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void doQuiz(float) {
-        if (m_fields->enabled && m_isPracticeMode && !m_hasCompletedLevel) {
+        if (m_isPracticeMode && !m_hasCompletedLevel) {
             log::info("Showing math quiz");
 
             if (auto quiz = MathQuiz::create()) {
@@ -58,8 +56,6 @@ class $modify(MathPlayLayer, PlayLayer) {
 #endif
                 m_uiLayer->addChild(m_fields->m_currentQuiz, 99);
             };
-        } else if (m_fields->enabled) {
-            nextQuiz();
         };
     };
 };

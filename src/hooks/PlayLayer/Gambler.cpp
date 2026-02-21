@@ -18,8 +18,6 @@ HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(GamblerPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = options::get(o.id);
-
         bool triggered = false;
         bool tricked = false;
     };
@@ -29,12 +27,10 @@ class $modify(GamblerPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            log::debug("gambler enabled");
+        log::debug("gambler enabled");
 
-            // check every frame so we can detect each percentage change
-            if (!f->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.f);
-        };
+        // check every frame so we can detect each percentage change
+        if (!f->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.f);
 
         return true;
     };
@@ -55,31 +51,29 @@ class $modify(GamblerPlayLayer, PlayLayer) {
     void gamblerCheck(float) {
         auto f = m_fields.self();
 
-        if (!f->enabled) {
-            int percentage = getCurrentPercentInt();
-            // detect the moment the player first reaches or crosses 95
-            if (percentage == 95 && !f->triggered) {
-                // roll a random number between 0 and 1
-                int roll = randng::fast() % 2;
+        int percentage = getCurrentPercentInt();
+        // detect the moment the player first reaches or crosses 95
+        if (percentage == 95 && !f->triggered) {
+            // roll a random number between 0 and 1
+            int roll = randng::fast() % 2;
 
-                log::info("Gambler roll: {}", roll);
-                if (roll == 0) {
-                    log::info("Gambler lost the bet!");
+            log::info("Gambler roll: {}", roll);
+            if (roll == 0) {
+                log::info("Gambler lost the bet!");
 
-                    // reverse the player
-                    m_player1->reversePlayer(nullptr);
-                    m_player1->m_gravity = 0.01f; // reduce gravity to simulate a bounce
+                // reverse the player
+                m_player1->reversePlayer(nullptr);
+                m_player1->m_gravity = 0.01f; // reduce gravity to simulate a bounce
 
-                    // force player to jump
-                    GJBaseGameLayer::get()->handleButton(true, 1, true);
+                // force player to jump
+                GJBaseGameLayer::get()->handleButton(true, 1, true);
 
-                    f->triggered = true;
-                    f->tricked = true;
-                } else {
-                    log::info("Gambler won the bet! instant win.");
-                    levelComplete();
-                    f->triggered = true;
-                };
+                f->triggered = true;
+                f->tricked = true;
+            } else {
+                log::info("Gambler won the bet! instant win.");
+                levelComplete();
+                f->triggered = true;
             };
         };
     };

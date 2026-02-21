@@ -17,25 +17,24 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(PausePlayerObject, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
     };
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        if (m_fields->enabled) nextPause();
+        nextPause();
     };
 
     void nextPause() {
         log::debug("scheduling pause");
-        if (m_fields->enabled) scheduleOnce(schedule_selector(PausePlayerObject::pause), randng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
+        scheduleOnce(schedule_selector(PausePlayerObject::pause), randng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void pause(float) {
-        if (m_fields->enabled) {
-            nextPause();
-            pauseGame(true);
-        };
+        nextPause();
+        pauseGame(true);
     };
 };
