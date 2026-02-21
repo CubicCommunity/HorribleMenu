@@ -133,16 +133,3 @@ class $modify(HIGJGameLevel, GJGameLevel) {
         };
     };
 };
-
-// WOMP WOMP BROKEN PLAYTEST
-class $modify(HILevelEditorLayer, LevelEditorLayer) {
-    void onPlaytest() {
-        FLAlertLayer::create(
-            "Warning",
-            "<cg>Horrible Ideas</c> has somehow <cr>completely broke the Playtest function</c> in the level editor, now preventing the player from playtesting levels... Sorry about that!\n\n<cy>We recommend disabling the mod while working on levels in the meantime.</c>",
-            "OK"
-        )->show();
-
-        LevelEditorLayer::onPlaytest();
-    };
-};

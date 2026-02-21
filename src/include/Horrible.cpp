@@ -53,7 +53,15 @@ Result<Option> OptionManager::getOptionInfo(std::string_view id) const noexcept 
     };
 
     return Err("Option not found");
-}
+};
+
+size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
+    for (auto const& [optionId, delegates] : m_delegates) {
+        if (optionId == id) return delegates.size();
+    };
+
+    return 0;
+};
 
 bool OptionManager::setOption(ZStringView id, bool enable) {
     auto it = m_delegates.find(id);

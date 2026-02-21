@@ -67,14 +67,6 @@ namespace horrible {
         void registerOption(Option option);
 
         /**
-         * Upsert a new hook delegate
-         *
-         * @param id The ID of the option to set the delegate for
-         * @param callback The hook callback to register for this option's delegate
-         */
-        void addDelegate(std::string&& id, geode::Function<void(bool)>&& callback);
-
-        /**
          * Returns a reference to the array of all registered options
          *
          * @returns An array of every registered option, main and external
@@ -100,6 +92,15 @@ namespace horrible {
         [[nodiscard]] geode::Result<horrible::Option> getOptionInfo(std::string_view id) const noexcept;
 
         /**
+         * Returns the amount of delegate callbacks registered for an option
+         *
+         * @param id The ID of the option whose callbacks to check
+         *
+         * @returns The amount of callbacks registered for this option
+         */
+        [[nodiscard]] size_t getDelegateCount(std::string_view id) const noexcept;
+
+        /**
          * Set the toggle state of an option
          *
          * @param id The ID of the option to toggle
@@ -108,6 +109,14 @@ namespace horrible {
          * @returns Boolean of the old value
          */
         bool setOption(geode::ZStringView id, bool enable);
+
+        /**
+         * Upsert a new hook delegate
+         *
+         * @param id The ID of the option to set the delegate for
+         * @param callback The hook callback to register for this option's delegate
+         */
+        void addDelegate(std::string&& id, geode::Function<void(bool)>&& callback);
 
         /**
          * Returns a reference to the array of all registered categories
