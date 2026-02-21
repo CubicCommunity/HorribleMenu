@@ -20,6 +20,7 @@
 
 #include <Geode/utils/function.hpp>
 #include <Geode/utils/StringMap.hpp>
+#include <Geode/utils/ZStringView.hpp>
 
 // Container for Horrible Ideas API functions
 namespace horrible {
@@ -28,7 +29,7 @@ namespace horrible {
     private:
         std::vector<Option> m_options; // Array of registered options
         std::vector<std::string> m_categories; // Array of auto-registered categories
-        std::unordered_map<std::string_view, std::vector<geode::Function<void(bool)>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_map<std::string, std::vector<geode::Function<void(bool)>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
 
     protected:
         OptionManager() = default; // Default constructor
@@ -69,7 +70,7 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(std::string_view id, geode::Function<void(bool)>&& callback);
+        void addDelegate(std::string id, geode::Function<void(bool)>&& callback);
 
         /**
          * Returns a reference to the array of all registered options
@@ -88,6 +89,15 @@ namespace horrible {
         [[nodiscard]] bool getOption(std::string_view id) const noexcept;
 
         /**
+         * Returns the data of an option
+         *
+         * @param id The ID of the option to get
+         *
+         * @returns A result possibly containing the option object
+         */
+        [[nodiscard]] geode::Result<horrible::Option> getOptionInfo(std::string_view id) const noexcept;
+
+        /**
          * Set the toggle state of an option
          *
          * @param id The ID of the option to toggle
@@ -95,7 +105,7 @@ namespace horrible {
          *
          * @returns Boolean of the old value
          */
-        bool setOption(std::string_view id, bool enable);
+        bool setOption(geode::ZStringView id, bool enable);
 
         /**
          * Returns a reference to the array of all registered categories

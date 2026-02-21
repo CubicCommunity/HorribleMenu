@@ -9,7 +9,7 @@
 using namespace geode::prelude;
 using namespace horrible;
 
-class OptionMenuPopup final : public Popup {
+class OptionMenu final : public Popup {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
@@ -21,10 +21,10 @@ private:
     };
 
 protected:
-    static OptionMenuPopup* s_inst;
+    static OptionMenu* s_inst;
 
-    OptionMenuPopup();
-    ~OptionMenuPopup();
+    OptionMenu();
+    ~OptionMenu();
 
     void resetFilters(CCObject*);
 
@@ -39,7 +39,7 @@ protected:
     bool init() override;
 
 public:
-    static OptionMenuPopup* create();
+    static OptionMenu* create();
 
-    static OptionMenuPopup* get() noexcept;
+    static OptionMenu* get() noexcept;
 };

@@ -1,4 +1,4 @@
-#include "../OptionMenuPopup.hpp"
+#include "../OptionMenu.hpp"
 
 #include <menu/OptionItem.hpp>
 #include <menu/OptionCategoryItem.hpp>
@@ -15,9 +15,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-OptionMenuPopup* OptionMenuPopup::s_inst = nullptr;
+OptionMenu* OptionMenu::s_inst = nullptr;
 
-class OptionMenuPopup::Impl final {
+class OptionMenu::Impl final {
 public:
     SillyTier selectedTier = SillyTier::None;
     std::string selectedCategory = "";
@@ -77,10 +77,10 @@ public:
     };
 };
 
-OptionMenuPopup::OptionMenuPopup() : m_impl(std::make_unique<Impl>()) {};
-OptionMenuPopup::~OptionMenuPopup() {};
+OptionMenu::OptionMenu() : m_impl(std::make_unique<Impl>()) {};
+OptionMenu::~OptionMenu() {};
 
-bool OptionMenuPopup::init() {
+bool OptionMenu::init() {
     if (!Popup::init(450.f, 280.f)) return false;
 
     setID("options"_spr);
@@ -230,7 +230,7 @@ bool OptionMenuPopup::init() {
     auto settingsBtn = CCMenuItemSpriteExtra::create(
         settingsBtnSprite,
         this,
-        menu_selector(OptionMenuPopup::openModSettings)
+        menu_selector(OptionMenu::openModSettings)
     );
     settingsBtn->setID("settings-btn");
 
@@ -242,7 +242,7 @@ bool OptionMenuPopup::init() {
     auto resetFiltersBtn = CCMenuItemSpriteExtra::create(
         resetFiltersBtnSprite,
         this,
-        menu_selector(OptionMenuPopup::resetFilters)
+        menu_selector(OptionMenu::resetFilters)
     );
     resetFiltersBtn->setID("reset-filters-btn");
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
@@ -255,7 +255,7 @@ bool OptionMenuPopup::init() {
     auto seriesBtn = CCMenuItemSpriteExtra::create(
         seriesBtnSprite,
         this,
-        menu_selector(OptionMenuPopup::openSeriesPage)
+        menu_selector(OptionMenu::openSeriesPage)
     );
     seriesBtn->setID("horrible-mods-series-btn");
     seriesBtn->setPosition(mainLayerSize - 20.f);
@@ -269,7 +269,7 @@ bool OptionMenuPopup::init() {
     auto supporterBtn = CCMenuItemSpriteExtra::create(
         supporterBtnSprite,
         this,
-        menu_selector(OptionMenuPopup::openSupporterPopup)
+        menu_selector(OptionMenu::openSupporterPopup)
     );
     supporterBtn->setID("support-btn");
     supporterBtn->setPosition({ mainLayerSize.width - 45.f, mainLayerSize.height - 20.f });
@@ -305,7 +305,7 @@ bool OptionMenuPopup::init() {
     return true;
 };
 
-void OptionMenuPopup::resetFilters(CCObject*) {
+void OptionMenu::resetFilters(CCObject*) {
     createQuickPopup(
         "Reset Filters",
         "Would you like to <cr>reset all search filters</c>?",
@@ -318,11 +318,11 @@ void OptionMenuPopup::resetFilters(CCObject*) {
         });
 };
 
-void OptionMenuPopup::openModSettings(CCObject*) {
+void OptionMenu::openModSettings(CCObject*) {
     openSettingsPopup(horribleMod);
 };
 
-void OptionMenuPopup::openSeriesPage(CCObject*) {
+void OptionMenu::openSeriesPage(CCObject*) {
     createQuickPopup(
         "Horrible Mods",
         "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
@@ -333,31 +333,31 @@ void OptionMenuPopup::openSeriesPage(CCObject*) {
     );
 };
 
-void OptionMenuPopup::openSupporterPopup(CCObject*) {
+void OptionMenu::openSupporterPopup(CCObject*) {
     openSupportPopup(horribleMod);
 };
 
-void OptionMenuPopup::onClose(CCObject* sender) {
+void OptionMenu::onClose(CCObject* sender) {
     s_inst = nullptr;
     Popup::onClose(sender);
 };
 
-void OptionMenuPopup::onExit() {
+void OptionMenu::onExit() {
     s_inst = nullptr;
     Popup::onExit();
 };
 
-void OptionMenuPopup::cleanup() {
+void OptionMenu::cleanup() {
     s_inst = nullptr;
     Popup::cleanup();
 };
 
-OptionMenuPopup* OptionMenuPopup::get() noexcept {
+OptionMenu* OptionMenu::get() noexcept {
     return s_inst;
 };
 
-OptionMenuPopup* OptionMenuPopup::create() {
-    auto ret = new OptionMenuPopup();
+OptionMenu* OptionMenu::create() {
+    auto ret = new OptionMenu();
     if (ret->init()) {
         ret->autorelease();
         s_inst = ret;

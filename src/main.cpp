@@ -125,12 +125,8 @@ class $modify(HIPauseLayer, PauseLayer) {
 
 // safe mode
 class $modify(HIGJGameLevel, GJGameLevel) {
-    struct Fields {
-        bool safeMode = horribleMod->getSettingValue<bool>("safe-mode");
-    };
-
     void savePercentage(int percent, bool isPracticeMode, int clicks, int attempts, bool isChkValid) {
-        if (m_fields->safeMode) {
+        if (horribleMod->getSettingValue<bool>("safe-mode")) {
             log::warn("Safe mode is enabled, your progress will not be saved!");
         } else {
             GJGameLevel::savePercentage(percent, isPracticeMode, clicks, attempts, isChkValid);
