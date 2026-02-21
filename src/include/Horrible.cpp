@@ -81,7 +81,7 @@ OptionManager* OptionManager::get() noexcept {
     return inst;
 };
 
-void horrible::delegateHooks(std::string_view id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks) {
+void horrible::delegateHooks(std::string id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks) {
     if (auto om = OptionManager::get()) {
         auto value = om->getOption(id);
 
@@ -95,7 +95,7 @@ void horrible::delegateHooks(std::string_view id, geode::utils::StringMap<std::s
         geode::log::debug("Delegating {} hooks for {}", allHooks.size(), id);
 
         om->addDelegate(
-            std::string(id), // string buffers die on other platforms ???
+            std::move(id), // string buffers die here on other platforms ???
             [allHooks = std::move(allHooks)](bool value) {
                 for (auto hook : allHooks) (void)hook->toggle(value);
             }

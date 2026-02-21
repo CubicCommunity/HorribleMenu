@@ -132,7 +132,7 @@ namespace horrible {
      * @param id The ID of the option to delegate for
      * @param hooks The map of hooks to delegate
      */
-    AWCW_HORRIBLE_API_DLL void delegateHooks(std::string_view id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
+    AWCW_HORRIBLE_API_DLL void delegateHooks(std::string id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
 };
 
 // Statically register an option
@@ -143,5 +143,5 @@ namespace horrible {
 // Delegate registered hooks to OptionManager for dynamic toggling
 #define HORRIBLE_DELEGATE_HOOKS(id) \
 static void onModify(auto& self) { \
-    horrible::delegateHooks(std::string_view(id), self.m_hooks); \
+    horrible::delegateHooks(id, self.m_hooks); \
 }
