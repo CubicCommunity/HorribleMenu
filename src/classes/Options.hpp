@@ -44,6 +44,15 @@ namespace horrible {
             bool set(geode::ZStringView id, bool enable);
 
             /**
+             * Returns the amount of delegate callbacks registered for an option
+             *
+             * @param id The ID of the option whose callbacks to check
+             *
+             * @returns The amount of callbacks registered for this option
+             */
+            size_t getDelegates(std::string_view id) noexcept;
+
+            /**
              * Returns the array of all registered option categories
              *
              * @returns An array of every registered option category, main and external

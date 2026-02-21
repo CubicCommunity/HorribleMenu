@@ -24,6 +24,11 @@ bool options::set(ZStringView id, bool enable) {
     return false;
 };
 
+size_t options::getDelegates(std::string_view id) noexcept {
+    if (auto om = OptionManager::get()) return om->getDelegateCount(id);
+    return 0;
+};
+
 std::span<const std::string> options::getAllCategories() noexcept {
     if (auto om = OptionManager::get()) return om->getCategories();
 

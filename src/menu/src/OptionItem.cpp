@@ -135,8 +135,9 @@ bool OptionItem::init(CCSize const& size, Option option) {
     addChild(categoryLabel);
 
     if (horribleMod->getSettingValue<bool>("dev-mode")) {
+        auto str = fmt::format("{} | {} delegate(s)", m_impl->option.id, options::getDelegates(m_impl->option.id));
         auto idLabel = CCLabelBMFont::create(
-            m_impl->option.id.c_str(),
+            str.c_str(),
             "chatFont.fnt",
             getScaledContentWidth() - 20.f,
             kCCTextAlignmentLeft
@@ -204,7 +205,7 @@ void OptionItem::onToggle(CCObject*) {
             log::warn("Restart required to apply option {}", m_impl->option.id);
         };
 
-        log::info("Option {} now set to {}", m_impl->option.name, now ? "disabled" : "enabled"); // wtf is it other way around lmao
+        log::info("Option {} now set to {}", m_impl->option.name, now ? "enabled" : "disabled");
     } else if (m_impl->toggler) {
         Notification::create(fmt::format("{} is unavailable for {}", m_impl->option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
         log::error("Option {} is not available for platform {}", m_impl->option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
