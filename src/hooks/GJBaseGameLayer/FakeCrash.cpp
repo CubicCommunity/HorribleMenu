@@ -17,8 +17,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool m_enabled = options::get(o.id);
         int m_chance = options::getChance(o.id);
 
         float m_lastTimeWarp = LevelTools::getLastTimewarp();
@@ -38,7 +39,7 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
         auto f = m_fields.self();
 
         // log::debug("FakeCrash update tick");
-        if (f->m_enabled && !f->m_inFakeCrash && randng::fast() % f->m_chance == 0) {
+        if (!f->m_inFakeCrash && randng::fast() % f->m_chance == 0) {
             log::debug("Faking crash");
             f->m_lastTimeWarp = LevelTools::getLastTimewarp();
 

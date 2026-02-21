@@ -17,18 +17,14 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {
-    struct Fields {
-        bool enabled = options::get(o.id);
-    };
+    HORRIBLE_DELEGATE_HOOKS(o.id);
 
     void handleButton(bool down, int button, bool isPlayer1) {
-        if (m_fields->enabled) {
-            if (button == 1 && !down) {
-                auto warpFactor = randng::get(300.f, 50.f) / 100.f;
+        if (button == 1 && !down) {
+            auto warpFactor = randng::get(300.f, 50.f) / 100.f;
 
-                log::debug("applying time warp factor {}", warpFactor);
-                GJBaseGameLayer::updateTimeWarp(warpFactor);
-            };
+            log::debug("applying time warp factor {}", warpFactor);
+            GJBaseGameLayer::updateTimeWarp(warpFactor);
         };
 
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
