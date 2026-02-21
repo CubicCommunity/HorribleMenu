@@ -48,20 +48,20 @@ $on_game(Loaded) {
     );
 
     (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
+
+    if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
 };
 
 class $modify(HIMenuLayer, MenuLayer) {
     bool init() {
         if (!MenuLayer::init()) return false;
 
-        if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
-
         if (auto gm = GameManager::get()) {
             // get and store user current fps
             float currentFPS = gm->m_customFPSTarget;
-            float storedFPS = horribleMod->setSavedValue<float>("fps", currentFPS);
+            (void)horribleMod->setSavedValue<float>("fps", currentFPS);
 
-            log::debug("Store Current FPS: {}", storedFPS);
+            log::debug("Store Current FPS: {}", currentFPS);
         };
 
         return true;

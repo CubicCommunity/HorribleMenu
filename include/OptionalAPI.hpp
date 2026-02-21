@@ -11,10 +11,6 @@
 #define MY_MOD_ID "arcticwoof.horrible_ideas"
 
 namespace horrible {
-    struct OptionEventV2 final : geode::Event<OptionEventV2, bool(std::string, bool)> {
-        using Event::Event;
-    };
-
     class OptionManagerV2 final {
     public:
         static geode::Result<> registerOption(Option const& option)

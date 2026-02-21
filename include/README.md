@@ -1,6 +1,9 @@
 # [<img src="../logo.png" width="30" alt="The mod's logo." />](https://www.geode-sdk.org/mods/arcticwoof.horrible_ideas) Horrible Ideas
 A plethora of ways to ruin your gaming experience...
 
+> [!WARNING]
+> This is heavily outdated.
+
 ## API
 Let's start off by adding this mod as a dependency in your `mod.json`!
 ```jsonc
