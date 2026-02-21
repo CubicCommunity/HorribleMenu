@@ -14,7 +14,7 @@ inline static Option const o = {
         category::obstructive,
         SillyTier::Low,
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(BlinkingIconPlayLayer, PlayLayer) {
     struct Fields {

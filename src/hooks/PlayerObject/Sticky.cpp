@@ -14,7 +14,7 @@ inline static Option const o = {
         category::misc,
         SillyTier::Medium,
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(StickyPlayerObject, PlayerObject) {
     struct Fields {

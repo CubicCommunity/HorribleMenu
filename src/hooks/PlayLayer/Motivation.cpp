@@ -14,7 +14,7 @@ inline static Option const o = {
     category::obstructive,
     SillyTier::Low,
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 static constexpr auto s_msgs = std::to_array<const char*>({
     "Surprised you haven't quit already.",
@@ -111,7 +111,7 @@ static constexpr auto s_msgs = std::to_array<const char*>({
                                                           });
 
 class $modify(MotivationPlayLayer, PlayLayer) {
-    DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(o.id);
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();

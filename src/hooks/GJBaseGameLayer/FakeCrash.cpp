@@ -14,7 +14,7 @@ inline static Option const o = {
     category::randoms,
     SillyTier::Medium,
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     struct Fields {

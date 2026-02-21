@@ -14,7 +14,7 @@ inline static Option const o = {
     category::obstructive,
     SillyTier::Medium,
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 static constexpr auto s_confettis = std::to_array<const char*>({
     "diffIcon_02_btn_001.png",
@@ -35,7 +35,7 @@ static constexpr auto s_confettis = std::to_array<const char*>({
                                                                });
 
 class $modify(ConfettiPlayLayer, PlayLayer) {
-    DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(o.id);
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();

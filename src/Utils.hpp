@@ -1,7 +1,5 @@
 #pragma once
 
-#include <ranges>
-
 #include <Horrible.hpp>
 
 #include <classes/Jumpscares.hpp>
@@ -14,10 +12,6 @@
 #include <classes/ui/SpamChallenge.hpp>
 
 #include <cocos2d.h>
-
-#include <Geode/utils/ZStringView.hpp>
-
-#include <Geode/loader/Log.hpp>
 
 #include <Geode/binding/FMODAudioEngine.hpp>
 
@@ -75,33 +69,4 @@ namespace horrible {
         using namespace ::horrible::ui;
         using namespace ::horrible::util;
     };
-
-    inline void delegateHooks(std::string_view id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks) {
-        if (auto om = OptionManager::get()) {
-            auto value = om->getOption(id);
-
-            std::vector<geode::Hook*> allHooks;
-            for (auto& hook : hooks | std::views::values) {
-                hook->setAutoEnable(value);
-                log::debug("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
-                allHooks.push_back(hook.get());
-            };
-
-            om->addDelegate(
-                id,
-                [allHooks = std::move(allHooks), id, om] {
-                    auto value = om->getOption(id);
-                    for (auto hook : allHooks) (void)hook->toggle(value);
-                    geode::log::debug("{} hooks for {}", value ? "Enabled" : "Disabled", id);
-                }
-            );
-
-            geode::log::debug("Delegated {} hooks for {}", allHooks.size(), id);
-        };
-    };
 };
-
-#define DELEGATE_HOOKS(id) \
-static void onModify(auto& self) { \
-    horrible::delegateHooks(std::string_view(id), self.m_hooks); \
-}

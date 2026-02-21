@@ -54,8 +54,8 @@ An event that fires any time any option is changed.
 - `bool` **`getToggled()`** `const`: Get the toggle boolean of the option
 
 #### class `horrible::HorribleOptionEventFilter`
-- `ListenerResult` **`handle(std::function<Callback> fn, HorribleOptionEvent* event)`**: Event handler
-  - `std::function<Callback>` **`fn`**: Callback function containing a pointer to the event that fired
+- `ListenerResult` **`handle(geode::Function<Callback> fn, HorribleOptionEvent* event)`**: Event handler
+  - `geode::Function<Callback>` **`fn`**: Callback function containing a pointer to the event that fired
   - `HorribleOptionEvent*` **`event`**: Pointer to the event that fired
 
 #### Summary
@@ -218,7 +218,7 @@ These classes mirror the main API but return `geode::Result` values so callers c
 - `bool` **`getToggled()`** `const`
 
 #### class `horrible::HorribleOptionEventFilterV2`
-- `ListenerResult` **`handle(std::function<Callback> fn, HorribleOptionEventV2* event)`**
+- `ListenerResult` **`handle(geode::Function<Callback> fn, HorribleOptionEventV2* event)`**
 
 #### class `horrible::OptionManagerV2`
 - `static Result<>` **`registerOption(Option const& option)`**

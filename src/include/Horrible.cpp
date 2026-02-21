@@ -2,6 +2,8 @@
 #include <Horrible.hpp>
 #include <OptionalAPI.hpp>
 
+#include <ranges>
+
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
@@ -28,9 +30,11 @@ void OptionManager::registerOption(Option option) {
     };
 };
 
-void OptionManager::addDelegate(std::string_view id, std::function<void()>&& callback) {
-    auto thisDelegate = m_delegates[id];
-    void(thisDelegate.push_back(std::move(callback)));
+void OptionManager::addDelegate(std::string_view id, Function<void(bool)>&& callback) {
+    auto& thisDelegate = m_delegates[id];
+    thisDelegate.push_back(std::move(callback));
+
+    log::debug("Added delegate for option {} ({} total)", id, thisDelegate.size());
 };
 
 std::span<const Option> OptionManager::getOptions() const noexcept {
@@ -45,10 +49,10 @@ bool OptionManager::getOption(std::string_view id) const noexcept {
     return Mod::get()->getSavedValue<bool>(id, false);
 };
 
-bool OptionManager::setOption(std::string_view id, bool enable) const {
+bool OptionManager::setOption(std::string_view id, bool enable) {
     auto it = m_delegates.find(id);
     if (it != m_delegates.end()) {
-        for (auto& cb : it->second) cb();
+        for (auto& cb : it->second) cb(enable);
     };
 
     log::debug("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
@@ -68,6 +72,31 @@ Result<> OptionManagerV2::registerOption(Option const& option) {
     };
 
     return Err("Failed to get OptionManager");
+};
+
+void horrible::delegateHooks(std::string_view id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks) {
+    if (auto om = OptionManager::get()) {
+        auto value = om->getOption(id);
+
+        std::vector<geode::Hook*> allHooks;
+        for (auto& hook : hooks | std::views::values) {
+            hook->setAutoEnable(value);
+            geode::log::debug("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
+            allHooks.push_back(hook.get());
+        };
+
+        geode::log::debug("Delegating {} hooks for {}", allHooks.size(), id);
+
+        om->addDelegate(
+            id,
+            [allHooks = std::move(allHooks), id](bool value) {
+                for (auto hook : allHooks) {
+                    (void)hook->toggle(value);
+                    geode::log::debug("{} hook '{}' for {}", value ? "ENABLED" : "DISABLED", hook->getDisplayName(), id);
+                };
+            }
+        );
+    };
 };
 
 Result<bool> OptionManagerV2::getOption(std::string_view id) {

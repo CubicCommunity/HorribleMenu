@@ -23,11 +23,12 @@ inline static Option const o = {
         PlatformID::Android,
     },
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(MockMenuLayer, MenuLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
     };
 
@@ -37,85 +38,83 @@ class $modify(MockMenuLayer, MenuLayer) {
         auto f = m_fields.self();
 
         // show a lazysprite for the first png found in the save dir
-        if (f->enabled) {
-            int rnd = randng::fast();
-            log::debug("mock chance {}", rnd);
+        int rnd = randng::fast();
+        log::debug("mock chance {}", rnd);
 
-            if (rnd <= f->chance) {
-                auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
-                auto const mockConfig = file::readJson(fs::path(mockConfigPath));
+        if (rnd <= f->chance) {
+            auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
+            auto const mockConfig = file::readJson(fs::path(mockConfigPath));
 
-                log::debug("Reading path {}...", mockConfigPath);
+            log::debug("Reading path {}...", mockConfigPath);
 
-                if (mockConfig.isOk()) {
-                    log::debug("Read mocking config file");
+            if (mockConfig.isOk()) {
+                log::debug("Read mocking config file");
 
-                    auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
+                auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
-                    auto lvlUnwr = mockConfigUnwr.begin();
-                    std::advance(lvlUnwr, rnd % mockConfigUnwr.size());
+                auto lvlUnwr = mockConfigUnwr.begin();
+                std::advance(lvlUnwr, rnd % mockConfigUnwr.size());
 
-                    auto const id = lvlUnwr->getKey().value_or("");
-                    auto percent = lvlUnwr->asInt().unwrapOr(99);
+                auto const id = lvlUnwr->getKey().value_or("");
+                auto percent = lvlUnwr->asInt().unwrapOr(99);
 
-                    if (!id.empty()) {
-                        log::debug("ID {} with percentage {} is valid", id, percent);
+                if (!id.empty()) {
+                    log::debug("ID {} with percentage {} is valid", id, percent);
 
-                        auto const pngPath = fmt::format("{}\\{}.png", horribleMod->getSaveDir(), id);
+                    auto const pngPath = fmt::format("{}\\{}.png", horribleMod->getSaveDir(), id);
 
-                        log::info("Displaying {}", pngPath);
+                    log::info("Displaying {}", pngPath);
 
-                        auto ss = LazySprite::create({ 192.f, 108.f });
-                        ss->setID("mocked"_spr);
-                        ss->setScale(0.25);
-                        ss->setAnchorPoint({ 0.5, 0.5 });
-                        ss->setPosition({ -192.f, getScaledContentHeight() / 2.f });
+                    auto ss = LazySprite::create({ 192.f, 108.f });
+                    ss->setID("mocked"_spr);
+                    ss->setScale(0.25);
+                    ss->setAnchorPoint({ 0.5, 0.5 });
+                    ss->setPosition({ -192.f, getScaledContentHeight() / 2.f });
 
-                        ss->setLoadCallback([this, ss, percent, rnd](Result<> res) {
-                            if (res.isOk()) {
-                                log::info("Sprite loaded successfully from save dir PNG");
+                    ss->setLoadCallback([this, ss, percent, rnd](Result<> res) {
+                        if (res.isOk()) {
+                            log::info("Sprite loaded successfully from save dir PNG");
 
-                                auto const percLabelText = fmt::format("{}%", percent);
+                            auto const percLabelText = fmt::format("{}%", percent);
 
-                                auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
-                                percLabel->setID("percentage");
-                                percLabel->setPosition(ss->getScaledContentSize() / 2.f);
-                                percLabel->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
-                                percLabel->ignoreAnchorPointForPosition(false);
-                                percLabel->setAnchorPoint({ 0, 0 });
-                                percLabel->setScale(2.5);
+                            auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
+                            percLabel->setID("percentage");
+                            percLabel->setPosition(ss->getScaledContentSize() / 2.f);
+                            percLabel->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
+                            percLabel->ignoreAnchorPointForPosition(false);
+                            percLabel->setAnchorPoint({ 0, 0 });
+                            percLabel->setScale(2.5);
 
-                                ss->addChild(percLabel);
+                            ss->addChild(percLabel);
 
-                                auto rA = randng::pc();
-                                auto rB = randng::pc();
+                            auto rA = randng::pc();
+                            auto rB = randng::pc();
 
-                                float yA = getScaledContentHeight() * rB; // starting height pos
-                                float yB = getScaledContentHeight() * rA; // ending height pos
+                            float yA = getScaledContentHeight() * rB; // starting height pos
+                            float yB = getScaledContentHeight() * rA; // ending height pos
 
-                                ss->setPositionY(getScaledContentHeight() * yA);
-                                ss->setRotation(360.f * (yA * yB)); // random rotation
+                            ss->setPositionY(getScaledContentHeight() * yA);
+                            ss->setRotation(360.f * (yA * yB)); // random rotation
 
-                                auto move = CCEaseIn::create(CCMoveTo::create(10.f, { getScaledContentWidth() + 192.f, getScaledContentHeight() * yB }), 1.f);
-                                auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
+                            auto move = CCEaseIn::create(CCMoveTo::create(10.f, { getScaledContentWidth() + 192.f, getScaledContentHeight() * yB }), 1.f);
+                            auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
 
-                                auto action = CCSpawn::createWithTwoActions(move, rotate);
-                                ss->runAction(action);
+                            auto action = CCSpawn::createWithTwoActions(move, rotate);
+                            ss->runAction(action);
 
-                                log::info("Animated sprite successfully");
-                            } else {
-                                log::error("Sprite failed to load: {}", res.unwrapErr());
-                                ss->removeMeAndCleanup();
-                            }; });
+                            log::info("Animated sprite successfully");
+                        } else {
+                            log::error("Sprite failed to load: {}", res.unwrapErr());
+                            ss->removeMeAndCleanup();
+                        }; });
 
-                            ss->loadFromFile(fs::path(pngPath));
-                            addChild(ss, 999);
-                    } else {
-                        log::error("ID is invalid");
-                    };
+                        ss->loadFromFile(fs::path(pngPath));
+                        addChild(ss, 999);
                 } else {
-                    log::error("Mocking data file not found");
+                    log::error("ID is invalid");
                 };
+            } else {
+                log::error("Mocking data file not found");
             };
         };
 
@@ -124,15 +123,7 @@ class $modify(MockMenuLayer, MenuLayer) {
 };
 
 class $modify(MockPlayLayer, PlayLayer) {
-    struct Fields {
-        bool enabled = options::get(o.id);
-    };
-
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
-
-        auto f = m_fields.self();
-    };
+    HORRIBLE_DELEGATE_HOOKS(o.id);
 
     void showNewBest(bool newReward, int orbs, int diamonds, bool demonKey, bool noRetry, bool noTitle) {
         int id = m_level->m_levelID;
@@ -141,7 +132,7 @@ class $modify(MockPlayLayer, PlayLayer) {
         log::info("Showing new best for level ID: {}", id);
         log::info("Level percentage: {}", percentage);
 
-        if (m_fields->enabled && percentage >= 90) {
+        if (percentage >= 90) {
             CCDirector* director = CCDirector::sharedDirector();
             CCScene* scene = CCScene::get();
 
@@ -203,25 +194,23 @@ class $modify(MockPlayLayer, PlayLayer) {
     };
 
     void levelComplete() {
-        if (m_fields->enabled) {
-            int id = m_level->m_levelID;
-            int percentage = m_level->m_normalPercent;
+        int id = m_level->m_levelID;
+        int percentage = m_level->m_normalPercent;
 
-            auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
-            auto const mockConfig = file::readJson(fs::path(mockConfigPath)); // get the saved levels to mock the player :)
+        auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
+        auto const mockConfig = file::readJson(fs::path(mockConfigPath)); // get the saved levels to mock the player :)
 
-            if (mockConfig.isOk()) {
-                log::debug("Clearing mock record for {}", id);
-                auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
-                mockConfigUnwr[utils::numToString(o.id)].clear();
+        if (mockConfig.isOk()) {
+            log::debug("Clearing mock record for {}", id);
+            auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
+            mockConfigUnwr[utils::numToString(o.id)].clear();
 
-                auto const mockJson = file::writeToJson(mockConfigPath, mockConfigUnwr);
+            auto const mockJson = file::writeToJson(mockConfigPath, mockConfigUnwr);
 
-                if (mockJson.isOk()) {
-                    log::info("Saved highly mockable percentage of {} to data", percentage);
-                } else {
-                    log::error("Aw man, failed to save mockable percentage of {} to data", percentage);
-                };
+            if (mockJson.isOk()) {
+                log::info("Saved highly mockable percentage of {} to data", percentage);
+            } else {
+                log::error("Aw man, failed to save mockable percentage of {} to data", percentage);
             };
         };
 

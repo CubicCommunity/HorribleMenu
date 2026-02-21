@@ -14,13 +14,12 @@
 #endif
 #endif
 
-#include "Events.hpp"
 #include "Option.hpp"
 
 #include <cocos2d.h>
 
 #include <Geode/utils/function.hpp>
-#include <Geode/utils/ZStringView.hpp>
+#include <Geode/utils/StringMap.hpp>
 
 // Container for Horrible Ideas API functions
 namespace horrible {
@@ -29,7 +28,13 @@ namespace horrible {
     private:
         std::vector<Option> m_options; // Array of registered options
         std::vector<std::string> m_categories; // Array of auto-registered categories
-        std::unordered_map<std::string_view, std::vector<std::function<void()>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_map<std::string_view, std::vector<geode::Function<void(bool)>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
+
+    protected:
+        OptionManager() = default; // Default constructor
+
+        OptionManager(const OptionManager&) = delete; // No copying
+        OptionManager& operator=(const OptionManager&) = delete; // No copy assignment
 
         /**
          * Register a category if not already registered
@@ -64,7 +69,7 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(std::string_view id, std::function<void()>&& callback);
+        void addDelegate(std::string_view id, geode::Function<void(bool)>&& callback);
 
         /**
          * Returns a reference to the array of all registered options
@@ -90,7 +95,7 @@ namespace horrible {
          *
          * @returns Boolean of the old value
          */
-        bool setOption(std::string_view id, bool enable) const;
+        bool setOption(std::string_view id, bool enable);
 
         /**
          * Returns a reference to the array of all registered categories
@@ -99,9 +104,23 @@ namespace horrible {
          */
         [[nodiscard]] std::span<const std::string> getCategories() const noexcept;
     };
+
+    /**
+     * Delegate hooks to OptionManager for dynamic toggling
+     *
+     * @param id The ID of the option to delegate for
+     * @param hooks The map of hooks to delegate
+     */
+    AWCW_HORRIBLE_API_DLL void delegateHooks(std::string_view id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
 };
 
 // Statically register an option
-#define REGISTER_HORRIBLE_OPTION(opt) $execute {\
+#define HORRIBLE_REGISTER_OPTION(opt) $execute {\
     if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
+}
+
+// Delegate registered hooks to OptionManager for dynamic toggling
+#define HORRIBLE_DELEGATE_HOOKS(id) \
+static void onModify(auto& self) { \
+    horrible::delegateHooks(std::string_view(id), self.m_hooks); \
 }

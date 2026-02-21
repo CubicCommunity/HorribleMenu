@@ -15,28 +15,28 @@ inline static Option const o = {
     category::misc,
     SillyTier::High,
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 void placeboEffect() {
     log::info("Checking for placebo effect...");
 
-    if (options::get(o.id)) {
-        int rnd = randng::fast();
-        log::info("placebo effect roll: {}", rnd);
+    int rnd = randng::fast();
+    log::info("placebo effect roll: {}", rnd);
 
-        if (rnd <= 1) { // 1% chance :trol:
-            log::info("Placebo effect activated! Toggling all options...");
+    if (rnd <= 1) { // 1% chance :trol:
+        log::info("Placebo effect activated! Toggling all options...");
 
-            for (auto const& option : options::getAll()) {
-                auto toggle = options::get(option.id);
-                log::debug("Placebo {} option {}", toggle ? "disabled" : "enabled", option.id);
-                options::set(option.id, !toggle);
-            };
+        for (auto const& option : options::getAll()) {
+            auto toggle = options::get(option.id);
+            log::debug("Placebo {} option {}", toggle ? "disabled" : "enabled", option.id);
+            options::set(option.id, !toggle);
         };
     };
 };
 
 class $modify(PlaceboLevelPage, LevelPage) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     void onPlay(CCObject * sender) {
         placeboEffect();
         log::debug("Placebo triggered in level page");
@@ -46,6 +46,8 @@ class $modify(PlaceboLevelPage, LevelPage) {
 };
 
 class $modify(PlaceboLevelInfoLayer, LevelInfoLayer) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     void onPlay(CCObject * sender) {
         placeboEffect();
         log::debug("Placebo triggered in level info layer");

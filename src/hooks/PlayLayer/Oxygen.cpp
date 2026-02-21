@@ -14,7 +14,7 @@ inline static Option const o = {
         category::playerlife,
         SillyTier::High,
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(OxygenPlayLayer, PlayLayer) {
     struct Fields {

@@ -15,11 +15,12 @@ inline static Option const o = {
     category::randoms,
     SillyTier::Low
 };
-REGISTER_HORRIBLE_OPTION(o);
+HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(AchievementCCMenuItem, CCMenuItem) {
+    HORRIBLE_DELEGATE_HOOKS(o.id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
         int chance = options::getChance(o.id);
     };
 
@@ -28,14 +29,12 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
 
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            if (auto fmod = FMODAudioEngine::sharedEngine()) {
-                int rnd = randng::fast();
-                log::debug("button menu chance {}", rnd);
+        if (auto fmod = FMODAudioEngine::sharedEngine()) {
+            int rnd = randng::fast();
+            log::debug("button menu chance {}", rnd);
 
-                // @geode-ignore(unknown-resource)
-                if (rnd <= f->chance) fmod->playEffectAsync("achievement_01.ogg");
-            };
+            // @geode-ignore(unknown-resource)
+            if (rnd <= f->chance) fmod->playEffectAsync("achievement_01.ogg");
         };
     };
 };

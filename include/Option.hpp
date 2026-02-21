@@ -2,7 +2,7 @@
 
 #include "Horrible.hpp"
 
-#include <Geode/Geode.hpp>
+#include <Geode/platform/platform.hpp>
 
 // Container for Horrible Ideas API
 namespace horrible {

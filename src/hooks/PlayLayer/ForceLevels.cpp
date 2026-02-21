@@ -14,7 +14,7 @@ inline static Option const oGrief = {
         category::jumpscares,
         SillyTier::High,
 };
-REGISTER_HORRIBLE_OPTION(oGrief);
+HORRIBLE_REGISTER_OPTION(oGrief);
 
 inline static Option const oCongregation = {
         "congregation",
@@ -23,7 +23,7 @@ inline static Option const oCongregation = {
         category::jumpscares,
         SillyTier::High,
 };
-REGISTER_HORRIBLE_OPTION(oCongregation);
+HORRIBLE_REGISTER_OPTION(oCongregation);
 
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
     struct Fields {

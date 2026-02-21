@@ -202,8 +202,6 @@ void OptionItem::onToggle(CCObject*) {
 
         auto now = options::get(m_impl->option.id);
 
-        OptionEvent(m_impl->option.id).send(m_impl->option.id, now);
-
         log::info("Option {} now set to {}", m_impl->option.name, now ? "disabled" : "enabled"); // wtf is it other way around lmao
     } else if (m_impl->toggler) {
         Notification::create(fmt::format("{} is unavailable for {}", m_impl->option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
