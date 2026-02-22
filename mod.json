@@ -32,9 +32,6 @@
             "resources/*.png"
         ]
     },
-    "dependencies": {
-        "geode.node-ids": ">=1.22.0"
-    },
     "api": {
         "include": [
             "include/*.hpp"

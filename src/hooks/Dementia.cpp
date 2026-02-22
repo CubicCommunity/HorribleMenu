@@ -8,7 +8,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static Option const o = {
+inline static Option const o = {
     "dementia",
     "Dementia",
     "Chance of the player randomly teleports back. This is more like player lagging to be honest!\n<cy>Credit: imdissapearinghelp</c>",

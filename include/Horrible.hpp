@@ -89,7 +89,7 @@ namespace horrible {
          *
          * @returns A result possibly containing the option object
          */
-        [[nodiscard]] geode::Result<horrible::Option> getOptionInfo(std::string_view id) const noexcept;
+        [[nodiscard]] geode::Result<Option> getOptionInfo(std::string_view id) const noexcept;
 
         /**
          * Returns the amount of delegate callbacks registered for an option
@@ -116,7 +116,7 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(geode::ZStringView id, geode::Function<void(bool)>&& callback);
+        void addDelegate(std::string id, geode::Function<void(bool)>&& callback);
 
         /**
          * Returns a reference to the array of all registered categories
@@ -132,15 +132,16 @@ namespace horrible {
      * @param id The ID of the option to delegate for
      * @param hooks The map of hooks to delegate
      */
-    AWCW_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
+    AWCW_HORRIBLE_API_DLL void delegateHooks(std::string id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
 };
 
 // Statically register an option
-#define HORRIBLE_REGISTER_OPTION(opt) $execute {\
+#define HORRIBLE_REGISTER_OPTION(opt) \
+$execute { \
     if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
 }
 
-// Delegate registered hooks to OptionManager for dynamic toggling
+// Delegate hooks to OptionManager for dynamic toggling
 #define HORRIBLE_DELEGATE_HOOKS(id) \
 static void onModify(auto& self) { \
     horrible::delegateHooks(id, self.m_hooks); \
