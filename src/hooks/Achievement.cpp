@@ -8,8 +8,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "achieve";
+
 inline static Option const o = {
-    "achieve",
+    id,
     "Random Achievements",
     "Randomly play the achievement sound when clicking buttons.\n<cy>Credit: Cheeseworks</c>",
     category::randoms,
@@ -18,10 +20,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(AchievementCCMenuItem, CCMenuItem) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
     };
 
     void activate() {

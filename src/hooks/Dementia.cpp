@@ -8,8 +8,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "dementia";
+
 inline static Option const o = {
-    "dementia",
+    id,
     "Dementia",
     "Chance of the player randomly teleports back. This is more like player lagging to be honest!\n<cy>Credit: imdissapearinghelp</c>",
     category::misc,
@@ -18,10 +20,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(DementiaPlayerObject, PlayerObject) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
 
         int lastMusicTime = 0; // last music time in milliseconds
 

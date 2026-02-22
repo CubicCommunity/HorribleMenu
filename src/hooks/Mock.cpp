@@ -11,8 +11,10 @@ using namespace horrible::prelude;
 
 namespace fs = std::filesystem; // Shortcut for std::filesystem
 
+inline static constexpr auto id = "mock";
+
 inline static Option const o = {
-    "mock",
+    id,
     "Mock your 90%+ Fail",
     "Taunts you in the main me with a screenshot of one of your 90%-99% fails.\n<cy>Credit: Wuffin</c>",
     category::misc,
@@ -26,10 +28,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(MockMenuLayer, MenuLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
     };
 
     bool init() {
@@ -123,7 +125,7 @@ class $modify(MockMenuLayer, MenuLayer) {
 };
 
 class $modify(MockPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     void showNewBest(bool newReward, int orbs, int diamonds, bool demonKey, bool noRetry, bool noTitle) {
         int id = m_level->m_levelID;
@@ -162,11 +164,11 @@ class $modify(MockPlayLayer, PlayLayer) {
                         auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
                         // overwrite this field (or add it) with the percent
-                        mockConfigUnwr[utils::numToString(o.id)] = percentage;
+                        mockConfigUnwr[utils::numToString(id)] = percentage;
 
                         toWrite = mockConfigUnwr;
                     } else {
-                        toWrite = matjson::makeObject({ {utils::numToString(o.id), percentage} });
+                        toWrite = matjson::makeObject({ {utils::numToString(id), percentage} });
                     };
 
                     if (!toWrite.isNull()) {
@@ -203,7 +205,7 @@ class $modify(MockPlayLayer, PlayLayer) {
         if (mockConfig.isOk()) {
             log::debug("Clearing mock record for {}", id);
             auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
-            mockConfigUnwr[utils::numToString(o.id)].clear();
+            mockConfigUnwr[utils::numToString(id)].clear();
 
             auto const mockJson = file::writeToJson(mockConfigPath, mockConfigUnwr);
 

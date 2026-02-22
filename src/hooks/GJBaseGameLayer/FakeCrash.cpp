@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "fake_crash";
+
 inline static Option const o = {
-    "fake_crash",
+    id,
     "Random Fake Crash",
     "While playing a level, there's a chance your game will fake a crash.\n<cy>Credit: Timered</c>",
     category::randoms,
@@ -17,10 +19,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int m_chance = options::getChance(o.id);
+        int m_chance = options::getChance(id);
 
         float m_lastTimeWarp = LevelTools::getLastTimewarp();
         bool m_inFakeCrash = false;
