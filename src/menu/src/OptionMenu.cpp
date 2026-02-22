@@ -192,7 +192,7 @@ bool OptionMenu::init() {
 
     auto fBtnY = 0.f;
     for (auto const& filterBtn : filterBtns) {
-        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 125, true, "bigFont.fnt", "GJ_button_01.png", 0.f, 0.8f)) {
+        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 150, true, "bigFont.fnt", "GJ_button_01.png", 0.f, 0.8f)) {
             btnSprite->m_label->setColor(filterBtn.color);
             btnSprite->setScale(0.8f);
 
@@ -299,7 +299,7 @@ bool OptionMenu::init() {
             );
         }
     );
-    discordBtn->setID("support-btn");
+    discordBtn->setID("discord-btn");
     discordBtn->setPosition({ mainLayerSize.width - 45.f, mainLayerSize.height - 20.f });
 
     m_buttonMenu->addChild(discordBtn);
