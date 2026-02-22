@@ -116,7 +116,7 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(std::string&& id, geode::Function<void(bool)>&& callback);
+        void addDelegate(std::string id, geode::Function<void(bool)>&& callback);
 
         /**
          * Returns a reference to the array of all registered categories

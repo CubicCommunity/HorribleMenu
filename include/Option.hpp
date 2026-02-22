@@ -6,6 +6,9 @@
 
 // Container for Horrible Ideas API
 namespace horrible {
+    // Alias for `geode::PlatformID`
+    using Platform = geode::PlatformID;
+
     // How silly an option is
     enum class SillyTier : unsigned int {
         None = 0, // Null
@@ -22,7 +25,7 @@ namespace horrible {
         std::string category; // Name of the category this option should be under
         SillyTier silly; // How silly the option is
         bool restart; // If the option requires a restart to take effect
-        std::vector<geode::PlatformID> platforms; // Platforms that the option supports
+        std::vector<Platform> platforms; // Platforms that the option supports
 
         Option() = default; // Default constructor
 
@@ -34,7 +37,7 @@ namespace horrible {
             std::string category,
             SillyTier silly = SillyTier::Low,
             bool restart = false,
-            std::vector<geode::PlatformID> platforms = { geode::PlatformID::Desktop, geode::PlatformID::Mobile }
+            std::vector<Platform> platforms = { Platform::Desktop, Platform::Mobile }
         ) : id(std::move(id)),
             name(std::move(name)),
             description(std::move(description)),

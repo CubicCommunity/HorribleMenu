@@ -30,7 +30,7 @@ void OptionManager::registerOption(Option option) {
     };
 };
 
-void OptionManager::addDelegate(std::string&& id, Function<void(bool)>&& callback) {
+void OptionManager::addDelegate(std::string id, Function<void(bool)>&& callback) {
     auto& thisDelegate = m_delegates[std::move(id)];
     thisDelegate.push_back(std::move(callback));
 };
