@@ -144,5 +144,5 @@ $execute { \
 // Delegate hooks to OptionManager for dynamic toggling
 #define HORRIBLE_DELEGATE_HOOKS(optID) \
 static void onModify(auto& self) { \
-    horrible::delegateHooks(std::string(optID), self.m_hooks); \
+    horrible::delegateHooks(optID, self.m_hooks); \
 }
