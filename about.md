@@ -72,7 +72,6 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 ### Thanks
-
 - **[Geode SDK](mod:geode.loader)**: Created an incredible SDK to make this mod possible!
 - **[RobTop Games](user:71)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
 

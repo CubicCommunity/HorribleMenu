@@ -31,7 +31,7 @@ namespace horrible {
     private:
         std::vector<Option> m_options; // Array of registered options
         std::vector<std::string> m_categories; // Array of auto-registered categories
-        std::unordered_map<std::string, std::vector<geode::Function<void(bool)>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_map<std::string_view, std::vector<geode::Function<void(bool)>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
 
     protected:
         OptionManager() = default; // Default constructor
