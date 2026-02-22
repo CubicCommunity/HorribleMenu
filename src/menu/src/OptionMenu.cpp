@@ -224,13 +224,15 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(filterMenu);
 
     // add a mod settings at the bottom left
+    // @geode-ignore(unknown-resource)
     auto settingsBtnSprite = CircleButtonSprite::createWithSpriteFrameName("geode.loader/settings.png");
     settingsBtnSprite->setScale(0.625f);
 
-    auto settingsBtn = CCMenuItemSpriteExtra::create(
+    auto settingsBtn = CCMenuItemExt::createSpriteExtra(
         settingsBtnSprite,
-        this,
-        menu_selector(OptionMenu::openModSettings)
+        [](auto) {
+            openSettingsPopup(horribleMod);
+        }
     );
     settingsBtn->setID("settings-btn");
 
@@ -239,10 +241,21 @@ bool OptionMenu::init() {
     auto resetFiltersBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
     resetFiltersBtnSprite->setScale(0.375f);
 
-    auto resetFiltersBtn = CCMenuItemSpriteExtra::create(
+    auto resetFiltersBtn = CCMenuItemExt::createSpriteExtra(
         resetFiltersBtnSprite,
-        this,
-        menu_selector(OptionMenu::resetFilters)
+        [this](auto) {
+            createQuickPopup(
+                "Reset Filters",
+                "Would you like to <cr>reset all search filters</c>?",
+                "Cancel", "OK",
+                [this](bool, bool ok) {
+                    if (ok) {
+                        m_impl->selectedTier = SillyTier::None;
+                        CategoryEvent().send("", false);
+                    };
+                }
+            );
+        }
     );
     resetFiltersBtn->setID("reset-filters-btn");
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
@@ -252,27 +265,57 @@ bool OptionMenu::init() {
     auto seriesBtnSprite = CCSprite::createWithSpriteFrameName("gj_ytIcon_001.png");
     seriesBtnSprite->setScale(0.75f);
 
-    auto seriesBtn = CCMenuItemSpriteExtra::create(
+    auto seriesBtn = CCMenuItemExt::createSpriteExtra(
         seriesBtnSprite,
-        this,
-        menu_selector(OptionMenu::openSeriesPage)
+        [](auto) {
+            createQuickPopup(
+                "Horrible Mods",
+                "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
+                "Cancel", "OK",
+                [](bool, bool ok) {
+                    if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
+                }
+            );
+        }
     );
     seriesBtn->setID("horrible-mods-series-btn");
     seriesBtn->setPosition(mainLayerSize - 20.f);
 
     m_buttonMenu->addChild(seriesBtn);
 
+    auto discordBtnSprite = CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png");
+    discordBtnSprite->setScale(0.75f);
+
+    auto discordBtn = CCMenuItemExt::createSpriteExtra(
+        discordBtnSprite,
+        [](auto) {
+            createQuickPopup(
+                "Discord",
+                "Join the <cj>Cubic Studios</c> official Discord community server?",
+                "Cancel", "OK",
+                [](bool, bool ok) {
+                    if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
+                }
+            );
+        }
+    );
+    discordBtn->setID("support-btn");
+    discordBtn->setPosition({ mainLayerSize.width - 45.f, mainLayerSize.height - 20.f });
+
+    m_buttonMenu->addChild(discordBtn);
+
     // @geode-ignore(unknown-resource)
     auto supporterBtnSprite = CCSprite::createWithSpriteFrameName("geode.loader/gift.png");
     supporterBtnSprite->setScale(0.75f);
 
-    auto supporterBtn = CCMenuItemSpriteExtra::create(
+    auto supporterBtn = CCMenuItemExt::createSpriteExtra(
         supporterBtnSprite,
-        this,
-        menu_selector(OptionMenu::openSupporterPopup)
+        [](auto) {
+            openSupportPopup(horribleMod);
+        }
     );
     supporterBtn->setID("support-btn");
-    supporterBtn->setPosition({ mainLayerSize.width - 45.f, mainLayerSize.height - 20.f });
+    supporterBtn->setPosition({ mainLayerSize.width - 70.f, mainLayerSize.height - 20.f });
 
     m_buttonMenu->addChild(supporterBtn);
 
@@ -303,39 +346,6 @@ bool OptionMenu::init() {
     );
 
     return true;
-};
-
-void OptionMenu::resetFilters(CCObject*) {
-    createQuickPopup(
-        "Reset Filters",
-        "Would you like to <cr>reset all search filters</c>?",
-        "Cancel", "OK",
-        [this](bool, bool ok) {
-            if (ok) {
-                m_impl->selectedTier = SillyTier::None;
-                CategoryEvent().send("", false);
-            };
-        }
-    );
-};
-
-void OptionMenu::openModSettings(CCObject*) {
-    openSettingsPopup(horribleMod);
-};
-
-void OptionMenu::openSeriesPage(CCObject*) {
-    createQuickPopup(
-        "Horrible Mods",
-        "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
-        "Cancel", "OK",
-        [this](bool, bool ok) {
-            if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
-        }
-    );
-};
-
-void OptionMenu::openSupporterPopup(CCObject*) {
-    openSupportPopup(horribleMod);
 };
 
 void OptionMenu::onClose(CCObject* sender) {

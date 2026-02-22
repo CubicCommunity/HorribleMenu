@@ -1,17 +1,28 @@
-// #include <Utils.hpp>
+#include <Utils.hpp>
 
-// #include <Geode/Geode.hpp>
+#include <Geode/Geode.hpp>
 
 // #include <Geode/modify/PlayLayer.hpp>
 // #include <Geode/modify/PlayerObject.hpp>
 
-// // 8 hours and still not working properly :(
-// // imma take a nap
+// 8 hours and still not working properly :(
+// imma take a nap
 
 // using namespace geode::prelude;
-// using namespace horrible::prelude;
+using namespace horrible::prelude;
 
-// static constexpr auto id = "parry";
+inline static constexpr auto id = "parry";
+
+inline static Option const o = {
+    id,
+    "Parry Obstacles",
+    "Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cy>Credit: Wuffin</c>",
+    category::misc,
+    SillyTier::Low,
+    true,
+    {},
+};
+HORRIBLE_REGISTER_OPTION(o);
 
 // static GameObject* s_pendingKiller1 = nullptr;
 // static GameObject* s_pendingKiller2 = nullptr;
@@ -28,16 +39,6 @@
 // static PlayerObject* s_activeParryPlayer = nullptr;
 
 // constexpr float kParryWindow = 0.5f;  // seconds
-
-    // {
-    //     "parry",
-    //     "Parry Obstacles",
-    //     "Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cy>Credit: Wuffin</c>",
-    //     category::misc,
-    //     SillyTier::Low,
-    //     true,
-    //     {},
-    // },
 
 // class $modify(ParryPlayerObject, PlayerObject) {
 //     struct Fields {

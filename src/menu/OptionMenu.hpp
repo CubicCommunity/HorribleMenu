@@ -26,12 +26,6 @@ protected:
     OptionMenu();
     ~OptionMenu();
 
-    void resetFilters(CCObject*);
-
-    void openModSettings(CCObject*);
-    void openSeriesPage(CCObject*);
-    void openSupporterPopup(CCObject*);
-
     void onClose(CCObject* sender) override;
     void onExit() override;
     void cleanup() override;

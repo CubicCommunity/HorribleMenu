@@ -50,8 +50,10 @@ Want to add your own insane stuff to this mod? You can register your very own ho
 ```cpp
 using namespace horrible;
 
-inline static Option const opt = {
-    "my-option"_spr,
+static constexpr auto id = "my-option"_spr;
+
+static Option const opt = {
+    id,
     "My Very Cool Option!",
     "This option is so very cool!",
     "Cool Options",
@@ -60,7 +62,7 @@ inline static Option const opt = {
 HORRIBLE_REGISTER_OPTION(opt);
 
 class $modify(MyPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(opt.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     // a vanilla hook
     void setupHasCompleted() {
