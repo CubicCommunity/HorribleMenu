@@ -46,17 +46,17 @@ Want to add your own insane stuff to this mod? You can <cy>register your very ow
 ```cpp
 using namespace horrible;
 
-inline static Option const option = {
+inline static Option const opt = {
     "my-option"_spr,
     "My Very Cool Option!",
     "This option is so very cool!",
     "Cool Options",
     SillyTier::Medium
 };
-HORRIBLE_REGISTER_OPTION(option);
+HORRIBLE_REGISTER_OPTION(opt);
 
 class $modify(MyPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(option.id);
+    HORRIBLE_DELEGATE_HOOKS(opt.id);
 
     // a vanilla hook
     void setupHasCompleted() {
