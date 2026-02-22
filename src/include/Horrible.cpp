@@ -30,7 +30,7 @@ void OptionManager::registerOption(Option option) {
     };
 };
 
-void OptionManager::addDelegate(std::string id, Function<void(bool)>&& callback) {
+void OptionManager::addDelegate(ZStringView id, Function<void(bool)>&& callback) {
     auto& thisDelegate = m_delegates[id];
     thisDelegate.push_back(std::move(callback));
 };
@@ -81,7 +81,9 @@ OptionManager* OptionManager::get() noexcept {
     return inst;
 };
 
-void horrible::delegateHooks(std::string id, utils::StringMap<std::shared_ptr<Hook>>& hooks) {
+void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>>& hooks) {
+    log::debug("Attempting to delegate {} hooks for option {}", hooks.size(), id);
+
     if (auto om = OptionManager::get()) {
         auto value = om->getOption(id);
 
@@ -95,11 +97,14 @@ void horrible::delegateHooks(std::string id, utils::StringMap<std::shared_ptr<Ho
         log::debug("Delegating {} hooks for {}", allHooks.size(), id);
 
         om->addDelegate(
-            std::move(id),
-            [allHooks = std::move(allHooks)](bool value) {
+            id,
+            [allHooks = std::move(allHooks), id](bool value) {
                 for (auto hook : allHooks) (void)hook->toggle(value);
+                log::debug("Toggled {} hooks {} for option {}", allHooks.size(), value ? "ON" : "OFF", id);
             }
         );
+    } else {
+        log::error("Failed to get OptionManager to delegate hooks for option {}", id);
     };
 };
 

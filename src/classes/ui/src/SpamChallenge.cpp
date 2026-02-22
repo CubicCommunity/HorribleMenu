@@ -32,7 +32,7 @@ bool SpamChallenge::init() {
     setID("spam-jumps"_spr);
 
     // increase spam target for mobile players
-    m_impl->m_inputTarget = randng::get(50, 20) * ((GEODE_PLATFORM_TARGET & PlatformID::Mobile) ? 2 : 1);
+    m_impl->m_inputTarget = randng::get(50, 20) * ((GEODE_PLATFORM_TARGET & Platform::Mobile) ? 2 : 1);
 
     auto const winSize = CCDirector::get()->getWinSize();
 

@@ -19,8 +19,8 @@ inline static Option const o = {
     SillyTier::Medium,
     false,
     {
-        PlatformID::Windows,
-        PlatformID::Android,
+        Platform::Windows,
+        Platform::Android,
     },
 };
 HORRIBLE_REGISTER_OPTION(o);

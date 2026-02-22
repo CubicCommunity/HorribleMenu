@@ -116,7 +116,7 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(std::string id, geode::Function<void(bool)>&& callback);
+        void addDelegate(geode::ZStringView id, geode::Function<void(bool)>&& callback);
 
         /**
          * Returns a reference to the array of all registered categories
@@ -132,7 +132,7 @@ namespace horrible {
      * @param id The ID of the option to delegate for
      * @param hooks The map of hooks to delegate
      */
-    AWCW_HORRIBLE_API_DLL void delegateHooks(std::string id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
+    AWCW_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
 };
 
 // Statically register an option

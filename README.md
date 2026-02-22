@@ -64,9 +64,9 @@ class $modify(MyPlayLayer, PlayLayer) {
 
     // a vanilla hook
     void setupHasCompleted() {
-        // do insane stuff with my option!
-
         PlayLayer::setupHasCompleted();
+
+        // do insane stuff with my option!
     };
 };
 ```
