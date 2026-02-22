@@ -7,17 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "blinking_icon";
+
 inline static Option const o = {
-        "blinking_icon",
-        "Blinking Icon",
-        "Your icon will start to randomly blink.\n<cy>Credit: DragonixGD</c>",
-        category::obstructive,
-        SillyTier::Low,
+    id,
+    "Blinking Icon",
+    "Your icon will start to randomly blink.\n<cy>Credit: DragonixGD</c>",
+    category::obstructive,
+    SillyTier::Low,
 };
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(BlinkingIconPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();

@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "earthquake";
+
 inline static Option const o = {
-    "earthquake",
+    id,
     "Earthquake",
     "Constantly shakes the camera while playing a level.\n<cy>Credit: ArcticWoof</c>",
     category::obstructive,
@@ -17,7 +19,7 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(EarthquakePlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     void setupHasCompleted() {
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);

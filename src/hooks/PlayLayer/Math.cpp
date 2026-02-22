@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "math_quiz";
+
 inline static Option const o = {
-    "math_quiz",
+    id,
     "Richard's Math Quiz!",
     "When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cy>Credit: CyanBoi</c>",
     category::obstructive,
@@ -17,10 +19,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(MathPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
 
         MathQuiz* m_currentQuiz = nullptr;
     };

@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "double_jump";
+
 inline static Option const o = {
-    "double_jump",
+    id,
     "Double-Jump",
     "Allows your character to double-jump in a level.\n<cy>Credit: Cheeseworks</c>",
     category::misc,
@@ -17,9 +19,9 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(DoubleJumpPlayerObject, PlayerObject) {
-    struct Fields {
-        bool enabled = options::get(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
+    struct Fields {
         int m_jumps = 0;
     };
 
@@ -34,14 +36,12 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
     bool pushButton(PlayerButton p0) {
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            if (p0 == PlayerButton::Jump) {
-                if (m_isOnGround) f->m_jumps = 0;
-                if (!m_isOnGround) f->m_jumps++;
-            };
-
-            m_isOnGround = f->m_jumps < 2;
+        if (p0 == PlayerButton::Jump) {
+            if (m_isOnGround) f->m_jumps = 0;
+            if (!m_isOnGround) f->m_jumps++;
         };
+
+        m_isOnGround = f->m_jumps < 2;
 
         return PlayerObject::pushButton(p0);
     };

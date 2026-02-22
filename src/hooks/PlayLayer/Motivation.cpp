@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "motivation";
+
 inline static Option const o = {
-    "motivation",
+    id,
     "Motivational Quotes",
     "You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cy>Credit: Cheeseworks</c>",
     category::obstructive,
@@ -111,7 +113,7 @@ static constexpr auto s_msgs = std::to_array<const char*>({
                                                           });
 
 class $modify(MotivationPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();

@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "friends";
+
 inline static Option const o = {
-    "friends",
+    id,
     "Friends",
     "Random friends fly across your screen while you play a level!\n<cy>Credit: Cheeseworks</c>",
     category::obstructive,
@@ -32,7 +34,7 @@ static constexpr auto s_friends = std::to_array<const char*>({
                                                              });
 
 class $modify(FriendsPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();

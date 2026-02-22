@@ -7,17 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "oxygen";
+
 inline static Option const o = {
-        "oxygen",
-        "Oxygen Level",
-        "Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cy>Credit: ArcticWoof</c>",
-        category::playerlife,
-        SillyTier::High,
+    id,
+    "Oxygen Level",
+    "Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cy>Credit: ArcticWoof</c>",
+    category::playerlife,
+    SillyTier::High,
 };
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(OxygenPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
         bool withHealth = options::get("health");

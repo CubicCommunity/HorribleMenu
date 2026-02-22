@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "gambler";
+
 inline static Option const o = {
-    "gambler",
+    id,
     "Gambler",
     "While playing a level and reach at the 95%, there's a 50/50 chance you either complete a level or blast into the space backwards.\n<cy>Credit: Timered</c>",
     category::misc,
@@ -17,7 +19,7 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(GamblerPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
         bool triggered = false;

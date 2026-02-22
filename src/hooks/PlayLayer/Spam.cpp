@@ -7,20 +7,22 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "spam";
+
 inline static Option const o = {
-        "spam",
-        "Spam Challenge!",
-        "Sometimes forces a challenge on you to mercilessly spam an input sometimes while playing a level in Normal mode.\n<cy>Credit: Cheeseworks</c>",
-        category::obstructive,
-        SillyTier::High,
+    id,
+    "Spam Challenge!",
+    "Sometimes forces a challenge on you to mercilessly spam an input sometimes while playing a level in Normal mode.\n<cy>Credit: Cheeseworks</c>",
+    category::obstructive,
+    SillyTier::High,
 };
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SpamPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
 
         SpamChallenge* m_currentSpam = nullptr;
     };

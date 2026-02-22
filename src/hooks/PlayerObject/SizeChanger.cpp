@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "size_changer";
+
 inline static Option const o = {
-    "size_changer",
+    id,
     "Size Changer",
     "Randomly change the player size every time you jump.\n<cy>Credit: himynameisryan21</c>",
     category::randoms,
@@ -17,9 +19,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SizeChangerPlayerObject, PlayerObject) {
+    HORRIBLE_DELEGATE_HOOKS(id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
 
         bool scaled = false;
     };
@@ -28,19 +31,17 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
         if (m_gameLayer) {
             auto f = m_fields.self();
 
-            if (f->enabled) {
-                // log::debug("size changer jump detected");
+            // log::debug("size changer jump detected");
 
-                if (randng::fast() <= f->chance) {
-                    if (f->scaled) {
-                        log::debug("change scale big");
-                        togglePlayerScale(f->scaled, false);
-                        f->scaled = false;
-                    } else {
-                        log::debug("change scale small");
-                        togglePlayerScale(f->scaled, false);
-                        f->scaled = true;
-                    };
+            if (randng::fast() <= f->chance) {
+                if (f->scaled) {
+                    log::debug("change scale big");
+                    togglePlayerScale(f->scaled, false);
+                    f->scaled = false;
+                } else {
+                    log::debug("change scale small");
+                    togglePlayerScale(f->scaled, false);
+                    f->scaled = true;
                 };
             };
         };

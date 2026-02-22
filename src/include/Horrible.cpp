@@ -82,8 +82,6 @@ OptionManager* OptionManager::get() noexcept {
 };
 
 void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>>& hooks) {
-    log::debug("Attempting to delegate {} hooks for option {}", hooks.size(), id);
-
     if (auto om = OptionManager::get()) {
         auto value = om->getOption(id);
 
@@ -98,9 +96,8 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
 
         om->addDelegate(
             id,
-            [allHooks = std::move(allHooks), id](bool value) {
+            [allHooks = std::move(allHooks)](bool value) {
                 for (auto hook : allHooks) (void)hook->toggle(value);
-                log::debug("Toggled {} hooks {} for option {}", allHooks.size(), value ? "ON" : "OFF", id);
             }
         );
     } else {

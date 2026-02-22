@@ -69,7 +69,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 };
 
 class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     bool hasBeenActivated() {
         return false;

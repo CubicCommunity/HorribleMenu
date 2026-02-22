@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "random_mirror";
+
 inline static Option const o = {
-    "random_mirror",
+    id,
     "Random Mirror Portal",
     "Randomly activates a mirror portal while playing.\n<cy>Credit: TimeRed</c>",
     category::randoms,
@@ -17,10 +19,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(RandomMirrorPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
 
         bool isFlipped = false;
     };
@@ -34,7 +36,7 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         f->isFlipped = p0;
-        log::debug("{}", f->isFlipped ? o.id : "unflipped");
+        log::debug("{}", f->isFlipped ? id : "unflipped");
 
         PlayLayer::toggleFlipped(p0, p1);
     };

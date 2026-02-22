@@ -7,8 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "freeze";
+
 inline static Option const o = {
-    "freeze",
+    id,
     "Random 90%+ FPS Drop",
     "Your visual framerate starts randomly dropping during 90-99% in a level.\n<cy>Credit: Hexfire</c>",
     category::randoms,
@@ -17,10 +19,10 @@ inline static Option const o = {
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FreezePlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
     };
 
     void setupHasCompleted() {

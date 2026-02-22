@@ -7,17 +7,19 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "death";
+
 inline static Option const o = {
-        "death",
-        "Fake Death",
-        "The player's death effect will show without dying.\n<cy>Credit: DragonixGD</c>",
-        category::obstructive,
-        SillyTier::Medium,
+    id,
+    "Fake Death",
+    "The player's death effect will show without dying.\n<cy>Credit: DragonixGD</c>",
+    category::obstructive,
+    SillyTier::Medium,
 };
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeDeathPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(o.id);
+    HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
         bool m_dontCreateObjects = false;

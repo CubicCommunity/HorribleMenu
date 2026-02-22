@@ -8,20 +8,20 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 inline static Option const oGrief = {
-        "grief",
-        "Get Back on Grief",
-        "A chance at death of forcing you to play Grief.\n<cy>Credit: Sweep</c>",
-        category::jumpscares,
-        SillyTier::High,
+    "grief",
+    "Get Back on Grief",
+    "A chance at death of forcing you to play Grief.\n<cy>Credit: Sweep</c>",
+    category::jumpscares,
+    SillyTier::High,
 };
 HORRIBLE_REGISTER_OPTION(oGrief);
 
 inline static Option const oCongregation = {
-        "congregation",
-        "Congregation Jumpscare",
-        "A chance at death of forcing you to play Congregation.\n<cy>Credit: StaticGD</c>",
-        category::jumpscares,
-        SillyTier::High,
+    "congregation",
+    "Congregation Jumpscare",
+    "A chance at death of forcing you to play Congregation.\n<cy>Credit: StaticGD</c>",
+    category::jumpscares,
+    SillyTier::High,
 };
 HORRIBLE_REGISTER_OPTION(oCongregation);
 

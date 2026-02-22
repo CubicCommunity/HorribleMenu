@@ -7,19 +7,22 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+inline static constexpr auto id = "sleepy";
+
 inline static Option const o = {
-        "sleepy",
-        "Sleepy Player",
-        "Your character will occasionally fall asleep while playing.\n<cy>Credit: this_guy_yt</c>",
-        category::misc,
-        SillyTier::Low,
+    id,
+    "Sleepy Player",
+    "Your character will occasionally fall asleep while playing.\n<cy>Credit: this_guy_yt</c>",
+    category::misc,
+    SillyTier::Low,
 };
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SleepyPlayerObject, PlayerObject) {
+    HORRIBLE_DELEGATE_HOOKS(id);
+
     struct Fields {
-        bool enabled = options::get(o.id);
-        int chance = options::getChance(o.id);
+        int chance = options::getChance(id);
 
         bool m_sleepy = false; // decelerating-to-zero stage
         bool m_waking = false; // 5s buffer stage (cannot be re-slept)
@@ -32,15 +35,14 @@ class $modify(SleepyPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        if (f->enabled && playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), randng::get(30.f, 5.f) * chanceToDelayPct(f->chance));
+        if (playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), randng::get(30.f, 5.f) * chanceToDelayPct(f->chance));
 
         return true;
     };
 
     void startSleepTimer(float) {
         auto f = m_fields.self();
-
-        if (f->enabled) scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), randng::get(15.f, 3.f) * chanceToDelayPct(f->chance));
+        scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), randng::get(15.f, 3.f) * chanceToDelayPct(f->chance));
     };
 
     void wakeUpSchedule(float) {
@@ -70,23 +72,18 @@ class $modify(SleepyPlayerObject, PlayerObject) {
     void asleep(float) {
         auto f = m_fields.self();
 
-        if (f->enabled) {
-            // player sleepy if not already in any stage
-            auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
-            if (!f->m_sleepy && !f->m_waking && onGround) {
-                log::debug("Making the player m_sleepy");
+        // player sleepy if not already in any stage
+        auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
+        if (!f->m_sleepy && !f->m_waking && onGround) {
+            log::debug("Making the player m_sleepy");
 
-                f->m_defSpeed = m_playerSpeed; // capture original speed
-                f->m_sleepy = true;
+            f->m_defSpeed = m_playerSpeed; // capture original speed
+            f->m_sleepy = true;
 
-                scheduleOnce(schedule_selector(SleepyPlayerObject::startSleepTimer), 0.25f);
+            scheduleOnce(schedule_selector(SleepyPlayerObject::startSleepTimer), 0.25f);
 
-                // go to sleep, go to sleep, sweet little baby go to sleep
-                schedule(schedule_selector(SleepyPlayerObject::fallAsleep), 0.125f);
-            };
-        } else {
-            // wake up
-            if (f->m_sleepy || f->m_waking) f->m_waking = false;
+            // go to sleep, go to sleep, sweet little baby go to sleep
+            schedule(schedule_selector(SleepyPlayerObject::fallAsleep), 0.125f);
         };
     };
 
