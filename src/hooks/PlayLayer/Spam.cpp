@@ -12,7 +12,7 @@ inline static constexpr auto id = "spam";
 inline static Option const o = {
     id,
     "Spam Challenge!",
-    "Sometimes forces a challenge on you to mercilessly spam an input sometimes while playing a level in Normal mode.\n<cy>Credit: Cheeseworks</c>",
+    "Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cy>Credit: Cheeseworks</c>",
     category::obstructive,
     SillyTier::High,
 };

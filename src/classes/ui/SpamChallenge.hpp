@@ -28,7 +28,7 @@ namespace horrible {
 
             bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;
 
-            void setCallback(geode::Function<void(bool)> cb);
+            void setCallback(Function<void(bool)> cb);
         };
     };
 };

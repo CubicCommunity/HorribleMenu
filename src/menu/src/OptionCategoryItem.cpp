@@ -83,6 +83,10 @@ void OptionCategoryItem::onToggle(CCObject* sender) {
     if (m_impl->toggler) CategoryEvent().send(m_impl->category, !m_impl->toggler->isOn());
 };
 
+ZStringView OptionCategoryItem::getCategory() const noexcept {
+    return m_impl->category;
+};
+
 OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string category) {
     auto ret = new OptionCategoryItem();
     if (ret->init(size, std::move(category))) {

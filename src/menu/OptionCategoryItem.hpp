@@ -24,4 +24,6 @@ protected:
 
 public:
     static OptionCategoryItem* create(CCSize const& size, std::string category);
+
+    ZStringView getCategory() const noexcept;
 };

@@ -35,7 +35,7 @@ namespace horrible {
         public:
             static MathQuiz* create();
 
-            void setCallback(geode::Function<void(bool)> cb);
+            void setCallback(Function<void(bool)> cb);
             void setCorrect(bool v);
 
             void closePopup();

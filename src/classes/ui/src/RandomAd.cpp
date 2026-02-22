@@ -13,6 +13,8 @@ bool RandomAd::init() {
     setID("ad"_spr);
     setTitle("Sponsored");
 
+    jumpscares::downloadCongregation();
+
     auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
     label->setID("message");
     label->setAlignment(kCCTextAlignmentCenter);
@@ -59,8 +61,6 @@ bool RandomAd::init() {
 };
 
 void RandomAd::onPlayBtn(CCObject*) { // congregation jumpscare
-    jumpscares::downloadCongregation();
-
     if (auto playLayer = PlayLayer::get()) {
         auto glm = GameLevelManager::get();
 

@@ -170,13 +170,14 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(filterMenuBg);
 
-    auto filtersLabel = CCLabelBMFont::create("Filters", "goldFont.fnt");
-    filtersLabel->setAnchorPoint({ 0.5, 0 });
-    filtersLabel->setAlignment(kCCTextAlignmentCenter);
-    filtersLabel->setPosition({ filterMenuBg->getPositionX(), mainLayerSize.height - 47.5f });
-    filtersLabel->setScale(0.325f);
+    auto filterMenuLabel = CCLabelBMFont::create("Filters", "goldFont.fnt");
+    filterMenuLabel->setID("filter-menu-label");
+    filterMenuLabel->setAnchorPoint({ 0.5, 0 });
+    filterMenuLabel->setAlignment(kCCTextAlignmentCenter);
+    filterMenuLabel->setPosition({ filterMenuBg->getPositionX(), mainLayerSize.height - 47.5f });
+    filterMenuLabel->setScale(0.325f);
 
-    m_mainLayer->addChild(filtersLabel);
+    m_mainLayer->addChild(filterMenuLabel);
 
     auto filterMenuLayout = ColumnLayout::create()
         ->setGap(2.5f)

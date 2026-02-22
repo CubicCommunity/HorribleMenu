@@ -13,7 +13,7 @@ inline static constexpr auto id = "dementia";
 inline static Option const o = {
     id,
     "Dementia",
-    "Chance of the player randomly teleports back. This is more like player lagging to be honest!\n<cy>Credit: imdissapearinghelp</c>",
+    "Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cy>Credit: imdissapearinghelp</c>",
     category::misc,
     SillyTier::Medium,
 };
