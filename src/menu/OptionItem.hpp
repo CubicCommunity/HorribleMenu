@@ -24,6 +24,6 @@ protected:
 public:
     static OptionItem* create(CCSize const& size, Option option);
 
-    Option getOption() const noexcept;
+    Option const& getOption() const noexcept;
     bool isCompatible() const noexcept;
 };

@@ -14,10 +14,19 @@ private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
-    struct SillyFilter final {
+    struct SillyFilterBtnData final {
         SillyTier tier;
         const char* label;
+        const char* id;
         ccColor3B color;
+    };
+
+    using Callback = void(*)(CCMenuItem*);
+
+    struct SocialBtnData final {
+        const char* sprite;
+        const char* id;
+        Callback callback;
     };
 
 protected:

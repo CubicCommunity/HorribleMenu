@@ -183,6 +183,7 @@ bool OptionItem::init(CCSize const& size, Option option) {
         nameLabel->setColor(colors::gray);
         categoryLabel->setColor(colors::gray);
 
+        // @geode-ignore(unknown-resource)
         auto newHelpBtnSprite = CCSprite::createWithSpriteFrameName("geode.loader/info-alert.png");
         newHelpBtnSprite->setScale(0.75f);
         
@@ -222,7 +223,7 @@ void OptionItem::onDescription(CCObject*) {
     )) popup->show();
 };
 
-Option OptionItem::getOption() const noexcept {
+Option const& OptionItem::getOption() const noexcept {
     return m_impl->option;
 };
 

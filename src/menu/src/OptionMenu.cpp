@@ -178,19 +178,26 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(filtersLabel);
 
+    auto filterMenuLayout = ColumnLayout::create()
+        ->setGap(2.5f)
+        ->setAxisReverse(true) // Top to bottom
+        ->setAxisAlignment(AxisAlignment::End)
+        ->setAutoGrowAxis(0.f);
+
     // filter buttons :o
     auto filterMenu = CCMenu::create();
     filterMenu->setID("filter-menu");
     filterMenu->setAnchorPoint({ 0.5, 1 });
-    filterMenu->setPosition({ filterMenuBg->getPositionX(), mainLayerSize.height - 65.f });
+    filterMenu->setPosition({ filterMenuBg->getPositionX(), mainLayerSize.height - 55.f });
+    filterMenu->setContentHeight(0.f);
+    filterMenu->setLayout(filterMenuLayout);
 
-    constexpr SillyFilter filterBtns[] = {
-        { SillyTier::Low, "Low", colors::green },
-        { SillyTier::Medium, "Medium", colors::yellow },
-        { SillyTier::High, "High", colors::red },
+    constexpr SillyFilterBtnData filterBtns[] = {
+        { SillyTier::Low, "Low", "filter-low-btn", colors::green },
+        { SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow },
+        { SillyTier::High, "High", "filter-high-btn", colors::red },
     };
 
-    auto fBtnY = 0.f;
     for (auto const& filterBtn : filterBtns) {
         if (auto btnSprite = ButtonSprite::create(filterBtn.label, 150, true, "bigFont.fnt", "GJ_button_01.png", 0.f, 0.8f)) {
             btnSprite->m_label->setColor(filterBtn.color);
@@ -205,11 +212,9 @@ bool OptionMenu::init() {
                     m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
                 }
             )) {
-                btn->setPosition({ 0.f, fBtnY });
+                btn->setID(filterBtn.id);
 
                 filterMenu->addChild(btn);
-
-                fBtnY -= 35.f;
             } else {
                 log::error("Failed to create filter button");
             };
@@ -218,10 +223,12 @@ bool OptionMenu::init() {
         };
     };
 
-    // get the options data
-    m_impl->filterOptions(options::getAll());
+    filterMenu->updateLayout();
 
     m_mainLayer->addChild(filterMenu);
+
+    // get the options data
+    m_impl->filterOptions(options::getAll());
 
     // add a mod settings at the bottom left
     // @geode-ignore(unknown-resource)
@@ -262,62 +269,80 @@ bool OptionMenu::init() {
 
     m_buttonMenu->addChild(resetFiltersBtn);
 
-    auto seriesBtnSprite = CCSprite::createWithSpriteFrameName("gj_ytIcon_001.png");
-    seriesBtnSprite->setScale(0.75f);
+    auto socialMenuLayout = RowLayout::create()
+        ->setGap(1.25f)
+        ->setAxisReverse(true)
+        ->setAxisAlignment(AxisAlignment::End)
+        ->setAutoGrowAxis(0.f);
 
-    auto seriesBtn = CCMenuItemExt::createSpriteExtra(
-        seriesBtnSprite,
-        [](auto) {
-            createQuickPopup(
-                "Horrible Mods",
-                "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
-                "Cancel", "OK",
-                [](bool, bool ok) {
-                    if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
-                }
-            );
+    auto socialMenu = CCMenu::create();
+    socialMenu->setID("social-menu");
+    socialMenu->setAnchorPoint({ 1, 0.5 });
+    socialMenu->setPosition({ mainLayerSize.width - 7.5f, mainLayerSize.height - 20.f });
+    socialMenu->setContentWidth(0.f);
+    socialMenu->setLayout(socialMenuLayout);
+
+    constexpr SocialBtnData socialBtns[] = {
+        {
+            "gj_ytIcon_001.png",
+            "horrible-mods-series-btn",
+            [](auto) {
+                createQuickPopup(
+                    "Horrible Mods",
+                    "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
+                    "Cancel", "OK",
+                    [](bool, bool ok) {
+                        if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
+                    }
+                );
+            }
+        },
+        {
+            "gj_discordIcon_001.png",
+            "discord-btn",
+            [](auto) {
+                createQuickPopup(
+                    "Discord",
+                    "Join the <cj>Cubic Studios</c> Discord community server?",
+                    "Cancel", "OK",
+                    [](bool, bool ok) {
+                        if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
+                    }
+                );
+            }
+        },
+        {
+            // @geode-ignore(unknown-resource)
+            "geode.loader/gift.png",
+            "support-btn",
+            [](auto) {
+                openSupportPopup(horribleMod);
+            }
         }
-    );
-    seriesBtn->setID("horrible-mods-series-btn");
-    seriesBtn->setPosition(mainLayerSize - 20.f);
+    };
 
-    m_buttonMenu->addChild(seriesBtn);
+    for (auto const& socialBtn : socialBtns) {
+        if (auto sprite = CCSprite::createWithSpriteFrameName(socialBtn.sprite)) {
+            sprite->setScale(0.75f);
 
-    auto discordBtnSprite = CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png");
-    discordBtnSprite->setScale(0.75f);
+            if (auto btn = CCMenuItemExt::createSpriteExtra(
+                sprite,
+                socialBtn.callback
+            )) {
+                btn->setID(socialBtn.id);
 
-    auto discordBtn = CCMenuItemExt::createSpriteExtra(
-        discordBtnSprite,
-        [](auto) {
-            createQuickPopup(
-                "Discord",
-                "Join the <cj>Cubic Studios</c> official Discord community server?",
-                "Cancel", "OK",
-                [](bool, bool ok) {
-                    if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
-                }
-            );
-        }
-    );
-    discordBtn->setID("discord-btn");
-    discordBtn->setPosition({ mainLayerSize.width - 45.f, mainLayerSize.height - 20.f });
+                socialMenu->addChild(btn);
+            } else {
+                log::error("Failed to create social button");
+            };
+        } else {
+            log::error("Failed to create social button sprite");
+        };
+    };
 
-    m_buttonMenu->addChild(discordBtn);
+    socialMenu->updateLayout();
 
-    // @geode-ignore(unknown-resource)
-    auto supporterBtnSprite = CCSprite::createWithSpriteFrameName("geode.loader/gift.png");
-    supporterBtnSprite->setScale(0.75f);
-
-    auto supporterBtn = CCMenuItemExt::createSpriteExtra(
-        supporterBtnSprite,
-        [](auto) {
-            openSupportPopup(horribleMod);
-        }
-    );
-    supporterBtn->setID("support-btn");
-    supporterBtn->setPosition({ mainLayerSize.width - 70.f, mainLayerSize.height - 20.f });
-
-    m_buttonMenu->addChild(supporterBtn);
+    m_mainLayer->addChild(socialMenu);
 
     auto safeModeLabel = CCLabelBMFont::create("Safe Mode OFF", "bigFont.fnt");
     safeModeLabel->setID("safe-mode-label");

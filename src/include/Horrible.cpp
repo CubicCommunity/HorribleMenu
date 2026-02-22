@@ -92,8 +92,6 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
             allHooks.push_back(hook.get());
         };
 
-        log::debug("Delegating {} hooks for {}", allHooks.size(), id);
-
         om->addDelegate(
             id,
             [allHooks = std::move(allHooks)](bool value) {

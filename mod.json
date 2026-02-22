@@ -308,23 +308,6 @@
                 "big-arrow-step": 20
             }
         },
-        "upside_down-chance": {
-            "type": "int",
-            "name": "Upside-Down Scene Chance",
-            "description": "<cj>Upside-Down Chance</c> - Chance of your game's UI turning upside down.",
-            "default": 50,
-            "min": 0,
-            "max": 100,
-            "control": {
-                "input": true,
-                "slider": true,
-                "slider-step": 1,
-                "arrows": true,
-                "arrow-step": 10,
-                "big-arrows": true,
-                "big-arrow-step": 20
-            }
-        },
         "pauses-chance": {
             "type": "int",
             "name": "Pause Chance",
