@@ -30,8 +30,8 @@ void OptionManager::registerOption(Option option) {
     };
 };
 
-void OptionManager::addDelegate(std::string id, Function<void(bool)>&& callback) {
-    auto& thisDelegate = m_delegates[std::move(id)];
+void OptionManager::addDelegate(ZStringView id, Function<void(bool)>&& callback) {
+    auto& thisDelegate = m_delegates[id];
     thisDelegate.push_back(std::move(callback));
 };
 
@@ -81,21 +81,21 @@ OptionManager* OptionManager::get() noexcept {
     return inst;
 };
 
-void horrible::delegateHooks(std::string id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks) {
+void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>>& hooks) {
     if (auto om = OptionManager::get()) {
         auto value = om->getOption(id);
 
-        std::vector<geode::Hook*> allHooks;
+        std::vector<Hook*> allHooks;
         for (auto& hook : hooks | std::views::values) {
             hook->setAutoEnable(value);
-            geode::log::debug("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
+            log::debug("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
             allHooks.push_back(hook.get());
         };
 
-        geode::log::debug("Delegating {} hooks for {}", allHooks.size(), id);
+        log::debug("Delegating {} hooks for {}", allHooks.size(), id);
 
         om->addDelegate(
-            std::move(id), // string buffers die here on other platforms ???
+            id,
             [allHooks = std::move(allHooks)](bool value) {
                 for (auto hook : allHooks) (void)hook->toggle(value);
             }
