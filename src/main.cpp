@@ -7,7 +7,6 @@
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/GJGameLevel.hpp>
-#include <Geode/modify/LevelEditorLayer.hpp>
 
 using namespace horrible::prelude;
 
