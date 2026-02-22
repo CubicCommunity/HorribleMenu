@@ -50,28 +50,21 @@ Want to add your own insane stuff to this mod? You can register your very own ho
 ```cpp
 using namespace horrible;
 
-$on_mod(Loaded){
-    OptionManager::get()->registerOption({
-        "my-option"_spr,
-        "My Very Cool Option!",
-        "This option is so very cool!",
-        "Cool Options",
-        SillyTier::Medium
-    });
+inline static Option const option = {
+    "my-option"_spr,
+    "My Very Cool Option!",
+    "This option is so very cool!",
+    "Cool Options",
+    SillyTier::Medium
 };
-```
-```cpp
-using namespace horrible;
+HORRIBLE_REGISTER_OPTION(option);
 
 class $modify(MyPlayLayer, PlayLayer) {
-    struct Fields {
-        bool enabled = OptionManager::get()->getOption("my-option"_spr);
-    };
+    HORRIBLE_DELEGATE_HOOKS(option.id);
 
+    // a vanilla hook
     void setupHasCompleted() {
-        if (m_fields->enabled) {
-            // do insane stuff with my option!
-        };
+        // do insane stuff with my option!
 
         PlayLayer::setupHasCompleted();
     };
