@@ -8,7 +8,7 @@ A plethora of ways to ruin your gaming experience...
 ---
 
 ## About
-This silly lil' mod adds a mod menu filled to the brim with **over 35 crazy troll options** to mes around with! Spice up your gameplay by adding some truly terrible features to absolutely wreck your entire game.
+This silly lil' mod adds a mod menu filled to the brim with **over 30 crazy troll options** to mes around with! Spice up your gameplay by adding some truly terrible features to absolutely wreck your entire game.
 
 ---
 
@@ -81,6 +81,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 ### Thanks
 - **[Geode SDK](https://www.geode-sdk.org/)**: Created an incredible SDK to make this mod possible!
 - **[RobTop Games](https://www.robtopgames.com/)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
+
+and...
 
 - **You!**: For being there and keeping us motivated to continue this big ole' project.
 

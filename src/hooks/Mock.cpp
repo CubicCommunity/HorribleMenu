@@ -1,4 +1,3 @@
-#if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS) // not available for these platforms
 #include <Utils.hpp>
 
 #include <Geode/Geode.hpp>
@@ -27,6 +26,7 @@ inline static Option const o = {
 };
 HORRIBLE_REGISTER_OPTION(o);
 
+#if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS) // not compat with these platforms
 class $modify(MockMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 

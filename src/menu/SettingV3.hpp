@@ -24,7 +24,7 @@ public:
     SettingNodeV3* createNode(float width) override;
 };
 
-class HorribleSettingNodeV3 : public SettingNodeV3 {
+class HorribleSettingNodeV3 final : public SettingNodeV3 {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
