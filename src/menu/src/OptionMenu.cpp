@@ -161,36 +161,36 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(m_impl->searchInput);
 
     // add a list button background
-    auto filterMenuBg = NineSlice::create("square02_001.png");
-    filterMenuBg->setAnchorPoint({ 0.5, 0.5 });
-    filterMenuBg->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f });
-    filterMenuBg->setContentSize({ (mainLayerSize.width / 3.f), mainLayerSize.height - 45.f });
-    filterMenuBg->setOpacity(50);
+    auto filterContainerBg = NineSlice::create("square02_001.png");
+    filterContainerBg->setAnchorPoint({ 0.5, 0.5 });
+    filterContainerBg->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f });
+    filterContainerBg->setContentSize({ (mainLayerSize.width / 3.f), mainLayerSize.height - 45.f });
+    filterContainerBg->setOpacity(50);
 
-    m_mainLayer->addChild(filterMenuBg);
+    m_mainLayer->addChild(filterContainerBg);
 
-    auto filterMenuLabel = CCLabelBMFont::create("Filters", "goldFont.fnt");
-    filterMenuLabel->setID("filter-menu-label");
-    filterMenuLabel->setAnchorPoint({ 0.5, 0 });
-    filterMenuLabel->setAlignment(kCCTextAlignmentCenter);
-    filterMenuLabel->setPosition({ filterMenuBg->getPositionX(), mainLayerSize.height - 47.5f });
-    filterMenuLabel->setScale(0.325f);
+    auto filterContainerLabel = CCLabelBMFont::create("Filters", "goldFont.fnt");
+    filterContainerLabel->setID("filter-container-label");
+    filterContainerLabel->setAnchorPoint({ 0.5, 0 });
+    filterContainerLabel->setAlignment(kCCTextAlignmentCenter);
+    filterContainerLabel->setPosition({ filterContainerBg->getPositionX(), mainLayerSize.height - 50.f });
+    filterContainerLabel->setScale(0.325f);
 
-    m_mainLayer->addChild(filterMenuLabel);
+    m_mainLayer->addChild(filterContainerLabel);
 
-    auto filterMenuLayout = ColumnLayout::create()
+    auto filterContainerLayout = ColumnLayout::create()
         ->setGap(2.5f)
         ->setAxisReverse(true) // Top to bottom
         ->setAxisAlignment(AxisAlignment::End)
         ->setAutoGrowAxis(0.f);
 
     // filter buttons :o
-    auto filterMenu = CCMenu::create();
-    filterMenu->setID("filter-menu");
-    filterMenu->setAnchorPoint({ 0.5, 1 });
-    filterMenu->setPosition({ filterMenuBg->getPositionX(), mainLayerSize.height - 55.f });
-    filterMenu->setContentHeight(0.f);
-    filterMenu->setLayout(filterMenuLayout);
+    auto filterContainer = CCNode::create();
+    filterContainer->setID("filter-container");
+    filterContainer->setAnchorPoint({ 0.5, 1 });
+    filterContainer->setPosition({ filterContainerBg->getPositionX(), mainLayerSize.height - 55.f });
+    filterContainer->setContentHeight(0.f);
+    filterContainer->setLayout(filterContainerLayout);
 
     constexpr SillyFilterBtnData filterBtns[] = {
         { SillyTier::Low, "Low", "filter-low-btn", colors::green },
@@ -207,14 +207,14 @@ bool OptionMenu::init() {
                 btnSprite,
                 [this, filterBtn](auto) {
                     // Toggle: clicking same button disables filter
-                    m_impl->selectedTier == filterBtn.tier ? m_impl->selectedTier = SillyTier::None : m_impl->selectedTier = filterBtn.tier;
+                    (m_impl->selectedTier == filterBtn.tier) ? m_impl->selectedTier = SillyTier::None : m_impl->selectedTier = filterBtn.tier;
 
                     m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
                 }
             )) {
                 btn->setID(filterBtn.id);
 
-                filterMenu->addChild(btn);
+                filterContainer->addChild(btn);
             } else {
                 log::error("Failed to create filter button");
             };
@@ -223,9 +223,9 @@ bool OptionMenu::init() {
         };
     };
 
-    filterMenu->updateLayout();
+    filterContainer->updateLayout();
 
-    m_mainLayer->addChild(filterMenu);
+    m_mainLayer->addChild(filterContainer);
 
     // get all the options data
     m_impl->filterOptions(options::getAll());
@@ -242,7 +242,7 @@ bool OptionMenu::init() {
     );
     settingsBtn->setID("settings-btn");
 
-    m_buttonMenu->addChild(settingsBtn);
+    m_mainLayer->addChild(settingsBtn);
 
     auto resetFiltersBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
     resetFiltersBtnSprite->setScale(0.375f);
@@ -266,20 +266,20 @@ bool OptionMenu::init() {
     resetFiltersBtn->setID("reset-filters-btn");
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
 
-    m_buttonMenu->addChild(resetFiltersBtn);
+    m_mainLayer->addChild(resetFiltersBtn);
 
-    auto socialMenuLayout = RowLayout::create()
+    auto socialContainerLayout = RowLayout::create()
         ->setGap(1.25f)
         ->setAxisReverse(true)
         ->setAxisAlignment(AxisAlignment::End)
         ->setAutoGrowAxis(0.f);
 
-    auto socialMenu = CCMenu::create();
-    socialMenu->setID("social-menu");
-    socialMenu->setAnchorPoint({ 1, 0.5 });
-    socialMenu->setPosition({ mainLayerSize.width - 7.5f, mainLayerSize.height - 20.f });
-    socialMenu->setContentWidth(0.f);
-    socialMenu->setLayout(socialMenuLayout);
+    auto socialContainer = CCNode::create();
+    socialContainer->setID("social-container");
+    socialContainer->setAnchorPoint({ 1, 0.5 });
+    socialContainer->setPosition({ mainLayerSize.width - 7.5f, mainLayerSize.height - 20.f });
+    socialContainer->setContentWidth(0.f);
+    socialContainer->setLayout(socialContainerLayout);
 
     auto socialBtns = std::to_array<SocialBtnData>({
         {
@@ -330,7 +330,7 @@ bool OptionMenu::init() {
             )) {
                 btn->setID(socialBtn.id);
 
-                socialMenu->addChild(btn);
+                socialContainer->addChild(btn);
             } else {
                 log::error("Failed to create social button");
             };
@@ -339,16 +339,16 @@ bool OptionMenu::init() {
         };
     };
 
-    socialMenu->updateLayout();
+    socialContainer->updateLayout();
 
-    m_mainLayer->addChild(socialMenu);
+    m_mainLayer->addChild(socialContainer);
 
     auto safeModeLabel = CCLabelBMFont::create("Safe Mode OFF", "bigFont.fnt");
     safeModeLabel->setID("safe-mode-label");
     safeModeLabel->setColor(colors::red);
     safeModeLabel->setAlignment(kCCTextAlignmentCenter);
     safeModeLabel->setAnchorPoint({ 0.5, 0 });
-    safeModeLabel->setPosition({ filterMenuBg->getPositionX(), 15.f });
+    safeModeLabel->setPosition({ filterContainerBg->getPositionX(), 15.f });
     safeModeLabel->setScale(0.325f);
 
     // Set safemode label if active
@@ -364,7 +364,7 @@ bool OptionMenu::init() {
     addEventListener(
         CategoryEvent(),
         [this](std::string_view category, bool enabled) {
-            m_impl->selectedCategory = enabled ? category : "";
+            m_impl->selectedCategory = (enabled) ? category : "";
             m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
         }
     );
