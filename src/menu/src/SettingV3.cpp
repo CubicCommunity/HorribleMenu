@@ -4,6 +4,8 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/ui/Button.hpp>
+
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
@@ -41,7 +43,7 @@ SettingNodeV3* HorribleSettingV3::createNode(float width) {
 class HorribleSettingNodeV3::Impl final {
 public:
     Ref<ButtonSprite> buttonSprite = nullptr;
-    CCMenuItemSpriteExtra* button = nullptr;
+    Button* button = nullptr;
 };
 
 HorribleSettingNodeV3::HorribleSettingNodeV3() : m_impl(std::make_unique<Impl>()) {};
@@ -58,7 +60,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     );
     m_impl->buttonSprite->setScale(.5f);
 
-    m_impl->button = CCMenuItemExt::createSpriteExtra(
+    m_impl->button = Button::createWithNode(
         m_impl->buttonSprite,
         [](auto) {
             menu::open();

@@ -13,6 +13,8 @@
 
 #include <cocos2d.h>
 
+#include <Geode/ui/Button.hpp>
+
 #include <Geode/binding/FMODAudioEngine.hpp>
 
 // Additional utility methods for Horrible Ideas

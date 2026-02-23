@@ -21,12 +21,10 @@ private:
         ccColor3B color;
     };
 
-    using Callback = void(*)(CCMenuItem*);
-
     struct SocialBtnData final {
         const char* sprite;
         const char* id;
-        Callback callback;
+        Button::ButtonCallback callback;
     };
 
 protected:

@@ -8,7 +8,6 @@
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/GeodeUI.hpp>
-#include <Geode/ui/TextInput.hpp>
 
 #include <Geode/utils/terminate.hpp>
 
@@ -204,7 +203,7 @@ bool OptionMenu::init() {
             btnSprite->m_label->setColor(filterBtn.color);
             btnSprite->setScale(0.8f);
 
-            if (auto btn = CCMenuItemExt::createSpriteExtra(
+            if (auto btn = Button::createWithNode(
                 btnSprite,
                 [this, filterBtn](auto) {
                     // Toggle: clicking same button disables filter
@@ -228,15 +227,14 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(filterMenu);
 
-    // get the options data
+    // get all the options data
     m_impl->filterOptions(options::getAll());
 
-    // add a mod settings at the bottom left
     // @geode-ignore(unknown-resource)
     auto settingsBtnSprite = CircleButtonSprite::createWithSpriteFrameName("geode.loader/settings.png");
     settingsBtnSprite->setScale(0.625f);
 
-    auto settingsBtn = CCMenuItemExt::createSpriteExtra(
+    auto settingsBtn = Button::createWithNode(
         settingsBtnSprite,
         [](auto) {
             openSettingsPopup(horribleMod);
@@ -249,7 +247,7 @@ bool OptionMenu::init() {
     auto resetFiltersBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
     resetFiltersBtnSprite->setScale(0.375f);
 
-    auto resetFiltersBtn = CCMenuItemExt::createSpriteExtra(
+    auto resetFiltersBtn = Button::createWithNode(
         resetFiltersBtnSprite,
         [this](auto) {
             createQuickPopup(
@@ -283,7 +281,7 @@ bool OptionMenu::init() {
     socialMenu->setContentWidth(0.f);
     socialMenu->setLayout(socialMenuLayout);
 
-    constexpr SocialBtnData socialBtns[] = {
+    auto socialBtns = std::to_array<SocialBtnData>({
         {
             "gj_ytIcon_001.png",
             "horrible-mods-series-btn",
@@ -320,15 +318,15 @@ bool OptionMenu::init() {
                 openSupportPopup(horribleMod);
             }
         }
-    };
+                                                   });
 
-    for (auto const& socialBtn : socialBtns) {
+    for (auto& socialBtn : socialBtns) {
         if (auto sprite = CCSprite::createWithSpriteFrameName(socialBtn.sprite)) {
             sprite->setScale(0.75f);
 
-            if (auto btn = CCMenuItemExt::createSpriteExtra(
+            if (auto btn = Button::createWithNode(
                 sprite,
-                socialBtn.callback
+                std::move(socialBtn.callback)
             )) {
                 btn->setID(socialBtn.id);
 
