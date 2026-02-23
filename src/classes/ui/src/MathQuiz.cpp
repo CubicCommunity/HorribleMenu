@@ -52,7 +52,7 @@ bool MathQuiz::init() {
     if (m_impl->m_operation == MathOperation::Geometry) {
         problemText = "How many sides does this shape have?";
 
-        int sides = randng::get(10);
+        int sides = randng::get(10, 3);
         m_impl->m_correctAnswer = sides;
 
         // draw node and polygon points
@@ -159,7 +159,7 @@ bool MathQuiz::init() {
     // Add 3 wrong answers
     if (m_impl->m_operation == MathOperation::Geometry) {
         while (m_impl->m_answers.size() < 4) {
-            int wrongAnswer = randng::get(10);
+            int wrongAnswer = randng::get(10, 3);
             if (wrongAnswer != m_impl->m_correctAnswer && !hasAnswer(wrongAnswer)) m_impl->m_answers.push_back(wrongAnswer);
         };
     } else {
@@ -394,10 +394,7 @@ public:
     CCSprite* m_sprite = nullptr;
 };
 
-Richard::Richard() {
-    m_impl = std::make_unique<Impl>();
-};
-
+Richard::Richard() : m_impl(std::make_unique<Impl>()) {};
 Richard::~Richard() {};
 
 bool Richard::init() {

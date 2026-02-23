@@ -34,29 +34,33 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     void nextQuiz() {
         log::debug("scheduling math quiz");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+
+        auto f = m_fields.self();
+
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), randng::get(30.f, 5.f) * chanceToDelayPct(f->chance));
     };
 
     void doQuiz(float) {
+        auto f = m_fields.self();
+
         if (m_isPracticeMode && !m_hasCompletedLevel) {
             log::info("Showing math quiz");
 
             if (auto quiz = MathQuiz::create()) {
-                m_fields->m_currentQuiz = quiz;
+                f->m_currentQuiz = quiz;
 
                 // clear pointer on close / handle correct/wrong answer
-                m_fields->m_currentQuiz->setCallback([this](bool correct) {
+                f->m_currentQuiz->setCallback([this, f](bool correct) {
                     nextQuiz();
-                    if (!correct) resetLevelFromStart();
 
-                    if (m_fields->m_currentQuiz) m_fields->m_currentQuiz->removeMeAndCleanup();
-                    m_fields->m_currentQuiz = nullptr;
-                                                     });
+                    if (!correct) resetLevelFromStart();
+                    if (f->m_currentQuiz) f->m_currentQuiz->removeMeAndCleanup();
+                                              });
 
 #ifdef GEODE_IS_WINDOWS
                 CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
-                m_uiLayer->addChild(m_fields->m_currentQuiz, 99);
+                m_uiLayer->addChild(f->m_currentQuiz, 99);
             };
         };
     };

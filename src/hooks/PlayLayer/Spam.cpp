@@ -49,10 +49,9 @@ class $modify(SpamPlayLayer, PlayLayer) {
                 // clear pointer on close / handle correct/wrong answer
                 f->m_currentSpam->setCallback([this, f](bool success) {
                     nextSpam();
-                    if (!success) resetLevelFromStart();
 
+                    if (!success) resetLevelFromStart();
                     if (f->m_currentSpam) f->m_currentSpam->removeMeAndCleanup();
-                    f->m_currentSpam = nullptr;
                                               });
 
 #ifdef GEODE_IS_WINDOWS
