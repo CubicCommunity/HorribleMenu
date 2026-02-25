@@ -15,6 +15,8 @@ protected:
 
     void onScaleEnd();
 
+    void setupSprite();
+
     virtual bool init() override;
 
     static OptionMenuButton* create();
@@ -29,6 +31,8 @@ public:
 
     void setScale(float scale) override;
     void setPosition(CCPoint const& position) override;
+
+    void setTheme(std::string theme);
 
     // CCLayer targeted touch listener methods
     bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;

@@ -46,6 +46,13 @@ $on_game(Loaded) {
         }
     );
 
+    listenForSettingChanges<std::string>(
+        "theme",
+        [](std::string value) {
+            if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
+        }
+    );
+
     (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
 
     if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);

@@ -26,7 +26,7 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
-    auto bg = NineSlice::create("square02_001.png");
+    auto bg = NineSlice::create(theme::square);
     bg->setID("background");
     bg->setAnchorPoint({ 0, 0 });
     bg->setContentSize(getScaledContentSize());
@@ -72,8 +72,8 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     addEventListener(
         CategoryEvent(),
         [this](std::string_view category, bool enabled) {
-            if (m_impl->toggler) if (category != m_impl->category) m_impl->toggler->toggle(false);
-        }
+        if (m_impl->toggler) if (category != m_impl->category) m_impl->toggler->toggle(false);
+    }
     );
 
     return true;

@@ -29,6 +29,8 @@ public:
     ScrollLayer* categoryList = nullptr;
     TextInput* searchInput = nullptr;
 
+    std::string theme = horribleMod->getSettingValue<std::string>("theme");
+
     void filterOptions(std::span<const Option> optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
         if (optionList) {
             optionList->m_contentLayer->removeAllChildren();
@@ -80,14 +82,20 @@ OptionMenu::OptionMenu() : m_impl(std::make_unique<Impl>()) {};
 OptionMenu::~OptionMenu() {};
 
 bool OptionMenu::init() {
-    if (!Popup::init(450.f, 280.f)) return false;
+    auto btns = theme::getCircleBaseColor(m_impl->theme);
+
+    if (!Popup::init(450.f, 280.f, theme::getBackgroundSprite(m_impl->theme))) return false;
+
+    auto closeBtnSpr = CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, btns);
+    closeBtnSpr->setScale(0.875f);
 
     setID("options"_spr);
     setTitle("Horrible Options");
+    setCloseButtonSpr(closeBtnSpr);
 
     auto mainLayerSize = m_mainLayer->getScaledContentSize();
 
-    auto categoryListBg = NineSlice::create("square02_001.png");
+    auto categoryListBg = NineSlice::create(theme::square);
     categoryListBg->setAnchorPoint({ 0.5, 0.5 });
     categoryListBg->setPosition({ mainLayerSize.width - 82.5f, 75.f });
     categoryListBg->setContentSize({ (mainLayerSize.width / 3.f) - 10.f, 95.f });
@@ -120,7 +128,7 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(m_impl->categoryList, 1);
 
     // Add a background sprite to the popup
-    auto optionListBg = NineSlice::create("square02_001.png");
+    auto optionListBg = NineSlice::create(theme::square);
     optionListBg->setAnchorPoint({ 0.5, 0.5 });
     optionListBg->setPosition({ (mainLayerSize.width / 2.f) - 77.5f, (mainLayerSize.height / 2.f) - 32.5f });
     optionListBg->setContentSize({ (mainLayerSize.width / 1.5f) - 20.f, mainLayerSize.height - 85.f });
@@ -156,12 +164,12 @@ bool OptionMenu::init() {
             m_impl->selectedTier,
             m_impl->selectedCategory
         );  // lets search this crap
-                                     });
+        });
 
     m_mainLayer->addChild(m_impl->searchInput);
 
     // add a list button background
-    auto filterContainerBg = NineSlice::create("square02_001.png");
+    auto filterContainerBg = NineSlice::create(theme::square);
     filterContainerBg->setAnchorPoint({ 0.5, 0.5 });
     filterContainerBg->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f });
     filterContainerBg->setContentSize({ (mainLayerSize.width / 3.f), mainLayerSize.height - 45.f });
@@ -199,7 +207,7 @@ bool OptionMenu::init() {
     };
 
     for (auto const& filterBtn : filterBtns) {
-        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 150, true, "bigFont.fnt", "GJ_button_01.png", 0.f, 0.8f)) {
+        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 150, true, "bigFont.fnt", theme::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
             btnSprite->m_label->setColor(filterBtn.color);
             btnSprite->setScale(0.8f);
 
@@ -231,7 +239,11 @@ bool OptionMenu::init() {
     m_impl->filterOptions(options::getAll());
 
     // @geode-ignore(unknown-resource)
-    auto settingsBtnSprite = CircleButtonSprite::createWithSpriteFrameName("geode.loader/settings.png");
+    auto settingsBtnSprite = CircleButtonSprite::createWithSpriteFrameName(
+        "geode.loader/settings.png",
+        1.f,
+        btns
+    );
     settingsBtnSprite->setScale(0.625f);
 
     auto settingsBtn = Button::createWithNode(
@@ -244,7 +256,11 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(settingsBtn);
 
-    auto resetFiltersBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
+    auto resetFiltersBtnSprite = CircleButtonSprite::createWithSpriteFrameName(
+        "edit_cwBtn_001.png",
+        0.875f,
+        btns
+    );
     resetFiltersBtnSprite->setScale(0.375f);
 
     auto resetFiltersBtn = Button::createWithNode(
@@ -318,7 +334,7 @@ bool OptionMenu::init() {
                 openSupportPopup(horribleMod);
             }
         }
-                                                   });
+        });
 
     for (auto& socialBtn : socialBtns) {
         if (auto sprite = CCSprite::createWithSpriteFrameName(socialBtn.sprite)) {

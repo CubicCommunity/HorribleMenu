@@ -43,6 +43,60 @@ namespace horrible {
         if (auto fmod = FMODAudioEngine::sharedEngine()) fmod->playEffectAsync(file);
     };
 
+    // Get the current theme's sprites and colors
+    namespace theme {
+        inline constexpr auto square = "square02_001.png";
+
+        // Theme options
+        namespace enums {
+            inline constexpr auto Blue = "Blue";
+            inline constexpr auto Green = "Green";
+            inline constexpr auto Dark = "Dark";
+            inline constexpr auto Light = "Light";
+            inline constexpr auto Aqua = "Aqua";
+            inline constexpr auto Geode = "Geode";
+        };
+
+        // Get the current theme's background sprite name
+        inline const char* getBackgroundSprite(std::string_view theme) {
+            if (theme == enums::Blue) return "GJ_square02.png";
+            if (theme == enums::Green) return "GJ_square03.png";
+            if (theme == enums::Dark) return "GJ_square05.png";
+            if (theme == enums::Light) return "geode.loader/white-square.png";
+            if (theme == enums::Aqua) return "geode.loader/GE_square03.png";
+
+            if (theme == enums::Geode) return "geode.loader/GE_square01.png";
+
+            return "GJ_square01.png";
+        };
+
+        // Get the current theme's circle base color enum
+        inline geode::CircleBaseColor getCircleBaseColor(std::string_view theme) {
+            if (theme == enums::Blue) return geode::CircleBaseColor::Blue;
+            if (theme == enums::Green) return geode::CircleBaseColor::Green;
+            if (theme == enums::Dark) return geode::CircleBaseColor::Gray;
+            if (theme == enums::Light) return geode::CircleBaseColor::Gray;
+            if (theme == enums::Aqua) return geode::CircleBaseColor::DarkAqua;
+
+            if (theme == enums::Geode) return geode::CircleBaseColor::DarkPurple;
+
+            return geode::CircleBaseColor::Green;
+        };
+
+        // Get the current theme's square button sprite name
+        inline const char* getButtonSquareSprite(std::string_view theme) {
+            if (theme == enums::Blue) return "GJ_button_02.png";
+            if (theme == enums::Green) return "GJ_button_01.png";
+            if (theme == enums::Dark) return "GJ_button_05.png";
+            if (theme == enums::Light) return "GJ_button_04.png";
+            if (theme == enums::Aqua) return "geode.loader/GE_button_05.png";
+
+            if (theme == enums::Geode) return "geode.loader/GE_button_05.png";
+
+            return "GJ_button_01.png";
+        };
+    };
+
     namespace str = geode::utils::string; // Shortcut for geode::utils::string
 
     // Default option categories
@@ -59,7 +113,7 @@ namespace horrible {
     namespace colors {
         inline constexpr cocos2d::ccColor3B white = { 255, 255, 255 };
         inline constexpr cocos2d::ccColor3B gray = { 150, 150, 150 };
-        inline constexpr cocos2d::ccColor3B red = { 225, 75, 75 };
+        inline constexpr cocos2d::ccColor3B red = { 225, 75, 100 };
         inline constexpr cocos2d::ccColor3B yellow = { 250, 250, 25 };
         inline constexpr cocos2d::ccColor3B green = { 100, 255, 100 };
         inline constexpr cocos2d::ccColor3B cyan = { 10, 175, 255 };

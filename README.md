@@ -13,7 +13,7 @@ This silly lil' mod adds a funny mod menu filled to the brim with **over 30 craz
 ---
 
 ### Options
-When pressing `\` or by pressing the floating *Horrible Options* button on your screen, a menu will pop up with a list of joke mod options you can toggle anytime on your game to do some interesting things to your gaming experience. You can view more information within the menu itself.
+When pressing `\` or by pressing the floating *<img src="resources/icon.png" width="15" alt="Horrible Options">* button on your screen, a menu will pop up with a list of joke mod options you can toggle anytime on your game to do some interesting things to your gaming experience. You can view more information within the menu itself.
 
 > [!NOTE]
 > *You can customize any keybinds in this mod through its settings.*

@@ -23,10 +23,32 @@ public:
     Ref<CircleButtonSprite> sprite = nullptr;
 
     bool isAnimating = false;
+
+    std::string theme = horribleMod->getSettingValue<std::string>("theme");
 };
 
 OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
 OptionMenuButton::~OptionMenuButton() {};
+
+void OptionMenuButton::setupSprite() {
+    m_impl->sprite = CircleButtonSprite::createWithSprite(
+        "icon.png"_spr,
+        0.925f,
+        theme::getCircleBaseColor(m_impl->theme)
+    );
+    m_impl->sprite->setAnchorPoint({ 0.5, 0.5 });
+
+    setContentSize(m_impl->sprite->getScaledContentSize());
+
+    m_impl->sprite->setPosition(getScaledContentSize() / 2.f);
+
+    setScale(m_impl->scale); // set initial scale
+    setOpacity(m_impl->opacity); // set initial opacity
+
+    setVisible(horribleMod->getSettingValue<bool>("floating-button")); // set initial visibility
+
+    addChild(m_impl->sprite);
+};
 
 bool OptionMenuButton::init() {
     if (!CCLayer::init()) return false;
@@ -43,22 +65,7 @@ bool OptionMenuButton::init() {
     setTouchPriority(-512);  // ewww touch priority
     setZOrder(9999);
 
-    m_impl->sprite = CircleButtonSprite::createWithSprite(
-        "icon.png"_spr,
-        0.925f
-    );
-    m_impl->sprite->setAnchorPoint({ 0.5, 0.5 });
-
-    setContentSize(m_impl->sprite->getScaledContentSize());
-
-    m_impl->sprite->setPosition(getScaledContentSize() / 2.f);
-
-    setScale(m_impl->scale); // set initial scale
-    setOpacity(m_impl->opacity); // set initial opacity
-
-    setVisible(horribleMod->getSettingValue<bool>("floating-button")); // set initial visibility
-
-    addChild(m_impl->sprite);
+    setupSprite();
 
     return true;
 };
@@ -102,6 +109,12 @@ void OptionMenuButton::setPosition(CCPoint const& position) {
     } else {
         CCLayer::setPosition(position);
     };
+};
+
+void OptionMenuButton::setTheme(std::string theme) {
+    m_impl->theme = std::move(theme);
+    if (m_impl->sprite) m_impl->sprite->removeMeAndCleanup();
+    setupSprite();
 };
 
 bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
