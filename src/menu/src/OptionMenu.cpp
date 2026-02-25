@@ -86,12 +86,9 @@ bool OptionMenu::init() {
 
     if (!Popup::init(450.f, 280.f, theme::getBackgroundSprite(m_impl->theme))) return false;
 
-    auto closeBtnSpr = CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, btns);
-    closeBtnSpr->setScale(0.875f);
-
     setID("options"_spr);
     setTitle("Horrible Options");
-    setCloseButtonSpr(closeBtnSpr);
+    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, btns, CircleBaseSize::Small));
 
     auto mainLayerSize = m_mainLayer->getScaledContentSize();
 
@@ -258,10 +255,11 @@ bool OptionMenu::init() {
 
     auto resetFiltersBtnSprite = CircleButtonSprite::createWithSpriteFrameName(
         "edit_cwBtn_001.png",
-        0.875f,
-        btns
+        1.f,
+        btns,
+        CircleBaseSize::Small
     );
-    resetFiltersBtnSprite->setScale(0.375f);
+    resetFiltersBtnSprite->setScale(0.625f);
 
     auto resetFiltersBtn = Button::createWithNode(
         resetFiltersBtnSprite,
