@@ -62,7 +62,7 @@
             "name": "Interface",
             "description": "Appearance and functionality of the interface."
         },
-        "theme":{
+        "theme": {
             "type": "string",
             "name": "Menu Theme",
             "description": "Theme to use for the <cg>Horrible Options</c> menu. <co>Re-open the menu for changes to take effect.</c>",

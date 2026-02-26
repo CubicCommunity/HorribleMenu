@@ -11,6 +11,9 @@
 
 #include <Geode/utils/terminate.hpp>
 
+#include <algorithm>
+#include <vector>
+
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
@@ -115,7 +118,25 @@ bool OptionMenu::init() {
     m_impl->categoryList->setPosition(categoryListBg->getPosition());
     m_impl->categoryList->m_contentLayer->setLayout(layoutCategories);
 
-    for (auto const& category : options::getAllCategories()) {
+    auto cats = options::getAllCategories(); // mrrp meow
+    std::vector<std::string> sortedCats(cats.begin(), cats.end());
+
+    std::sort(sortedCats.begin(), sortedCats.end(), [](auto const& a, auto const& b) {
+        return str::toLower(a) < str::toLower(b);
+        });
+
+    auto misc = std::find_if(sortedCats.begin(), sortedCats.end(), [](auto const& s) {
+        return s == category::misc;
+        });
+
+    if (misc != sortedCats.end()) {
+        auto miscCat = *misc;
+
+        sortedCats.erase(misc);
+        sortedCats.push_back(miscCat);
+    };
+
+    for (auto const& category : sortedCats) {
         if (auto categoryItem = OptionCategoryItem::create({ m_impl->categoryList->getScaledContentWidth(), 20.f }, category)) m_impl->categoryList->m_contentLayer->addChild(categoryItem);
     };
 
@@ -235,7 +256,6 @@ bool OptionMenu::init() {
     // get all the options data
     m_impl->filterOptions(options::getAll());
 
-    // @geode-ignore(unknown-resource)
     auto settingsBtnSprite = CircleButtonSprite::createWithSpriteFrameName(
         "geode.loader/settings.png",
         1.f,
@@ -325,7 +345,6 @@ bool OptionMenu::init() {
             }
         },
         {
-            // @geode-ignore(unknown-resource)
             "geode.loader/gift.png",
             "support-btn",
             [](auto) {

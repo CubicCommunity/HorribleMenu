@@ -72,8 +72,8 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     addEventListener(
         CategoryEvent(),
         [this](std::string_view category, bool enabled) {
-        if (m_impl->toggler) if (category != m_impl->category) m_impl->toggler->toggle(false);
-    }
+            if (m_impl->toggler) if (category != m_impl->category) m_impl->toggler->toggle(false);
+        }
     );
 
     return true;
@@ -81,10 +81,6 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
 
 void OptionCategoryItem::onToggle(CCObject* sender) {
     if (m_impl->toggler) CategoryEvent().send(m_impl->category, !m_impl->toggler->isOn());
-};
-
-ZStringView OptionCategoryItem::getCategory() const noexcept {
-    return m_impl->category;
 };
 
 OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string category) {

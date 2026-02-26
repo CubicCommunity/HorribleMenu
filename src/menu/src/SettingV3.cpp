@@ -42,8 +42,9 @@ SettingNodeV3* HorribleSettingV3::createNode(float width) {
 
 class HorribleSettingNodeV3::Impl final {
 public:
-    Ref<ButtonSprite> buttonSprite = nullptr;
-    Button* button = nullptr;
+    CCMenuItemSpriteExtra* button = nullptr;
+
+    std::string theme = horribleMod->getSettingValue<std::string>("theme");
 };
 
 HorribleSettingNodeV3::HorribleSettingNodeV3() : m_impl(std::make_unique<Impl>()) {};
@@ -52,20 +53,19 @@ HorribleSettingNodeV3::~HorribleSettingNodeV3() {};
 bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, float width) {
     if (!SettingNodeV3::init(setting, width)) return false;
 
-    m_impl->buttonSprite = ButtonSprite::create(
+    auto buttonSprite = ButtonSprite::create(
         "Horrible Options Menu",
         "bigFont.fnt",
-        "GJ_button_01.png",
+        theme::getButtonSquareSprite(m_impl->theme),
         0.875f
     );
-    m_impl->buttonSprite->setScale(.5f);
+    buttonSprite->setScale(0.5f);
 
-    m_impl->button = Button::createWithNode(
-        m_impl->buttonSprite,
-        [](auto) {
-            menu::open();
-        }
+    m_impl->button = CCMenuItemExt::createSpriteExtra(
+        buttonSprite,
+        [](auto) { menu::open(); }
     );
+    m_impl->button->setID("horrible-options-btn");
 
     if (auto menu = getButtonMenu()) {
         menu->setAnchorPoint({ 0.5, 0.5 });
@@ -78,6 +78,29 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
         log::error("Couldn't find button menu in settings");
     };
 
+    addEventListener(
+        SettingChangedEvent(horribleMod, "theme"),
+        [this](std::shared_ptr<SettingV3> setting) {
+            auto strSetting = std::static_pointer_cast<StringSettingV3>(setting);
+            m_impl->theme = strSetting->getValue();
+
+            if (m_impl->button) {
+                auto buttonSprite = ButtonSprite::create(
+                    "Horrible Options Menu",
+                    "bigFont.fnt",
+                    theme::getButtonSquareSprite(m_impl->theme),
+                    0.875f
+                );
+                buttonSprite->setScale(0.5f);
+
+                m_impl->button->setNormalImage(buttonSprite);
+                m_impl->button->updateSprite();
+            } else {
+                log::error("Setting button not found");
+            };
+        }
+    );
+
     updateState(nullptr);
 
     return true;
@@ -85,15 +108,6 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
 
 void HorribleSettingNodeV3::updateState(CCNode* invoker) {
     SettingNodeV3::updateState(invoker);
-
-    auto shouldEnable = getSetting()->shouldEnable();
-
-    m_impl->button->setEnabled(shouldEnable);
-
-    m_impl->buttonSprite->setCascadeColorEnabled(true);
-    m_impl->buttonSprite->setCascadeOpacityEnabled(true);
-    m_impl->buttonSprite->setOpacity(shouldEnable ? 255 : 155);
-    m_impl->buttonSprite->setColor(shouldEnable ? ccWHITE : ccGRAY);
 };
 
 void HorribleSettingNodeV3::onCommit() {};

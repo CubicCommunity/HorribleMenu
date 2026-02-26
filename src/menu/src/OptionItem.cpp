@@ -25,6 +25,11 @@ public:
     void saveTogglerState() {
         if (toggler) (void)options::set(option.id, toggler->isToggled());
     };
+
+    // Notify the user if this option is not compatible for their current platform
+    void notifyIncompat() {
+        if (!compatible) if (auto notif = Notification::create(fmt::format("{} is unavailable for {}", option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
+    };
 };
 
 OptionItem::OptionItem() : m_impl(std::make_unique<Impl>()) {};
@@ -52,7 +57,7 @@ bool OptionItem::init(CCSize const& size, Option option) {
     bg->setAnchorPoint({ 0, 0 });
     bg->setContentSize(getScaledContentSize());
     bg->setScaleMultiplier(0.5f);
-    bg->setOpacity(40);
+    bg->setOpacity(50);
 
     addChild(bg, -1);
 
@@ -183,7 +188,6 @@ bool OptionItem::init(CCSize const& size, Option option) {
         nameLabel->setColor(colors::gray);
         categoryLabel->setColor(colors::gray);
 
-        // @geode-ignore(unknown-resource)
         auto newHelpBtnSprite = CCSprite::createWithSpriteFrameName("geode.loader/info-alert.png");
         newHelpBtnSprite->setScale(0.75f);
         
@@ -208,7 +212,7 @@ void OptionItem::onToggle(CCObject*) {
 
         log::info("Option {} now set to {}", m_impl->option.name, now ? "enabled" : "disabled");
     } else if (m_impl->toggler) {
-        Notification::create(fmt::format("{} is unavailable for {}", m_impl->option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
+        m_impl->notifyIncompat();
         log::error("Option {} is not available for platform {}", m_impl->option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
 
         m_impl->toggler->toggle(false);
@@ -216,6 +220,7 @@ void OptionItem::onToggle(CCObject*) {
 };
 
 void OptionItem::onDescription(CCObject*) {
+    m_impl->notifyIncompat();
     if (auto popup = FLAlertLayer::create(
         m_impl->option.name.c_str(),
         m_impl->option.description.c_str(),
