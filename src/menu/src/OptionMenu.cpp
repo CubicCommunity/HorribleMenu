@@ -204,7 +204,7 @@ bool OptionMenu::init() {
     };
 
     for (auto const& filterBtn : filterBtns) {
-        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 150, true, "bigFont.fnt", theme::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
+        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 155, true, "bigFont.fnt", theme::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
             btnSprite->m_label->setColor(filterBtn.color);
             btnSprite->setScale(0.8f);
 
