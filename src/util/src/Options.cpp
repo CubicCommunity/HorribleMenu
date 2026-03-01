@@ -31,12 +31,9 @@ size_t options::getDelegates(std::string_view id) noexcept {
 
 std::span<const std::string> options::getAllCategories() noexcept {
     if (auto om = OptionManager::get()) return om->getCategories();
-
-    static const std::vector<std::string> ret;
-    return ret;
+    return {};
 };
 
 bool options::doesCategoryExist(ZStringView category) noexcept {
-    auto cats = getAllCategories();
-    return str::containsAny(category, { cats.begin(), cats.end() });
+    return str::containsAny(category, getAllCategories());
 };

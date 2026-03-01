@@ -52,7 +52,7 @@ bool OptionItem::init(CCSize const& size, Option option) {
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
-    auto bg = NineSlice::create(theme::square);
+    auto bg = NineSlice::create(themes::square);
     bg->setID("background");
     bg->setAnchorPoint({ 0, 0 });
     bg->setContentSize(getScaledContentSize());

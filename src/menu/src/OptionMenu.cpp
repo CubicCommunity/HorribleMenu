@@ -85,9 +85,9 @@ OptionMenu::OptionMenu() : m_impl(std::make_unique<Impl>()) {};
 OptionMenu::~OptionMenu() {};
 
 bool OptionMenu::init() {
-    auto btns = theme::getCircleBaseColor(m_impl->theme);
+    auto btns = themes::getCircleBaseColor(m_impl->theme);
 
-    if (!Popup::init(450.f, 280.f, theme::getBackgroundSprite(m_impl->theme))) return false;
+    if (!Popup::init(450.f, 280.f, themes::getBackgroundSprite(m_impl->theme))) return false;
 
     setID("options"_spr);
     setTitle("Horrible Options");
@@ -95,7 +95,7 @@ bool OptionMenu::init() {
 
     auto mainLayerSize = m_mainLayer->getScaledContentSize();
 
-    auto categoryListBg = NineSlice::create(theme::square);
+    auto categoryListBg = NineSlice::create(themes::square);
     categoryListBg->setAnchorPoint({ 0.5, 0.5 });
     categoryListBg->setPosition({ mainLayerSize.width - 82.5f, 75.f });
     categoryListBg->setContentSize({ (mainLayerSize.width / 3.f) - 10.f, 95.f });
@@ -146,7 +146,7 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(m_impl->categoryList, 1);
 
     // Add a background sprite to the popup
-    auto optionListBg = NineSlice::create(theme::square);
+    auto optionListBg = NineSlice::create(themes::square);
     optionListBg->setAnchorPoint({ 0.5, 0.5 });
     optionListBg->setPosition({ (mainLayerSize.width / 2.f) - 77.5f, (mainLayerSize.height / 2.f) - 32.5f });
     optionListBg->setContentSize({ (mainLayerSize.width / 1.5f) - 20.f, mainLayerSize.height - 85.f });
@@ -187,7 +187,7 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(m_impl->searchInput);
 
     // add a list button background
-    auto filterContainerBg = NineSlice::create(theme::square);
+    auto filterContainerBg = NineSlice::create(themes::square);
     filterContainerBg->setAnchorPoint({ 0.5, 0.5 });
     filterContainerBg->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f });
     filterContainerBg->setContentSize({ (mainLayerSize.width / 3.f), mainLayerSize.height - 45.f });
@@ -225,7 +225,7 @@ bool OptionMenu::init() {
     };
 
     for (auto const& filterBtn : filterBtns) {
-        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 155, true, "bigFont.fnt", theme::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
+        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 155, true, "bigFont.fnt", themes::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
             btnSprite->m_label->setColor(filterBtn.color);
             btnSprite->setScale(0.8f);
 

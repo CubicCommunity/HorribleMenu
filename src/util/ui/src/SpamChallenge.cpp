@@ -107,13 +107,13 @@ bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
 
 void SpamChallenge::closeAfterFeedback(float) {
     if (m_impl->m_callback) m_impl->m_callback(m_impl->m_success);
-    removeFromParentAndCleanup(true);
+    onExit();
 };
 
 void SpamChallenge::setSuccess(bool v) {
     m_impl->m_success = v;
 
-    if (m_impl->m_counter) m_impl->m_counter->setVisible(false);
+    if (m_impl->m_counter) m_impl->m_counter->removeFromParentAndCleanup(false);
 
     auto symbol = CCSprite::createWithSpriteFrameName(v ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");
@@ -158,7 +158,7 @@ void SpamChallenge::keyBackClicked() {
 
     unscheduleUpdate();
     if (m_impl->m_callback) m_impl->m_callback(false);
-    removeFromParentAndCleanup(true);
+    onExit();
 };
 
 SpamChallenge* SpamChallenge::create() {

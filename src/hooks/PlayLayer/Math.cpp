@@ -47,20 +47,19 @@ class $modify(MathPlayLayer, PlayLayer) {
             log::info("Showing math quiz");
 
             if (auto quiz = MathQuiz::create()) {
-                f->m_currentQuiz = quiz;
-
                 // clear pointer on close / handle correct/wrong answer
-                f->m_currentQuiz->setCallback([this, f](bool correct) {
+                quiz->setCallback([this, quiz](bool correct) {
                     nextQuiz();
 
                     if (!correct) resetLevelFromStart();
-                    if (f->m_currentQuiz) f->m_currentQuiz->removeMeAndCleanup();
-                                              });
+                    if (quiz) quiz->removeMeAndCleanup();
+                    });
 
 #ifdef GEODE_IS_WINDOWS
                 CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
-                m_uiLayer->addChild(f->m_currentQuiz, 99);
+                m_uiLayer->addChild(quiz, 99);
+                f->m_currentQuiz = quiz;
             };
         };
     };

@@ -38,7 +38,7 @@ bool RandomAd::init() {
             log::error("Sprite failed to load: {}", res.unwrapErr());
             projThumb->removeMeAndCleanup();
         };
-                               });
+        });
 
     projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
@@ -62,16 +62,13 @@ bool RandomAd::init() {
 
 void RandomAd::onPlayBtn(CCObject*) { // congregation jumpscare
     if (auto playLayer = PlayLayer::get()) {
-        auto glm = GameLevelManager::get();
+        auto glm = GameLevelManager::sharedState();
 
         if (auto congregLevel = glm->getSavedLevel(93437568)) {
-            playLayer->onExit();
-
             auto scene = playLayer->scene(congregLevel, false, false);
             CCDirector::get()->replaceScene(scene);
 
             log::info("Switching to Congregation level (93437568)");
-            return;
         } else {
             log::error("Failed to fetch congregation :9");
         };

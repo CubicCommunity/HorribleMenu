@@ -26,7 +26,7 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
-    auto bg = NineSlice::create(theme::square);
+    auto bg = NineSlice::create(themes::square);
     bg->setID("background");
     bg->setAnchorPoint({ 0, 0 });
     bg->setContentSize(getScaledContentSize());

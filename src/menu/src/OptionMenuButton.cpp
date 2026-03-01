@@ -34,7 +34,7 @@ void OptionMenuButton::setupSprite() {
     m_impl->sprite = CircleButtonSprite::createWithSprite(
         "icon.png"_spr,
         0.925f,
-        theme::getCircleBaseColor(m_impl->theme)
+        themes::getCircleBaseColor(m_impl->theme)
     );
     m_impl->sprite->setAnchorPoint({ 0.5, 0.5 });
 

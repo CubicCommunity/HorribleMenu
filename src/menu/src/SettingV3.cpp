@@ -56,7 +56,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     auto buttonSprite = ButtonSprite::create(
         "Horrible Options Menu",
         "bigFont.fnt",
-        theme::getButtonSquareSprite(m_impl->theme),
+        themes::getButtonSquareSprite(m_impl->theme),
         0.875f
     );
     buttonSprite->setScale(0.5f);
@@ -88,7 +88,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
                 auto buttonSprite = ButtonSprite::create(
                     "Horrible Options Menu",
                     "bigFont.fnt",
-                    theme::getButtonSquareSprite(m_impl->theme),
+                    themes::getButtonSquareSprite(m_impl->theme),
                     0.875f
                 );
                 buttonSprite->setScale(0.5f);

@@ -89,35 +89,35 @@ bool MathQuiz::init() {
     } else {
         std::string operation;
         switch (m_impl->m_operation) {
-            default: [[fallthrough]];
+        default: [[fallthrough]];
 
-            case MathOperation::Addition:
-                operation = "+";
-                break;
+        case MathOperation::Addition:
+            operation = "+";
+            break;
 
-            case MathOperation::Subtraction:
-                operation = "-";
-                break;
+        case MathOperation::Subtraction:
+            operation = "-";
+            break;
 
-            case MathOperation::Multiplication:
-                operation = "x";
-                break;
+        case MathOperation::Multiplication:
+            operation = "x";
+            break;
         };
 
         switch (m_impl->m_operation) {
-            default: [[fallthrough]];
+        default: [[fallthrough]];
 
-            case MathOperation::Addition:
-                m_impl->m_correctAnswer = m_impl->m_numFirst + m_impl->m_numSecond;
-                break;
+        case MathOperation::Addition:
+            m_impl->m_correctAnswer = m_impl->m_numFirst + m_impl->m_numSecond;
+            break;
 
-            case MathOperation::Subtraction:
-                m_impl->m_correctAnswer = m_impl->m_numFirst - m_impl->m_numSecond;
-                break;
+        case MathOperation::Subtraction:
+            m_impl->m_correctAnswer = m_impl->m_numFirst - m_impl->m_numSecond;
+            break;
 
-            case MathOperation::Multiplication:
-                m_impl->m_correctAnswer = m_impl->m_numFirst * m_impl->m_numSecond;
-                break;
+        case MathOperation::Multiplication:
+            m_impl->m_correctAnswer = m_impl->m_numFirst * m_impl->m_numSecond;
+            break;
         };
 
         problemText = fmt::format("{} {} {}", m_impl->m_numFirst, operation, m_impl->m_numSecond);
@@ -244,6 +244,8 @@ void MathQuiz::setCorrect(bool v) {
 };
 
 void MathQuiz::onAnswerClicked(CCObject* sender) {
+    unscheduleUpdate();
+
     if (auto btn = typeinfo_cast<CCMenuItemSpriteExtra*>(sender)) {
         int selectedAnswer = btn->getTag();
         auto correct = (selectedAnswer == m_impl->m_correctAnswer);
@@ -289,7 +291,6 @@ void MathQuiz::onAnswerClicked(CCObject* sender) {
 
         setKeypadEnabled(false);
         setCorrect(correct);
-        unscheduleUpdate();
     };
 };
 
@@ -302,31 +303,15 @@ bool MathQuiz::hasAnswer(int answer) const noexcept {
 };
 
 void MathQuiz::keyBackClicked() {
-    if (m_impl->m_answerMenu) m_impl->m_answerMenu->removeFromParentAndCleanup(true);
-    if (m_impl->m_drawNode) m_impl->m_drawNode->removeFromParentAndCleanup(true);
-
-    Notification::create("Nope! You can't escape the math quiz!", NotificationIcon::Error, 1.25f)->show();
+    Notification::create("You can't escape the math quiz...", NotificationIcon::Error, 1.25f)->show();
 
     setCorrect(false);
-    closePopup();
+    onExit();
 };
 
-void MathQuiz::closeAfterFeedback(CCNode* node) {
-    if (node) node->removeFromParentAndCleanup(true);
-
-    if (m_impl->m_answerMenu) m_impl->m_answerMenu->removeFromParentAndCleanup(true);
-    if (m_impl->m_drawNode) m_impl->m_drawNode->removeFromParentAndCleanup(true);
-
+void MathQuiz::closeAfterFeedback(CCNode*) {
     if (m_impl->m_callback) m_impl->m_callback(m_impl->m_correct);
-
-    removeFromParentAndCleanup(true);
-};
-
-void MathQuiz::closePopup() {
-    if (m_impl->m_answerMenu) m_impl->m_answerMenu->removeFromParentAndCleanup(true);
-    if (m_impl->m_callback) m_impl->m_callback(m_impl->m_correct);
-
-    removeFromParentAndCleanup(true);
+    onExit();
 };
 
 void MathQuiz::update(float dt) {
@@ -347,7 +332,6 @@ void MathQuiz::update(float dt) {
 
     if (m_impl->m_timeRemaining <= 0.f) {
         // automatic incorrect
-        unscheduleUpdate();
         setCorrect(false);
 
         // Notification::create("Time's Up!", NotificationIcon::Error, 1.5f)->show();
@@ -364,7 +348,7 @@ void MathQuiz::update(float dt) {
         feedbackLabel->setScale(0.1f);
         feedbackLabel->setColor(colors::red);
 
-        addChild(feedbackLabel, 1000);
+        addChild(feedbackLabel, 999);
 
         auto seq = CCSequence::create(
             CCScaleTo::create(0.0875f, 1.25f),
@@ -375,6 +359,7 @@ void MathQuiz::update(float dt) {
         );
 
         feedbackLabel->runAction(seq);
+        unscheduleUpdate();
     };
 };
 

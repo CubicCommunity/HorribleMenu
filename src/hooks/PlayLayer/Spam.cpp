@@ -44,20 +44,19 @@ class $modify(SpamPlayLayer, PlayLayer) {
             log::info("Showing spam challenge");
 
             if (auto spam = SpamChallenge::create()) {
-                f->m_currentSpam = spam;
-
                 // clear pointer on close / handle correct/wrong answer
-                f->m_currentSpam->setCallback([this, f](bool success) {
+                spam->setCallback([this, spam](bool success) {
                     nextSpam();
 
                     if (!success) resetLevelFromStart();
-                    if (f->m_currentSpam) f->m_currentSpam->removeMeAndCleanup();
-                                              });
+                    if (spam) spam->removeMeAndCleanup();
+                    });
 
 #ifdef GEODE_IS_WINDOWS
                 CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
-                m_uiLayer->addChild(f->m_currentSpam, 99);
+                m_uiLayer->addChild(spam, 99);
+                f->m_currentSpam = spam;
             };
         };
     };
