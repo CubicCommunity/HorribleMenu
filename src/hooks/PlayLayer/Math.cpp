@@ -47,12 +47,10 @@ class $modify(MathPlayLayer, PlayLayer) {
             log::info("Showing math quiz");
 
             if (auto quiz = MathQuiz::create()) {
-                // clear pointer on close / handle correct/wrong answer
-                quiz->setCallback([this, quiz](bool correct) {
+                // handle correct/wrong answer
+                quiz->setCallback([this](bool correct) {
                     nextQuiz();
-
                     if (!correct) resetLevelFromStart();
-                    if (quiz) quiz->removeMeAndCleanup();
                     });
 
 #ifdef GEODE_IS_WINDOWS

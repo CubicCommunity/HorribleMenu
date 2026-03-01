@@ -44,12 +44,10 @@ class $modify(SpamPlayLayer, PlayLayer) {
             log::info("Showing spam challenge");
 
             if (auto spam = SpamChallenge::create()) {
-                // clear pointer on close / handle correct/wrong answer
-                spam->setCallback([this, spam](bool success) {
+                // handle correct/wrong answer
+                spam->setCallback([this](bool success) {
                     nextSpam();
-
                     if (!success) resetLevelFromStart();
-                    if (spam) spam->removeMeAndCleanup();
                     });
 
 #ifdef GEODE_IS_WINDOWS
@@ -71,8 +69,6 @@ class $modify(SpamPlayLayer, PlayLayer) {
                 f->m_currentSpam->removeMeAndCleanup();
                 nextSpam();
             };
-
-            f->m_currentSpam = nullptr;
         };
     };
 };

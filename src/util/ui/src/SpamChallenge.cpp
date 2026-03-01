@@ -148,8 +148,8 @@ void SpamChallenge::update(float dt) {
     if (m_impl->m_timer) m_impl->m_timer->updateProgress(pct);
 
     if (m_impl->m_timeRemaining <= 0.f) {
-        unscheduleUpdate();
         setSuccess(false);
+        unscheduleUpdate();
     };
 };
 
