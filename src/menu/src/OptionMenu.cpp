@@ -38,9 +38,20 @@ public:
         if (optionList) {
             optionList->m_contentLayer->removeAllChildren();
 
+            std::vector<Option> list = { optList.begin(), optList.end() };
+
+            std::sort(list.begin(), list.end(), [this](Option const& a, Option const& b) -> bool {
+                auto aFav = options::isPinned(a.id);
+                auto bFav = options::isPinned(b.id);
+
+                if (aFav != bFav) return aFav > bFav;
+
+                return str::toLower(a.id) < str::toLower(b.id);
+                });
+
             auto useCategory = options::doesCategoryExist(category);
 
-            for (auto const& opt : optList) {
+            for (auto const& opt : list) {
                 // tier filter
                 auto tierMatches = tier == SillyTier::None || tier == opt.silly;
                 // category filter
@@ -227,7 +238,6 @@ bool OptionMenu::init() {
     for (auto const& filterBtn : filterBtns) {
         if (auto btnSprite = ButtonSprite::create(filterBtn.label, 155, true, "bigFont.fnt", themes::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
             btnSprite->m_label->setColor(filterBtn.color);
-            btnSprite->setScale(0.8f);
 
             if (auto btn = Button::createWithNode(
                 btnSprite,
@@ -239,6 +249,7 @@ bool OptionMenu::init() {
                 }
             )) {
                 btn->setID(filterBtn.id);
+                btn->setScale(0.8f);
 
                 filterContainer->addChild(btn);
             } else {
@@ -256,33 +267,28 @@ bool OptionMenu::init() {
     // get all the options data
     m_impl->filterOptions(options::getAll());
 
-    auto settingsBtnSprite = CircleButtonSprite::createWithSpriteFrameName(
-        "geode.loader/settings.png",
-        1.f,
-        btns
-    );
-    settingsBtnSprite->setScale(0.625f);
-
     auto settingsBtn = Button::createWithNode(
-        settingsBtnSprite,
+        CircleButtonSprite::createWithSpriteFrameName(
+            "geode.loader/settings.png",
+            1.f,
+            btns
+        ),
         [](auto) {
             openSettingsPopup(horribleMod);
         }
     );
     settingsBtn->setID("settings-btn");
+    settingsBtn->setScale(0.625f);
 
     m_mainLayer->addChild(settingsBtn);
 
-    auto resetFiltersBtnSprite = CircleButtonSprite::createWithSpriteFrameName(
-        "edit_cwBtn_001.png",
-        1.f,
-        btns,
-        CircleBaseSize::Small
-    );
-    resetFiltersBtnSprite->setScale(0.625f);
-
     auto resetFiltersBtn = Button::createWithNode(
-        resetFiltersBtnSprite,
+        CircleButtonSprite::createWithSpriteFrameName(
+            "edit_cwBtn_001.png",
+            1.f,
+            btns,
+            CircleBaseSize::Small
+        ),
         [this](auto) {
             createQuickPopup(
                 "Reset Filters",
@@ -298,6 +304,7 @@ bool OptionMenu::init() {
         }
     );
     resetFiltersBtn->setID("reset-filters-btn");
+    resetFiltersBtn->setScale(0.625f);
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
 
     m_mainLayer->addChild(resetFiltersBtn);
@@ -354,21 +361,16 @@ bool OptionMenu::init() {
         });
 
     for (auto& socialBtn : socialBtns) {
-        if (auto sprite = CCSprite::createWithSpriteFrameName(socialBtn.sprite)) {
-            sprite->setScale(0.75f);
+        if (auto btn = Button::createWithSpriteFrameName(
+            socialBtn.sprite,
+            std::move(socialBtn.callback)
+        )) {
+            btn->setID(socialBtn.id);
+            btn->setScale(0.75f);
 
-            if (auto btn = Button::createWithNode(
-                sprite,
-                std::move(socialBtn.callback)
-            )) {
-                btn->setID(socialBtn.id);
-
-                socialContainer->addChild(btn);
-            } else {
-                log::error("Failed to create social button");
-            };
+            socialContainer->addChild(btn);
         } else {
-            log::error("Failed to create social button sprite");
+            log::error("Failed to create social button");
         };
     };
 
@@ -398,6 +400,13 @@ bool OptionMenu::init() {
         CategoryEvent(),
         [this](std::string_view category, bool enabled) {
             m_impl->selectedCategory = (enabled) ? category : "";
+            m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
+        }
+    );
+
+    addEventListener(
+        PinEvent(),
+        [this]() {
             m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
         }
     );

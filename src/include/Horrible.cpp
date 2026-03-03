@@ -9,9 +9,23 @@
 using namespace geode::prelude;
 using namespace horrible;
 
+Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matjson::Value const& value) {
+    GEODE_UNWRAP_INTO(bool enabled, value["enabled"].asBool());
+    GEODE_UNWRAP_INTO(bool pin, value["pin"].asBool());
+
+    return Ok(HorribleOptionSave{ enabled, pin });
+};
+
+matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave const& value) {
+    auto obj = matjson::Value();
+    obj["enabled"] = value.enabled;
+    obj["pin"] = value.pin;
+
+    return obj;
+};
+
 void OptionManager::registerCategory(std::string category) {
-    auto cats = getCategories();
-    if (!utils::string::containsAny(category, { cats.begin(), cats.end() })) m_categories.push_back(std::move(category));
+    if (!utils::string::containsAny(category, getCategories())) m_categories.push_back(std::move(category));
 };
 
 bool OptionManager::doesOptionExist(std::string_view id) const noexcept {
@@ -43,8 +57,16 @@ std::span<const std::string> OptionManager::getCategories() const noexcept {
     return m_categories;
 };
 
-bool OptionManager::getOption(std::string_view id) const noexcept {
-    return Mod::get()->getSavedValue<bool>(id, false);
+bool OptionManager::isEnabled(std::string_view id) const {
+    return getOption(id).enabled;
+};
+
+bool OptionManager::isPinned(std::string_view id) const {
+    return getOption(id).pin;
+};
+
+HorribleOptionSave OptionManager::getOption(std::string_view id) const {
+    return Mod::get()->getSavedValue<HorribleOptionSave>(id);
 };
 
 Result<Option> OptionManager::getOptionInfo(std::string_view id) const noexcept {
@@ -63,7 +85,7 @@ size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
     return 0;
 };
 
-bool OptionManager::setOption(ZStringView id, bool enable) {
+void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
     auto it = m_delegates.find(id);
     if (it != m_delegates.end()) {
         for (auto& cb : it->second) cb(enable);
@@ -71,9 +93,10 @@ bool OptionManager::setOption(ZStringView id, bool enable) {
 
     log::debug("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
 
-    OptionEventV2(id).send(enable);
+    auto save = HorribleOptionSave{ enable, pin };
 
-    return Mod::get()->setSavedValue(id, enable);
+    (void)Mod::get()->setSavedValue(id, save);
+    (void)OptionEventV2(id).send(std::move(save));
 };
 
 OptionManager* OptionManager::get() noexcept {
@@ -83,7 +106,7 @@ OptionManager* OptionManager::get() noexcept {
 
 void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>>& hooks) {
     if (auto om = OptionManager::get()) {
-        auto value = om->getOption(id);
+        auto value = om->isEnabled(id);
 
         std::vector<Hook*> allHooks;
         for (auto& hook : hooks | std::views::values) {
@@ -112,12 +135,16 @@ Result<> OptionManagerV2::registerOption(Option const& option) {
     return Err("Failed to get OptionManager");
 };
 
-Result<bool> OptionManagerV2::getOption(std::string_view id) {
-    if (auto om = OptionManager::get()) return Ok(om->getOption(id));
+Result<bool> OptionManagerV2::isEnabled(std::string_view id) {
+    if (auto om = OptionManager::get()) return Ok(om->isEnabled(id));
     return Err("Failed to get OptionManager");
 };
 
-Result<bool> OptionManagerV2::setOption(ZStringView id, bool enable) {
-    if (auto om = OptionManager::get()) return Ok(om->setOption(id, enable));
+Result<> OptionManagerV2::setOption(ZStringView id, bool enable, bool pin) {
+    if (auto om = OptionManager::get()) {
+        om->setOption(id, enable, pin);
+        return Ok();
+    };
+
     return Err("Failed to get OptionManager");
 };

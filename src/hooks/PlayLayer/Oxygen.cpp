@@ -22,7 +22,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        bool withHealth = options::get("health");
+        bool withHealth = options::isEnabled("health");
 
         float m_oxygenLevel = 100.f;
         bool m_oxygenActive = false;

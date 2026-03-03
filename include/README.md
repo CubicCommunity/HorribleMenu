@@ -30,8 +30,8 @@ The manager class for Horrible Ideas mod options.
 - `static OptionManager*` **`get()`**: Get option manager singleton
 - `void` **`registerOption(Option const& option)`**: Register a new option
   - `Option const&` **`option`**: Constructed option object
-- `bool` **`getOption(std::string_view id)`** `const`: Returns the toggle state of an option
-- `bool` **`setOption(std::string_view id, bool enable)`** `const`: Set the toggle state of an option
+- `bool` **`isEnabled(std::string_view id)`** `const`: Returns the toggle state of an option
+- `void` **`setOption(std::string_view id, bool enable)`** `const`: Set the toggle state of an option
   - `std::string_view` **`id`**: The ID of the option to toggle
   - `bool` **`enable`**: Boolean to toggle to
 
@@ -134,14 +134,14 @@ This will automatically include your option in Horrible Ideas's pre-existing lis
 Once you've registered an option on `$on_mod(Loaded)`, you can use other methods to work with the option.
 
 ##### Static Conditioning
-You can begin by using **`OptionManager::getOption`** and provide your option's unique ID to check if an option is enabled or disabled.
+You can begin by using **`OptionManager::isEnabled`** and provide your option's unique ID to check if an option is enabled or disabled.
 ```cpp
 using namespace geode::prelude;
 using namespace horrible;
 
 class $modify(CoolThingsPlayLayer, PlayLayer) {
     struct Fields {
-        bool enabled = OptionManager::get()->getOption("cool-things"_spr); // If this option is set to true or false
+        bool enabled = OptionManager::get()->isEnabled("cool-things"_spr); // If this option is set to true or false
     };
 
     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
@@ -168,7 +168,7 @@ using namespace horrible;
 
 class $modify(SomethingInterestingMenuLayer, MenuLayer) {
     struct Fields {
-        bool enabled = OptionManager::get()->getOption("something-interesting"_spr);
+        bool enabled = OptionManager::get()->isEnabled("something-interesting"_spr);
         EventListener<HorribleOptionEventFilter> m_optionListener; // Listen to any option being toggled
     };
 
@@ -225,8 +225,8 @@ These classes mirror the main API but return `geode::Result` values so callers c
 
 #### class `horrible::OptionManagerV2`
 - `static Result<>` **`registerOption(Option const& option)`**
-- `static Result<bool>` **`getOption(std::string_view id)`**
-- `static Result<bool>` **`setOption(std::string_view id, bool enable)`**
+- `static Result<bool>` **`isEnabled(std::string_view id)`**
+- `static Result<>` **`setOption(std::string_view id, bool enable)`**
 
 #### Summary
 | Type    | Name                          | Description                          |

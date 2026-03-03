@@ -29,7 +29,7 @@ void placeboEffect() {
         log::info("Placebo effect activated! Toggling all options...");
 
         for (auto const& option : options::getAll()) {
-            auto toggle = options::get(option.id);
+            auto toggle = options::isEnabled(option.id);
             log::debug("Placebo {} option {}", toggle ? "disabled" : "enabled", option.id);
             options::set(option.id, !toggle);
         };

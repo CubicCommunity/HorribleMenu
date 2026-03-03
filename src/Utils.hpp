@@ -56,17 +56,6 @@ namespace horrible {
         inline constexpr auto misc = "Misc";
     };
 
-    // Fast color object references ^w^
-    namespace colors {
-        inline constexpr cocos2d::ccColor3B white = { 255, 255, 255 };
-        inline constexpr cocos2d::ccColor3B gray = { 150, 150, 150 };
-        inline constexpr cocos2d::ccColor3B red = { 225, 75, 100 };
-        inline constexpr cocos2d::ccColor3B yellow = { 250, 250, 25 };
-        inline constexpr cocos2d::ccColor3B green = { 100, 255, 100 };
-        inline constexpr cocos2d::ccColor3B cyan = { 10, 175, 255 };
-        inline constexpr cocos2d::ccColor3B black = { 0, 0, 0 };
-    };
-
     namespace prelude {
         using namespace ::horrible;
         using namespace ::horrible::ui;

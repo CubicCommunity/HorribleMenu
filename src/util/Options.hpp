@@ -22,7 +22,16 @@ namespace horrible {
              *
              * @returns Boolean of the current value
              */
-            bool get(std::string_view id) noexcept;
+            bool isEnabled(std::string_view id);
+
+            /**
+             * Quickly check the pin state of an option
+             *
+             * @param id The ID of the option to check
+             *
+             * @returns Boolean of the current value
+             */
+            bool isPinned(std::string_view id);
 
             /**
              * Returns the chance value for an option
@@ -34,14 +43,22 @@ namespace horrible {
             int getChance(std::string_view id);
 
             /**
+             * Get the saved data of an option
+             *
+             * @param id The ID of the option to check
+             *
+             * @returns The current save
+             */
+            HorribleOptionSave get(std::string_view id);
+
+            /**
              * Set the toggle state of an option
              *
              * @param id The ID of the option to toggle
              * @param enable Boolean to toggle to
-             *
-             * @returns Boolean of the old value
+             * @param pin If this option is a user pin
              */
-            bool set(geode::ZStringView id, bool enable);
+            void set(geode::ZStringView id, bool enable, bool pin = false);
 
             /**
              * Returns the amount of delegate callbacks registered for an option

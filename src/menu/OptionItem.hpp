@@ -7,6 +7,11 @@
 using namespace geode::prelude;
 using namespace horrible;
 
+// Event for pin toggles
+struct PinEvent final : Event<PinEvent, bool()> {
+    using Event::Event;
+};
+
 class OptionItem final : public CCMenu {
 private:
     class Impl;
@@ -17,7 +22,7 @@ protected:
     ~OptionItem();
 
     void onToggle(CCObject*);
-    void onDescription(CCObject*);
+    void onPin(CCObject* sender);
 
     bool init(CCSize const& size, Option option);
 

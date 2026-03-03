@@ -13,7 +13,7 @@
 #define MY_MOD_ID "arcticwoof.horrible_ideas"
 
 namespace horrible {
-    struct OptionEventV2 final : geode::Event<OptionEventV2, bool(bool), std::string> {
+    struct OptionEventV2 final : geode::Event<OptionEventV2, bool(HorribleOptionSave), std::string> {
         using Event::Event;
     };
 
@@ -22,10 +22,10 @@ namespace horrible {
         static geode::Result<> registerOption(Option const& option)
             GEODE_EVENT_EXPORT(&OptionManagerV2::registerOption, (option));
 
-        [[nodiscard]] static geode::Result<bool> getOption(std::string_view id)
-            GEODE_EVENT_EXPORT(&OptionManagerV2::getOption, (id));
+        [[nodiscard]] static geode::Result<bool> isEnabled(std::string_view id)
+            GEODE_EVENT_EXPORT(&OptionManagerV2::isEnabled, (id));
 
-        static geode::Result<bool> setOption(geode::ZStringView id, bool enable)
-            GEODE_EVENT_EXPORT(&OptionManagerV2::setOption, (id, enable));
+        static geode::Result<> setOption(geode::ZStringView id, bool enable, bool pin = false)
+            GEODE_EVENT_EXPORT(&OptionManagerV2::setOption, (id, enable, pin));
     };
 };

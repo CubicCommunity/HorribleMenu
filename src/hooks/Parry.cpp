@@ -42,7 +42,7 @@ HORRIBLE_REGISTER_OPTION(o);
 
 // class $modify(ParryPlayerObject, PlayerObject) {
 //     struct Fields {
-//         bool enabled = options::get(id);
+//         bool enabled = options::isEnabled(id);
 //     };
 
 //     bool pushButton(PlayerButton p0) {
@@ -96,7 +96,7 @@ HORRIBLE_REGISTER_OPTION(o);
 
 // class $modify(ParryPlayLayer, PlayLayer) {
 //     struct Fields {
-//         bool enabled = options::get(id);
+//         bool enabled = options::isEnabled(id);
 
 //         ProgressBar* m_parryBar = nullptr;
 //         CCLabelBMFont* m_parryLabel = nullptr;

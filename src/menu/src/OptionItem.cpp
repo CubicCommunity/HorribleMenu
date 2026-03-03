@@ -16,14 +16,14 @@ public:
         "unk"_spr,
         "Unknown Option",
         "No description provided.",
-        "General"
+        category::misc,
     };
 
     CCMenuItemToggler* toggler = nullptr; // The toggler for the option
 
     // Save the current state of the toggler as the option state
     void saveTogglerState() {
-        if (toggler) (void)options::set(option.id, toggler->isToggled());
+        if (toggler) options::set(option.id, toggler->isToggled(), options::isPinned(option.id));
     };
 
     // Notify the user if this option is not compatible for their current platform
@@ -62,10 +62,9 @@ bool OptionItem::init(CCSize const& size, Option option) {
     addChild(bg, -1);
 
     // Horizontal layout: [toggle] [name] [info]
-    float padding = 5.f;
     float yCenter = getScaledContentHeight() / 2.f;
 
-    float x = padding;
+    auto x = 5.f;
 
     auto togglerOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
     togglerOff->setScale(0.875f);
@@ -85,7 +84,7 @@ bool OptionItem::init(CCSize const& size, Option option) {
     m_impl->toggler->setScale(0.875f);
 
     // Set toggler state based on saved mod option value
-    if (horribleMod) m_impl->toggler->toggle(horribleMod->getSavedValue<bool>(m_impl->option.id));
+    m_impl->toggler->toggle(options::isEnabled(m_impl->option.id));
 
     addChild(m_impl->toggler);
 
@@ -158,22 +157,64 @@ bool OptionItem::init(CCSize const& size, Option option) {
         addChild(idLabel);
     };
 
-    x += nameLabel->getScaledContentWidth() + 15.f;
+    auto menuLayout = RowLayout::create()
+    ->setGap(5.f)
+    ->setAxisReverse(true)
+    ->setAutoGrowAxis(0.f);
 
-    auto helpBtnSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
-    helpBtnSprite->setScale(0.75f);
+    auto menu = CCMenu::create();
+    menu->setID("menu");
+    menu->setAnchorPoint({ 1, 0.5 });
+    menu->setContentSize({ 0.f, 0.f });
+    menu->setPosition({ getScaledContentWidth() - 7.5f, yCenter});
+    menu->setLayout(menuLayout);
+
+    addChild(menu);
 
     // info button
-    auto helpBtn = CCMenuItemSpriteExtra::create(
-        helpBtnSprite,
-        this,
-        menu_selector(OptionItem::onDescription)
+    auto helpBtn = Button::createWithSpriteFrameName(
+        m_impl->compatible ? "GJ_infoIcon_001.png" : "geode.loader/info-alert.png",
+        [this](auto) {
+            m_impl->notifyIncompat();
+            if (auto popup = FLAlertLayer::create(
+                m_impl->option.name.c_str(),
+                m_impl->option.description.c_str(),
+                "OK"
+            )) popup->show();
+        }
     );
     helpBtn->setID("help-btn");
+    helpBtn->setScale(0.625f);
     helpBtn->setAnchorPoint({ 0.5f, 0.5f });
-    helpBtn->setPosition({ getScaledContentWidth() - padding - 10.f, yCenter });
 
-    addChild(helpBtn);
+    menu->addChild(helpBtn);
+
+    // @geode-ignore(unknown-resource)
+    auto pinOff = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
+    pinOff->setScale(0.5f);
+    pinOff->setOpacity(75);
+    pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
+    // @geode-ignore(unknown-resource)
+    auto pinOn = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
+    pinOn->setScale(0.5f);
+    pinOn->setOpacity(225);
+    pinOn->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
+
+    pinOn->setColor(themes::getColor(horribleMod->getSettingValue<std::string>("theme")));
+
+    auto pinBtn = CCMenuItemToggler::create(
+        pinOff,
+        pinOn,
+        this,
+        menu_selector(OptionItem::onPin)
+    );
+    pinBtn->setID("pin-btn");
+
+    pinBtn->toggle(options::isPinned(m_impl->option.id));
+
+    menu->addChild(pinBtn);
+
+    menu->updateLayout();
 
     if (!m_impl->compatible) {
         m_impl->toggler->toggle(false);
@@ -188,11 +229,6 @@ bool OptionItem::init(CCSize const& size, Option option) {
         nameLabel->setColor(colors::gray);
         categoryLabel->setColor(colors::gray);
 
-        auto newHelpBtnSprite = CCSprite::createWithSpriteFrameName("geode.loader/info-alert.png");
-        newHelpBtnSprite->setScale(0.75f);
-        
-        helpBtn->setSprite(newHelpBtnSprite);
-
         m_impl->saveTogglerState();
     };
 
@@ -203,7 +239,7 @@ void OptionItem::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
         auto now = !m_impl->toggler->isToggled();
         
-        (void)options::set(m_impl->option.id, now);
+        options::set(m_impl->option.id, now, options::isPinned(m_impl->option.id));
 
         if (m_impl->option.restart) {
             Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
@@ -219,13 +255,11 @@ void OptionItem::onToggle(CCObject*) {
     };
 };
 
-void OptionItem::onDescription(CCObject*) {
-    m_impl->notifyIncompat();
-    if (auto popup = FLAlertLayer::create(
-        m_impl->option.name.c_str(),
-        m_impl->option.description.c_str(),
-        "OK"
-    )) popup->show();
+void OptionItem::onPin(CCObject* sender) {
+    if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
+        options::set(m_impl->option.id, options::isEnabled(m_impl->option.id), !pinBtn->isToggled());
+        PinEvent().send();
+    };
 };
 
 Option const& OptionItem::getOption() const noexcept {

@@ -27,8 +27,8 @@ HORRIBLE_REGISTER_OPTION(oCongregation);
 
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
     struct Fields {
-        bool griefEnabled = options::get(oGrief.id);
-        bool congregEnabled = options::get(oCongregation.id);
+        bool griefEnabled = options::isEnabled(oGrief.id);
+        bool congregEnabled = options::isEnabled(oCongregation.id);
 
         int griefChance = options::getChance(oGrief.id);
         int congregChance = options::getChance(oCongregation.id);

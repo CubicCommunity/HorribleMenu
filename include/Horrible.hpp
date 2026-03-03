@@ -18,11 +18,24 @@
 
 #include <cocos2d.h>
 
+#include <matjson.hpp>
+
 #include <Geode/Result.hpp>
 
 #include <Geode/utils/function.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/ZStringView.hpp>
+
+struct HorribleOptionSave final {
+    bool enabled = false;
+    bool pin = false;
+};
+
+template<>
+struct matjson::Serialize<HorribleOptionSave> final {
+    static geode::Result<HorribleOptionSave> fromJson(matjson::Value const& value);
+    static matjson::Value toJson(HorribleOptionSave const& value);
+};
 
 // Container for Horrible Ideas API functions
 namespace horrible {
@@ -74,13 +87,31 @@ namespace horrible {
         [[nodiscard]] std::span<const Option> getOptions() const noexcept;
 
         /**
-         * Returns the toggle state of an option
+         * Quickly check the toggle state of an option
          *
          * @param id The ID of the option to check
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] bool getOption(std::string_view id) const noexcept;
+        [[nodiscard]] bool isEnabled(std::string_view id) const;
+
+        /**
+         * Quickly check the pin state of an option
+         *
+         * @param id The ID of the option to check
+         *
+         * @returns Boolean of the current value
+         */
+        [[nodiscard]] bool isPinned(std::string_view id) const;
+
+        /**
+         * Get the saved data of an option
+         *
+         * @param id The ID of the option to check
+         *
+         * @returns The current save
+         */
+        [[nodiscard]] HorribleOptionSave getOption(std::string_view id) const;
 
         /**
          * Returns the data of an option
@@ -105,10 +136,9 @@ namespace horrible {
          *
          * @param id The ID of the option to toggle
          * @param enable Boolean to toggle to
-         *
-         * @returns Boolean of the old value
+         * @param pin If this option is a user pin
          */
-        bool setOption(geode::ZStringView id, bool enable);
+        void setOption(geode::ZStringView id, bool enable, bool pin = false);
 
         /**
          * Upsert a new hook delegate

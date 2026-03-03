@@ -43,8 +43,6 @@ SettingNodeV3* HorribleSettingV3::createNode(float width) {
 class HorribleSettingNodeV3::Impl final {
 public:
     CCMenuItemSpriteExtra* button = nullptr;
-
-    std::string theme = horribleMod->getSettingValue<std::string>("theme");
 };
 
 HorribleSettingNodeV3::HorribleSettingNodeV3() : m_impl(std::make_unique<Impl>()) {};
@@ -56,7 +54,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     auto buttonSprite = ButtonSprite::create(
         "Horrible Options Menu",
         "bigFont.fnt",
-        themes::getButtonSquareSprite(m_impl->theme),
+        themes::getButtonSquareSprite(horribleMod->getSettingValue<std::string>("theme")),
         0.875f
     );
     buttonSprite->setScale(0.5f);
@@ -82,13 +80,12 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
         SettingChangedEvent(horribleMod, "theme"),
         [this](std::shared_ptr<SettingV3> setting) {
             auto strSetting = std::static_pointer_cast<StringSettingV3>(setting);
-            m_impl->theme = strSetting->getValue();
 
             if (m_impl->button) {
                 auto buttonSprite = ButtonSprite::create(
                     "Horrible Options Menu",
                     "bigFont.fnt",
-                    themes::getButtonSquareSprite(m_impl->theme),
+                    themes::getButtonSquareSprite(strSetting->getValue()),
                     0.875f
                 );
                 buttonSprite->setScale(0.5f);
