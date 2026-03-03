@@ -10,12 +10,12 @@ std::span<const Option> options::getAll() noexcept {
     return {};
 };
 
-bool options::isEnabled(std::string_view id) noexcept {
+bool options::isEnabled(std::string_view id) {
     if (auto om = OptionManager::get()) return om->isEnabled(id);
     return false;
 };
 
-bool options::isPinned(std::string_view id) noexcept {
+bool options::isPinned(std::string_view id) {
     if (auto om = OptionManager::get()) return om->isPinned(id);
     return false;
 };
