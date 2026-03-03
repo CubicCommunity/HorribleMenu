@@ -32,7 +32,7 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
         if (p1 == m_anticheatSpike && p0 && !p0->m_isDead) return;
 
         int rnd = randng::fast();
-        log::debug("crash destroy chance {}", rnd);
+        log::trace("crash destroy chance {}", rnd);
 
         if (rnd <= f->chance) {
             log::warn("ur game crash hehehehehehehe");

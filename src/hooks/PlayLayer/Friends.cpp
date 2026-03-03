@@ -31,7 +31,7 @@ static constexpr auto s_friends = std::to_array<const char*>({
     "diffIcon_09_btn_001.png",
     "diffIcon_10_btn_001.png",
     "diffIcon_auto_btn_001.png",
-                                                             });
+    });
 
 class $modify(FriendsPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
@@ -40,7 +40,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         auto delay = randng::get(3.f);
-        log::debug("Friend will visit after {} seconds", delay);
+        log::trace("Friend will visit after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);
     };
@@ -84,7 +84,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
 
     void scheduleNextFriend() {
         auto delay = randng::get(5.f);
-        log::debug("Friend will visit again after {} seconds", delay);
+        log::trace("Friend will visit again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);
     };

@@ -67,7 +67,7 @@ class $modify(HIMenuLayer, MenuLayer) {
             float currentFPS = gm->m_customFPSTarget;
             (void)horribleMod->setSavedValue<float>("fps", currentFPS);
 
-            log::debug("Store Current FPS: {}", currentFPS);
+            log::debug("Stored current FPS: {}", currentFPS);
         };
 
         return true;

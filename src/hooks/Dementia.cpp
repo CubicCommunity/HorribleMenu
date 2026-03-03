@@ -36,7 +36,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
             auto f = m_fields.self();
 
             int rnd = randng::fast();
-            log::debug("player teleport chance {}", rnd);
+            log::trace("player teleport chance {}", rnd);
 
             FMOD::Channel* musicChannel = nullptr;
             auto fmod = FMODAudioEngine::sharedEngine();
@@ -48,7 +48,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
             // dementia
             if (rnd <= f->chance) {
                 setPosition({ f->lastX, f->lastY });
-                log::debug("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
+                log::trace("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
 
                 // set the music time back to the last recorded time
                 if (musicChannel) musicChannel->setPosition(f->lastMusicTime, FMOD_TIMEUNIT_MS);
@@ -60,7 +60,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 
                 f->lastMusicTime = fmod->getMusicTimeMS(1);
 
-                log::debug("position recorded to ({}, {}) and music time {}", f->lastX, f->lastY, f->lastMusicTime);
+                log::trace("position recorded to ({}, {}) and music time {}", f->lastX, f->lastY, f->lastMusicTime);
             };
         };
 

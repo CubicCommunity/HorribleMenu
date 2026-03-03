@@ -75,7 +75,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
     };
 
     bool onGround() {
-        // log::debug("1: {} 2: {} 3: {} 4: {}", m_isOnGround ? "y" : "n", m_isOnGround2 ? "y" : "n", m_isOnGround3 ? "y" : "n", m_isOnGround4 ? "y" : "n");
+        // log::trace("1: {} 2: {} 3: {} 4: {}", m_isOnGround ? "y" : "n", m_isOnGround2 ? "y" : "n", m_isOnGround3 ? "y" : "n", m_isOnGround4 ? "y" : "n");
         return m_isOnGround && m_isOnGround2 && m_isOnGround3 & m_isOnGround4;
     };
 

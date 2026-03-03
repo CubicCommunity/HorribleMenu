@@ -32,7 +32,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
     };
 
     void showBlackScreen(float) {
-        log::debug("Showing black screen after delay");
+        log::trace("Showing black screen after delay");
 
         auto const winSize = CCDirector::sharedDirector()->getWinSize();
 

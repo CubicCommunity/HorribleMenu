@@ -193,13 +193,12 @@ bool OptionItem::init(CCSize const& size, Option option) {
     auto pinOff = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
     pinOff->setScale(0.5f);
     pinOff->setOpacity(75);
-    pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
     // @geode-ignore(unknown-resource)
     auto pinOn = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
     pinOn->setScale(0.5f);
     pinOn->setOpacity(225);
-    pinOn->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
 
+    pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
     pinOn->setColor(themes::getColor(horribleMod->getSettingValue<std::string>("theme")));
 
     auto pinBtn = CCMenuItemToggler::create(

@@ -41,16 +41,18 @@ class $modify(MockMenuLayer, MenuLayer) {
 
         // show a lazysprite for the first png found in the save dir
         int rnd = randng::fast();
-        log::debug("mock chance {}", rnd);
+        log::trace("mock chance {}", rnd);
 
         if (rnd <= f->chance) {
             auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
             auto const mockConfig = file::readJson(fs::path(mockConfigPath));
 
-            log::debug("Reading path {}...", mockConfigPath);
+            log::trace("Reading path {}...", mockConfigPath);
+            ("Reading path {}...", mockConfigPath);
 
             if (mockConfig.isOk()) {
-                log::debug("Read mocking config file");
+                log::trace("Reading path {}...", mockConfigPath);
+                ("Read mocking config file");
 
                 auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
@@ -61,7 +63,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                 auto percent = lvlUnwr->asInt().unwrapOr(99);
 
                 if (!id.empty()) {
-                    log::debug("ID {} with percentage {} is valid", id, percent);
+                    log::trace("ID {} with percentage {} is valid", id, percent);
 
                     auto const pngPath = fmt::format("{}\\{}.png", horribleMod->getSaveDir(), id);
 
@@ -203,7 +205,7 @@ class $modify(MockPlayLayer, PlayLayer) {
         auto const mockConfig = file::readJson(fs::path(mockConfigPath)); // get the saved levels to mock the player :)
 
         if (mockConfig.isOk()) {
-            log::debug("Clearing mock record for {}", id);
+            log::trace("Clearing mock record for {}", id);
             auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
             mockConfigUnwr[utils::numToString(id)].clear();
 

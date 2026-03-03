@@ -33,7 +33,7 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
 
         if (auto fmod = FMODAudioEngine::sharedEngine()) {
             int rnd = randng::fast();
-            log::debug("button menu chance {}", rnd);
+            log::trace("button menu chance {}", rnd);
 
             // @geode-ignore(unknown-resource)
             if (rnd <= f->chance) fmod->playEffectAsync("achievement_01.ogg");

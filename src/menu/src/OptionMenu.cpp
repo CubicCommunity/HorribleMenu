@@ -61,19 +61,17 @@ public:
                 auto searchMatches = true;
                 if (!searchText.empty()) {
                     auto const searchLower = str::toLower(searchText);
-                    auto const nameLower = str::toLower(opt.name);
 
-                    searchMatches = str::contains(nameLower, searchLower);
+                    searchMatches = str::contains(str::toLower(opt.name), searchLower)
+                        || str::contains(str::toLower(opt.id), searchLower)
+                        || str::contains(str::toLower(opt.category), searchLower);
                 };
 
                 if (tierMatches && categoryMatches && searchMatches) {
                     if (auto modOption = OptionItem::create(
-                        {
-                            optionList->m_contentLayer->getScaledContentWidth(),
-                            32.5f,
-                        },
+                        { optionList->m_contentLayer->getScaledContentWidth(), 32.5f },
                         opt
-                        )) {
+                    )) {
                         if (modOption->isCompatible() || showIncompatible) {
                             optionList->m_contentLayer->addChild(modOption);
                         } else {

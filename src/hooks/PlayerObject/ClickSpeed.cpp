@@ -25,7 +25,7 @@ class $modify(ClickSpeedPlayerObject, PlayerObject) {
         int rng = randng::fast() % 100;
         int currentSpeed = m_playerSpeed;
 
-        log::debug("current speed: {}", currentSpeed);
+        log::trace("current speed: {}", currentSpeed);
 
         if (rng <= 50) {
             // increase the player speed

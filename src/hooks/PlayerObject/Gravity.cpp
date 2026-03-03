@@ -35,7 +35,7 @@ class $modify(GravityPlayerObject, PlayerObject) {
         // Only set gravity if on flat ground (not on a slope) and not rotating
         if (onGrnd && !m_isRotating && !f->m_isOnSlope && !f->m_wasOnSlope) {
             m_gravityMod = newGrav;
-            log::debug("set gravity to x{} (flat ground)", newGrav);
+            log::trace("set gravity to x{} (flat ground)", newGrav);
         };
 
         PlayerObject::updateJump(p0);

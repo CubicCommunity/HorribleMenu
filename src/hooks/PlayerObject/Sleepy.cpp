@@ -75,7 +75,7 @@ class $modify(SleepyPlayerObject, PlayerObject) {
         // player sleepy if not already in any stage
         auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
         if (!f->m_sleepy && !f->m_waking && onGround) {
-            log::debug("Making the player m_sleepy");
+            log::debug("Making the player sleepy");
 
             f->m_defSpeed = m_playerSpeed; // capture original speed
             f->m_sleepy = true;
