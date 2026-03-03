@@ -11,7 +11,7 @@ class OptionMenuButton::Impl final {
 public:
     bool inLevel = horribleMod->getSettingValue<bool>("floating-button-level");
 
-    float scale = static_cast<float>(horribleMod->getSettingValue<double>("floating-button-scale"));
+    float scale = horribleMod->getSettingValue<float>("floating-button-scale");
     int64_t opacity = horribleMod->getSettingValue<int64_t>("floating-button-opacity");
 
     bool isDragging = false;

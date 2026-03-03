@@ -292,7 +292,7 @@ bool OptionMenu::init() {
         [this](auto) {
             createQuickPopup(
                 "Reset Filters",
-                "Would you like to <cr>reset all search filters</c>?",
+                "Would you like to <cr>reset all search filters</c>?\n<cy>This will not affect your pins.</c>",
                 "Cancel", "OK",
                 [this](bool, bool ok) {
                     if (ok) {

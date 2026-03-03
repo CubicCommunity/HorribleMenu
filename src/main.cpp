@@ -32,10 +32,10 @@ $on_game(Loaded) {
         }
     );
 
-    listenForSettingChanges<double>(
+    listenForSettingChanges<float>(
         "floating-button-scale",
-        [](double value) {
-            if (auto fb = OptionMenuButton::get()) fb->setScale(static_cast<float>(value));
+        [](float value) {
+            if (auto fb = OptionMenuButton::get()) fb->setScale(value);
         }
     );
 
