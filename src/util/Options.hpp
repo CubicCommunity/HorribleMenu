@@ -81,7 +81,7 @@ namespace horrible {
              *
              * @param category The exact name of the category to check
              */
-            bool doesCategoryExist(geode::ZStringView category) noexcept;
+            bool doesCategoryExist(geode::ZStringView category);
         };
     };
 };

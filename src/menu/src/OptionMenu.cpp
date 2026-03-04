@@ -44,9 +44,7 @@ public:
                 auto aFav = options::isPinned(a.id);
                 auto bFav = options::isPinned(b.id);
 
-                if (aFav != bFav) return aFav > bFav;
-
-                return str::toLower(a.id) < str::toLower(b.id);
+                return aFav > bFav;
                 });
 
             auto useCategory = options::doesCategoryExist(category);

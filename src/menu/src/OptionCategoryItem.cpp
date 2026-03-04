@@ -22,6 +22,7 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
 
     if (!CCMenu::init()) return false;
 
+    // lol
     setID(str::join(str::split(str::filter(str::toLower(m_impl->category), "abcdefghijklmnopqrstuvwxyz0123456789-_./ "), " "), "-"));
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });

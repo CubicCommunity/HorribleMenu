@@ -91,7 +91,7 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
         for (auto& cb : it->second) cb(enable);
     };
 
-    log::debug("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
+    log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
 
     auto save = HorribleOptionSave{ enable, pin };
 
@@ -111,7 +111,7 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
         std::vector<Hook*> allHooks;
         for (auto& hook : hooks | std::views::values) {
             hook->setAutoEnable(value);
-            log::debug("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
+            log::trace("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
             allHooks.push_back(hook.get());
         };
 

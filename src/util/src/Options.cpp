@@ -43,6 +43,6 @@ std::span<const std::string> options::getAllCategories() noexcept {
     return {};
 };
 
-bool options::doesCategoryExist(ZStringView category) noexcept {
+bool options::doesCategoryExist(ZStringView category) {
     return str::containsAny(category, getAllCategories());
 };
