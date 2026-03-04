@@ -45,9 +45,14 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
             if (auto spam = SpamChallenge::create()) {
                 // handle correct/wrong answer
-                spam->setCallback([this](bool success) {
-                    nextSpam();
+                spam->setCallback([this, f](bool success) {
+                    log::debug("spam {}", success ? "succeeded" : "failed");
                     if (!success) resetLevelFromStart();
+                    nextSpam();
+
+                    queueInMainThread([f]() {
+                        f->m_currentSpam = nullptr;
+                        });
                     });
 
 #ifdef GEODE_IS_WINDOWS
@@ -66,6 +71,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
         if (m_player1->m_isDead) {
             if (f->m_currentSpam) {
+                log::trace("removing activate spam challenge after player death");
                 f->m_currentSpam->removeMeAndCleanup();
                 nextSpam();
             };

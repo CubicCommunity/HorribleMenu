@@ -23,8 +23,6 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     struct Fields {
         int chance = options::getChance(id);
-
-        MathQuiz* m_currentQuiz = nullptr;
     };
 
     void setupHasCompleted() {
@@ -49,15 +47,15 @@ class $modify(MathPlayLayer, PlayLayer) {
             if (auto quiz = MathQuiz::create()) {
                 // handle correct/wrong answer
                 quiz->setCallback([this](bool correct) {
-                    nextQuiz();
+                    log::debug("math {}", correct ? "succeeded" : "failed");
                     if (!correct) resetLevelFromStart();
+                    nextQuiz();
                     });
 
 #ifdef GEODE_IS_WINDOWS
                 CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
                 m_uiLayer->addChild(quiz, 99);
-                f->m_currentQuiz = quiz;
             };
         };
     };

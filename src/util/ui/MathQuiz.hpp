@@ -37,19 +37,10 @@ namespace horrible {
 
             void setCallback(Function<void(bool)> cb);
             void setCorrect(bool v);
-
-            void closePopup();
         };
 
         class Richard final : public CCNode {
-        private:
-            class Impl;
-            std::unique_ptr<Impl> m_impl;
-
         protected:
-            Richard();
-            ~Richard();
-
             bool init() override;
 
         public:

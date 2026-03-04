@@ -9,13 +9,13 @@ private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
+    void setupSprite();
+
 protected:
     OptionMenuButton();
     ~OptionMenuButton();
 
     void onScaleEnd();
-
-    void setupSprite();
 
     virtual bool init() override;
 

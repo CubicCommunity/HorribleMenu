@@ -63,7 +63,7 @@ bool OptionMenuButton::init() {
     setTouchMode(kCCTouchesOneByOne);
     setTouchEnabled(true);
     setTouchPriority(-512);  // ewww touch priority
-    setZOrder(9999);
+    setZOrder(99);
 
     setupSprite();
 

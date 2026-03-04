@@ -162,7 +162,7 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(optionListBg);
 
     auto layoutOptions = ColumnLayout::create()
-        ->setGap(5.f)
+        ->setGap(3.75f)
         ->setAxisReverse(true) // Top to bottom
         ->setAxisAlignment(AxisAlignment::End)
         ->setAutoGrowAxis(optionListBg->getScaledContentHeight() - 10.f);

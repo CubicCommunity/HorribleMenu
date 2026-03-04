@@ -9,18 +9,18 @@ using namespace horrible::prelude;
 
 class SpamChallenge::Impl final {
 public:
-    int m_inputCount = 0;
-    int m_inputTarget = 50;
+    int inputCount = 0;
+    int inputTarget = 50;
 
-    CCLabelBMFont* m_counter = nullptr;
-    ProgressBar* m_timer = nullptr;
+    CCLabelBMFont* counter = nullptr;
+    ProgressBar* timer = nullptr;
 
-    float m_totalTime = 7.5f;
-    float m_timeRemaining = m_totalTime;
-    float m_timeDt = 0.f;
+    float totalTime = 7.5f;
+    float timeRemaining = totalTime;
+    float timeDt = 0.f;
 
-    bool m_success = false;
-    Function<void(bool)> m_callback = nullptr;
+    bool success = false;
+    Function<void(bool)> callback = nullptr;
 };
 
 SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {};
@@ -31,8 +31,7 @@ bool SpamChallenge::init() {
 
     setID("spam-jumps"_spr);
 
-    // increase spam target for mobile players
-    m_impl->m_inputTarget = randng::get(50, 20) * ((GEODE_PLATFORM_TARGET & Platform::Mobile) ? 2 : 1);
+    m_impl->inputTarget = randng::get(50, 20);
 
     auto const winSize = CCDirector::get()->getWinSize();
 
@@ -54,30 +53,30 @@ bool SpamChallenge::init() {
 
     addChild(descLabel, 1);
 
-    m_impl->m_counter = CCLabelBMFont::create(fmt::format("{} / {}", m_impl->m_inputCount, m_impl->m_inputTarget).c_str(), "goldFont.fnt");
-    m_impl->m_counter->setID("counter");
-    m_impl->m_counter->setScale(2.5f);
-    m_impl->m_counter->setAlignment(kCCTextAlignmentCenter);
-    m_impl->m_counter->setPosition({ winSize.width / 2.f, (winSize.height / 2.f) - 6.25f });
+    m_impl->counter = CCLabelBMFont::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), "goldFont.fnt");
+    m_impl->counter->setID("counter");
+    m_impl->counter->setScale(2.5f);
+    m_impl->counter->setAlignment(kCCTextAlignmentCenter);
+    m_impl->counter->setPosition({ winSize.width / 2.f, (winSize.height / 2.f) - 6.25f });
 
     auto moveUp = CCEaseSineInOut::create(CCMoveBy::create(1.25f, ccp(0, 12.5f)));
     auto moveDown = CCEaseSineInOut::create(CCMoveBy::create(1.25f, ccp(0, -12.5f)));
 
     auto seq = CCSequence::createWithTwoActions(moveUp, moveDown);
 
-    addChild(m_impl->m_counter, 9);
-    m_impl->m_counter->runAction(CCRepeatForever::create(seq));
+    addChild(m_impl->counter, 9);
+    m_impl->counter->runAction(CCRepeatForever::create(seq));
 
-    m_impl->m_timer = ProgressBar::create();
-    m_impl->m_timer->setID("timer");
-    m_impl->m_timer->setFillColor(colors::yellow);
-    m_impl->m_timer->setStyle(ProgressBarStyle::Solid);
-    m_impl->m_timer->setAnchorPoint({ 0.5, 0.5 });
-    m_impl->m_timer->setPosition({ winSize.width / 2.f, winSize.height - 20.f });
+    m_impl->timer = ProgressBar::create();
+    m_impl->timer->setID("timer");
+    m_impl->timer->setFillColor(colors::yellow);
+    m_impl->timer->setStyle(ProgressBarStyle::Solid);
+    m_impl->timer->setAnchorPoint({ 0.5, 0.5 });
+    m_impl->timer->setPosition({ winSize.width / 2.f, winSize.height - 20.f });
 
-    m_impl->m_timer->updateProgress(100.f);
+    m_impl->timer->updateProgress(100.f);
 
-    addChild(m_impl->m_timer, 9);
+    addChild(m_impl->timer, 9);
 
     // @geode-ignore(unknown-resource)
     playSfx("chest07.ogg");
@@ -88,15 +87,15 @@ bool SpamChallenge::init() {
 };
 
 void SpamChallenge::setCallback(Function<void(bool)> cb) {
-    m_impl->m_callback = std::move(cb);
+    m_impl->callback = std::move(cb);
 };
 
 bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
-    if (m_impl->m_timeRemaining > 0.f && m_impl->m_inputTarget > m_impl->m_inputCount) {
-        m_impl->m_inputCount++;
-        if (m_impl->m_counter) m_impl->m_counter->setString(fmt::format("{} / {}", m_impl->m_inputCount, m_impl->m_inputTarget).c_str());
+    if (m_impl->timeRemaining > 0.f && m_impl->inputTarget > m_impl->inputCount) {
+        m_impl->inputCount++;
+        if (m_impl->counter) m_impl->counter->setString(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str());
 
-        if (m_impl->m_inputCount >= m_impl->m_inputTarget) {
+        if (m_impl->inputCount >= m_impl->inputTarget) {
             unscheduleUpdate();
             setSuccess(true);
         };
@@ -106,14 +105,14 @@ bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
 };
 
 void SpamChallenge::closeAfterFeedback(float) {
-    if (m_impl->m_callback) m_impl->m_callback(m_impl->m_success);
-    onExit();
+    if (m_impl->callback) m_impl->callback(m_impl->success);
+    removeMeAndCleanup();
 };
 
 void SpamChallenge::setSuccess(bool v) {
-    m_impl->m_success = v;
+    m_impl->success = v;
 
-    if (m_impl->m_counter) m_impl->m_counter->removeFromParentAndCleanup(false);
+    if (m_impl->counter) m_impl->counter->removeFromParentAndCleanup(false);
 
     auto symbol = CCSprite::createWithSpriteFrameName(v ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");
@@ -132,22 +131,22 @@ void SpamChallenge::setSuccess(bool v) {
 };
 
 void SpamChallenge::update(float dt) {
-    if (m_impl->m_timeRemaining <= 0.f) return;
-    m_impl->m_timeRemaining -= dt;
+    if (m_impl->timeRemaining <= 0.f) return;
+    m_impl->timeRemaining -= dt;
 
-    m_impl->m_timeDt += dt;
-    if (m_impl->m_timeDt >= 0.5f) {
+    m_impl->timeDt += dt;
+    if (m_impl->timeDt >= 0.5f) {
         // @geode-ignore(unknown-resource)
         playSfx("counter003.ogg");
-        m_impl->m_timeDt = 0.f;
+        m_impl->timeDt = 0.f;
     };
 
-    if (m_impl->m_timeRemaining < 0.f) m_impl->m_timeRemaining = 0.f;
-    float pct = (m_impl->m_timeRemaining / m_impl->m_totalTime) * 100.f;
+    if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
+    float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->m_timer) m_impl->m_timer->updateProgress(pct);
+    if (m_impl->timer) m_impl->timer->updateProgress(pct);
 
-    if (m_impl->m_timeRemaining <= 0.f) {
+    if (m_impl->timeRemaining <= 0.f) {
         setSuccess(false);
         unscheduleUpdate();
     };
@@ -157,8 +156,8 @@ void SpamChallenge::keyBackClicked() {
     Notification::create("You can't escape the spam challenge...", NotificationIcon::Error, 1.25f)->show();
 
     unscheduleUpdate();
-    if (m_impl->m_callback) m_impl->m_callback(false);
-    onExit();
+    if (m_impl->callback) m_impl->callback(false);
+    removeMeAndCleanup();
 };
 
 SpamChallenge* SpamChallenge::create() {
