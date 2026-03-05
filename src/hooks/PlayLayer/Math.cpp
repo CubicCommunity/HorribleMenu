@@ -42,20 +42,26 @@ class $modify(MathPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (m_isPracticeMode && !m_hasCompletedLevel) {
-            log::info("Showing math quiz");
+            log::debug("Showing math quiz");
 
-            if (auto quiz = MathQuiz::create()) {
-                // handle correct/wrong answer
-                quiz->setCallback([this](bool correct) {
-                    log::debug("math {}", correct ? "succeeded" : "failed");
-                    if (!correct) resetLevelFromStart();
-                    nextQuiz();
-                    });
+            if (options::isEnabled(id) && !m_playerDied) {
+                if (auto quiz = MathQuiz::create()) {
+                    // handle correct/wrong answer
+                    quiz->setCallback([this](bool correct) {
+                        log::debug("math {}", correct ? "succeeded" : "failed");
+                        if (!correct) resetLevelFromStart();
+                        nextQuiz();
+                        });
 
 #ifdef GEODE_IS_WINDOWS
-                CCEGLView::sharedOpenGLView()->showCursor(true);
+                    CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
-                m_uiLayer->addChild(quiz, 99);
+                    m_uiLayer->addChild(quiz, 99);
+                };
+            } else {
+                queueInMainThread([this]() {
+                    nextQuiz();
+                    });
             };
         };
     };

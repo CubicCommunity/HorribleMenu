@@ -176,7 +176,7 @@
             "type": "int",
             "name": "Math Quiz Chance",
             "description": "<cj>Richard's Math Quiz!</c> - Chance of Richard's math quiz appearing in a level.",
-            "default": 25,
+            "default": 35,
             "min": 0,
             "max": 100,
             "control": {
@@ -210,7 +210,7 @@
             "type": "int",
             "name": "Framerate Freeze Chance",
             "description": "<cj>Random 90%+ FPS Drop</c> - Chance of your game freezing after reaching 90% in a classic level.",
-            "default": 10,
+            "default": 5,
             "min": 0,
             "max": 100,
             "control": {
@@ -227,7 +227,7 @@
             "type": "int",
             "name": "Spam Challenge Chance",
             "description": "<cj>Spam Challenge!</c> - Chance of the spam challenge appearing.",
-            "default": 50,
+            "default": 65,
             "min": 0,
             "max": 100,
             "control": {
@@ -244,7 +244,7 @@
             "type": "int",
             "name": "Achievement Sound Chance",
             "description": "<cj>Random Achievements</c> - Chance of the achievement sound playing.",
-            "default": 75,
+            "default": 25,
             "min": 0,
             "max": 100,
             "control": {
@@ -278,7 +278,7 @@
             "type": "int",
             "name": "No Jump Chance",
             "description": "<cj>Randomly Don't Jump</c> - Chance of your jump input not registering.",
-            "default": 25,
+            "default": 50,
             "min": 0,
             "max": 100,
             "control": {
@@ -295,7 +295,7 @@
             "type": "int",
             "name": "Sleep Chance",
             "description": "<cj>Sleepy Player</c> - Chance of your player falling asleep.",
-            "default": 75,
+            "default": 65,
             "min": 0,
             "max": 100,
             "control": {
@@ -312,7 +312,7 @@
             "type": "int",
             "name": "Sticky Chance",
             "description": "<cj>Sticky Grounds</c> - Chance of your player sticking to a surface.",
-            "default": 25,
+            "default": 35,
             "min": 0,
             "max": 100,
             "control": {
@@ -329,7 +329,7 @@
             "type": "int",
             "name": "Pause Chance",
             "description": "<cj>Random Pauses</c> - Chance of the game pausing while playing.",
-            "default": 5,
+            "default": 25,
             "min": 0,
             "max": 100,
             "control": {
@@ -346,7 +346,7 @@
             "type": "int",
             "name": "Random Mirror Portal Chance",
             "description": "<cj>Random Mirror Portal</c> - Chance of the mirror portal activating while playing.",
-            "default": 5,
+            "default": 10,
             "min": 0,
             "max": 100,
             "control": {
@@ -380,7 +380,7 @@
             "type": "int",
             "name": "Dementia Chance",
             "description": "<cj>Dementia</c> - Chance of your player teleporting back.",
-            "default": 10,
+            "default": 25,
             "min": 0,
             "max": 100,
             "control": {
@@ -397,7 +397,7 @@
             "type": "int",
             "name": "Fake Crash Chance",
             "description": "<cj>Fake Crash</c> - Chance of a fake crash happening when you die.",
-            "default": 10,
+            "default": 15,
             "min": 0,
             "max": 100,
             "control": {
@@ -414,7 +414,7 @@
             "type": "int",
             "name": "Flip Chance",
             "description": "<cj>FLIPPED!</c> - Chance of your screen flipping mid-game.",
-            "default": 10,
+            "default": 25,
             "min": 0,
             "max": 100,
             "control": {

@@ -38,28 +38,34 @@ class $modify(SpamPlayLayer, PlayLayer) {
     };
 
     void doSpam(float) {
-        auto f = m_fields.self();
-
         if (!m_isPracticeMode && !m_hasCompletedLevel) {
-            log::info("Showing spam challenge");
+            log::debug("Showing spam challenge");
 
-            if (auto spam = SpamChallenge::create()) {
-                // handle correct/wrong answer
-                spam->setCallback([this, f](bool success) {
-                    log::debug("spam {}", success ? "succeeded" : "failed");
-                    if (!success) resetLevelFromStart();
-                    nextSpam();
+            if (options::isEnabled(id) && !m_playerDied) {
+                if (auto spam = SpamChallenge::create()) {
+                    auto f = m_fields.self();
 
-                    queueInMainThread([f]() {
-                        f->m_currentSpam = nullptr;
+                    // handle correct/wrong answer
+                    spam->setCallback([this, f](bool success) {
+                        log::debug("spam {}", success ? "succeeded" : "failed");
+                        if (!success) resetLevelFromStart();
+                        nextSpam();
+
+                        queueInMainThread([f]() {
+                            if (f) f->m_currentSpam = nullptr;
+                            });
                         });
-                    });
 
 #ifdef GEODE_IS_WINDOWS
-                CCEGLView::sharedOpenGLView()->showCursor(true);
+                    CCEGLView::sharedOpenGLView()->showCursor(true);
 #endif
-                m_uiLayer->addChild(spam, 99);
-                f->m_currentSpam = spam;
+                    m_uiLayer->addChild(spam, 99);
+                    f->m_currentSpam = spam;
+                };
+            } else {
+                queueInMainThread([this]() {
+                    nextSpam();
+                    });
             };
         };
     };

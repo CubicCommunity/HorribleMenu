@@ -10,7 +10,7 @@ using namespace horrible::prelude;
 class SpamChallenge::Impl final {
 public:
     int inputCount = 0;
-    int inputTarget = 50;
+    int inputTarget = 40;
 
     CCLabelBMFont* counter = nullptr;
     ProgressBar* timer = nullptr;
@@ -31,7 +31,7 @@ bool SpamChallenge::init() {
 
     setID("spam-jumps"_spr);
 
-    m_impl->inputTarget = randng::get(50, 20);
+    m_impl->inputTarget = randng::get(40, 20);
 
     auto const winSize = CCDirector::get()->getWinSize();
 
