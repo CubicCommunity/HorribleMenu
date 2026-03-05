@@ -96,7 +96,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
         f->m_oxygenBar->updateProgress(f->m_oxygenLevel);
 
         // Destroy player if oxygen is 0
-        if (f->m_oxygenLevel <= 0.f && m_player1 && !m_player1->m_isDead) destroyPlayer(m_player1, nullptr);
+        if (f->m_oxygenLevel <= 0.f && !m_playerDied) destroyPlayer(m_player1, nullptr);
     };
 
     void resetOxygenLevel() {

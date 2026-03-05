@@ -75,7 +75,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        if (m_player1->m_isDead) {
+        if (player->m_isDead) {
             if (f->m_currentSpam) {
                 log::trace("removing activate spam challenge after player death");
                 f->m_currentSpam->removeMeAndCleanup();

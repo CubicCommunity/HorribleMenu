@@ -10,7 +10,7 @@
 #ifdef MY_MOD_ID
 #undef MY_MOD_ID
 #endif
-#define MY_MOD_ID "arcticwoof.horrible_ideas"
+#define MY_MOD_ID "arcticwoof.horribleideas"
 
 namespace horrible {
     struct OptionEventV2 final : geode::Event<OptionEventV2, bool(HorribleOptionSave), std::string> {

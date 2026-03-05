@@ -59,7 +59,7 @@ class $modify(ForceLevelsPlayLayer, PlayLayer) {
 
         // get back to grief
         if (f->griefEnabled) {
-            if (p1 == m_anticheatSpike && p0 && !p0->m_isDead) return;
+            if (p1 == m_anticheatSpike && !p0->m_isDead) return;
             if (!f->m_destroyingObject) f->m_destroyingObject = p1;
 
             // chance to play grief level
