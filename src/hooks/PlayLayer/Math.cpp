@@ -41,10 +41,10 @@ class $modify(MathPlayLayer, PlayLayer) {
     void doQuiz(float) {
         auto f = m_fields.self();
 
-        if (m_isPracticeMode && !m_hasCompletedLevel) {
+        if (m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
             log::debug("Showing math quiz");
 
-            if (options::isEnabled(id) && !m_playerDied) {
+            if (options::isEnabled(id)) {
                 if (auto quiz = MathQuiz::create()) {
                     // handle correct/wrong answer
                     quiz->setCallback([this](bool correct) {

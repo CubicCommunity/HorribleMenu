@@ -38,10 +38,10 @@ class $modify(SpamPlayLayer, PlayLayer) {
     };
 
     void doSpam(float) {
-        if (!m_isPracticeMode && !m_hasCompletedLevel) {
+        if (!m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
             log::debug("Showing spam challenge");
 
-            if (options::isEnabled(id) && !m_playerDied) {
+            if (options::isEnabled(id)) {
                 if (auto spam = SpamChallenge::create()) {
                     auto f = m_fields.self();
 
