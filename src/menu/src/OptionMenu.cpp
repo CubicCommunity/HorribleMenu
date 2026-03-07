@@ -339,7 +339,7 @@ bool OptionMenu::init() {
             [](auto) {
                 createQuickPopup(
                     "Discord",
-                    "Join the <cj>Cubic Studios</c> Discord community server?",
+                    "Join the <cj>Cubic Studios</c> official community Discord server?",
                     "Cancel", "OK",
                     [](bool, bool ok) {
                         if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
