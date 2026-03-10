@@ -12,7 +12,7 @@ inline static constexpr auto id = "flipped";
 inline static Option const o = {
     id,
     "FLIPPED",
-    "Sometimes while playing, your entire screen will just do a flip!\n<cy>Credit: Cheeseworks</c>",
+    "Sometimes while playing, your entire screen will just do a flip!\n<cl>Credit: Cheeseworks</c>",
     category::obstructive,
     SillyTier::High,
 };
@@ -48,8 +48,7 @@ class $modify(FlippedPlayLayer, PlayLayer) {
 
             auto action = CCSequence::createWithTwoActions(
                 CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.f)),
-                CCCallFunc::create(this, callfunc_selector(FlippedPlayLayer::flippingEnded))
-            );
+                CCCallFunc::create(this, callfunc_selector(FlippedPlayLayer::flippingEnded)));
 
             runAction(action);
         };

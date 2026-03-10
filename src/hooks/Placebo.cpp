@@ -13,7 +13,7 @@ inline static constexpr auto id = "placebo";
 inline static Option const o = {
     id,
     "Placebo",
-    "A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cy>Credit: tmdXD</c>",
+    "A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>Credit: tmdXD</c>",
     category::misc,
     SillyTier::High,
 };
@@ -25,7 +25,7 @@ void placeboEffect() {
     int rnd = randng::fast();
     log::info("placebo effect roll: {}", rnd);
 
-    if (rnd <= 1) { // 1% chance :trol:
+    if (rnd <= 1) {  // 1% chance :trol:
         log::info("Placebo effect activated! Toggling all options...");
 
         for (auto const& option : options::getAll()) {
@@ -39,7 +39,7 @@ void placeboEffect() {
 class $modify(PlaceboLevelPage, LevelPage) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
-    void onPlay(CCObject * sender) {
+    void onPlay(CCObject* sender) {
         placeboEffect();
         log::debug("Placebo triggered in level page");
 
@@ -50,7 +50,7 @@ class $modify(PlaceboLevelPage, LevelPage) {
 class $modify(PlaceboLevelInfoLayer, LevelInfoLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
-    void onPlay(CCObject * sender) {
+    void onPlay(CCObject* sender) {
         placeboEffect();
         log::debug("Placebo triggered in level info layer");
 

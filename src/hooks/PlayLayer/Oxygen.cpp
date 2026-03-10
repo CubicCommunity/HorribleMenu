@@ -12,7 +12,7 @@ inline static constexpr auto id = "oxygen";
 inline static Option const o = {
     id,
     "Oxygen Level",
-    "Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cy>Credit: ArcticWoof</c>",
+    "Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cl>Credit: ArcticWoof</c>",
     category::playerlife,
     SillyTier::High,
 };
@@ -45,8 +45,8 @@ class $modify(OxygenPlayLayer, PlayLayer) {
             f->m_oxygenBar = ProgressBar::create();
             f->m_oxygenBar->setID("oxygen-bar"_spr);
             f->m_oxygenBar->setFillColor(colors::cyan);
-            f->m_oxygenBar->setAnchorPoint({ 0.5f, 0.5f });
-            f->m_oxygenBar->setPosition({ 10.f, getScaledContentHeight() / 2.f });
+            f->m_oxygenBar->setAnchorPoint({0.5f, 0.5f});
+            f->m_oxygenBar->setPosition({10.f, getScaledContentHeight() / 2.f});
             f->m_oxygenBar->setRotation(-90.f);
 
             m_uiLayer->addChild(f->m_oxygenBar, 99);
@@ -60,8 +60,8 @@ class $modify(OxygenPlayLayer, PlayLayer) {
         if (!f->m_oxygenLabel) {
             f->m_oxygenLabel = CCLabelBMFont::create(o2.c_str(), "bigFont.fnt");
             f->m_oxygenLabel->setColor(colors::cyan);
-            f->m_oxygenLabel->setAnchorPoint({ 0.f, 1.f });
-            f->m_oxygenLabel->setPosition({ 2.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f });
+            f->m_oxygenLabel->setAnchorPoint({0.f, 1.f});
+            f->m_oxygenLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
             f->m_oxygenLabel->setScale(0.25f);
 
             m_uiLayer->addChild(f->m_oxygenLabel, 100);
@@ -69,7 +69,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
             f->m_oxygenLabel->setString(o2.c_str());
         };
 
-        f->m_oxygenLabel->setPosition({ f->m_oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f });
+        f->m_oxygenLabel->setPosition({f->m_oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
     };
 
     void decreaseOxygen(float dt) {

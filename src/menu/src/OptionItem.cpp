@@ -9,7 +9,7 @@ using namespace horrible::prelude;
 
 class OptionItem::Impl final {
 public:
-    bool compatible = false; // If this option is compatible with the current platform
+    bool compatible = false;  // If this option is compatible with the current platform
 
     // The option
     Option option = {
@@ -19,7 +19,7 @@ public:
         category::misc,
     };
 
-    CCMenuItemToggler* toggler = nullptr; // The toggler for the option
+    CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
 
     // Save the current state of the toggler as the option state
     void saveTogglerState() {
@@ -28,14 +28,30 @@ public:
 
     // Notify the user if this option is not compatible for their current platform
     void notifyIncompat() {
-        if (!compatible) if (auto notif = Notification::create(fmt::format("{} is unavailable for {}", option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
+        if (!compatible) {
+            log::warn("Option {} is not available for platform {}", option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
+            if (auto notif = Notification::create(fmt::format("{} is unavailable for {}", option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
+        };
+    };
+
+    constexpr const char* getTierDescString(SillyTier silly, bool compat) noexcept {
+        if (!compat) return "<ca>OPTION UNAVAILABLE</c>";
+
+        switch (silly) {
+            default: [[fallthrough]];
+
+            case SillyTier::Low: return "<cg>Silly Tier | LOW</c>";
+            case SillyTier::Medium: return "<cy>Silly Tier | MEDIUM</c>";
+            case SillyTier::High: return "<cr>Silly Tier | HIGH</c>";
+            case SillyTier::None: return "Silly Tier | NONE";
+        };
     };
 };
 
 OptionItem::OptionItem() : m_impl(std::make_unique<Impl>()) {};
 OptionItem::~OptionItem() {};
 
-bool OptionItem::init(CCSize const& size, Option option) {
+bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     m_impl->option = std::move(option);
 
     // check for compatibility
@@ -50,11 +66,11 @@ bool OptionItem::init(CCSize const& size, Option option) {
 
     setID(m_impl->option.id);
     setContentSize(size);
-    setAnchorPoint({ 0.5, 1 });
+    setAnchorPoint({0.5, 1});
 
     auto bg = NineSlice::create(themes::square);
     bg->setID("background");
-    bg->setAnchorPoint({ 0, 0 });
+    bg->setAnchorPoint({0, 0});
     bg->setContentSize(getScaledContentSize());
     bg->setScaleMultiplier(0.5f);
     bg->setOpacity(50);
@@ -72,15 +88,10 @@ bool OptionItem::init(CCSize const& size, Option option) {
     togglerOn->setScale(0.875f);
 
     // toggler for the option
-    m_impl->toggler = CCMenuItemToggler::create(
-        togglerOff,
-        togglerOn,
-        this,
-        menu_selector(OptionItem::onToggle)
-    );
+    m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(OptionItem::onToggle));
     m_impl->toggler->setID("toggler");
-    m_impl->toggler->setAnchorPoint({ 0.5f, 0.5f });
-    m_impl->toggler->setPosition({ x + 12.f, yCenter });
+    m_impl->toggler->setAnchorPoint({0.5f, 0.5f});
+    m_impl->toggler->setPosition({x + 12.f, yCenter});
     m_impl->toggler->setScale(0.875f);
 
     // Set toggler state based on saved mod option value
@@ -91,65 +102,51 @@ bool OptionItem::init(CCSize const& size, Option option) {
     x += 30.f;
 
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(
-        m_impl->option.name.c_str(),
-        "bigFont.fnt",
-        getScaledContentWidth() - 40.f,
-        kCCTextAlignmentLeft
-    );
+    auto nameLabel = CCLabelBMFont::create(m_impl->option.name.c_str(), "bigFont.fnt", getScaledContentWidth() - 40.f, kCCTextAlignmentLeft);
     nameLabel->setID("name-label");
     nameLabel->setLineBreakWithoutSpace(true);
-    nameLabel->setAnchorPoint({ 0.f, 0.5f });
-    nameLabel->setPosition({ x, yCenter });
+    nameLabel->setAnchorPoint({0.f, 0.5f});
+    nameLabel->setPosition({x, yCenter});
     nameLabel->setScale(0.4f);
 
-    auto categoryLabel = CCLabelBMFont::create(
-        m_impl->option.category.c_str(),
-        "goldFont.fnt",
-        getScaledContentWidth() - 60.f,
-        kCCTextAlignmentLeft
-    );
+    auto categoryLabel = CCLabelBMFont::create(m_impl->option.category.c_str(), "goldFont.fnt", getScaledContentWidth() - 60.f, kCCTextAlignmentLeft);
     categoryLabel->setID("category-label");
     categoryLabel->setLineBreakWithoutSpace(true);
-    categoryLabel->setAnchorPoint({ 0.f, 0.5f });
-    categoryLabel->setPosition({ x, yCenter + 10.f });
+    categoryLabel->setAnchorPoint({0.f, 0.5f});
+    categoryLabel->setPosition({x, yCenter + 10.f});
     categoryLabel->setOpacity(200);
     categoryLabel->setScale(0.25f);
 
     // Set color based on m_impl->option.Tier
     switch (m_impl->option.silly) {
-    case SillyTier::Low: // green
-        nameLabel->setColor(colors::green);
-        break;
+        default:  // white
+            nameLabel->setColor(colors::white);
+            break;
 
-    case SillyTier::Medium: // yellow
-        nameLabel->setColor(colors::yellow);
-        break;
+        case SillyTier::Low:  // green
+            nameLabel->setColor(colors::green);
+            break;
 
-    case SillyTier::High: // red
-        nameLabel->setColor(colors::red);
-        break;
+        case SillyTier::Medium:  // yellow
+            nameLabel->setColor(colors::yellow);
+            break;
 
-    default: // white
-        nameLabel->setColor(colors::white);
-        break;
+        case SillyTier::High:  // red
+            nameLabel->setColor(colors::red);
+            break;
     };
 
     addChild(nameLabel);
     addChild(categoryLabel);
 
-    if (horribleMod->getSettingValue<bool>("dev-mode")) {
+    if (devMode) {
         auto str = fmt::format("{} | {} delegate(s)", m_impl->option.id, options::getDelegates(m_impl->option.id));
-        auto idLabel = CCLabelBMFont::create(
-            str.c_str(),
-            "chatFont.fnt",
-            getScaledContentWidth() - 20.f,
-            kCCTextAlignmentLeft
-        );
+
+        auto idLabel = CCLabelBMFont::create(str.c_str(), "chatFont.fnt", getScaledContentWidth() - 20.f, kCCTextAlignmentLeft);
         idLabel->setID("id-label");
         idLabel->setLineBreakWithoutSpace(true);
-        idLabel->setPosition({ x, yCenter - 10.f });
-        idLabel->setAnchorPoint({ 0.f, 0.5f });
+        idLabel->setPosition({x, yCenter - 10.f});
+        idLabel->setAnchorPoint({0.f, 0.5f});
         idLabel->setColor(colors::black);
         idLabel->setOpacity(125);
         idLabel->setScale(0.5f);
@@ -157,16 +154,13 @@ bool OptionItem::init(CCSize const& size, Option option) {
         addChild(idLabel);
     };
 
-    auto menuLayout = RowLayout::create()
-    ->setGap(5.f)
-    ->setAxisReverse(true)
-    ->setAutoGrowAxis(0.f);
+    auto menuLayout = RowLayout::create()->setGap(5.f)->setAxisReverse(true)->setAutoGrowAxis(0.f);
 
     auto menu = CCMenu::create();
     menu->setID("menu");
-    menu->setAnchorPoint({ 1, 0.5 });
-    menu->setContentSize({ 0.f, 0.f });
-    menu->setPosition({ getScaledContentWidth() - 7.5f, yCenter});
+    menu->setAnchorPoint({1, 0.5});
+    menu->setContentSize({0.f, 0.f});
+    menu->setPosition({getScaledContentWidth() - 7.5f, yCenter});
     menu->setLayout(menuLayout);
 
     addChild(menu);
@@ -174,18 +168,19 @@ bool OptionItem::init(CCSize const& size, Option option) {
     // info button
     auto helpBtn = Button::createWithSpriteFrameName(
         m_impl->compatible ? "GJ_infoIcon_001.png" : "geode.loader/info-alert.png",
-        [this](auto) {
+        [this](Button*) {
             m_impl->notifyIncompat();
+
+            auto const formatDesc = fmt::format("{}\n\n{}", m_impl->option.description, m_impl->getTierDescString(m_impl->option.silly, m_impl->compatible));
+
             if (auto popup = FLAlertLayer::create(
-                m_impl->option.name.c_str(),
-                m_impl->option.description.c_str(),
-                "OK"
-            )) popup->show();
-        }
-    );
+                    m_impl->option.name.c_str(),
+                    formatDesc.c_str(),
+                    "OK")) popup->show();
+        });
     helpBtn->setID("help-btn");
     helpBtn->setScale(0.625f);
-    helpBtn->setAnchorPoint({ 0.5f, 0.5f });
+    helpBtn->setAnchorPoint({0.5f, 0.5f});
 
     menu->addChild(helpBtn);
 
@@ -198,15 +193,10 @@ bool OptionItem::init(CCSize const& size, Option option) {
     pinOn->setScale(0.5f);
     pinOn->setOpacity(225);
 
-    pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
+    pinOff->setBlendFunc({GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA});
     pinOn->setColor(themes::getColor(horribleMod->getSettingValue<std::string>("theme")));
 
-    auto pinBtn = CCMenuItemToggler::create(
-        pinOff,
-        pinOn,
-        this,
-        menu_selector(OptionItem::onPin)
-    );
+    auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(OptionItem::onPin));
     pinBtn->setID("pin-btn");
 
     pinBtn->toggle(options::isPinned(m_impl->option.id));
@@ -237,7 +227,7 @@ bool OptionItem::init(CCSize const& size, Option option) {
 void OptionItem::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
         auto now = !m_impl->toggler->isToggled();
-        
+
         options::set(m_impl->option.id, now, options::isPinned(m_impl->option.id));
 
         if (m_impl->option.restart) {
@@ -248,7 +238,6 @@ void OptionItem::onToggle(CCObject*) {
         log::info("Option {} now set to {}", m_impl->option.name, now ? "enabled" : "disabled");
     } else if (m_impl->toggler) {
         m_impl->notifyIncompat();
-        log::error("Option {} is not available for platform {}", m_impl->option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
 
         m_impl->toggler->toggle(false);
     };
@@ -261,21 +250,17 @@ void OptionItem::onPin(CCObject* sender) {
     };
 };
 
-Option const& OptionItem::getOption() const noexcept {
-    return m_impl->option;
-};
+Option const& OptionItem::getOption() const noexcept { return m_impl->option; };
 
-bool OptionItem::isCompatible() const noexcept {
-    return m_impl->compatible;
-};
+bool OptionItem::isCompatible() const noexcept { return m_impl->compatible; };
 
-OptionItem* OptionItem::create(CCSize const& size, Option option) {
+OptionItem* OptionItem::create(CCSize const& size, Option option, bool devMode) {
     auto ret = new OptionItem();
-    if (ret->init(size, std::move(option))) {
+    if (ret->init(size, std::move(option), devMode)) {
         ret->autorelease();
         return ret;
     };
 
     delete ret;
     return nullptr;
-}; 
+};

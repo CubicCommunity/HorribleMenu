@@ -12,7 +12,7 @@ inline static constexpr auto id = "friends";
 inline static Option const o = {
     id,
     "Friends",
-    "Random friends fly across your screen while you play a level!\n<cy>Credit: Cheeseworks</c>",
+    "Random friends fly across your screen while you play a level!\n<cl>Credit: Cheeseworks</c>",
     category::obstructive,
     SillyTier::Medium,
 };
@@ -31,7 +31,7 @@ static constexpr auto s_friends = std::to_array<const char*>({
     "diffIcon_09_btn_001.png",
     "diffIcon_10_btn_001.png",
     "diffIcon_auto_btn_001.png",
-    });
+});
 
 class $modify(FriendsPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
@@ -48,25 +48,28 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     void showAFriend(float) {
         int rnd = randng::fast();
 
-        float xA = -125.f; // starting x pos
-        float xB = getScaledContentWidth() + 125.f; // ending x pos
+        float xA = -125.f;                           // starting x pos
+        float xB = getScaledContentWidth() + 125.f;  // ending x pos
 
-        if ((rnd / 2) <= 50.0) { xA = xB; xB = -125.f; }; // swap sides
+        if ((rnd / 2) <= 50.0) {
+            xA = xB;
+            xB = -125.f;
+        };  // swap sides
 
         auto rA = randng::pc();
         auto rB = randng::pc();
 
-        float yA = getScaledContentHeight() * rA; // starting height pos
-        float yB = getScaledContentHeight() * rB; // ending height pos
+        float yA = getScaledContentHeight() * rA;  // starting height pos
+        float yB = getScaledContentHeight() * rB;  // ending height pos
 
         auto friendSpr = CCSprite::createWithSpriteFrameName(s_friends[randng::get(s_friends.size() - 1)]);
-        friendSpr->setPosition({ xA, yA });
+        friendSpr->setPosition({xA, yA});
         friendSpr->setScale(1.25 * (rB + rA));
-        friendSpr->setRotation(180.f * (yA * yB)); // random rotation
+        friendSpr->setRotation(180.f * (yA * yB));  // random rotation
 
         auto dur = 12.5f * rA;
-        auto move = CCMoveTo::create(dur, { xB, yB });
-        auto rotate = CCRotateBy::create(dur, 90.f * (rB + rA)); // slight rotation while moving
+        auto move = CCMoveTo::create(dur, {xB, yB});
+        auto rotate = CCRotateBy::create(dur, 90.f * (rB + rA));  // slight rotation while moving
 
         auto action = CCSpawn::createWithTwoActions(move, rotate);
         auto finish = CCCallFuncN::create(this, callfuncN_selector(FriendsPlayLayer::cleanupFriend));
@@ -78,7 +81,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         friendSpr->runAction(CCSpawn::createWithTwoActions(friendAction, scheduleAction));
     };
 
-    void cleanupFriend(CCNode * sender) {
+    void cleanupFriend(CCNode* sender) {
         if (sender) sender->removeMeAndCleanup();
     };
 

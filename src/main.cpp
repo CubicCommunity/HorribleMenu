@@ -15,43 +15,37 @@ $on_game(Loaded) {
         "key-popup",
         [](Keybind const&, bool down, bool repeat, double) {
             if (down && !repeat) menu::open();
-        }
-    );
+        });
 
     listenForSettingChanges<bool>(
         "floating-button",
         [](bool value) {
             if (auto fb = OptionMenuButton::get()) fb->setVisible(value);
-        }
-    );
+        });
 
     listenForSettingChanges<bool>(
         "floating-button-level",
         [](bool value) {
             if (auto fb = OptionMenuButton::get()) fb->setShowInLevel(value);
-        }
-    );
+        });
 
     listenForSettingChanges<float>(
         "floating-button-scale",
         [](float value) {
             if (auto fb = OptionMenuButton::get()) fb->setScale(value);
-        }
-    );
+        });
 
     listenForSettingChanges<int64_t>(
         "floating-button-opacity",
         [](int64_t value) {
             if (auto fb = OptionMenuButton::get()) fb->setOpacity(value);
-        }
-    );
+        });
 
     listenForSettingChanges<std::string>(
         "theme",
         [](std::string value) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
-        }
-    );
+        });
 
     (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
 

@@ -8,14 +8,14 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-namespace fs = std::filesystem; // Shortcut for std::filesystem
+namespace fs = std::filesystem;  // Shortcut for std::filesystem
 
 inline static constexpr auto id = "mock";
 
 inline static Option const o = {
     id,
     "Mock your 90%+ Fail",
-    "Taunts you in the main me with a screenshot of one of your 90%-99% fails.\n<cy>Credit: Wuffin</c>",
+    "Taunts you in the main me with a screenshot of one of your 90%-99% fails.\n<cl>Credit: Wuffin</c>",
     category::misc,
     SillyTier::Medium,
     false,
@@ -26,7 +26,7 @@ inline static Option const o = {
 };
 HORRIBLE_REGISTER_OPTION(o);
 
-#if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS) // not compat with these platforms
+#if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms
 class $modify(MockMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
@@ -69,11 +69,11 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                     log::info("Displaying {}", pngPath);
 
-                    auto ss = LazySprite::create({ 192.f, 108.f });
+                    auto ss = LazySprite::create({192.f, 108.f});
                     ss->setID("mocked"_spr);
                     ss->setScale(0.25);
-                    ss->setAnchorPoint({ 0.5, 0.5 });
-                    ss->setPosition({ -192.f, getScaledContentHeight() / 2.f });
+                    ss->setAnchorPoint({0.5, 0.5});
+                    ss->setPosition({-192.f, getScaledContentHeight() / 2.f});
 
                     ss->setLoadCallback([this, ss, percent, rnd](Result<> res) {
                         if (res.isOk()) {
@@ -112,8 +112,8 @@ class $modify(MockMenuLayer, MenuLayer) {
                             ss->removeMeAndCleanup();
                         }; });
 
-                        ss->loadFromFile(fs::path(pngPath));
-                        addChild(ss, 999);
+                    ss->loadFromFile(fs::path(pngPath));
+                    addChild(ss, 999);
                 } else {
                     log::error("ID is invalid");
                 };
@@ -157,9 +157,9 @@ class $modify(MockPlayLayer, PlayLayer) {
 
                 if (image->saveToFile(path.c_str(), false)) {
                     auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
-                    auto const mockConfig = file::readJson(fs::path(mockConfigPath)); // get the saved fails to mock the player with :)
+                    auto const mockConfig = file::readJson(fs::path(mockConfigPath));  // get the saved fails to mock the player with :)
 
-                    auto toWrite = matjson::Value(); // what we're gonna write in the mock.json file
+                    auto toWrite = matjson::Value();  // what we're gonna write in the mock.json file
 
                     if (mockConfig.isOk()) {
                         // unwrap the whole thing
@@ -170,7 +170,7 @@ class $modify(MockPlayLayer, PlayLayer) {
 
                         toWrite = mockConfigUnwr;
                     } else {
-                        toWrite = matjson::makeObject({ {utils::numToString(id), percentage} });
+                        toWrite = matjson::makeObject({{utils::numToString(id), percentage}});
                     };
 
                     if (!toWrite.isNull()) {
@@ -202,7 +202,7 @@ class $modify(MockPlayLayer, PlayLayer) {
         int percentage = m_level->m_normalPercent;
 
         auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
-        auto const mockConfig = file::readJson(fs::path(mockConfigPath)); // get the saved levels to mock the player :)
+        auto const mockConfig = file::readJson(fs::path(mockConfigPath));  // get the saved levels to mock the player :)
 
         if (mockConfig.isOk()) {
             log::trace("Clearing mock record for {}", id);

@@ -27,6 +27,8 @@ private:
         Button::ButtonCallback callback;
     };
 
+    void setupSafeModeNode(bool safeMode);
+
 protected:
     static OptionMenu* s_inst;
 

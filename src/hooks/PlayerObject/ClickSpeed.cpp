@@ -12,7 +12,7 @@ inline static constexpr auto id = "click_speed";
 inline static Option const o = {
     id,
     "Click Player Speed",
-    "Randomly increases or decreases the player speed everytime you jump.\n<cy>Credit: KGplayerA</c>",
+    "Randomly increases or decreases the player speed everytime you jump.\n<cl>Credit: KGplayerA</c>",
     category::randoms,
     SillyTier::Medium,
 };

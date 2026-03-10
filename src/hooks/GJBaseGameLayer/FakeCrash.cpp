@@ -12,7 +12,7 @@ inline static constexpr auto id = "fake_crash";
 inline static Option const o = {
     id,
     "Random Fake Crash",
-    "While playing a level, there's a chance your game will fake a crash.\n<cy>Credit: Timered</c>",
+    "While playing a level, there's a chance your game will fake a crash.\n<cl>Credit: Timered</c>",
     category::randoms,
     SillyTier::Medium,
 };

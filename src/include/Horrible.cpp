@@ -13,7 +13,7 @@ Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matj
     GEODE_UNWRAP_INTO(bool enabled, value["enabled"].asBool());
     GEODE_UNWRAP_INTO(bool pin, value["pin"].asBool());
 
-    return Ok(HorribleOptionSave{ enabled, pin });
+    return Ok(HorribleOptionSave{enabled, pin});
 };
 
 matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave const& value) {
@@ -29,7 +29,8 @@ void OptionManager::registerCategory(std::string category) {
 };
 
 bool OptionManager::doesOptionExist(std::string_view id) const noexcept {
-    for (auto const& option : getOptions()) if (option.id == id) return true;
+    for (auto const& option : getOptions())
+        if (option.id == id) return true;
     return false;
 };
 
@@ -38,9 +39,9 @@ void OptionManager::registerOption(Option option) {
         log::error("Could not register option '{}' ({}) because it already exists!", option.name, option.id);
     } else {
         registerCategory(option.category);
-        m_options.push_back(std::move(option));
 
         log::debug("Registered option {} of category {}", option.id, option.category);
+        m_options.push_back(std::move(option));
     };
 };
 
@@ -88,12 +89,13 @@ size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
 void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
     auto it = m_delegates.find(id);
     if (it != m_delegates.end()) {
-        for (auto& cb : it->second) cb(enable);
+        for (auto& cb : it->second)
+            cb(enable);
     };
 
     log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
 
-    auto save = HorribleOptionSave{ enable, pin };
+    auto save = HorribleOptionSave{enable, pin};
 
     (void)Mod::get()->setSavedValue(id, save);
     (void)OptionEventV2(id).send(std::move(save));
@@ -118,17 +120,17 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
         om->addDelegate(
             id,
             [allHooks = std::move(allHooks)](bool value) {
-                for (auto hook : allHooks) (void)hook->toggle(value);
-            }
-        );
+                for (auto hook : allHooks)
+                    (void)hook->toggle(value);
+            });
     } else {
         log::error("Failed to get OptionManager to delegate hooks for option {}", id);
     };
 };
 
-Result<> OptionManagerV2::registerOption(Option const& option) {
+Result<> OptionManagerV2::registerOption(Option option) {
     if (auto om = OptionManager::get()) {
-        om->registerOption(option);
+        om->registerOption(std::move(option));
         return Ok();
     };
 

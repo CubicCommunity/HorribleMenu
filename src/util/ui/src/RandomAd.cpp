@@ -18,16 +18,16 @@ bool RandomAd::init() {
     auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
     label->setID("message");
     label->setAlignment(kCCTextAlignmentCenter);
-    label->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f });
-    label->setAnchorPoint({ 0.5, 0.5 });
+    label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
+    label->setAnchorPoint({0.5, 0.5});
 
     m_mainLayer->addChild(label);
 
     // featured project thumbnail
-    auto projThumb = LazySprite::create({ 192.f, 108.f }, true);
+    auto projThumb = LazySprite::create({192.f, 108.f}, true);
     projThumb->setID("thumbnail");
-    projThumb->setAnchorPoint({ 0.5, 0.5 });
-    projThumb->setPosition({ m_mainLayer->getContentWidth() / 2.f, 110.f });
+    projThumb->setAnchorPoint({0.5, 0.5});
+    projThumb->setPosition({m_mainLayer->getContentWidth() / 2.f, 110.f});
 
     projThumb->setLoadCallback([this, projThumb](Result<> res) {
         if (res.isOk()) {
@@ -38,7 +38,7 @@ bool RandomAd::init() {
             log::error("Sprite failed to load: {}", res.unwrapErr());
             projThumb->removeMeAndCleanup();
         };
-        });
+    });
 
     projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
@@ -49,9 +49,8 @@ bool RandomAd::init() {
     auto playBtn = CCMenuItemSpriteExtra::create(
         playBtnSprite,
         this,
-        menu_selector(RandomAd::onPlayBtn)
-    );
-    playBtn->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, 2.5f });
+        menu_selector(RandomAd::onPlayBtn));
+    playBtn->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 2.5f});
     playBtn->ignoreAnchorPointForPosition(false);
     playBtn->setVisible(true);
 
@@ -60,7 +59,7 @@ bool RandomAd::init() {
     return true;
 };
 
-void RandomAd::onPlayBtn(CCObject*) { // congregation jumpscare
+void RandomAd::onPlayBtn(CCObject*) {  // congregation jumpscare
     if (auto playLayer = PlayLayer::get()) {
         auto glm = GameLevelManager::sharedState();
 

@@ -12,7 +12,7 @@ inline static constexpr auto id = "confetti";
 inline static Option const o = {
     id,
     "Confetti Explosion",
-    "While playing a level, the screen will sometimes cause an explosion of random textures.\n<cy>Credit: Cheeseworks</c>",
+    "While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>Credit: Cheeseworks</c>",
     category::obstructive,
     SillyTier::Medium,
 };
@@ -34,7 +34,7 @@ static constexpr auto s_confettis = std::to_array<const char*>({
     "GJ_starsIcon_001.png",
     "GJ_sMagicIcon_001.png",
     "GJ_pointsIcon_001.png",
-                                                               });
+});
 
 class $modify(ConfettiPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
@@ -57,35 +57,35 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
         playSfx("jumpscareAudio.mp3");
         shakeCamera(1.25f, 2.5f, 0.00875F);
-        for (int i = 0; i < randng::get(125, 75); i++) createConfetti();
+        for (int i = 0; i < randng::get(125, 75); i++)
+            createConfetti();
 
-        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));;
+        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
+        ;
     };
 
     void createConfetti() {
         auto conf = CCSprite::createWithSpriteFrameName(s_confettis[randng::get(s_confettis.size() - 1)]);
-        conf->setPosition({ 0.f, 0.f });
+        conf->setPosition({0.f, 0.f});
         conf->setScale(0.875f * randng::pc());
 
         auto useY = randng::get(1) > 0;
         auto const endPos = ccp(
             useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * randng::pc(),
-            useY ? getScaledContentHeight() * randng::pc() : getScaledContentHeight() + conf->getScaledContentHeight()
-        );
+            useY ? getScaledContentHeight() * randng::pc() : getScaledContentHeight() + conf->getScaledContentHeight());
 
         auto move = CCEaseSineOut::create(CCMoveTo::create(0.875f + randng::pc() * 2.5f, endPos));
         auto rotate = CCEaseSineOut::create(CCRotateBy::create(0.875f + randng::pc() * 2.5f, 360.f * (randng::get(1) > 0 ? 1.f : -1.f)));
 
         auto seq = CCSequence::createWithTwoActions(
             CCSpawn::createWithTwoActions(move, rotate),
-            CCCallFuncN::create(this, callfuncN_selector(ConfettiPlayLayer::cleanConfetti))
-        );
+            CCCallFuncN::create(this, callfuncN_selector(ConfettiPlayLayer::cleanConfetti)));
 
         m_uiLayer->addChild(conf, 9);
         conf->runAction(seq);
     };
 
-    void cleanConfetti(CCNode * sender) {
+    void cleanConfetti(CCNode* sender) {
         if (sender) sender->removeMeAndCleanup();
     };
 };

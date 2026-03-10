@@ -7,16 +7,16 @@
 namespace horrible {
     // Fast color object references ^w^
     namespace colors {
-        inline constexpr cocos2d::ccColor3B white = { 255, 255, 255 };
-        inline constexpr cocos2d::ccColor3B gray = { 150, 150, 150 };
-        inline constexpr cocos2d::ccColor3B red = { 225, 75, 100 };
-        inline constexpr cocos2d::ccColor3B yellow = { 250, 250, 25 };
-        inline constexpr cocos2d::ccColor3B green = { 100, 255, 100 };
-        inline constexpr cocos2d::ccColor3B cyan = { 10, 175, 255 };
-        inline constexpr cocos2d::ccColor3B blue = { 0, 122, 255 };
-        inline constexpr cocos2d::ccColor3B pink = { 255, 105, 180 };
-        inline constexpr cocos2d::ccColor3B orange = { 255, 165, 0 };
-        inline constexpr cocos2d::ccColor3B black = { 0, 0, 0 };
+        inline constexpr cocos2d::ccColor3B white = {255, 255, 255};
+        inline constexpr cocos2d::ccColor3B gray = {150, 150, 150};
+        inline constexpr cocos2d::ccColor3B red = {225, 75, 100};
+        inline constexpr cocos2d::ccColor3B yellow = {250, 250, 25};
+        inline constexpr cocos2d::ccColor3B green = {100, 255, 100};
+        inline constexpr cocos2d::ccColor3B cyan = {10, 175, 255};
+        inline constexpr cocos2d::ccColor3B blue = {0, 122, 255};
+        inline constexpr cocos2d::ccColor3B pink = {255, 105, 180};
+        inline constexpr cocos2d::ccColor3B gold = {255, 200, 125};
+        inline constexpr cocos2d::ccColor3B black = {0, 0, 0};
     };
 
     namespace util {
@@ -87,7 +87,7 @@ namespace horrible {
                 if (theme == enums::Dim) return colors::gray;
                 if (theme == enums::Girlypop) return colors::pink;
                 if (theme == enums::Aqua) return colors::cyan;
-                if (theme == enums::Geode) return colors::orange;
+                if (theme == enums::Geode) return colors::gold;
 
                 return colors::white;
             };

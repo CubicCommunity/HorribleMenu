@@ -12,7 +12,7 @@ inline static constexpr auto id = "random_icon";
 inline static Option const o = {
     id,
     "Random Icon Change",
-    "Randomly change your icon every time you jump.\n<cy>Credit: JompyDoJump</c>",
+    "Randomly change your icon every time you jump.\n<cl>Credit: JompyDoJump</c>",
     category::randoms,
     SillyTier::Low,
 };

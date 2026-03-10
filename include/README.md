@@ -5,10 +5,7 @@ A plethora of ways to ruin your gaming experience...
 Let's start off by adding this mod as a dependency in your `mod.json`!
 ```jsonc
 "dependencies": {
-    "arcticwoof.horribleideas": {
-        "importance": "required",
-        "version": ">=1.0.0"
-    }
+    "arcticwoof.horribleideas": ">=1.0.0"
 }
 ```
 

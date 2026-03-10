@@ -10,7 +10,7 @@ using namespace horrible::prelude;
 inline static Option const oGrief = {
     "grief",
     "Get Back on Grief",
-    "A chance at death of forcing you to play Grief.\n<cy>Credit: Sweep</c>",
+    "A chance at death of forcing you to play Grief.\n<cl>Credit: Sweep</c>",
     category::jumpscares,
     SillyTier::High,
 };
@@ -19,7 +19,7 @@ HORRIBLE_REGISTER_OPTION(oGrief);
 inline static Option const oCongregation = {
     "congregation",
     "Congregation Jumpscare",
-    "A chance at death of forcing you to play Congregation.\n<cy>Credit: StaticGD</c>",
+    "A chance at death of forcing you to play Congregation.\n<cl>Credit: StaticGD</c>",
     category::jumpscares,
     SillyTier::High,
 };
@@ -37,7 +37,7 @@ class $modify(ForceLevelsPlayLayer, PlayLayer) {
         GameObject* m_destroyingObject;
     };
 
-    bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
+    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 
         return true;
@@ -52,7 +52,7 @@ class $modify(ForceLevelsPlayLayer, PlayLayer) {
         if (f->congregEnabled) jumpscares::downloadCongregation();
     };
 
-    void destroyPlayer(PlayerObject * p0, GameObject * p1) {
+    void destroyPlayer(PlayerObject* p0, GameObject* p1) {
         auto f = m_fields.self();
 
         int rng = randng::fast();

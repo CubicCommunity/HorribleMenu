@@ -12,7 +12,7 @@ inline static constexpr auto id = "no_jump";
 inline static Option const o = {
     id,
     "Randomly Don't Jump",
-    "When making an input in a level, there's a chance the player does not respond to it.\n<cy>Credit: GilanyKing12</c>",
+    "When making an input in a level, there's a chance the player does not respond to it.\n<cl>Credit: GilanyKing12</c>",
     category::randoms,
     SillyTier::Low,
 };

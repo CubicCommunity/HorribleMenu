@@ -31,7 +31,7 @@ struct HorribleOptionSave final {
     bool pin = false;
 };
 
-template<>
+template <>
 struct matjson::Serialize<HorribleOptionSave> final {
     static geode::Result<HorribleOptionSave> fromJson(matjson::Value const& value);
     static matjson::Value toJson(HorribleOptionSave const& value);
@@ -42,16 +42,16 @@ namespace horrible {
     // Mod option manager for Horrible Ideas
     class AWCW_HORRIBLE_API_DLL OptionManager final : public cocos2d::CCObject {
     private:
-        std::vector<Option> m_options; // Array of registered options
-        std::vector<std::string> m_categories; // Array of auto-registered categories
+        std::vector<Option> m_options;          // Array of registered options
+        std::vector<std::string> m_categories;  // Array of auto-registered categories
 
-        std::unordered_map<std::string_view, std::vector<geode::Function<void(bool)>>> m_delegates; // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_map<std::string_view, std::vector<geode::Function<void(bool)>>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
 
     protected:
-        OptionManager() = default; // Default constructor
+        OptionManager() = default;  // Default constructor
 
-        OptionManager(const OptionManager&) = delete; // No copying
-        OptionManager& operator=(const OptionManager&) = delete; // No copy assignment
+        OptionManager(const OptionManager&) = delete;             // No copying
+        OptionManager& operator=(const OptionManager&) = delete;  // No copy assignment
 
         /**
          * Register a category if not already registered
@@ -167,13 +167,13 @@ namespace horrible {
 };
 
 // Statically register an option
-#define HORRIBLE_REGISTER_OPTION(opt) \
-$execute { \
-    if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
-}
+#define HORRIBLE_REGISTER_OPTION(opt)                                          \
+    $execute {                                                                 \
+        if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
+    }
 
 // Delegate hooks to OptionManager for dynamic toggling
-#define HORRIBLE_DELEGATE_HOOKS(optID) \
-static void onModify(auto& self) { \
-    horrible::delegateHooks(optID, self.m_hooks); \
-}
+#define HORRIBLE_DELEGATE_HOOKS(optID)                \
+    static void onModify(auto& self) {                \
+        horrible::delegateHooks(optID, self.m_hooks); \
+    }

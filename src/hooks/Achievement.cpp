@@ -13,10 +13,9 @@ inline static constexpr auto id = "achieve";
 inline static Option const o = {
     id,
     "Random Achievements",
-    "Randomly play the achievement sound when clicking buttons.\n<cy>Credit: Cheeseworks</c>",
+    "Randomly play the achievement sound when clicking buttons.\n<cl>Credit: Cheeseworks</c>",
     category::randoms,
-    SillyTier::Low
-};
+    SillyTier::Low};
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(AchievementCCMenuItem, CCMenuItem) {

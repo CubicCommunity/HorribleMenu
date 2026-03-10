@@ -12,7 +12,7 @@ inline static constexpr auto id = "gravity";
 inline static Option const o = {
     id,
     "Randomize Gravity",
-    "Every time you jump in a level, gravity force will increase or decrease randomly.\n<cy>Credit: NJAgain</c>",
+    "Every time you jump in a level, gravity force will increase or decrease randomly.\n<cl>Credit: NJAgain</c>",
     category::randoms,
     SillyTier::Low,
 };

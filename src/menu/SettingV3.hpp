@@ -11,8 +11,7 @@ public:
     static Result<std::shared_ptr<SettingV3>> parse(
         std::string key,
         std::string modID,
-        matjson::Value const& json
-    );
+        matjson::Value const& json);
 
     bool load(matjson::Value const& json) override;
     bool save(matjson::Value& json) const override;

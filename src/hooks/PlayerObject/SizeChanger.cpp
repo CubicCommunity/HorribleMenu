@@ -12,7 +12,7 @@ inline static constexpr auto id = "size_changer";
 inline static Option const o = {
     id,
     "Size Changer",
-    "Randomly change the player size every time you jump.\n<cy>Credit: himynameisryan21</c>",
+    "Randomly change the player size every time you jump.\n<cl>Credit: himynameisryan21</c>",
     category::randoms,
     SillyTier::Medium,
 };

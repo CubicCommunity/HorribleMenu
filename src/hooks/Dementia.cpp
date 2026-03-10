@@ -13,7 +13,7 @@ inline static constexpr auto id = "dementia";
 inline static Option const o = {
     id,
     "Dementia",
-    "Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cy>Credit: imdissapearinghelp</c>",
+    "Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cl>Credit: imdissapearinghelp</c>",
     category::misc,
     SillyTier::Medium,
 };
@@ -25,10 +25,10 @@ class $modify(DementiaPlayerObject, PlayerObject) {
     struct Fields {
         int chance = options::getChance(id);
 
-        int lastMusicTime = 0; // last music time in milliseconds
+        int lastMusicTime = 0;  // last music time in milliseconds
 
-        float lastX = 0.f;     // last recorded X position
-        float lastY = 0.f;     // last recorded Y position
+        float lastX = 0.f;  // last recorded X position
+        float lastY = 0.f;  // last recorded Y position
     };
 
     bool pushButton(PlayerButton p0) {
@@ -47,14 +47,14 @@ class $modify(DementiaPlayerObject, PlayerObject) {
             auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
             // dementia
             if (rnd <= f->chance) {
-                setPosition({ f->lastX, f->lastY });
+                setPosition({f->lastX, f->lastY});
                 log::trace("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
 
                 // set the music time back to the last recorded time
                 if (musicChannel) musicChannel->setPosition(f->lastMusicTime, FMOD_TIMEUNIT_MS);
 
                 return PlayerObject::pushButton(p0);
-            } else if (onGround) { // save the position only if on ground
+            } else if (onGround) {  // save the position only if on ground
                 f->lastX = getPositionX();
                 f->lastY = getPositionY();
 
@@ -75,7 +75,7 @@ class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
         return false;
     };
 
-    bool hasBeenActivatedByPlayer(PlayerObject * p0) {
+    bool hasBeenActivatedByPlayer(PlayerObject* p0) {
         return false;
     };
 };

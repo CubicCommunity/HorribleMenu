@@ -12,7 +12,7 @@ inline static constexpr auto id = "pauses";
 inline static Option const o = {
     id,
     "Random Pauses",
-    "While playing a level, it will randomly pause itself.\n<cy>Credit: DragonixGD</c>",
+    "While playing a level, it will randomly pause itself.\n<cl>Credit: DragonixGD</c>",
     category::randoms,
     SillyTier::Low,
 };

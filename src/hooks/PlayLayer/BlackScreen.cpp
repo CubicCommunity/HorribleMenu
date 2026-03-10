@@ -12,7 +12,7 @@ inline static constexpr auto id = "black_screen";
 inline static Option const o = {
     id,
     "Black Screen Blink",
-    "The screen can suddenly blink while playing a level.\n<cy>Credit: elite_smiler_ispro</c>",
+    "The screen can suddenly blink while playing a level.\n<cl>Credit: elite_smiler_ispro</c>",
     category::obstructive,
     SillyTier::Low,
 };
@@ -38,7 +38,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
 
         auto blackScreen = NineSlice::create(themes::square);
         blackScreen->setID("blink"_spr);
-        blackScreen->setContentSize({ winSize.width + 10.f, winSize.height + 10.f });
+        blackScreen->setContentSize({winSize.width + 10.f, winSize.height + 10.f});
         blackScreen->setPosition(winSize / 2.f);
 
         m_uiLayer->addChild(blackScreen, 99);
@@ -46,14 +46,13 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
         // Schedule removal after 0.5 seconds, then schedule to show again after a random delay
         blackScreen->runAction(CCSequence::createWithTwoActions(
             CCDelayTime::create(0.25f),
-            CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))
-        ));
+            CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))));
     };
 
-    void removeBlackScreen(CCNode * sender) {
+    void removeBlackScreen(CCNode* sender) {
         if (sender) sender->removeMeAndCleanup();
 
-        float delay = randng::get(3.f); // random delay between 0 and 3 seconds
+        float delay = randng::get(3.f);  // random delay between 0 and 3 seconds
         log::debug("Black screen will appear again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);

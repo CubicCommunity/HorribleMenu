@@ -19,7 +19,7 @@ namespace horrible {
 
     class OptionManagerV2 final {
     public:
-        static geode::Result<> registerOption(Option const& option)
+        static geode::Result<> registerOption(Option option)
             GEODE_EVENT_EXPORT(&OptionManagerV2::registerOption, (option));
 
         [[nodiscard]] static geode::Result<bool> isEnabled(std::string_view id)

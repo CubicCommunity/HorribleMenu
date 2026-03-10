@@ -12,7 +12,7 @@ inline static constexpr auto id = "timewarp_jump";
 inline static Option const o = {
     id,
     "Timewarp Jump",
-    "When you jump, there's a chance time will briefly slow down or speed up.\n<cy>Credit: KGplayerA</c>",
+    "When you jump, there's a chance time will briefly slow down or speed up.\n<cl>Credit: KGplayerA</c>",
     category::randoms,
     SillyTier::Low,
 };

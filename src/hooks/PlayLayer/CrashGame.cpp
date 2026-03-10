@@ -12,7 +12,7 @@ inline static constexpr auto id = "crash_death";
 inline static Option const o = {
     id,
     "Crash Chance on Death",
-    "When you die in a level, there's a chance your game will die too.\n<cg>Don't worry, your progress will save when crashing!</c> :)\n<cy>Credit: DragonixGD</c>",
+    "When you die in a level, there's a chance your game will die too.\n<cg>Don't worry, your progress will save when crashing!</c> :)\n<cl>Credit: DragonixGD</c>",
     category::chances,
     SillyTier::High,
 };
@@ -25,7 +25,7 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
         int chance = options::getChance(id);
     };
 
-    void destroyPlayer(PlayerObject * p0, GameObject * p1) {
+    void destroyPlayer(PlayerObject* p0, GameObject* p1) {
         auto f = m_fields.self();
 
         // ignore the anti-cheat spike lmao
@@ -38,7 +38,7 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
             log::warn("ur game crash hehehehehehehe");
 
             PlayLayer::destroyPlayer(p0, p1);
-            game::exit(true); // saves data
+            game::exit(true);  // saves data
         };
 
         PlayLayer::destroyPlayer(p0, p1);

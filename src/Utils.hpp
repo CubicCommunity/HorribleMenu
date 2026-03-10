@@ -44,7 +44,7 @@ namespace horrible {
         if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
     };
 
-    namespace str = geode::utils::string; // Shortcut for geode::utils::string
+    namespace str = geode::utils::string;  // Shortcut for geode::utils::string
 
     // Default option categories
     namespace category {
