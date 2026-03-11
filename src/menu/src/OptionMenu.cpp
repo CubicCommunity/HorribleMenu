@@ -394,7 +394,7 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(m_impl->safeModeContainer, 9);
 
-    setupSafeModeNode(horribleMod->getSettingValue<bool>("safe-mode"));
+    setupSafeModeNode(horribleMod->getSettingValue<bool>(setting::SafeMode));
 
     addEventListener(
         CategoryEvent(),
@@ -410,7 +410,7 @@ bool OptionMenu::init() {
         });
 
     addEventListener(
-        SettingChangedEvent(horribleMod, "safe-mode"),
+        SettingChangedEvent(horribleMod, setting::SafeMode),
         [this](std::shared_ptr<SettingV3> setting) {
             auto settingBool = std::static_pointer_cast<BoolSettingV3>(setting);
             setupSafeModeNode(settingBool->getValue());

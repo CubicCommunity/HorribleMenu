@@ -2,6 +2,7 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
@@ -17,6 +18,24 @@ inline static Option const o = {
     SillyTier::Medium,
 };
 HORRIBLE_REGISTER_OPTION(o);
+
+class $modify(FreezeMenuLayer, MenuLayer) {
+    HORRIBLE_DELEGATE_HOOKS(id);
+
+    bool init() {
+        if (!MenuLayer::init()) return false;
+
+        if (auto gm = GameManager::get()) {
+            // get and store user current fps
+            float currentFPS = gm->m_customFPSTarget;
+            (void)horribleMod->setSavedValue<float>("fps", currentFPS);
+
+            log::debug("Stored current FPS: {}", currentFPS);
+        };
+
+        return true;
+    };
+};
 
 class $modify(FreezePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);

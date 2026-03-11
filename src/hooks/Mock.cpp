@@ -48,11 +48,9 @@ class $modify(MockMenuLayer, MenuLayer) {
             auto const mockConfig = file::readJson(fs::path(mockConfigPath));
 
             log::trace("Reading path {}...", mockConfigPath);
-            ("Reading path {}...", mockConfigPath);
 
             if (mockConfig.isOk()) {
                 log::trace("Reading path {}...", mockConfigPath);
-                ("Read mocking config file");
 
                 auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 

@@ -89,8 +89,7 @@ size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
 void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
     auto it = m_delegates.find(id);
     if (it != m_delegates.end()) {
-        for (auto& cb : it->second)
-            cb(enable);
+        for (auto& cb : it->second) cb(enable);
     };
 
     log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);

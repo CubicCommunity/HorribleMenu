@@ -20,7 +20,7 @@
 
 // Additional utility methods for Horrible Ideas
 namespace horrible {
-    // Pointer reference to this Geode mod
+    // Pointer to this Geode mod
     inline Mod* horribleMod = geode::Mod::get();
 
     /**
@@ -45,6 +45,12 @@ namespace horrible {
     };
 
     namespace str = geode::utils::string;  // Shortcut for geode::utils::string
+
+    // For convenience
+    namespace setting {
+        inline constexpr auto SafeMode = "safe-mode";
+        inline constexpr auto FloatingBtn = "floating-button";
+    };
 
     // Default option categories
     namespace category {

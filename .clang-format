@@ -1,4 +1,4 @@
-# for clangd users
+# for our beloved clangd users
 BasedOnStyle: Google
 
 NamespaceIndentation: All

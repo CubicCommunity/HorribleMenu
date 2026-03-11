@@ -3,14 +3,54 @@
 #include <menu/OptionMenuButton.hpp>
 #include <menu/SettingV3.hpp>
 
-#include <Geode/modify/MenuLayer.hpp>
+#include <ranges>
+
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/GJGameLevel.hpp>
 
 using namespace horrible::prelude;
 
+inline static std::vector<Hook*> safeModeHooks;
+inline static std::vector<Hook*> floatingBtnHooks;
+
+#define HORRIBLE_HOOK_SAFEMODE(hookName)                                       \
+    static void onModify(auto& self) {                                         \
+        Result<Hook*> hookRes = self.getHook(hookName);                        \
+                                                                               \
+        if (auto hook = hookRes.unwrap()) {                                    \
+            auto safe = horribleMod->getSettingValue<bool>(setting::SafeMode); \
+                                                                               \
+            hook->setAutoEnable(safe);                                         \
+            (void)hook->toggle(safe);                                          \
+                                                                               \
+            safeModeHooks.push_back(hook);                                     \
+        };                                                                     \
+    }
+
+#define HORRIBLE_HOOK_FLOATINGBTN                                               \
+    static void onModify(auto& self) {                                          \
+        utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;          \
+        auto enable = horribleMod->getSettingValue<bool>(setting::FloatingBtn); \
+                                                                                \
+        for (auto& hook : hooks | std::views::values) {                         \
+            (void)hook->toggle(enable);                                         \
+            hook->setAutoEnable(enable);                                        \
+                                                                                \
+            floatingBtnHooks.push_back(hook.get());                             \
+        };                                                                      \
+    }
+
 $on_game(Loaded) {
+    listenForSettingChanges<bool>(
+        setting::SafeMode,
+        [](bool value) {
+            for (auto& hook : safeModeHooks) {
+                log::trace("Toggling safe mode hook '{}' {}...", hook->getDisplayName(), value ? "ON" : "OFF");
+                (void)hook->toggle(value);
+            };
+        });
+
     listenForKeybindSettingPresses(
         "key-popup",
         [](Keybind const&, bool down, bool repeat, double) {
@@ -18,9 +58,14 @@ $on_game(Loaded) {
         });
 
     listenForSettingChanges<bool>(
-        "floating-button",
+        setting::FloatingBtn,
         [](bool value) {
             if (auto fb = OptionMenuButton::get()) fb->setVisible(value);
+
+            for (auto& hook : floatingBtnHooks) {
+                log::trace("Toggling floating button hook '{}' {}...", hook->getDisplayName(), value ? "ON" : "OFF");
+                (void)hook->toggle(value);
+            };
         });
 
     listenForSettingChanges<bool>(
@@ -52,40 +97,61 @@ $on_game(Loaded) {
     if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
 };
 
-class $modify(HIMenuLayer, MenuLayer) {
-    bool init() {
-        if (!MenuLayer::init()) return false;
+// safe mode
+class $modify(HISafeGJGameLevel, GJGameLevel) {
+    HORRIBLE_HOOK_SAFEMODE("GJGameLevel::savePercentage");
 
-        if (auto gm = GameManager::get()) {
-            // get and store user current fps
-            float currentFPS = gm->m_customFPSTarget;
-            (void)horribleMod->setSavedValue<float>("fps", currentFPS);
-
-            log::debug("Stored current FPS: {}", currentFPS);
-        };
-
-        return true;
+    void savePercentage(int, bool, int, int, bool) {
+        log::warn("Safe mode is enabled, your progress will not be saved!");
     };
 };
 
-class $modify(HIPlayLayer, PlayLayer) {
-    struct Fields {
-        bool safeMode = horribleMod->getSettingValue<bool>("safe-mode");
+// safe mode
+class $modify(HISafePlayLayer, PlayLayer) {
+    HORRIBLE_HOOK_SAFEMODE("PlayLayer::levelComplete");
+
+    // safe mode prevents level completion
+    void levelComplete() {
+        log::info("Safe mode is enabled");
+
+        bool testMode = m_isTestMode;
+
+        m_isTestMode = true;
+        PlayLayer::levelComplete();
+        m_isTestMode = testMode;
     };
+};
+
+class $modify(HIFloatBtnPauseLayer, PauseLayer) {
+    HORRIBLE_HOOK_FLOATINGBTN;
+
+    void customSetup() {
+        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>(setting::FloatingBtn));
+        PauseLayer::customSetup();
+    };
+};
+
+class $modify(HIFloatBtnPlayLayer, PlayLayer) {
+    HORRIBLE_HOOK_FLOATINGBTN;
 
     void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
         toggleButton();
+        PlayLayer::setupHasCompleted();
     };
 
     void resume() {
-        PlayLayer::resume();
         toggleButton();
+        PlayLayer::resume();
     };
 
     void resumeAndRestart(bool fromStart) {
-        PlayLayer::resumeAndRestart(fromStart);
         toggleButton();
+        PlayLayer::resumeAndRestart(fromStart);
+    };
+
+    void onQuit() {
+        toggleButton();
+        PlayLayer::onQuit();
     };
 
     void showEndLayer() {
@@ -93,43 +159,7 @@ class $modify(HIPlayLayer, PlayLayer) {
         toggleButton(true);
     };
 
-    // safe mode prevents level completion
-    void levelComplete() {
-        auto f = m_fields.self();
-
-        if (f->safeMode) {
-            log::info("Safe mode is enabled");
-
-            bool testMode = m_isTestMode;
-
-            m_isTestMode = f->safeMode;
-            PlayLayer::levelComplete();
-            m_isTestMode = testMode;
-        } else {
-            log::warn("Safe mode is disabled");
-            PlayLayer::levelComplete();
-        };
-    };
-
     void toggleButton(bool toggle = false) {
-        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>("floating-button") && (fb->showInLevel() || toggle));
-    };
-};
-
-class $modify(HIPauseLayer, PauseLayer) {
-    void customSetup() {
-        PauseLayer::customSetup();
-        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>("floating-button"));
-    };
-};
-
-// safe mode
-class $modify(HIGJGameLevel, GJGameLevel) {
-    void savePercentage(int percent, bool isPracticeMode, int clicks, int attempts, bool isChkValid) {
-        if (horribleMod->getSettingValue<bool>("safe-mode")) {
-            log::warn("Safe mode is enabled, your progress will not be saved!");
-        } else {
-            GJGameLevel::savePercentage(percent, isPracticeMode, clicks, attempts, isChkValid);
-        };
+        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle));
     };
 };

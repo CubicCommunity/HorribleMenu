@@ -1,5 +1,5 @@
 # [<img src="logo.png" width="25" alt="The mod's logo." />](https://www.geode-sdk.org/mods/arcticwoof.horribleideas) Horrible Ideas
-A plethora of ways to ruin your gaming experience...
+A plethora of ways to ruin your experience...
 
 > [<img alt="Latest Version" src="https://img.shields.io/github/v/release/DumbCaveSpider/HorribleIdeas?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">](../../releases/) [<img alt="Code License" src="https://img.shields.io/github/license/DumbCaveSpider/HorribleIdeas?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">](LICENSE.md)
 >  
@@ -8,7 +8,7 @@ A plethora of ways to ruin your gaming experience...
 ---
 
 ## About
-This silly lil' mod adds a funny mod menu filled to the brim with **over 30 crazy troll options** to mes around with! Spice up your gameplay by adding some truly terrible features to absolutely wreck your entire game.
+This silly lil' mod adds a funny mod menu filled to the brim with **over 30 crazy troll options** to mess around with! Spice up your gameplay by adding some truly terrible features to absolutely wreck your entire game.
 
 ---
 
