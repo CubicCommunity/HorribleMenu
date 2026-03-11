@@ -69,19 +69,19 @@ $on_game(Loaded) {
         });
 
     listenForSettingChanges<bool>(
-        "floating-button-level",
+        "floating-btn-level",
         [](bool value) {
             if (auto fb = OptionMenuButton::get()) fb->setShowInLevel(value);
         });
 
     listenForSettingChanges<float>(
-        "floating-button-scale",
+        "floating-btn-scale",
         [](float value) {
             if (auto fb = OptionMenuButton::get()) fb->setScale(value);
         });
 
     listenForSettingChanges<int64_t>(
-        "floating-button-opacity",
+        "floating-btn-opacity",
         [](int64_t value) {
             if (auto fb = OptionMenuButton::get()) fb->setOpacity(value);
         });
@@ -126,7 +126,11 @@ class $modify(HIFloatBtnPauseLayer, PauseLayer) {
     HORRIBLE_HOOK_FLOATINGBTN;
 
     void customSetup() {
-        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>(setting::FloatingBtn));
+        auto toggle = horribleMod->getSettingValue<bool>(setting::FloatingBtn);
+
+        log::trace("{} floating button", toggle ? "Showing" : "Hiding");
+        if (auto fb = OptionMenuButton::get()) fb->setVisible(toggle);
+
         PauseLayer::customSetup();
     };
 };
@@ -150,16 +154,17 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
     };
 
     void onQuit() {
-        toggleButton();
+        toggleButton(true);
         PlayLayer::onQuit();
     };
 
     void showEndLayer() {
-        PlayLayer::showEndLayer();
         toggleButton(true);
+        PlayLayer::showEndLayer();
     };
 
     void toggleButton(bool toggle = false) {
+        log::trace("{} floating button", toggle ? "Showing" : "Hiding");
         if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle));
     };
 };

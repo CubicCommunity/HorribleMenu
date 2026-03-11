@@ -8,10 +8,10 @@ using namespace horrible::prelude;
 
 class OptionMenuButton::Impl final {
 public:
-    bool inLevel = horribleMod->getSettingValue<bool>("floating-button-level");
+    bool inLevel = horribleMod->getSettingValue<bool>("floating-btn-level");
 
-    float scale = horribleMod->getSettingValue<float>("floating-button-scale");
-    int64_t opacity = horribleMod->getSettingValue<int64_t>("floating-button-opacity");
+    float scale = horribleMod->getSettingValue<float>("floating-btn-scale");
+    int64_t opacity = horribleMod->getSettingValue<int64_t>("floating-btn-opacity");
 
     bool isDragging = false;
     bool isMoving = false;
@@ -43,7 +43,7 @@ void OptionMenuButton::setupSprite() {
     setScale(m_impl->scale);      // set initial scale
     setOpacity(m_impl->opacity);  // set initial opacity
 
-    setVisible(horribleMod->getSettingValue<bool>("floating-button"));  // set initial visibility
+    setVisible(horribleMod->getSettingValue<bool>("floating-btn"));  // set initial visibility
 
     addChild(m_impl->sprite);
 };
@@ -55,7 +55,7 @@ bool OptionMenuButton::init() {
     float x = horribleMod->getSavedValue<float>("button-x", 100.f);
     float y = horribleMod->getSavedValue<float>("button-y", 125.f);
 
-    setID("floating-button"_spr);
+    setID("floating-btn"_spr);
     setPosition({x, y});
     setAnchorPoint({0.5, 0.5});
     setTouchMode(kCCTouchesOneByOne);

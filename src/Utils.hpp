@@ -49,7 +49,7 @@ namespace horrible {
     // For convenience
     namespace setting {
         inline constexpr auto SafeMode = "safe-mode";
-        inline constexpr auto FloatingBtn = "floating-button";
+        inline constexpr auto FloatingBtn = "floating-btn";
     };
 
     // Default option categories
