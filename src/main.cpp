@@ -34,14 +34,18 @@ inline static std::vector<Hook*> floatingBtnHooks;
         auto enable = horribleMod->getSettingValue<bool>(setting::FloatingBtn); \
                                                                                 \
         for (auto& hook : hooks | std::views::values) {                         \
-            (void)hook->toggle(enable);                                         \
             hook->setAutoEnable(enable);                                        \
+            (void)hook->toggle(enable);                                         \
                                                                                 \
             floatingBtnHooks.push_back(hook.get());                             \
         };                                                                      \
     }
 
 $on_game(Loaded) {
+    (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
+
+    if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
+
     listenForSettingChanges<bool>(
         setting::SafeMode,
         [](bool value) {
@@ -91,10 +95,6 @@ $on_game(Loaded) {
         [](std::string value) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
         });
-
-    (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
-
-    if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
 };
 
 // safe mode
@@ -102,7 +102,7 @@ class $modify(HISafeGJGameLevel, GJGameLevel) {
     HORRIBLE_HOOK_SAFEMODE("GJGameLevel::savePercentage");
 
     void savePercentage(int, bool, int, int, bool) {
-        log::warn("Safe mode is enabled, your progress will not be saved!");
+        log::warn("Safe mode is enabled, progress will not be saved!");
     };
 };
 
@@ -112,7 +112,7 @@ class $modify(HISafePlayLayer, PlayLayer) {
 
     // safe mode prevents level completion
     void levelComplete() {
-        log::info("Safe mode is enabled");
+        log::warn("Safe mode is enabled, progress will not be saved");
 
         bool testMode = m_isTestMode;
 

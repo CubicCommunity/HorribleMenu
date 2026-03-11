@@ -30,6 +30,8 @@ OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
 OptionMenuButton::~OptionMenuButton() {};
 
 void OptionMenuButton::setupSprite() {
+    if (m_impl->sprite) m_impl->sprite->removeMeAndCleanup();
+
     m_impl->sprite = CircleButtonSprite::createWithSprite(
         "icon.png"_spr,
         0.925f,
@@ -43,7 +45,7 @@ void OptionMenuButton::setupSprite() {
     setScale(m_impl->scale);      // set initial scale
     setOpacity(m_impl->opacity);  // set initial opacity
 
-    setVisible(horribleMod->getSettingValue<bool>("floating-btn"));  // set initial visibility
+    setVisible(horribleMod->getSettingValue<bool>(setting::FloatingBtn));  // set initial visibility
 
     addChild(m_impl->sprite);
 };
@@ -51,17 +53,17 @@ void OptionMenuButton::setupSprite() {
 bool OptionMenuButton::init() {
     if (!CCLayer::init()) return false;
 
-    // get the saved position
-    float x = horribleMod->getSavedValue<float>("button-x", 100.f);
-    float y = horribleMod->getSavedValue<float>("button-y", 125.f);
-
-    setID("floating-btn"_spr);
-    setPosition({x, y});
+    setID("menu-btn"_spr);
     setAnchorPoint({0.5, 0.5});
     setTouchMode(kCCTouchesOneByOne);
     setTouchEnabled(true);
     setTouchPriority(-512);  // ewww touch priority
     setZOrder(99);
+
+    setPosition({
+        horribleMod->getSavedValue<float>("button-x", 100.f),
+        horribleMod->getSavedValue<float>("button-y", 125.f),
+    });
 
     setupSprite();
 
@@ -111,7 +113,6 @@ void OptionMenuButton::setPosition(CCPoint const& position) {
 
 void OptionMenuButton::setTheme(std::string theme) {
     m_impl->theme = std::move(theme);
-    if (m_impl->sprite) m_impl->sprite->removeMeAndCleanup();
     setupSprite();
 };
 

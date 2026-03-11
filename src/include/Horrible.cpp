@@ -118,9 +118,11 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
 
         om->addDelegate(
             id,
-            [allHooks = std::move(allHooks)](bool value) {
-                for (auto hook : allHooks)
+            [id, allHooks = std::move(allHooks)](bool value) {
+                for (auto& hook : allHooks) {
+                    log::trace("Toggling {} hook '{}' {}...", id, hook->getDisplayName(), value ? "ON" : "OFF");
                     (void)hook->toggle(value);
+                };
             });
     } else {
         log::error("Failed to get OptionManager to delegate hooks for option {}", id);

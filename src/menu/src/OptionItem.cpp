@@ -35,15 +35,15 @@ public:
     };
 
     constexpr const char* getTierDescString(SillyTier silly, bool compat) noexcept {
-        if (!compat) return "<ca>OPTION UNAVAILABLE</c>";
+        if (!compat) return "<cp>OPTION UNAVAILABLE</c>";
 
         switch (silly) {
             default: [[fallthrough]];
 
-            case SillyTier::Low: return "<cg>Silly Tier | LOW</c>";
-            case SillyTier::Medium: return "<cy>Silly Tier | MEDIUM</c>";
-            case SillyTier::High: return "<cr>Silly Tier | HIGH</c>";
-            case SillyTier::None: return "Silly Tier | NONE";
+            case SillyTier::Low: return "<cg>Silly Tier - LOW</c>";
+            case SillyTier::Medium: return "<cy>Silly Tier - MEDIUM</c>";
+            case SillyTier::High: return "<cr>Silly Tier - HIGH</c>";
+            case SillyTier::None: return "Silly Tier - UNKNOWN";
         };
     };
 };
