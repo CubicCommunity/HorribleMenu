@@ -21,20 +21,20 @@ OptionMenu* OptionMenu::s_inst = nullptr;
 
 class OptionMenu::Impl final {
 public:
-    bool devMode = horribleMod->getSettingValue<bool>("dev-mode");
+    bool devMode = thisMod->getSettingValue<bool>("dev-mode");
 
     SillyTier selectedTier = SillyTier::None;
     std::string selectedCategory = "";
 
     std::string searchText = "";
 
-    bool showIncompatible = horribleMod->getSettingValue<bool>("show-incompatible");
+    bool showIncompatible = thisMod->getSettingValue<bool>("show-incompatible");
 
     ScrollLayer* optionList = nullptr;
     ScrollLayer* categoryList = nullptr;
     TextInput* searchInput = nullptr;
 
-    std::string theme = horribleMod->getSettingValue<std::string>("theme");
+    std::string theme = thisMod->getSettingValue<std::string>("theme");
 
     CCNode* safeModeContainer = nullptr;
 
@@ -246,7 +246,7 @@ bool OptionMenu::init() {
     filterContainer->setContentHeight(0.f);
     filterContainer->setLayout(filterContainerLayout);
 
-    constexpr SillyFilterBtnData filterBtns[] = {
+    constexpr TierFilterBtnData filterBtns[] = {
         {SillyTier::Low, "Low", "filter-low-btn", colors::green},
         {SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow},
         {SillyTier::High, "High", "filter-high-btn", colors::red},
@@ -289,7 +289,7 @@ bool OptionMenu::init() {
             1.f,
             btns),
         [](auto) {
-            openSettingsPopup(horribleMod);
+            openSettingsPopup(thisMod);
         });
     settingsBtn->setID("settings-btn");
     settingsBtn->setScale(0.625f);
@@ -361,7 +361,7 @@ bool OptionMenu::init() {
         {"geode.loader/gift.png",
             "support-btn",
             [](auto) {
-                openSupportPopup(horribleMod);
+                openSupportPopup(thisMod);
             }}});
 
     for (auto& socialBtn : socialBtns) {
@@ -394,7 +394,7 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(m_impl->safeModeContainer, 9);
 
-    setupSafeModeNode(horribleMod->getSettingValue<bool>(setting::SafeMode));
+    setupSafeModeNode(thisMod->getSettingValue<bool>(setting::SafeMode));
 
     addEventListener(
         CategoryEvent(),
@@ -410,7 +410,7 @@ bool OptionMenu::init() {
         });
 
     addEventListener(
-        SettingChangedEvent(horribleMod, setting::SafeMode),
+        SettingChangedEvent(thisMod, setting::SafeMode),
         [this](std::shared_ptr<SettingV3> setting) {
             auto settingBool = std::static_pointer_cast<BoolSettingV3>(setting);
             setupSafeModeNode(settingBool->getValue());

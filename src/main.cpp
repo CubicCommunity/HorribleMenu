@@ -14,35 +14,35 @@ using namespace horrible::prelude;
 inline static std::vector<Hook*> safeModeHooks;
 inline static std::vector<Hook*> floatingBtnHooks;
 
-#define HORRIBLE_HOOK_SAFEMODE(hookName)                                       \
-    static void onModify(auto& self) {                                         \
-        Result<Hook*> hookRes = self.getHook(hookName);                        \
-                                                                               \
-        if (auto hook = hookRes.unwrap()) {                                    \
-            auto safe = horribleMod->getSettingValue<bool>(setting::SafeMode); \
-                                                                               \
-            hook->setAutoEnable(safe);                                         \
-            (void)hook->toggle(safe);                                          \
-                                                                               \
-            safeModeHooks.push_back(hook);                                     \
-        };                                                                     \
+#define HORRIBLE_HOOK_SAFEMODE(hookName)                                   \
+    static void onModify(auto& self) {                                     \
+        Result<Hook*> hookRes = self.getHook(hookName);                    \
+                                                                           \
+        if (auto hook = hookRes.unwrap()) {                                \
+            auto safe = thisMod->getSettingValue<bool>(setting::SafeMode); \
+                                                                           \
+            hook->setAutoEnable(safe);                                     \
+            (void)hook->toggle(safe);                                      \
+                                                                           \
+            safeModeHooks.push_back(hook);                                 \
+        };                                                                 \
     }
 
-#define HORRIBLE_HOOK_FLOATINGBTN                                               \
-    static void onModify(auto& self) {                                          \
-        utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;          \
-        auto enable = horribleMod->getSettingValue<bool>(setting::FloatingBtn); \
-                                                                                \
-        for (auto& hook : hooks | std::views::values) {                         \
-            hook->setAutoEnable(enable);                                        \
-            (void)hook->toggle(enable);                                         \
-                                                                                \
-            floatingBtnHooks.push_back(hook.get());                             \
-        };                                                                      \
+#define HORRIBLE_HOOK_FLOATINGBTN                                           \
+    static void onModify(auto& self) {                                      \
+        utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;      \
+        auto enable = thisMod->getSettingValue<bool>(setting::FloatingBtn); \
+                                                                            \
+        for (auto& hook : hooks | std::views::values) {                     \
+            hook->setAutoEnable(enable);                                    \
+            (void)hook->toggle(enable);                                     \
+                                                                            \
+            floatingBtnHooks.push_back(hook.get());                         \
+        };                                                                  \
     }
 
 $on_game(Loaded) {
-    (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
+    (void)thisMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
 
     if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
 
@@ -126,7 +126,7 @@ class $modify(HIFloatBtnPauseLayer, PauseLayer) {
     HORRIBLE_HOOK_FLOATINGBTN;
 
     void customSetup() {
-        auto toggle = horribleMod->getSettingValue<bool>(setting::FloatingBtn);
+        auto toggle = thisMod->getSettingValue<bool>(setting::FloatingBtn);
 
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
         if (auto fb = OptionMenuButton::get()) fb->setVisible(toggle);
@@ -165,6 +165,6 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
 
     void toggleButton(bool toggle = false) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
-        if (auto fb = OptionMenuButton::get()) fb->setVisible(horribleMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle));
+        if (auto fb = OptionMenuButton::get()) fb->setVisible(thisMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle));
     };
 };

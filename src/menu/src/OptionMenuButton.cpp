@@ -8,10 +8,10 @@ using namespace horrible::prelude;
 
 class OptionMenuButton::Impl final {
 public:
-    bool inLevel = horribleMod->getSettingValue<bool>("floating-btn-level");
+    bool inLevel = thisMod->getSettingValue<bool>("floating-btn-level");
 
-    float scale = horribleMod->getSettingValue<float>("floating-btn-scale");
-    int64_t opacity = horribleMod->getSettingValue<int64_t>("floating-btn-opacity");
+    float scale = thisMod->getSettingValue<float>("floating-btn-scale");
+    int64_t opacity = thisMod->getSettingValue<int64_t>("floating-btn-opacity");
 
     bool isDragging = false;
     bool isMoving = false;
@@ -23,7 +23,7 @@ public:
 
     bool isAnimating = false;
 
-    std::string theme = horribleMod->getSettingValue<std::string>("theme");
+    std::string theme = thisMod->getSettingValue<std::string>("theme");
 };
 
 OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
@@ -45,7 +45,7 @@ void OptionMenuButton::setupSprite() {
     setScale(m_impl->scale);      // set initial scale
     setOpacity(m_impl->opacity);  // set initial opacity
 
-    setVisible(horribleMod->getSettingValue<bool>(setting::FloatingBtn));  // set initial visibility
+    setVisible(thisMod->getSettingValue<bool>(setting::FloatingBtn));  // set initial visibility
 
     addChild(m_impl->sprite);
 };
@@ -61,8 +61,8 @@ bool OptionMenuButton::init() {
     setZOrder(99);
 
     setPosition({
-        horribleMod->getSavedValue<float>("button-x", 100.f),
-        horribleMod->getSavedValue<float>("button-y", 125.f),
+        thisMod->getSavedValue<float>("button-x", 100.f),
+        thisMod->getSavedValue<float>("button-y", 125.f),
     });
 
     setupSprite();
@@ -103,8 +103,8 @@ void OptionMenuButton::setPosition(CCPoint const& position) {
 
         // Save only when not dragging
         if (!m_impl->isDragging) {
-            horribleMod->setSavedValue<float>("button-x", clampPos.x);
-            horribleMod->setSavedValue<float>("button-y", clampPos.y);
+            thisMod->setSavedValue<float>("button-x", clampPos.x);
+            thisMod->setSavedValue<float>("button-y", clampPos.y);
         };
     } else {
         CCLayer::setPosition(position);
@@ -160,8 +160,8 @@ void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
     m_impl->isMoving = false;
 
     // store position
-    horribleMod->setSavedValue<float>("button-x", getPosition().x);
-    horribleMod->setSavedValue<float>("button-y", getPosition().y);
+    thisMod->setSavedValue<float>("button-x", getPosition().x);
+    thisMod->setSavedValue<float>("button-y", getPosition().y);
 
     m_impl->isAnimating = true;
 

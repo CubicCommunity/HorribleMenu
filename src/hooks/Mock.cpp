@@ -44,7 +44,7 @@ class $modify(MockMenuLayer, MenuLayer) {
         log::trace("mock chance {}", rnd);
 
         if (rnd <= f->chance) {
-            auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
+            auto const mockConfigPath = fmt::format("{}\\mock.json", thisMod->getSaveDir());
             auto const mockConfig = file::readJson(fs::path(mockConfigPath));
 
             log::trace("Reading path {}...", mockConfigPath);
@@ -63,7 +63,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                 if (!id.empty()) {
                     log::trace("ID {} with percentage {} is valid", id, percent);
 
-                    auto const pngPath = fmt::format("{}\\{}.png", horribleMod->getSaveDir(), id);
+                    auto const pngPath = fmt::format("{}\\{}.png", thisMod->getSaveDir(), id);
 
                     log::info("Displaying {}", pngPath);
 
@@ -151,10 +151,10 @@ class $modify(MockPlayLayer, PlayLayer) {
             renderTexture->end();
 
             if (auto image = renderTexture->newCCImage()) {
-                auto const path = fmt::format("{}\\{}.png", horribleMod->getSaveDir(), id);
+                auto const path = fmt::format("{}\\{}.png", thisMod->getSaveDir(), id);
 
                 if (image->saveToFile(path.c_str(), false)) {
-                    auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
+                    auto const mockConfigPath = fmt::format("{}\\mock.json", thisMod->getSaveDir());
                     auto const mockConfig = file::readJson(fs::path(mockConfigPath));  // get the saved fails to mock the player with :)
 
                     auto toWrite = matjson::Value();  // what we're gonna write in the mock.json file
@@ -199,7 +199,7 @@ class $modify(MockPlayLayer, PlayLayer) {
         int id = m_level->m_levelID;
         int percentage = m_level->m_normalPercent;
 
-        auto const mockConfigPath = fmt::format("{}\\mock.json", horribleMod->getSaveDir());
+        auto const mockConfigPath = fmt::format("{}\\mock.json", thisMod->getSaveDir());
         auto const mockConfig = file::readJson(fs::path(mockConfigPath));  // get the saved levels to mock the player :)
 
         if (mockConfig.isOk()) {

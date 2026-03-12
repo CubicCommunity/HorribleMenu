@@ -39,7 +39,7 @@ struct matjson::Serialize<HorribleOptionSave> final {
 
 // Container for Horrible Ideas API functions
 namespace horrible {
-    // Mod option manager for Horrible Ideas
+    // Option manager for Horrible Ideas
     class AWCW_HORRIBLE_API_DLL OptionManager final : public cocos2d::CCObject {
     private:
         std::vector<Option> m_options;          // Array of registered options

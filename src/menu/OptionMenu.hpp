@@ -14,7 +14,7 @@ private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
 
-    struct SillyFilterBtnData final {
+    struct TierFilterBtnData final {
         SillyTier tier;
         const char* label;
         const char* id;

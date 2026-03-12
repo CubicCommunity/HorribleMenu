@@ -28,7 +28,7 @@ class $modify(FreezeMenuLayer, MenuLayer) {
         if (auto gm = GameManager::get()) {
             // get and store user current fps
             float currentFPS = gm->m_customFPSTarget;
-            (void)horribleMod->setSavedValue<float>("fps", currentFPS);
+            (void)thisMod->setSavedValue<float>("fps", currentFPS);
 
             log::debug("Stored current FPS: {}", currentFPS);
         };
@@ -64,7 +64,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
         // default to user old fps
         auto gm = GameManager::get();
 
-        float oldFPS = horribleMod->getSavedValue<float>("fps");
+        float oldFPS = thisMod->getSavedValue<float>("fps");
 
         gm->setGameVariable("0116", true);
 
@@ -116,7 +116,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
 
             gm->setGameVariable("0116", true);
 
-            auto oldFPS = horribleMod->getSavedValue<float>("fps");
+            auto oldFPS = thisMod->getSavedValue<float>("fps");
 
             // Use seconds per frame, not raw FPS
             auto interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f);  // minimum 10 FPS

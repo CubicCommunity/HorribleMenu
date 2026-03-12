@@ -97,7 +97,7 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
     auto save = HorribleOptionSave{enable, pin};
 
     (void)Mod::get()->setSavedValue(id, save);
-    (void)OptionEventV2(id).send(std::move(save));
+    (void)OptionEvent(id).send(std::move(save));
 };
 
 OptionManager* OptionManager::get() noexcept {

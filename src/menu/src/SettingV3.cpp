@@ -54,7 +54,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     auto buttonSprite = ButtonSprite::create(
         "Horrible Options Menu",
         "bigFont.fnt",
-        themes::getButtonSquareSprite(horribleMod->getSettingValue<std::string>("theme")),
+        themes::getButtonSquareSprite(thisMod->getSettingValue<std::string>("theme")),
         0.875f);
     buttonSprite->setScale(0.5f);
 
@@ -75,7 +75,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     };
 
     addEventListener(
-        SettingChangedEvent(horribleMod, "theme"),
+        SettingChangedEvent(thisMod, "theme"),
         [this](std::shared_ptr<SettingV3> setting) {
             auto strSetting = std::static_pointer_cast<StringSettingV3>(setting);
 

@@ -28,7 +28,7 @@ namespace horrible {
         Option() = default;  // Default constructor
 
         // Constructor
-        Option(
+        inline Option(
             std::string id,
             std::string name,
             std::string description,

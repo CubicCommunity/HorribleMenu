@@ -194,7 +194,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     pinOn->setOpacity(225);
 
     pinOff->setBlendFunc({GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA});
-    pinOn->setColor(themes::getColor(horribleMod->getSettingValue<std::string>("theme")));
+    pinOn->setColor(themes::getColor(thisMod->getSettingValue<std::string>("theme")));
 
     auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(OptionItem::onPin));
     pinBtn->setID("pin-btn");
