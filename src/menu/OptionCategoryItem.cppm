@@ -1,15 +1,17 @@
-#pragma once
+module;
 
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 
+export module OptionCategoryItem;
+
 // Event for option toggles
-struct CategoryEvent final : Event<CategoryEvent, bool(std::string_view, bool)> {
+export struct CategoryEvent final : Event<CategoryEvent, bool(std::string_view, bool)> {
     using Event::Event;
 };
 
-class OptionCategoryItem final : public CCMenu {
+export class OptionCategoryItem final : public CCMenu {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;

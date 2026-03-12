@@ -1,10 +1,13 @@
-#include "../OptionCategoryItem.hpp"
+module;
+
+#include <Utils.hpp>
 
 #include <Geode/Geode.hpp>
-#include <Utils.hpp>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
+
+module OptionCategoryItem;
 
 class OptionCategoryItem::Impl final {
 public:

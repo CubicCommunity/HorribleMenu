@@ -1,10 +1,12 @@
-#pragma once
+module;
 
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 
-class OptionMenuButton final : public CCLayer {
+export module OptionMenuButton;
+
+export class OptionMenuButton final : public CCLayer {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;

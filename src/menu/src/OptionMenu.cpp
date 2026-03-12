@@ -1,21 +1,27 @@
-#include "../OptionMenu.hpp"
+module;
+
+#include <Utils.hpp>
 
 #include <Geode/Geode.hpp>
+
+#include <Geode/ui/Layout.hpp>
 #include <Geode/ui/GeodeUI.hpp>
+
 #include <Geode/utils/terminate.hpp>
-#include <Utils.hpp>
-#include <algorithm>
-#include <memory>
-#include <menu/OptionCategoryItem.hpp>
-#include <menu/OptionItem.hpp>
-#include <vector>
-#include "Geode/cocos/base_nodes/CCNode.h"
-#include "Geode/cocos/sprite_nodes/CCSprite.h"
-#include "Geode/loader/SettingV3.hpp"
-#include "Geode/ui/Layout.hpp"
+
+#include <Geode/loader/SettingV3.hpp>
+
+#include <Geode/cocos/base_nodes/CCNode.h>
+
+#include <Geode/cocos/sprite_nodes/CCSprite.h>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
+
+module OptionMenu;
+
+import OptionItem;
+import OptionCategoryItem;
 
 OptionMenu* OptionMenu::s_inst = nullptr;
 

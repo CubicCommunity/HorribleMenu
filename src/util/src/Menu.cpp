@@ -1,10 +1,10 @@
 #include "../Menu.hpp"
 
-#include <menu/OptionMenu.hpp>
-
 #include <Utils.hpp>
 
 using namespace horrible::util;
+
+import OptionMenu;
 
 void menu::open() {
     if (auto old = OptionMenu::get()) {

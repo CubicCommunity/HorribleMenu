@@ -1,6 +1,4 @@
-#pragma once
-
-#include "OptionCategoryItem.hpp"
+module;
 
 #include <Utils.hpp>
 
@@ -9,7 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible;
 
-class OptionMenu final : public Popup {
+export module OptionMenu;
+
+export class OptionMenu final : public Popup {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
