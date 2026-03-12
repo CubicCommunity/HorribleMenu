@@ -1,12 +1,10 @@
-module;
+#include "../SettingV3.hpp"
 
 #include <Utils.hpp>
 
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/Button.hpp>
-
-module SettingV3;
 
 using namespace geode::prelude;
 using namespace horrible::prelude;

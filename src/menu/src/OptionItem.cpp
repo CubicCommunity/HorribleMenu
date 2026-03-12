@@ -1,4 +1,4 @@
-module;
+#include "../OptionItem.hpp"
 
 #include <Utils.hpp>
 
@@ -6,8 +6,6 @@ module;
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
-
-module OptionItem;
 
 class OptionItem::Impl final {
 public:

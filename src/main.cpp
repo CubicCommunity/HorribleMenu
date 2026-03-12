@@ -1,5 +1,8 @@
 #include <Utils.hpp>
 
+#include <menu/OptionMenuButton.hpp>
+#include <menu/SettingV3.hpp>
+
 #include <ranges>
 
 #include <Geode/modify/PlayLayer.hpp>
@@ -7,9 +10,6 @@
 #include <Geode/modify/GJGameLevel.hpp>
 
 using namespace horrible::prelude;
-
-import OptionMenuButton;
-import SettingV3;
 
 inline static std::vector<Hook*> safeModeHooks;
 inline static std::vector<Hook*> floatingBtnHooks;
@@ -41,7 +41,7 @@ inline static std::vector<Hook*> floatingBtnHooks;
         };                                                                      \
     }
 
-$on_mod(Loaded) {
+$on_game(Loaded) {
     (void)horribleMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
 
     if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);

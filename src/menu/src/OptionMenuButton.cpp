@@ -1,13 +1,10 @@
-module;
-
-#include <Utils.hpp>
+#include "../OptionMenuButton.hpp"
 
 #include <Geode/Geode.hpp>
+#include <Utils.hpp>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
-
-module OptionMenuButton;
 
 class OptionMenuButton::Impl final {
 public:

@@ -1,4 +1,4 @@
-module;
+#pragma once
 
 #include <Utils.hpp>
 
@@ -7,14 +7,12 @@ module;
 using namespace geode::prelude;
 using namespace horrible;
 
-export module OptionItem;
-
 // Event for pin toggles
-export struct PinEvent final : Event<PinEvent, bool()> {
+struct PinEvent final : Event<PinEvent, bool()> {
     using Event::Event;
 };
 
-export class OptionItem final : public CCMenu {
+class OptionItem final : public CCMenu {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
