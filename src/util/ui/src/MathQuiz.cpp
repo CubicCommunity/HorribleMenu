@@ -239,7 +239,7 @@ void MathQuiz::setCallback(Function<void(bool)> cb) {
 void MathQuiz::setCorrect(bool v) {
     m_impl->correct = v;
     // @geode-ignore(unknown-resource)
-    playSfx(v ? "crystal01.ogg" : "jumpscareAudio.mp3");
+    playSfx(v ? "crystal01.ogg" : "explode_11.ogg");
 };
 
 void MathQuiz::onAnswerClicked(CCObject* sender) {

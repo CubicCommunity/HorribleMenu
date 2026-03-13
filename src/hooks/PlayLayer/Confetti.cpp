@@ -55,7 +55,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     void confetti(float) {
         log::info("unleashing confetti!");
 
-        playSfx("jumpscareAudio.mp3");
+        playSfx("explode_11.ogg");
         shakeCamera(1.25f, 2.5f, 0.00875F);
         for (int i = 0; i < randng::get(125, 75); i++)
             createConfetti();

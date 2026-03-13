@@ -30,7 +30,7 @@ OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
 OptionMenuButton::~OptionMenuButton() {};
 
 void OptionMenuButton::setupSprite() {
-    if (m_impl->sprite) m_impl->sprite->removeMeAndCleanup();
+    if (auto sprite = m_impl->sprite.take()) sprite->removeMeAndCleanup();
 
     m_impl->sprite = CircleButtonSprite::createWithSprite(
         "icon.png"_spr,
@@ -165,10 +165,10 @@ void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
 
     m_impl->isAnimating = true;
 
-    if (m_impl->sprite) {
+    if (auto sprite = m_impl->sprite.data()) {
         // reset scale
-        m_impl->sprite->stopAllActions();
-        m_impl->sprite->runAction(CCSequence::create(
+        sprite->stopAllActions();
+        sprite->runAction(CCSequence::create(
             CCSpawn::createWithTwoActions(
                 CCFadeTo::create(0.125f, 255),
                 CCEaseElasticOut::create(CCScaleTo::create(0.875f, m_impl->scale))),

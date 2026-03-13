@@ -125,7 +125,7 @@ void SpamChallenge::setSuccess(bool v) {
         CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
     // @geode-ignore(unknown-resource)
-    playSfx(v ? "crystal01.ogg" : "jumpscareAudio.mp3");
+    playSfx(v ? "crystal01.ogg" : "explode_11.ogg");
     scheduleOnce(schedule_selector(SpamChallenge::closeAfterFeedback), 1.25f);
 };
 

@@ -37,6 +37,12 @@
             "include/*.hpp"
         ]
     },
+    "dependencies": {
+        "cheeseworks.moddevbranding": {
+            "version": ">=2.0.0",
+            "required": false
+        }
+    },
     "settings": {
         "safe-mode": {
             "type": "bool",

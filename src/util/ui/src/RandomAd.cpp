@@ -29,7 +29,7 @@ bool RandomAd::init() {
     projThumb->setAnchorPoint({0.5, 0.5});
     projThumb->setPosition({m_mainLayer->getContentWidth() / 2.f, 110.f});
 
-    projThumb->setLoadCallback([this, projThumb](Result<> res) {
+    projThumb->setLoadCallback([projThumb](Result<> res) {
         if (res.isOk()) {
             log::info("Sprite loaded successfully");
 

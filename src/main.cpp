@@ -9,6 +9,8 @@
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/GJGameLevel.hpp>
 
+#include <cheeseworks.moddevbranding/include/OptionalAPI.hpp>
+
 using namespace horrible::prelude;
 
 inline static std::vector<Hook*> safeModeHooks;
@@ -43,7 +45,6 @@ inline static std::vector<Hook*> floatingBtnHooks;
 
 $on_game(Loaded) {
     (void)thisMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
-
     if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
 
     listenForSettingChanges<bool>(
@@ -95,6 +96,8 @@ $on_game(Loaded) {
         [](std::string value) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
         });
+
+    (void)branding::registerBrand(GEODE_MOD_ID, "https://github.com/DumbCaveSpider/HorribleIdeas/blob/main/logo.png?raw=true", branding::Type::URL);
 };
 
 // safe mode
