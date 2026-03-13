@@ -13,6 +13,8 @@
 #include "Geode/cocos/sprite_nodes/CCSprite.h"
 #include "Geode/loader/SettingV3.hpp"
 #include "Geode/ui/Layout.hpp"
+#include "Geode/ui/ScrollLayer.hpp"
+#include "Geode/ui/Scrollbar.hpp"
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
@@ -133,19 +135,13 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(categoryListBg);
 
-    auto layoutCategories = ColumnLayout::create()
-                                ->setGap(2.5f)
-                                ->setAxisReverse(true)  // Top to bottom
-                                ->setAxisAlignment(AxisAlignment::End)
-                                ->setAutoGrowAxis(categoryListBg->getScaledContentHeight() - 8.75f);
-
     // scroll layer
-    m_impl->categoryList = ScrollLayer::create({categoryListBg->getScaledContentWidth() - 8.75f, categoryListBg->getScaledContentHeight() - 8.75f});
+    m_impl->categoryList = ScrollLayer::create(categoryListBg->getScaledContentSize() - 7.5f);
     m_impl->categoryList->setID("categories-list");
     m_impl->categoryList->setAnchorPoint({0.5, 0.5});
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
     m_impl->categoryList->setPosition(categoryListBg->getPosition());
-    m_impl->categoryList->m_contentLayer->setLayout(layoutCategories);
+    m_impl->categoryList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout());
 
     auto cats = options::getAllCategories();  // mrrp meow
     std::vector<std::string> sortedCats(cats.begin(), cats.end());
@@ -177,32 +173,32 @@ bool OptionMenu::init() {
     // Add a background sprite to the popup
     auto optionListBg = NineSlice::create(themes::square);
     optionListBg->setAnchorPoint({0.5, 0.5});
-    optionListBg->setPosition({(mainLayerSize.width / 2.f) - 77.5f, (mainLayerSize.height / 2.f) - 32.5f});
-    optionListBg->setContentSize({(mainLayerSize.width / 1.5f) - 20.f, mainLayerSize.height - 85.f});
+    optionListBg->setPosition({(mainLayerSize.width / 2.f) - 82.5f, (mainLayerSize.height / 2.f) - 30.f});
+    optionListBg->setContentSize({(mainLayerSize.width / 1.5f) - 35.f, mainLayerSize.height - 82.5f});
     optionListBg->setOpacity(50);
 
     m_mainLayer->addChild(optionListBg);
 
-    auto layoutOptions = ColumnLayout::create()
-                             ->setGap(3.75f)
-                             ->setAxisReverse(true)  // Top to bottom
-                             ->setAxisAlignment(AxisAlignment::End)
-                             ->setAutoGrowAxis(optionListBg->getScaledContentHeight() - 10.f);
-
     // scroll layer
-    m_impl->optionList = ScrollLayer::create({optionListBg->getScaledContentWidth() - 10.f, optionListBg->getScaledContentHeight() - 10.f});
+    m_impl->optionList = ScrollLayer::create({optionListBg->getScaledContentWidth() - 8.75f, optionListBg->getScaledContentHeight() - 10.f});
     m_impl->optionList->setID("options-list");
     m_impl->optionList->setAnchorPoint({0.5, 0.5});
     m_impl->optionList->ignoreAnchorPointForPosition(false);
     m_impl->optionList->setPosition(optionListBg->getPosition());
-    m_impl->optionList->m_contentLayer->setLayout(layoutOptions);
+    m_impl->optionList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout(3.75f));
+
+    auto optionListScroll = Scrollbar::create(m_impl->optionList);
+    optionListScroll->setID("option-list-scrollbar");
+    optionListScroll->setPosition({optionListBg->getPositionX() + (optionListBg->getScaledContentWidth() / 1.875f), optionListBg->getPositionY()});
 
     m_mainLayer->addChild(m_impl->optionList, 9);
+    m_mainLayer->addChild(optionListScroll);
 
     // add search bar
-    m_impl->searchInput = TextInput::create(optionListBg->getScaledContentWidth(), "Search...", "bigFont.fnt");
+    m_impl->searchInput = TextInput::create(optionListBg->getScaledContentWidth() + 11.25f, "Search...", "bigFont.fnt");
     m_impl->searchInput->setID("search-input");
-    m_impl->searchInput->setPosition({optionListBg->getPositionX(), mainLayerSize.height - 52.5f});
+    m_impl->searchInput->setAnchorPoint({0, 0.5});
+    m_impl->searchInput->setPosition({10.f, mainLayerSize.height - 51.25f});
 
     m_impl->searchInput->setCallback([this](std::string_view str) {
         m_impl->searchText = str;

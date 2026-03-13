@@ -97,6 +97,7 @@ $on_game(Loaded) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
         });
 
+    // TODO: host custom branding image in mod dev branding server for this mod
     (void)branding::registerBrand(GEODE_MOD_ID, "https://github.com/DumbCaveSpider/HorribleIdeas/blob/main/logo.png?raw=true", branding::Type::URL);
 };
 
