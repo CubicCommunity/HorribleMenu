@@ -3,6 +3,7 @@
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
+#include "util/Blur.hpp"
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
@@ -23,13 +24,13 @@ class $modify(BlurPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-
+        
         auto colorLayer = CCLayerColor::create({0, 0, 0, 0});
         colorLayer->setID("blur-color-layer"_spr);
         colorLayer->setContentSize({getScaledContentWidth(), getScaledContentHeight()});
         colorLayer->setPosition({0, 0});
-
-        m_uiLayer->addChild(colorLayer, 98);
+        
+        m_uiLayer->addChild(colorLayer, 100);
 
         blur::addBlur(colorLayer);
     };
