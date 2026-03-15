@@ -3,8 +3,6 @@
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
-#include <BlurAPI.hpp>
-#include "Geode/cocos/layers_scenes_transitions_nodes/CCLayer.h"
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
@@ -14,11 +12,10 @@ inline static constexpr auto id = "blurry";
 inline static Option const o = {
     id,
     "Blurry Game",
-    "Makes the entire game blurry. I think you forgot your glasses.\n<cy>Required Blur API by the thesillydoggo mod installed.</c>\n<cl>Credit: ArcticWoof</c>",
+    "Makes the entire game blurry. I think you forgot your glasses.\n<cy>'Blur API' mod is required.</c>\n<cl>Credit: ArcticWoof</c>",
     category::obstructive,
     SillyTier::Medium,
 };
-HORRIBLE_REGISTER_OPTION(o);
 HORRIBLE_REGISTER_OPTION_DEPENDENCY(o, "thesillydoggo.blur-api");
 
 class $modify(BlurPlayLayer, PlayLayer) {
@@ -31,8 +28,9 @@ class $modify(BlurPlayLayer, PlayLayer) {
         colorLayer->setID("blur-color-layer"_spr);
         colorLayer->setContentSize({getScaledContentWidth(), getScaledContentHeight()});
         colorLayer->setPosition({0, 0});
-        m_uiLayer->addChild(colorLayer, 98);
-        BlurAPI::addBlur(colorLayer);
-    }
 
+        m_uiLayer->addChild(colorLayer, 98);
+
+        blur::addBlur(colorLayer);
+    };
 };
