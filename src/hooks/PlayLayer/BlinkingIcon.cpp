@@ -12,7 +12,7 @@ inline static constexpr auto id = "blinking_icon";
 inline static Option const o = {
     id,
     "Blinking Icon",
-    "Your icon will start to randomly blink.\n<cy>Credit: DragonixGD</c>",
+    "Your icon will start to randomly blink.\n<cl>Credit: DragonixGD</c>",
     category::obstructive,
     SillyTier::Low,
 };

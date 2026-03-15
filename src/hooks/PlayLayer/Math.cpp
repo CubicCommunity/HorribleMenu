@@ -12,7 +12,7 @@ inline static constexpr auto id = "math_quiz";
 inline static Option const o = {
     id,
     "Richard's Math Quiz!",
-    "When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cy>Credit: CyanBoi</c>",
+    "When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cl>Credit: CyanBoi</c>",
     category::obstructive,
     SillyTier::High,
 };
@@ -51,7 +51,7 @@ class $modify(MathPlayLayer, PlayLayer) {
                         log::debug("math {}", correct ? "succeeded" : "failed");
                         if (!correct) resetLevelFromStart();
                         nextQuiz();
-                        });
+                    });
 
 #ifdef GEODE_IS_WINDOWS
                     CCEGLView::sharedOpenGLView()->showCursor(true);
@@ -61,7 +61,7 @@ class $modify(MathPlayLayer, PlayLayer) {
             } else {
                 queueInMainThread([this]() {
                     nextQuiz();
-                    });
+                });
             };
         };
     };

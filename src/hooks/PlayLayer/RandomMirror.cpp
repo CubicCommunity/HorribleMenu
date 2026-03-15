@@ -12,7 +12,7 @@ inline static constexpr auto id = "random_mirror";
 inline static Option const o = {
     id,
     "Random Mirror Portal",
-    "Randomly activates a mirror portal while playing.\n<cy>Credit: TimeRed</c>",
+    "Randomly activates a mirror portal while playing.\n<cl>Credit: TimeRed</c>",
     category::randoms,
     SillyTier::Low,
 };

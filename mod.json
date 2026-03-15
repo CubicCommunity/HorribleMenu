@@ -37,6 +37,12 @@
             "include/*.hpp"
         ]
     },
+    "dependencies": {
+        "cheeseworks.moddevbranding": {
+            "version": ">=2.0.0",
+            "required": false
+        }
+    },
     "settings": {
         "safe-mode": {
             "type": "bool",
@@ -79,7 +85,7 @@
                 "Geode"
             ]
         },
-        "floating-button": {
+        "floating-btn": {
             "type": "bool",
             "name": "Floating Menu Button",
             "description": "Show a floating button on the main menu to quickly access the <cg>Horrible Options</c> menu.",
@@ -90,14 +96,14 @@
                 "ios": true
             }
         },
-        "floating-button-level": {
+        "floating-btn-level": {
             "type": "bool",
             "name": "Show Button in Level",
             "description": "Show the floating menu button while playing a level.",
             "default": false,
-            "enable-if": "floating-button"
+            "enable-if": "floating-btn"
         },
-        "floating-button-scale": {
+        "floating-btn-scale": {
             "type": "float",
             "name": "Floating Button Scale",
             "description": "Change the size of the floating button.",
@@ -113,9 +119,9 @@
                 "big-arrows": true,
                 "big-arrow-step": 0.5
             },
-            "enable-if": "floating-button"
+            "enable-if": "floating-btn"
         },
-        "floating-button-opacity": {
+        "floating-btn-opacity": {
             "type": "int",
             "name": "Floating Button Opacity",
             "description": "Change the opacity of the floating button.",
@@ -131,7 +137,7 @@
                 "big-arrows": true,
                 "big-arrow-step": 20
             },
-            "enable-if": "floating-button"
+            "enable-if": "floating-btn"
         },
         "chances": {
             "type": "title",

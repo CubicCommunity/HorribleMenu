@@ -2,6 +2,7 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
@@ -12,11 +13,29 @@ inline static constexpr auto id = "freeze";
 inline static Option const o = {
     id,
     "Random 90%+ FPS Drop",
-    "Your visual framerate starts randomly dropping during 90-99% in a level.\n<cy>Credit: Hexfire</c>",
+    "Your visual framerate starts randomly dropping during 90-99% in a level.\n<cl>Credit: Hexfire</c>",
     category::randoms,
     SillyTier::Medium,
 };
 HORRIBLE_REGISTER_OPTION(o);
+
+class $modify(FreezeMenuLayer, MenuLayer) {
+    HORRIBLE_DELEGATE_HOOKS(id);
+
+    bool init() {
+        if (!MenuLayer::init()) return false;
+
+        if (auto gm = GameManager::get()) {
+            // get and store user current fps
+            float currentFPS = gm->m_customFPSTarget;
+            (void)thisMod->setSavedValue<float>("fps", currentFPS);
+
+            log::debug("Stored current FPS: {}", currentFPS);
+        };
+
+        return true;
+    };
+};
 
 class $modify(FreezePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
@@ -45,13 +64,13 @@ class $modify(FreezePlayLayer, PlayLayer) {
         // default to user old fps
         auto gm = GameManager::get();
 
-        float oldFPS = horribleMod->getSavedValue<float>("fps");
+        float oldFPS = thisMod->getSavedValue<float>("fps");
 
         gm->setGameVariable("0116", true);
 
         // Use seconds per frame, not raw FPS
-        float interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f); // minimum 10 FPS
-        if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
+        float interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f);  // minimum 10 FPS
+        if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;      // fallback to 60 FPS if invalid
 
         CCDirector::sharedDirector()->setAnimationInterval(interval);
         log::debug("reset fps to {} (interval {})", oldFPS, interval);
@@ -63,8 +82,8 @@ class $modify(FreezePlayLayer, PlayLayer) {
         gm->setGameVariable("0116", true);
         gm->setGameVariable("0116", true);
 
-        float interval = 1.f / value; // cap fps to 60
-        if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
+        float interval = 1.f / value;                                  // cap fps to 60
+        if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;  // fallback to 60 FPS if invalid
 
         CCDirector::sharedDirector()->setAnimationInterval(interval);
         log::debug("cap fps to {} (interval {})", value, interval);
@@ -83,10 +102,10 @@ class $modify(FreezePlayLayer, PlayLayer) {
             gm->setGameVariable("0116", true);
 
             // Randomize FPS between 1 and 45
-            int rndFps = randng::get(45, 1); // 1 to 45 inclusive
+            int rndFps = randng::get(45, 1);  // 1 to 45 inclusive
 
             auto interval = 1.f / static_cast<float>(rndFps);
-            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
+            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;  // fallback to 60 FPS if invalid
 
             CCDirector::sharedDirector()->setAnimationInterval(interval);
 
@@ -97,11 +116,11 @@ class $modify(FreezePlayLayer, PlayLayer) {
 
             gm->setGameVariable("0116", true);
 
-            auto oldFPS = horribleMod->getSavedValue<float>("fps");
+            auto oldFPS = thisMod->getSavedValue<float>("fps");
 
             // Use seconds per frame, not raw FPS
-            auto interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f); // minimum 10 FPS
-            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f; // fallback to 60 FPS if invalid
+            auto interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f);  // minimum 10 FPS
+            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;     // fallback to 60 FPS if invalid
 
             CCDirector::sharedDirector()->setAnimationInterval(interval);
 

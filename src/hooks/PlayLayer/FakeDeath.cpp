@@ -12,7 +12,7 @@ inline static constexpr auto id = "death";
 inline static Option const o = {
     id,
     "Fake Death",
-    "The player's death effect will show without dying.\n<cy>Credit: DragonixGD</c>",
+    "The player's death effect will show without dying.\n<cl>Credit: DragonixGD</c>",
     category::obstructive,
     SillyTier::Medium,
 };
@@ -26,7 +26,7 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
         GameObject* m_destroyingObject;
     };
 
-    void destroyPlayer(PlayerObject * player, GameObject * game) {
+    void destroyPlayer(PlayerObject* player, GameObject* game) {
         auto f = m_fields.self();
 
         // Show explosion visual effect but do not kill the player

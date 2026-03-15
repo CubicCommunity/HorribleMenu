@@ -12,7 +12,7 @@ inline static constexpr auto id = "motivation";
 inline static Option const o = {
     id,
     "Motivational Quotes",
-    "You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cy>Credit: Cheeseworks</c>",
+    "You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cl>Credit: Cheeseworks</c>",
     category::obstructive,
     SillyTier::Low,
 };
@@ -110,7 +110,7 @@ static constexpr auto s_msgs = std::to_array<const char*>({
     "Put on some chill Lo-fi beats!",
     "BORING!",
     "Try Medium graphics... hehe",
-                                                          });
+});
 
 class $modify(MotivationPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
@@ -129,17 +129,16 @@ class $modify(MotivationPlayLayer, PlayLayer) {
     void showMessage(float) {
         if (!m_hasCompletedLevel) {
             auto label = CCLabelBMFont::create(s_msgs[randng::get(s_msgs.size())], "bigFont.fnt", getScaledContentWidth() - 12.5f);
-            label->setAnchorPoint({ 0.5, 0 });
+            label->setAnchorPoint({0.5, 0});
             label->setAlignment(kCCTextAlignmentCenter);
-            label->setPosition({ getScaledContentWidth() / 2.f, -label->getScaledContentHeight() });
+            label->setPosition({getScaledContentWidth() / 2.f, -label->getScaledContentHeight()});
 
             auto action = CCSequence::create(
-                CCEaseSineOut::create(CCMoveTo::create(0.375f, { label->getPositionX(), 12.5f })),
+                CCEaseSineOut::create(CCMoveTo::create(0.375f, {label->getPositionX(), 12.5f})),
                 CCDelayTime::create(5.f),
-                CCEaseSineIn::create(CCMoveTo::create(0.5f, { label->getPositionX(), -label->getScaledContentHeight() })),
+                CCEaseSineIn::create(CCMoveTo::create(0.5f, {label->getPositionX(), -label->getScaledContentHeight()})),
                 CCCallFuncN::create(this, callfuncN_selector(MotivationPlayLayer::scheduleNextMessage)),
-                nullptr
-            );
+                nullptr);
 
             m_uiLayer->addChild(label, 9);
 
@@ -149,7 +148,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
         };
     };
 
-    void scheduleNextMessage(CCNode * sender) {
+    void scheduleNextMessage(CCNode* sender) {
         if (sender) sender->removeMeAndCleanup();
 
         auto delay = randng::get(15.f, 5.f);

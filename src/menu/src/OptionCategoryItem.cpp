@@ -1,17 +1,16 @@
 #include "../OptionCategoryItem.hpp"
 
-#include <Utils.hpp>
-
 #include <Geode/Geode.hpp>
+#include <Utils.hpp>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
 class OptionCategoryItem::Impl final {
 public:
-    std::string category = ""; // The category name
+    std::string category = "";  // The category name
 
-    CCMenuItemToggler* toggler = nullptr; // The toggler for the option
+    CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
 };
 
 OptionCategoryItem::OptionCategoryItem() : m_impl(std::make_unique<Impl>()) {};
@@ -25,11 +24,11 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     // lol
     setID(str::join(str::split(str::filter(str::toLower(m_impl->category), "abcdefghijklmnopqrstuvwxyz0123456789-_./ "), " "), "-"));
     setContentSize(size);
-    setAnchorPoint({ 0.5, 1 });
+    setAnchorPoint({0.5, 1});
 
     auto bg = NineSlice::create(themes::square);
     bg->setID("background");
-    bg->setAnchorPoint({ 0, 0 });
+    bg->setAnchorPoint({0, 0});
     bg->setContentSize(getScaledContentSize());
     bg->setScaleMultiplier(0.2f);
     bg->setOpacity(40);
@@ -46,11 +45,10 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
         togglerOff,
         togglerOn,
         this,
-        menu_selector(OptionCategoryItem::onToggle)
-    );
+        menu_selector(OptionCategoryItem::onToggle));
     m_impl->toggler->setID("toggler");
-    m_impl->toggler->setAnchorPoint({ 0.5f, 0.5f });
-    m_impl->toggler->setPosition({ 10.f, getScaledContentHeight() / 2.f });
+    m_impl->toggler->setAnchorPoint({0.5f, 0.5f});
+    m_impl->toggler->setPosition({10.f, getScaledContentHeight() / 2.f});
     m_impl->toggler->setScale(0.875f);
 
     addChild(m_impl->toggler);
@@ -60,12 +58,11 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
         m_impl->category.c_str(),
         "goldFont.fnt",
         getScaledContentWidth() - 35.f,
-        kCCTextAlignmentLeft
-    );
+        kCCTextAlignmentLeft);
     nameLabel->setID("name-label");
     nameLabel->setLineBreakWithoutSpace(true);
-    nameLabel->setAnchorPoint({ 0.f, 0.5f });
-    nameLabel->setPosition({ 20.f, getScaledContentHeight() / 2.f });
+    nameLabel->setAnchorPoint({0.f, 0.5f});
+    nameLabel->setPosition({20.f, getScaledContentHeight() / 2.f});
     nameLabel->setScale(0.375f);
 
     addChild(nameLabel);
@@ -73,9 +70,10 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     addEventListener(
         CategoryEvent(),
         [this](std::string_view category, bool enabled) {
-            if (m_impl->toggler) if (category != m_impl->category) m_impl->toggler->toggle(false);
-        }
-    );
+            if (m_impl->toggler) {
+                if (category != m_impl->category) m_impl->toggler->toggle(false);
+            };
+        });
 
     return true;
 };

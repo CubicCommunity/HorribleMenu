@@ -21,7 +21,7 @@ bool options::isPinned(std::string_view id) {
 };
 
 int options::getChance(std::string_view id) {
-    return horribleMod->getSettingValue<int>(fmt::format("{}-chance", id));
+    return thisMod->getSettingValue<int>(fmt::format("{}-chance", id));
 };
 
 HorribleOptionSave options::get(std::string_view id) {

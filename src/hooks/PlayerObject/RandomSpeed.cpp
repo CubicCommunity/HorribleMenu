@@ -12,7 +12,7 @@ inline static constexpr auto id = "random_speed";
 inline static Option const o = {
     id,
     "Random Speed Change",
-    "Randomly changes your speed while playing a level.\n<cy>Credit: imdissapearinghelp</c>",
+    "Randomly changes your speed while playing a level.\n<cl>Credit: imdissapearinghelp</c>",
     category::randoms,
     SillyTier::Medium,
 };

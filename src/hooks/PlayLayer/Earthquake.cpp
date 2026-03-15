@@ -12,7 +12,7 @@ inline static constexpr auto id = "earthquake";
 inline static Option const o = {
     id,
     "Earthquake",
-    "Constantly shakes the camera while playing a level.\n<cy>Credit: ArcticWoof</c>",
+    "Constantly shakes the camera while playing a level.\n<cl>Credit: ArcticWoof</c>",
     category::obstructive,
     SillyTier::Medium,
 };

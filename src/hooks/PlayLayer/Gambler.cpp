@@ -12,7 +12,7 @@ inline static constexpr auto id = "gambler";
 inline static Option const o = {
     id,
     "Gambler",
-    "While playing a level and reach at the 95%, there's a 50/50 chance you either complete a level or blast into the space backwards.\n<cy>Credit: Timered</c>",
+    "While playing a level and reach at the 95%, there's a 50/50 chance you either complete a level or blast into the space backwards.\n<cl>Credit: Timered</c>",
     category::misc,
     SillyTier::Medium,
 };
@@ -26,7 +26,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
         bool tricked = false;
     };
 
-    bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
+    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 
         auto f = m_fields.self();
@@ -67,7 +67,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
 
                 // reverse the player
                 m_player1->reversePlayer(nullptr);
-                m_player1->m_gravity = 0.01f; // reduce gravity to simulate a bounce
+                m_player1->m_gravity = 0.01f;  // reduce gravity to simulate a bounce
 
                 // force player to jump
                 GJBaseGameLayer::get()->handleButton(true, 1, true);

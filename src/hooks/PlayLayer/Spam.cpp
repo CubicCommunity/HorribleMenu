@@ -12,7 +12,7 @@ inline static constexpr auto id = "spam";
 inline static Option const o = {
     id,
     "Spam Challenge!",
-    "Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cy>Credit: Cheeseworks</c>",
+    "Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cl>Credit: Cheeseworks</c>",
     category::obstructive,
     SillyTier::High,
 };
@@ -53,8 +53,8 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
                         queueInMainThread([f]() {
                             if (f) f->m_currentSpam = nullptr;
-                            });
                         });
+                    });
 
 #ifdef GEODE_IS_WINDOWS
                     CCEGLView::sharedOpenGLView()->showCursor(true);
@@ -65,12 +65,12 @@ class $modify(SpamPlayLayer, PlayLayer) {
             } else {
                 queueInMainThread([this]() {
                     nextSpam();
-                    });
+                });
             };
         };
     };
 
-    void destroyPlayer(PlayerObject * player, GameObject * object) {
+    void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
 
         auto f = m_fields.self();

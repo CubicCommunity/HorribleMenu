@@ -20,8 +20,8 @@
 
 // Additional utility methods for Horrible Ideas
 namespace horrible {
-    // Pointer reference to this Geode mod
-    inline Mod* horribleMod = geode::Mod::get();
+    // Pointer to this Geode mod
+    inline Mod* thisMod = geode::Mod::get();
 
     /**
      * Convert a chance setting number to a cooldown percentage decimal
@@ -44,7 +44,13 @@ namespace horrible {
         if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
     };
 
-    namespace str = geode::utils::string; // Shortcut for geode::utils::string
+    namespace str = geode::utils::string;  // Shortcut for geode::utils::string
+
+    // For convenience
+    namespace setting {
+        inline constexpr auto SafeMode = "safe-mode";
+        inline constexpr auto FloatingBtn = "floating-btn";
+    };
 
     // Default option categories
     namespace category {

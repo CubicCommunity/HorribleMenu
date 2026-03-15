@@ -16,7 +16,7 @@ inline static constexpr auto id = "parry";
 inline static Option const o = {
     id,
     "Parry Obstacles",
-    "Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cy>Credit: Wuffin</c>",
+    "Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>Credit: Wuffin</c>",
     category::misc,
     SillyTier::Low,
     true,

@@ -39,7 +39,7 @@ bool SpamChallenge::init() {
     auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", "bigFont.fnt", getScaledContentWidth() - 1.25f);
     label->setID("label");
     label->setAlignment(kCCTextAlignmentCenter);
-    label->setPosition({ winSize.width / 2.f, winSize.height - 50.f });
+    label->setPosition({winSize.width / 2.f, winSize.height - 50.f});
     label->setScale(0.875f);
 
     addChild(label, 1);
@@ -47,8 +47,8 @@ bool SpamChallenge::init() {
     auto descLabel = CCLabelBMFont::create("Use your mouse button or tap the screen to increase the count.", "chatFont.fnt", getScaledContentWidth() - 1.25f);
     descLabel->setID("description-label");
     descLabel->setAlignment(kCCTextAlignmentCenter);
-    descLabel->setPosition({ winSize.width / 2.f, 25.f });
-    descLabel->setAnchorPoint({ 0.5, 0 });
+    descLabel->setPosition({winSize.width / 2.f, 25.f});
+    descLabel->setAnchorPoint({0.5, 0});
     descLabel->setColor(colors::yellow);
 
     addChild(descLabel, 1);
@@ -57,7 +57,7 @@ bool SpamChallenge::init() {
     m_impl->counter->setID("counter");
     m_impl->counter->setScale(2.5f);
     m_impl->counter->setAlignment(kCCTextAlignmentCenter);
-    m_impl->counter->setPosition({ winSize.width / 2.f, (winSize.height / 2.f) - 6.25f });
+    m_impl->counter->setPosition({winSize.width / 2.f, (winSize.height / 2.f) - 6.25f});
 
     auto moveUp = CCEaseSineInOut::create(CCMoveBy::create(1.25f, ccp(0, 12.5f)));
     auto moveDown = CCEaseSineInOut::create(CCMoveBy::create(1.25f, ccp(0, -12.5f)));
@@ -71,8 +71,8 @@ bool SpamChallenge::init() {
     m_impl->timer->setID("timer");
     m_impl->timer->setFillColor(colors::yellow);
     m_impl->timer->setStyle(ProgressBarStyle::Solid);
-    m_impl->timer->setAnchorPoint({ 0.5, 0.5 });
-    m_impl->timer->setPosition({ winSize.width / 2.f, winSize.height - 20.f });
+    m_impl->timer->setAnchorPoint({0.5, 0.5});
+    m_impl->timer->setPosition({winSize.width / 2.f, winSize.height - 20.f});
 
     m_impl->timer->updateProgress(100.f);
 
@@ -122,11 +122,10 @@ void SpamChallenge::setSuccess(bool v) {
     addChild(symbol, 9);
     symbol->runAction(CCSequence::createWithTwoActions(
         CCEaseSineOut::create(CCScaleTo::create(0.0875f, 2.75f)),
-        CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))
-    ));
+        CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
     // @geode-ignore(unknown-resource)
-    playSfx(v ? "crystal01.ogg" : "jumpscareAudio.mp3");
+    playSfx(v ? "crystal01.ogg" : "explode_11.ogg");
     scheduleOnce(schedule_selector(SpamChallenge::closeAfterFeedback), 1.25f);
 };
 

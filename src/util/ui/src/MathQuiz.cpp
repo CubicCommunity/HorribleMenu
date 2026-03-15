@@ -17,7 +17,7 @@ public:
     MathOperation operation = MathOperation::Addition;
 
     int correctAnswer = 0;
-    std::vector<int> answers; // 4 answer options
+    std::vector<int> answers;  // 4 answer options
 
     ProgressBar* timer = nullptr;
     CCMenu* answerMenu = nullptr;
@@ -80,45 +80,45 @@ bool MathQuiz::init() {
         };
 
         // draw the polygon in local coords with drawNode placed at center
-        m_impl->drawNode->setPosition({ centerX, centerY });
+        m_impl->drawNode->setPosition({centerX, centerY});
         m_impl->drawNode->clear();
 
-        ccColor4F const fillColor = { 0.85f, 0.65f, 0.15f, 1.f };
-        ccColor4F const borderColor = { 0.05f, 0.05f, 0.05f, 1.f };
+        ccColor4F const fillColor = {0.85f, 0.65f, 0.15f, 1.f};
+        ccColor4F const borderColor = {0.05f, 0.05f, 0.05f, 1.f};
 
         if (m_impl->drawNode->drawPolygon(polyPoints.data(), static_cast<unsigned int>(polyPoints.size()), fillColor, 2.f, borderColor)) addChild(m_impl->drawNode, 99);
     } else {
         std::string operation;
         switch (m_impl->operation) {
-        default: [[fallthrough]];
+            default: [[fallthrough]];
 
-        case MathOperation::Addition:
-            operation = "+";
-            break;
+            case MathOperation::Addition:
+                operation = "+";
+                break;
 
-        case MathOperation::Subtraction:
-            operation = "-";
-            break;
+            case MathOperation::Subtraction:
+                operation = "-";
+                break;
 
-        case MathOperation::Multiplication:
-            operation = "x";
-            break;
+            case MathOperation::Multiplication:
+                operation = "x";
+                break;
         };
 
         switch (m_impl->operation) {
-        default: [[fallthrough]];
+            default: [[fallthrough]];
 
-        case MathOperation::Addition:
-            m_impl->correctAnswer = m_impl->numFirst + m_impl->numSecond;
-            break;
+            case MathOperation::Addition:
+                m_impl->correctAnswer = m_impl->numFirst + m_impl->numSecond;
+                break;
 
-        case MathOperation::Subtraction:
-            m_impl->correctAnswer = m_impl->numFirst - m_impl->numSecond;
-            break;
+            case MathOperation::Subtraction:
+                m_impl->correctAnswer = m_impl->numFirst - m_impl->numSecond;
+                break;
 
-        case MathOperation::Multiplication:
-            m_impl->correctAnswer = m_impl->numFirst * m_impl->numSecond;
-            break;
+            case MathOperation::Multiplication:
+                m_impl->correctAnswer = m_impl->numFirst * m_impl->numSecond;
+                break;
         };
 
         problemText = fmt::format("{} {} {}", m_impl->numFirst, operation, m_impl->numSecond);
@@ -126,7 +126,7 @@ bool MathQuiz::init() {
         auto equalsLabel = CCLabelBMFont::create("= ?", "goldFont.fnt", getScaledContentWidth() - 1.25f);
         equalsLabel->setID("equals-label");
         equalsLabel->setAlignment(kCCTextAlignmentCenter);
-        equalsLabel->setPosition({ winSize.width / 2.f, winSize.height - 100.f });
+        equalsLabel->setPosition({winSize.width / 2.f, winSize.height - 100.f});
 
         addChild(equalsLabel);
     };
@@ -135,7 +135,7 @@ bool MathQuiz::init() {
     auto problemLabel = CCLabelBMFont::create(problemText.c_str(), "bigFont.fnt", getScaledContentWidth() - 1.25f);
     problemLabel->setID("problem-label");
     problemLabel->setAlignment(kCCTextAlignmentCenter);
-    problemLabel->setPosition({ winSize.width / 2.f, winSize.height - 60.f });
+    problemLabel->setPosition({winSize.width / 2.f, winSize.height - 60.f});
     problemLabel->setScale(m_impl->operation == MathOperation::Geometry ? 0.5f : 0.925f);
 
     addChild(problemLabel, 1);
@@ -145,8 +145,8 @@ bool MathQuiz::init() {
     m_impl->timer->setID("timer");
     m_impl->timer->setFillColor(colors::yellow);
     m_impl->timer->setStyle(ProgressBarStyle::Solid);
-    m_impl->timer->setAnchorPoint({ 0.5, 0.5 });
-    m_impl->timer->setPosition({ winSize.width / 2.f, winSize.height - 20.f });
+    m_impl->timer->setAnchorPoint({0.5, 0.5});
+    m_impl->timer->setPosition({winSize.width / 2.f, winSize.height - 20.f});
 
     m_impl->timer->updateProgress(100.f);
 
@@ -177,9 +177,9 @@ bool MathQuiz::init() {
     if (auto richard = Richard::create()) {
         m_impl->richard = richard;
         m_impl->richard->setID("richard");
-        m_impl->richard->setAnchorPoint({ 1, 0.5 });
+        m_impl->richard->setAnchorPoint({1, 0.5});
         m_impl->richard->setScale(0.625f);
-        m_impl->richard->setPosition({ winSize.width - 36.f, winSize.height / 2.f });
+        m_impl->richard->setPosition({winSize.width - 36.f, winSize.height / 2.f});
 
         addChild(m_impl->richard, 99);
 
@@ -192,13 +192,13 @@ bool MathQuiz::init() {
     };
 
     auto answerMenuLayout = RowLayout::create()
-        ->setGap(2.5f)
-        ->setGrowCrossAxis(true);
+                                ->setGap(2.5f)
+                                ->setGrowCrossAxis(true);
 
     m_impl->answerMenu = CCMenu::create();
     m_impl->answerMenu->setID("answer-menu");
-    m_impl->answerMenu->setContentSize({ 220.f, 75.f });
-    m_impl->answerMenu->setPosition({ winSize.width / 2.f, winSize.height / 2.f - 20.f });
+    m_impl->answerMenu->setContentSize({220.f, 75.f});
+    m_impl->answerMenu->setPosition({winSize.width / 2.f, winSize.height / 2.f - 20.f});
     m_impl->answerMenu->setLayout(answerMenuLayout);
 
     for (int i = 0; i < 4; i++) {
@@ -209,14 +209,12 @@ bool MathQuiz::init() {
             "bigFont.fnt",
             "GJ_button_01.png",
             0,
-            0.825f
-        );
+            0.825f);
 
         auto answerBtn = CCMenuItemSpriteExtra::create(
             btnSprite,
             this,
-            menu_selector(MathQuiz::onAnswerClicked)
-        );
+            menu_selector(MathQuiz::onAnswerClicked));
         answerBtn->setID("submit-answer-btn");
         answerBtn->setTag(m_impl->answers[i]);
 
@@ -241,7 +239,7 @@ void MathQuiz::setCallback(Function<void(bool)> cb) {
 void MathQuiz::setCorrect(bool v) {
     m_impl->correct = v;
     // @geode-ignore(unknown-resource)
-    playSfx(v ? "crystal01.ogg" : "jumpscareAudio.mp3");
+    playSfx(v ? "crystal01.ogg" : "explode_11.ogg");
 };
 
 void MathQuiz::onAnswerClicked(CCObject* sender) {
@@ -259,7 +257,7 @@ void MathQuiz::onAnswerClicked(CCObject* sender) {
         auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", "goldFont.fnt");
         feedbackLabel->setID("feedback-label");
         feedbackLabel->setScale(0.125f);
-        feedbackLabel->setAnchorPoint({ 0.5, 0.5 });
+        feedbackLabel->setAnchorPoint({0.5, 0.5});
         feedbackLabel->setAlignment(kCCTextAlignmentCenter);
         feedbackLabel->setPosition(winSize / 2.f);
         feedbackLabel->setColor(correct ? colors::green : colors::red);
@@ -272,8 +270,7 @@ void MathQuiz::onAnswerClicked(CCObject* sender) {
             CCEaseSineOut::create(CCScaleTo::create(0.0875f, 1.f)),
             CCDelayTime::create(0.75f),
             CCCallFuncN::create(this, callfuncN_selector(MathQuiz::closeAfterFeedback)),
-            nullptr
-        ));
+            nullptr));
 
         setKeypadEnabled(false);
         setCorrect(correct);
@@ -281,7 +278,8 @@ void MathQuiz::onAnswerClicked(CCObject* sender) {
 };
 
 bool MathQuiz::hasAnswer(int answer) const noexcept {
-    for (auto const& a : m_impl->answers) if (a == answer) return true;
+    for (auto const& a : m_impl->answers)
+        if (a == answer) return true;
     return false;
 };
 
@@ -325,7 +323,7 @@ void MathQuiz::update(float dt) {
 
         auto feedbackLabel = CCLabelBMFont::create("Time's Up!", "goldFont.fnt");
         feedbackLabel->setID("feedback-label");
-        feedbackLabel->setAnchorPoint({ 0.5, 0.5 });
+        feedbackLabel->setAnchorPoint({0.5, 0.5});
         feedbackLabel->setAlignment(kCCTextAlignmentCenter);
         feedbackLabel->setPosition(winSize / 2.f);
         feedbackLabel->setScale(0.1f);
@@ -338,8 +336,7 @@ void MathQuiz::update(float dt) {
             CCScaleTo::create(0.125f, 1.f),
             CCDelayTime::create(0.75f),
             CCCallFuncN::create(this, callfuncN_selector(MathQuiz::closeAfterFeedback)),
-            nullptr
-        );
+            nullptr);
 
         feedbackLabel->runAction(seq);
         unscheduleUpdate();
@@ -362,7 +359,7 @@ bool Richard::init() {
 
     auto sprite = CCSprite::createWithSpriteFrameName("diffIcon_02_btn_001.png");
     sprite->setID("richard");
-    sprite->setAnchorPoint({ 0.5f, 0.5f });
+    sprite->setAnchorPoint({0.5f, 0.5f});
     sprite->setScale(5.f);
 
     setContentSize(sprite->getScaledContentSize());

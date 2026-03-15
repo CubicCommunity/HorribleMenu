@@ -12,7 +12,7 @@ inline static constexpr auto id = "sticky";
 inline static Option const o = {
     id,
     "Sticky Grounds",
-    "When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cy>Credit: Cheeseworks</c>",
+    "When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cl>Credit: Cheeseworks</c>",
     category::misc,
     SillyTier::Medium,
 };
@@ -31,7 +31,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         bool m_onGround = true;
     };
 
-    bool init(int player, int ship, GJBaseGameLayer * gameLayer, CCLayer * layer, bool playLayer) {
+    bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
         auto f = m_fields.self();
@@ -41,8 +41,8 @@ class $modify(StickyPlayerObject, PlayerObject) {
             f->m_clickLabel->setID("sticky-alert"_spr);
             f->m_clickLabel->setScale(0.625f);
             f->m_clickLabel->setAlignment(kCCTextAlignmentCenter);
-            f->m_clickLabel->setAnchorPoint({ 0.5, 0 });
-            f->m_clickLabel->setPosition({ pl->getScaledContentWidth() / 2.f, 25.f });
+            f->m_clickLabel->setAnchorPoint({0.5, 0});
+            f->m_clickLabel->setPosition({pl->getScaledContentWidth() / 2.f, 25.f});
             f->m_clickLabel->setVisible(false);
 
             auto seq = CCSequence::create(
@@ -50,8 +50,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
                 CCDelayTime::create(0.125f),
                 CCCallFunc::create(this, callfunc_selector(StickyPlayerObject::stickyCol2)),
                 CCDelayTime::create(0.125f),
-                nullptr
-            );
+                nullptr);
 
             pl->m_uiLayer->addChild(f->m_clickLabel, 9);
             f->m_clickLabel->runAction(CCRepeatForever::create(seq));
@@ -79,7 +78,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         return m_isOnGround && m_isOnGround2 && m_isOnGround3 & m_isOnGround4;
     };
 
-    void hitGround(GameObject * object, bool notFlipped) {
+    void hitGround(GameObject* object, bool notFlipped) {
         auto f = m_fields.self();
 
         auto wasOnGround = f->m_onGround;

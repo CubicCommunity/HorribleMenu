@@ -12,7 +12,7 @@ inline static constexpr auto id = "health";
 inline static Option const o = {
     id,
     "Player Health",
-    "Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cy>Credit: Cheeseworks</c>",
+    "Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>Credit: Cheeseworks</c>",
     category::playerlife,
     SillyTier::Medium,
 };
@@ -39,8 +39,8 @@ class $modify(HealthPlayLayer, PlayLayer) {
             f->m_healthBar = ProgressBar::create();
             f->m_healthBar->setID("health-bar"_spr);
             f->m_healthBar->setFillColor(colors::red);
-            f->m_healthBar->setAnchorPoint({ 0.5f, 0.5f });
-            f->m_healthBar->setPosition({ 10.f, getScaledContentHeight() / 2.f });
+            f->m_healthBar->setAnchorPoint({0.5f, 0.5f});
+            f->m_healthBar->setPosition({10.f, getScaledContentHeight() / 2.f});
             f->m_healthBar->setRotation(-90.f);
 
             m_uiLayer->addChild(f->m_healthBar, 99);
@@ -52,8 +52,8 @@ class $modify(HealthPlayLayer, PlayLayer) {
         if (!f->m_healthLabel) {
             f->m_healthLabel = CCLabelBMFont::create(hp.c_str(), "bigFont.fnt");
             f->m_healthLabel->setColor(colors::red);
-            f->m_healthLabel->setAnchorPoint({ 0.f, 1.f });
-            f->m_healthLabel->setPosition({ 2.f, (getScaledContentHeight() / 2.f) - (f->m_healthBar->getScaledContentWidth() / 2.f) - 1.25f });
+            f->m_healthLabel->setAnchorPoint({0.f, 1.f});
+            f->m_healthLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->m_healthBar->getScaledContentWidth() / 2.f) - 1.25f});
             f->m_healthLabel->setScale(0.25f);
 
             m_uiLayer->addChild(f->m_healthLabel, 100);
@@ -80,7 +80,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
         PlayLayer::resetLevel();
     };
 
-    void destroyPlayer(PlayerObject * player, GameObject * game) {
+    void destroyPlayer(PlayerObject* player, GameObject* game) {
         auto f = m_fields.self();
 
         // ignore the anti-cheat spike lmao

@@ -14,8 +14,7 @@ namespace horrible {
              */
             template <
                 typename T = int,
-                typename = std::enable_if_t<std::is_arithmetic_v<T>>
-            >
+                typename = std::enable_if_t<std::is_arithmetic_v<T>>>
             inline T get(T max, T min = static_cast<T>(0)) {
                 return geode::utils::random::generate<T>(min, max + static_cast<T>(1));
             };
@@ -26,8 +25,7 @@ namespace horrible {
              */
             template <
                 typename T = int,
-                typename = std::enable_if_t<std::is_integral_v<T>>
-            >
+                typename = std::enable_if_t<std::is_integral_v<T>>>
             inline T tiny() {
                 return get<T>(static_cast<T>(3000), static_cast<T>(0));
             };
@@ -35,8 +33,7 @@ namespace horrible {
             // Get any number between 0 and 100
             template <
                 typename T = int,
-                typename = std::enable_if_t<std::is_integral_v<T>>
-            >
+                typename = std::enable_if_t<std::is_integral_v<T>>>
             inline T fast() {
                 return get<T>(static_cast<T>(100), static_cast<T>(0));
             };
@@ -44,8 +41,7 @@ namespace horrible {
             // Get any percent decimal between 0 and 1
             template <
                 typename F = float,
-                typename = std::enable_if_t<std::is_floating_point_v<F>>
-            >
+                typename = std::enable_if_t<std::is_floating_point_v<F>>>
             inline F pc() {
                 return static_cast<F>(fast<int>()) / static_cast<F>(100);
             };

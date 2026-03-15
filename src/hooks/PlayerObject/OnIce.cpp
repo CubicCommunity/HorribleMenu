@@ -12,7 +12,7 @@ inline static constexpr auto id = "ice_level";
 inline static Option const o = {
     id,
     "Ice Level",
-    "Makes every surface icy. Slip n' slide!\n<cy>Credit: TimeRed</c>",
+    "Makes every surface icy. Slip n' slide!\n<cl>Credit: TimeRed</c>",
     category::misc,
     SillyTier::Medium,
 };

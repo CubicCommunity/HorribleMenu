@@ -12,7 +12,7 @@ inline static constexpr auto id = "double_jump";
 inline static Option const o = {
     id,
     "Double-Jump",
-    "Allows your character to double-jump in a level.\n<cy>Credit: Cheeseworks</c>",
+    "Allows your character to double-jump in a level.\n<cl>Credit: Cheeseworks</c>",
     category::misc,
     SillyTier::Low,
 };
@@ -25,7 +25,7 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
         int m_jumps = 0;
     };
 
-    bool init(int player, int ship, GJBaseGameLayer * gameLayer, CCLayer * layer, bool playLayer) {
+    bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
         auto f = m_fields.self();

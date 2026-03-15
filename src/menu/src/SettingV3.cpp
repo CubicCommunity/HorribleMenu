@@ -54,21 +54,19 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     auto buttonSprite = ButtonSprite::create(
         "Horrible Options Menu",
         "bigFont.fnt",
-        themes::getButtonSquareSprite(horribleMod->getSettingValue<std::string>("theme")),
-        0.875f
-    );
+        themes::getButtonSquareSprite(thisMod->getSettingValue<std::string>("theme")),
+        0.875f);
     buttonSprite->setScale(0.5f);
 
     m_impl->button = CCMenuItemExt::createSpriteExtra(
         buttonSprite,
-        [](auto) { menu::open(); }
-    );
+        [](auto) { menu::open(); });
     m_impl->button->setID("horrible-options-btn");
 
     if (auto menu = getButtonMenu()) {
-        menu->setAnchorPoint({ 0.5, 0.5 });
+        menu->setAnchorPoint({0.5, 0.5});
         menu->setPosition(getScaledContentSize() / 2.f);
-        menu->setContentSize({ getScaledContentWidth(), 0.f });
+        menu->setContentSize({getScaledContentWidth(), 0.f});
 
         menu->addChildAtPosition(m_impl->button, Anchor::Center);
         menu->updateLayout();
@@ -77,7 +75,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
     };
 
     addEventListener(
-        SettingChangedEvent(horribleMod, "theme"),
+        SettingChangedEvent(thisMod, "theme"),
         [this](std::shared_ptr<SettingV3> setting) {
             auto strSetting = std::static_pointer_cast<StringSettingV3>(setting);
 
@@ -86,8 +84,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
                     "Horrible Options Menu",
                     "bigFont.fnt",
                     themes::getButtonSquareSprite(strSetting->getValue()),
-                    0.875f
-                );
+                    0.875f);
                 buttonSprite->setScale(0.5f);
 
                 m_impl->button->setNormalImage(buttonSprite);
@@ -95,8 +92,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
             } else {
                 log::error("Setting button not found");
             };
-        }
-    );
+        });
 
     updateState(nullptr);
 
@@ -130,7 +126,5 @@ bool HorribleSettingNodeV3::hasNonDefaultValue() const noexcept {
 };
 
 std::shared_ptr<HorribleSettingV3> HorribleSettingNodeV3::getSetting() const noexcept {
-    return std::static_pointer_cast<HorribleSettingV3>(
-        SettingNodeV3::getSetting()
-    );
+    return std::static_pointer_cast<HorribleSettingV3>(SettingNodeV3::getSetting());
 };

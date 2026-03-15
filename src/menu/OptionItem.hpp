@@ -24,10 +24,10 @@ protected:
     void onToggle(CCObject*);
     void onPin(CCObject* sender);
 
-    bool init(CCSize const& size, Option option);
+    bool init(CCSize const& size, Option option, bool devMode);
 
 public:
-    static OptionItem* create(CCSize const& size, Option option);
+    static OptionItem* create(CCSize const& size, Option option, bool devMode);
 
     Option const& getOption() const noexcept;
     bool isCompatible() const noexcept;

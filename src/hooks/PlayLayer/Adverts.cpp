@@ -12,7 +12,7 @@ inline static constexpr auto id = "ads";
 inline static Option const o = {
     id,
     "Level Ads",
-    "While playing a level in normal mode, an ad for a random level will pop up on your screen from time to time.\n<cy>Credit: staticGD</c>",
+    "While playing a level in normal mode, an ad for a random level will pop up on your screen from time to time.\n<cl>Credit: staticGD</c>",
     category::obstructive,
     SillyTier::Medium,
 };
