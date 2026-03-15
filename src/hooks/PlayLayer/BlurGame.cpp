@@ -19,6 +19,7 @@ inline static Option const o = {
     SillyTier::Medium,
 };
 HORRIBLE_REGISTER_OPTION(o);
+HORRIBLE_REGISTER_OPTION_DEPENDENCY(o, "thesillydoggo.blur-api");
 
 class $modify(BlurPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
@@ -30,7 +31,7 @@ class $modify(BlurPlayLayer, PlayLayer) {
         colorLayer->setID("blur-color-layer"_spr);
         colorLayer->setContentSize({getScaledContentWidth(), getScaledContentHeight()});
         colorLayer->setPosition({0, 0});
-        this->addChild(colorLayer, 98);
+        m_uiLayer->addChild(colorLayer, 98);
         BlurAPI::addBlur(colorLayer);
     }
 

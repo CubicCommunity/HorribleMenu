@@ -177,3 +177,10 @@ namespace horrible {
     static void onModify(auto& self) {                \
         horrible::delegateHooks(optID, self.m_hooks); \
     }
+
+#define HORRIBLE_REGISTER_OPTION_DEPENDENCY(opt, modId)                            \
+    $on_game(Loaded) {                                                             \
+        if (Loader::get()->isModLoaded(modId)) {                                   \
+            if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
+        };                                                                         \
+    }
