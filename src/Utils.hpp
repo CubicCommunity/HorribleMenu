@@ -2,6 +2,7 @@
 
 #include <Horrible.hpp>
 
+#include <util/Blur.hpp>
 #include <util/Jumpscares.hpp>
 #include <util/Menu.hpp>
 #include <util/Options.hpp>

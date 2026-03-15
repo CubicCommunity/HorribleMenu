@@ -26,8 +26,8 @@ namespace horrible {
          *
          * @param option Constructed option object
          */
-        static geode::Result<> registerOption(Option option)
-            GEODE_EVENT_EXPORT(&OptionManagerV2::registerOption, (option));
+        static void registerOption(Option option)
+            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::registerOption, (std::move(option)));
 
         /**
          * Quickly check the toggle state of an option
@@ -46,7 +46,7 @@ namespace horrible {
          * @param enable Boolean to toggle to
          * @param pin If this option is a user pin
          */
-        static geode::Result<> setOption(geode::ZStringView id, bool enable, bool pin = false)
-            GEODE_EVENT_EXPORT(&OptionManagerV2::setOption, (id, enable, pin));
+        static void setOption(geode::ZStringView id, bool enable, bool pin = false)
+            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::setOption, (id, enable, pin));
     };
 };

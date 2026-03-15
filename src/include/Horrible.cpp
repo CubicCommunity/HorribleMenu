@@ -129,13 +129,8 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
     };
 };
 
-Result<> OptionManagerV2::registerOption(Option option) {
-    if (auto om = OptionManager::get()) {
-        om->registerOption(std::move(option));
-        return Ok();
-    };
-
-    return Err("Failed to get OptionManager");
+void OptionManagerV2::registerOption(Option option) {
+    if (auto om = OptionManager::get()) om->registerOption(std::move(option));
 };
 
 Result<bool> OptionManagerV2::isEnabled(std::string_view id) {
@@ -143,11 +138,6 @@ Result<bool> OptionManagerV2::isEnabled(std::string_view id) {
     return Err("Failed to get OptionManager");
 };
 
-Result<> OptionManagerV2::setOption(ZStringView id, bool enable, bool pin) {
-    if (auto om = OptionManager::get()) {
-        om->setOption(id, enable, pin);
-        return Ok();
-    };
-
-    return Err("Failed to get OptionManager");
+void OptionManagerV2::setOption(ZStringView id, bool enable, bool pin) {
+    if (auto om = OptionManager::get()) om->setOption(id, enable, pin);
 };
