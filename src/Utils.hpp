@@ -2,7 +2,6 @@
 
 #include <Horrible.hpp>
 
-#include <util/Blur.hpp>
 #include <util/Jumpscares.hpp>
 #include <util/Menu.hpp>
 #include <util/Options.hpp>
@@ -29,7 +28,7 @@ namespace horrible {
      *
      * @param chance The chance setting number
      */
-    inline float chanceToDelayPct(int chance) noexcept {
+    inline constexpr float chanceToDelayPct(int chance = 50) noexcept {
         if (chance <= 0) chance = 1;
         if (chance > 100) chance = 100;
 

@@ -1,9 +1,9 @@
 #include <Utils.hpp>
 
+#include <ranges>
+
 #include <menu/OptionMenuButton.hpp>
 #include <menu/SettingV3.hpp>
-
-#include <ranges>
 
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
@@ -14,7 +14,7 @@
 using namespace horrible::prelude;
 
 inline static std::vector<Hook*> safeModeHooks;
-inline static std::vector<Hook*> floatingBtnHooks;
+inline static std::vector<std::weak_ptr<Hook>> floatingBtnHooks;
 
 #define HORRIBLE_HOOK_SAFEMODE(hookName)                                   \
     static void onModify(auto& self) {                                     \
@@ -39,7 +39,7 @@ inline static std::vector<Hook*> floatingBtnHooks;
             hook->setAutoEnable(enable);                                    \
             (void)hook->toggle(enable);                                     \
                                                                             \
-            floatingBtnHooks.push_back(hook.get());                         \
+            floatingBtnHooks.push_back(hook);                               \
         };                                                                  \
     }
 
@@ -68,8 +68,10 @@ $on_game(Loaded) {
             if (auto fb = OptionMenuButton::get()) fb->setVisible(value);
 
             for (auto& hook : floatingBtnHooks) {
-                log::trace("Toggling floating button hook '{}' {}...", hook->getDisplayName(), value ? "ON" : "OFF");
-                (void)hook->toggle(value);
+                if (auto h = hook.lock()) {
+                    log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
+                    (void)h->toggle(value);
+                };
             };
         });
 

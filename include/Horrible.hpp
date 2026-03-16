@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Geode/loader/Loader.hpp"
 #ifdef GEODE_IS_WINDOWS
 #ifdef AWCW_HORRIBLE_API_EXPORTING
 #define AWCW_HORRIBLE_API_DLL __declspec(dllexport)
@@ -171,14 +170,6 @@ namespace horrible {
 #define HORRIBLE_REGISTER_OPTION(opt)                                          \
     $execute {                                                                 \
         if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
-    }
-
-// Statically register an option on game load, if another mod is loaded
-#define HORRIBLE_REGISTER_OPTION_DEPENDENCY(opt, modId)                            \
-    $on_game(Loaded) {                                                             \
-        if (Loader::get()->isModLoaded(modId)) {                                   \
-            if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
-        };                                                                         \
     }
 
 // Delegate hooks to OptionManager for dynamic toggling

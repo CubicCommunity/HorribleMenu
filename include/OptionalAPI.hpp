@@ -18,7 +18,7 @@ namespace horrible {
         using Event::Event;
     };
 
-    // Bridge to option manager for Horrible Ideas
+    // Optional bridge to option manager for Horrible Ideas
     class OptionManagerV2 final {
     public:
         /**
