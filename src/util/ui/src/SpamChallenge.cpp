@@ -10,7 +10,7 @@ using namespace horrible::prelude;
 class SpamChallenge::Impl final {
 public:
     int inputCount = 0;
-    int inputTarget = 40;
+    int inputTarget = 45;
 
     CCLabelBMFont* counter = nullptr;
     ProgressBar* timer = nullptr;
@@ -20,7 +20,7 @@ public:
     float timeDt = 0.f;
 
     bool success = false;
-    Function<void(bool)> callback = nullptr;
+    Callback callback = nullptr;
 };
 
 SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {};
@@ -31,7 +31,7 @@ bool SpamChallenge::init() {
 
     setID("spam-jumps"_spr);
 
-    m_impl->inputTarget = randng::get(40, 20);
+    m_impl->inputTarget = randng::get(45, 20);
 
     auto const winSize = CCDirector::get()->getWinSize();
 
@@ -86,7 +86,7 @@ bool SpamChallenge::init() {
     return true;
 };
 
-void SpamChallenge::setCallback(Function<void(bool)> cb) {
+void SpamChallenge::setCallback(Callback&& cb) {
     m_impl->callback = std::move(cb);
 };
 
@@ -106,7 +106,6 @@ bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
 
 void SpamChallenge::closeAfterFeedback(float) {
     if (m_impl->callback) m_impl->callback(m_impl->success);
-    removeMeAndCleanup();
 };
 
 void SpamChallenge::setSuccess(bool v) {
@@ -156,7 +155,6 @@ void SpamChallenge::keyBackClicked() {
 
     unscheduleUpdate();
     if (m_impl->callback) m_impl->callback(false);
-    removeMeAndCleanup();
 };
 
 SpamChallenge* SpamChallenge::create() {

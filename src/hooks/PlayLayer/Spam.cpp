@@ -46,14 +46,15 @@ class $modify(SpamPlayLayer, PlayLayer) {
                     auto f = m_fields.self();
 
                     // handle correct/wrong answer
-                    spam->setCallback([this, f](bool success) {
-                        log::debug("spam {}", success ? "succeeded" : "failed");
-                        if (!success) resetLevelFromStart();
-                        nextSpam();
+                    spam->setCallback([self = WeakRef(this), challenge = WeakRef(spam)](bool success) {
+                        if (auto s = self.lock()) {
+                            log::debug("spam {}", success ? "succeeded" : "failed");
 
-                        queueInMainThread([f]() {
-                            if (f) f->m_currentSpam = nullptr;
-                        });
+                            if (!success) s->resetLevelFromStart();
+                            s->nextSpam();
+
+                            if (auto spam = challenge.lock()) spam->removeMeAndCleanup();
+                        };
                     });
 
 #ifdef GEODE_IS_WINDOWS
@@ -63,8 +64,8 @@ class $modify(SpamPlayLayer, PlayLayer) {
                     f->m_currentSpam = spam;
                 };
             } else {
-                queueInMainThread([this]() {
-                    nextSpam();
+                queueInMainThread([self = WeakRef(this)]() {
+                    if (auto s = self.lock()) s->nextSpam();
                 });
             };
         };
@@ -76,11 +77,14 @@ class $modify(SpamPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (player->m_isDead) {
-            if (f->m_currentSpam) {
+            if (auto spam = WeakRef(f->m_currentSpam).lock()) {
                 log::trace("removing activate spam challenge after player death");
-                f->m_currentSpam->removeMeAndCleanup();
+
+                spam->removeMeAndCleanup();
                 nextSpam();
             };
+
+            f->m_currentSpam = nullptr;
         };
     };
 };

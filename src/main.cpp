@@ -13,24 +13,10 @@
 
 using namespace horrible::prelude;
 
-inline static std::vector<Hook*> safeModeHooks;
-inline static std::vector<std::weak_ptr<Hook>> floatingBtnHooks;
+static std::vector<std::weak_ptr<Hook>> s_safeModeHooks;
+static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
 
-#define HORRIBLE_HOOK_SAFEMODE(hookName)                                   \
-    static void onModify(auto& self) {                                     \
-        Result<Hook*> hookRes = self.getHook(hookName);                    \
-                                                                           \
-        if (auto hook = hookRes.unwrap()) {                                \
-            auto safe = thisMod->getSettingValue<bool>(setting::SafeMode); \
-                                                                           \
-            hook->setAutoEnable(safe);                                     \
-            (void)hook->toggle(safe);                                      \
-                                                                           \
-            safeModeHooks.push_back(hook);                                 \
-        };                                                                 \
-    }
-
-#define HORRIBLE_HOOK_FLOATINGBTN                                           \
+#define HORRIBLE_HOOK_INTERNAL(vectorRef)                                   \
     static void onModify(auto& self) {                                      \
         utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;      \
         auto enable = thisMod->getSettingValue<bool>(setting::FloatingBtn); \
@@ -39,7 +25,7 @@ inline static std::vector<std::weak_ptr<Hook>> floatingBtnHooks;
             hook->setAutoEnable(enable);                                    \
             (void)hook->toggle(enable);                                     \
                                                                             \
-            floatingBtnHooks.push_back(hook);                               \
+            vectorRef.push_back(hook);                                      \
         };                                                                  \
     }
 
@@ -50,9 +36,11 @@ $on_game(Loaded) {
     listenForSettingChanges<bool>(
         setting::SafeMode,
         [](bool value) {
-            for (auto& hook : safeModeHooks) {
-                log::trace("Toggling safe mode hook '{}' {}...", hook->getDisplayName(), value ? "ON" : "OFF");
-                (void)hook->toggle(value);
+            for (auto const& hook : s_safeModeHooks) {
+                if (auto const h = hook.lock()) {
+                    log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
+                    (void)h->toggle(value);
+                };
             };
         });
 
@@ -67,8 +55,8 @@ $on_game(Loaded) {
         [](bool value) {
             if (auto fb = OptionMenuButton::get()) fb->setVisible(value);
 
-            for (auto& hook : floatingBtnHooks) {
-                if (auto h = hook.lock()) {
+            for (auto const& hook : s_floatingBtnHooks) {
+                if (auto const h = hook.lock()) {
                     log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
                     (void)h->toggle(value);
                 };
@@ -105,7 +93,7 @@ $on_game(Loaded) {
 
 // safe mode
 class $modify(HISafeGJGameLevel, GJGameLevel) {
-    HORRIBLE_HOOK_SAFEMODE("GJGameLevel::savePercentage");
+    HORRIBLE_HOOK_INTERNAL(s_safeModeHooks);
 
     void savePercentage(int, bool, int, int, bool) {
         log::warn("Safe mode is enabled, progress will not be saved!");
@@ -114,7 +102,7 @@ class $modify(HISafeGJGameLevel, GJGameLevel) {
 
 // safe mode
 class $modify(HISafePlayLayer, PlayLayer) {
-    HORRIBLE_HOOK_SAFEMODE("PlayLayer::levelComplete");
+    HORRIBLE_HOOK_INTERNAL(s_safeModeHooks);
 
     // safe mode prevents level completion
     void levelComplete() {
@@ -129,7 +117,7 @@ class $modify(HISafePlayLayer, PlayLayer) {
 };
 
 class $modify(HIFloatBtnPauseLayer, PauseLayer) {
-    HORRIBLE_HOOK_FLOATINGBTN;
+    HORRIBLE_HOOK_INTERNAL(s_floatingBtnHooks);
 
     void customSetup() {
         auto toggle = thisMod->getSettingValue<bool>(setting::FloatingBtn);
@@ -142,7 +130,7 @@ class $modify(HIFloatBtnPauseLayer, PauseLayer) {
 };
 
 class $modify(HIFloatBtnPlayLayer, PlayLayer) {
-    HORRIBLE_HOOK_FLOATINGBTN;
+    HORRIBLE_HOOK_INTERNAL(s_floatingBtnHooks);
 
     void setupHasCompleted() {
         toggleButton();

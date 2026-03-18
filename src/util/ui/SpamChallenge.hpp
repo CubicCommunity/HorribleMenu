@@ -11,6 +11,8 @@ namespace horrible {
             class Impl;
             std::unique_ptr<Impl> m_impl;
 
+            using Callback = Function<void(bool)>;
+
         protected:
             SpamChallenge();
             ~SpamChallenge();
@@ -28,7 +30,7 @@ namespace horrible {
 
             bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;
 
-            void setCallback(Function<void(bool)> cb);
+            void setCallback(Callback&& cb);
         };
     };
 };

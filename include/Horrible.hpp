@@ -39,13 +39,16 @@ struct matjson::Serialize<HorribleOptionSave> final {
 
 // Container for Horrible Ideas API functions
 namespace horrible {
+    // Type alias for `geode::Function<void(bool)>`, used in hook delegation
+    using HookToggleCallback = geode::Function<void(bool)>;
+
     // Option manager for Horrible Ideas
     class AWCW_HORRIBLE_API_DLL OptionManager final : public cocos2d::CCObject {
     private:
         std::vector<Option> m_options;          // Array of registered options
         std::vector<std::string> m_categories;  // Array of auto-registered categories
 
-        std::unordered_map<std::string_view, std::vector<geode::Function<void(bool)>>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_map<std::string_view, std::vector<HookToggleCallback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
 
     protected:
         OptionManager() = default;  // Default constructor
@@ -147,7 +150,7 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(geode::ZStringView id, geode::Function<void(bool)>&& callback);
+        void addDelegate(geode::ZStringView id, HookToggleCallback&& callback);
 
         /**
          * Returns a reference to the array of all registered categories
@@ -163,7 +166,7 @@ namespace horrible {
      * @param id The ID of the option to delegate for
      * @param hooks The map of hooks to delegate
      */
-    AWCW_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>>& hooks);
+    AWCW_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>> const& hooks);
 };
 
 // Statically register an option

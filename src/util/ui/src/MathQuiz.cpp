@@ -28,7 +28,7 @@ public:
     float timeDt = 0.f;
 
     bool correct = false;
-    Function<void(bool)> callback = nullptr;
+    Callback callback = nullptr;
 };
 
 MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {};
@@ -232,7 +232,7 @@ bool MathQuiz::init() {
     return true;
 };
 
-void MathQuiz::setCallback(Function<void(bool)> cb) {
+void MathQuiz::setCallback(Callback&& cb) {
     m_impl->callback = std::move(cb);
 };
 
@@ -287,12 +287,10 @@ void MathQuiz::keyBackClicked() {
     Notification::create("You can't escape the math quiz...", NotificationIcon::Error, 1.25f)->show();
 
     setCorrect(false);
-    removeMeAndCleanup();
 };
 
 void MathQuiz::closeAfterFeedback(CCNode*) {
     if (m_impl->callback) m_impl->callback(m_impl->correct);
-    removeMeAndCleanup();
 };
 
 void MathQuiz::update(float dt) {

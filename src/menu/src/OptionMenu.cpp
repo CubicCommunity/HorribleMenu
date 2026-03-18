@@ -200,8 +200,8 @@ bool OptionMenu::init() {
     m_impl->searchInput->setAnchorPoint({0, 0.5});
     m_impl->searchInput->setPosition({10.f, mainLayerSize.height - 51.25f});
 
-    m_impl->searchInput->setCallback([this](std::string_view str) {
-        m_impl->searchText = str;
+    m_impl->searchInput->setCallback([this](std::string str) {
+        m_impl->searchText = std::move(str);
         m_impl->filterOptions(
             options::getAll(),
             m_impl->selectedTier,

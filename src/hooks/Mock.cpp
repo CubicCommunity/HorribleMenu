@@ -73,42 +73,47 @@ class $modify(MockMenuLayer, MenuLayer) {
                     ss->setAnchorPoint({0.5, 0.5});
                     ss->setPosition({-192.f, getScaledContentHeight() / 2.f});
 
-                    ss->setLoadCallback([this, ss, percent, rnd](Result<> res) {
+                    ss->setLoadCallback([self = WeakRef(this), screenshot = WeakRef(ss), percent, rnd](Result<> res) {
                         if (res.isOk()) {
-                            log::info("Sprite loaded successfully from save dir PNG");
+                            if (auto s = self.lock()) {
+                                log::info("Sprite loaded successfully from save dir PNG");
 
-                            auto const percLabelText = fmt::format("{}%", percent);
+                                if (auto ss = screenshot.lock()) {
+                                    auto const percLabelText = fmt::format("{}%", percent);
 
-                            auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
-                            percLabel->setID("percentage");
-                            percLabel->setPosition(ss->getScaledContentSize() / 2.f);
-                            percLabel->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
-                            percLabel->ignoreAnchorPointForPosition(false);
-                            percLabel->setAnchorPoint({ 0, 0 });
-                            percLabel->setScale(2.5);
+                                    auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
+                                    percLabel->setID("percentage");
+                                    percLabel->setPosition(ss->getScaledContentSize() / 2.f);
+                                    percLabel->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
+                                    percLabel->ignoreAnchorPointForPosition(false);
+                                    percLabel->setAnchorPoint({0, 0});
+                                    percLabel->setScale(2.5);
 
-                            ss->addChild(percLabel);
+                                    ss->addChild(percLabel);
 
-                            auto rA = randng::pc();
-                            auto rB = randng::pc();
+                                    auto rA = randng::pc();
+                                    auto rB = randng::pc();
 
-                            float yA = getScaledContentHeight() * rB; // starting height pos
-                            float yB = getScaledContentHeight() * rA; // ending height pos
+                                    float yA = s->getScaledContentHeight() * rB;  // starting height pos
+                                    float yB = s->getScaledContentHeight() * rA;  // ending height pos
 
-                            ss->setPositionY(getScaledContentHeight() * yA);
-                            ss->setRotation(360.f * (yA * yB)); // random rotation
+                                    ss->setPositionY(s->getScaledContentHeight() * yA);
+                                    ss->setRotation(360.f * (yA * yB));  // random rotation
 
-                            auto move = CCEaseIn::create(CCMoveTo::create(10.f, { getScaledContentWidth() + 192.f, getScaledContentHeight() * yB }), 1.f);
-                            auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
+                                    auto move = CCEaseIn::create(CCMoveTo::create(10.f, {s->getScaledContentWidth() + 192.f, s->getScaledContentHeight() * yB}), 1.f);
+                                    auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
 
-                            auto action = CCSpawn::createWithTwoActions(move, rotate);
-                            ss->runAction(action);
+                                    auto action = CCSpawn::createWithTwoActions(move, rotate);
+                                    ss->runAction(action);
 
-                            log::info("Animated sprite successfully");
+                                    log::info("Animated sprite successfully");
+                                };
+                            };
                         } else {
                             log::error("Sprite failed to load: {}", res.unwrapErr());
-                            ss->removeMeAndCleanup();
-                        }; });
+                            if (auto ss = screenshot.lock()) ss->removeMeAndCleanup();
+                        };
+                    });
 
                     ss->loadFromFile(fs::path(pngPath));
                     addChild(ss, 999);

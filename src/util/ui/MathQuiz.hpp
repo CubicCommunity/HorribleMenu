@@ -18,6 +18,8 @@ namespace horrible {
                 Geometry = 3
             };
 
+            using Callback = Function<void(bool)>;
+
         protected:
             MathQuiz();
             ~MathQuiz();
@@ -35,7 +37,7 @@ namespace horrible {
         public:
             static MathQuiz* create();
 
-            void setCallback(Function<void(bool)> cb);
+            void setCallback(Callback&& cb);
             void setCorrect(bool v);
         };
 

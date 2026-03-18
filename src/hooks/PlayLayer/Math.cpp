@@ -39,18 +39,21 @@ class $modify(MathPlayLayer, PlayLayer) {
     };
 
     void doQuiz(float) {
-        auto f = m_fields.self();
-
         if (m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
             log::debug("Showing math quiz");
 
             if (options::isEnabled(id)) {
                 if (auto quiz = MathQuiz::create()) {
                     // handle correct/wrong answer
-                    quiz->setCallback([this](bool correct) {
-                        log::debug("math {}", correct ? "succeeded" : "failed");
-                        if (!correct) resetLevelFromStart();
-                        nextQuiz();
+                    quiz->setCallback([self = WeakRef(this), math = WeakRef(quiz)](bool correct) {
+                        if (auto s = self.lock()) {
+                            log::debug("math {}", correct ? "succeeded" : "failed");
+
+                            if (!correct) s->resetLevelFromStart();
+                            s->nextQuiz();
+
+                            if (auto quiz = math.lock()) quiz->removeMeAndCleanup();
+                        };
                     });
 
 #ifdef GEODE_IS_WINDOWS
@@ -59,8 +62,8 @@ class $modify(MathPlayLayer, PlayLayer) {
                     m_uiLayer->addChild(quiz, 99);
                 };
             } else {
-                queueInMainThread([this]() {
-                    nextQuiz();
+                queueInMainThread([self = WeakRef(this)]() {
+                    if (auto s = self.lock()) s->nextQuiz();
                 });
             };
         };

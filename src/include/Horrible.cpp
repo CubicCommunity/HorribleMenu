@@ -29,8 +29,10 @@ void OptionManager::registerCategory(std::string category) {
 };
 
 bool OptionManager::doesOptionExist(std::string_view id) const noexcept {
-    for (auto const& option : getOptions())
+    for (auto const& option : getOptions()) {
         if (option.id == id) return true;
+    };
+
     return false;
 };
 
@@ -45,7 +47,7 @@ void OptionManager::registerOption(Option option) {
     };
 };
 
-void OptionManager::addDelegate(ZStringView id, Function<void(bool)>&& callback) {
+void OptionManager::addDelegate(ZStringView id, HookToggleCallback&& callback) {
     auto& thisDelegate = m_delegates[id];
     thisDelegate.push_back(std::move(callback));
 };
@@ -105,23 +107,25 @@ OptionManager* OptionManager::get() noexcept {
     return inst;
 };
 
-void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>>& hooks) {
+void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>> const& hooks) {
     if (auto om = OptionManager::get()) {
         auto value = om->isEnabled(id);
 
-        std::vector<Hook*> allHooks;
-        for (auto& hook : hooks | std::views::values) {
+        std::vector<std::weak_ptr<Hook>> allHooks;
+        for (auto const& hook : hooks | std::views::values) {
             hook->setAutoEnable(value);
             log::trace("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
-            allHooks.push_back(hook.get());
+            allHooks.push_back(hook);
         };
 
         om->addDelegate(
             id,
             [id, allHooks = std::move(allHooks)](bool value) {
-                for (auto& hook : allHooks) {
-                    log::trace("Toggling {} hook '{}' {}...", id, hook->getDisplayName(), value ? "ON" : "OFF");
-                    (void)hook->toggle(value);
+                for (auto const& hook : allHooks) {
+                    if (auto const h = hook.lock()) {
+                        log::trace("Toggling {} hook '{}' {}...", id, h->getDisplayName(), value ? "ON" : "OFF");
+                        (void)h->toggle(value);
+                    };
                 };
             });
     } else {
