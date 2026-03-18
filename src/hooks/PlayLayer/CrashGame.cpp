@@ -12,7 +12,7 @@ inline static constexpr auto id = "crash_death";
 inline static Option const o = {
     id,
     "Crash Chance on Death",
-    "When you die in a level, there's a chance your game will die too.\n<cg>Don't worry, your progress will save when crashing!</c> :)\n<cl>Credit: DragonixGD</c>",
+    "When you die in a level, there's a chance your game will die too.\n<co>Your progress will save!</c> :)\n<cl>Credit: DragonixGD</c>",
     category::chances,
     SillyTier::High,
 };

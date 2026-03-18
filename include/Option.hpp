@@ -15,7 +15,7 @@ namespace horrible {
         High = 3     // Very silly
     };
 
-    // A horrible option
+    // Metadata for a horrible option
     struct Option final {
         std::string id;                   // Unique ID of the option
         std::string name;                 // Name of the option

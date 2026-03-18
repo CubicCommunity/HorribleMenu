@@ -56,7 +56,7 @@ namespace horrible {
              *
              * @param id The ID of the option to toggle
              * @param enable Boolean to toggle to
-             * @param pin If this option is a user pin
+             * @param pin If this option is pinned by the user
              */
             void set(geode::ZStringView id, bool enable, bool pin = false);
 

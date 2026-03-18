@@ -44,9 +44,8 @@ namespace horrible {
          *
          * @param id The ID of the option to toggle
          * @param enable Boolean to toggle to
-         * @param pin If this option is a user pin
          */
-        static void setOption(geode::ZStringView id, bool enable, bool pin = false)
-            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::setOption, (id, enable, pin));
+        static void toggleOption(geode::ZStringView id, bool enable)
+            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::toggleOption, (id, enable));
     };
 };

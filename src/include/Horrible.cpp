@@ -47,7 +47,7 @@ void OptionManager::registerOption(Option option) {
     };
 };
 
-void OptionManager::addDelegate(ZStringView id, HookToggleCallback&& callback) {
+void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
     auto& thisDelegate = m_delegates[id];
     thisDelegate.push_back(std::move(callback));
 };
@@ -86,6 +86,10 @@ size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
     };
 
     return 0;
+};
+
+void OptionManager::toggleOption(ZStringView id, bool enable) {
+    setOption(id, enable, isPinned(id));
 };
 
 void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
@@ -142,6 +146,6 @@ Result<bool> OptionManagerV2::isEnabled(std::string_view id) {
     return Err("Failed to get OptionManager");
 };
 
-void OptionManagerV2::setOption(ZStringView id, bool enable, bool pin) {
-    if (auto om = OptionManager::get()) om->setOption(id, enable, pin);
+void OptionManagerV2::toggleOption(ZStringView id, bool enable) {
+    if (auto om = OptionManager::get()) om->toggleOption(id, enable);
 };

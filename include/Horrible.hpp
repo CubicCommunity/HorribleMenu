@@ -39,16 +39,16 @@ struct matjson::Serialize<HorribleOptionSave> final {
 
 // Container for Horrible Ideas API functions
 namespace horrible {
-    // Type alias for `geode::Function<void(bool)>`, used in hook delegation
-    using HookToggleCallback = geode::Function<void(bool)>;
-
     // Option manager for Horrible Ideas
-    class AWCW_HORRIBLE_API_DLL OptionManager final : public cocos2d::CCObject {
+    class AWCW_HORRIBLE_API_DLL OptionManager final {
     private:
         std::vector<Option> m_options;          // Array of registered options
         std::vector<std::string> m_categories;  // Array of auto-registered categories
 
-        std::unordered_map<std::string_view, std::vector<HookToggleCallback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
+        // Type alias for `geode::Function<void(bool)>`, used in hook delegation
+        using Callback = geode::Function<void(bool)>;
+
+        std::unordered_map<std::string_view, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
 
     protected:
         OptionManager() = default;  // Default constructor
@@ -140,7 +140,15 @@ namespace horrible {
          *
          * @param id The ID of the option to toggle
          * @param enable Boolean to toggle to
-         * @param pin If this option is a user pin
+         */
+        void toggleOption(geode::ZStringView id, bool enable);
+
+        /**
+         * Set the state of an option
+         *
+         * @param id The ID of the option to toggle
+         * @param enable Boolean to toggle to
+         * @param pin If this option is pinned by the user
          */
         void setOption(geode::ZStringView id, bool enable, bool pin = false);
 
@@ -150,7 +158,7 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(geode::ZStringView id, HookToggleCallback&& callback);
+        void addDelegate(geode::ZStringView id, Callback&& callback);
 
         /**
          * Returns a reference to the array of all registered categories

@@ -30,12 +30,10 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
 
         auto f = m_fields.self();
 
-        if (auto fmod = FMODAudioEngine::sharedEngine()) {
-            int rnd = randng::fast();
-            log::trace("button menu chance {}", rnd);
+        int rnd = randng::fast();
+        log::trace("button menu chance {}", rnd);
 
-            // @geode-ignore(unknown-resource)
-            if (rnd <= f->chance) fmod->playEffectAsync("achievement_01.ogg");
-        };
+        // @geode-ignore(unknown-resource)
+        if (rnd <= f->chance) playSfx("achievement_01.ogg");
     };
 };
