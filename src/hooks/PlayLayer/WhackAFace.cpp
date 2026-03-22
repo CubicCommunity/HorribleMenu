@@ -54,6 +54,16 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         };
     };
 
+    void resetLevel() {
+        PlayLayer::resetLevel();
+        cursor::show();
+    };
+
+    void resetLevelFromStart() {
+        PlayLayer::resetLevelFromStart();
+        cursor::show();
+    };
+
     void nextWhack() {
         log::trace("scheduling new whack btn");
         if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), randng::get(15.f, 2.5f) * chanceToDelayPct(m_fields->chance));
