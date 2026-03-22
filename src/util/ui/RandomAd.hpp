@@ -15,5 +15,5 @@ namespace horrible {
         public:
             static RandomAd* create();
         };
-    }
+    };
 };

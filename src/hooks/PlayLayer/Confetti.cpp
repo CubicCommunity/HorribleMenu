@@ -47,7 +47,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
     void nextConfetti(float) {
         auto delay = randng::get(10.f, 1.f);
-        log::debug("scheduling confetti in {}s", delay);
+        log::trace("scheduling confetti in {}s", delay);
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::confetti), delay);
     };

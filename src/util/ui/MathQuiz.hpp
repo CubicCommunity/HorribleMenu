@@ -24,7 +24,7 @@ namespace horrible {
             MathQuiz();
             ~MathQuiz();
 
-            void closeAfterFeedback(CCNode* node);
+            void callAfterFeedback(CCNode* node);
             void onAnswerClicked(CCObject* sender);
 
             bool hasAnswer(int answer) const noexcept;

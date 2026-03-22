@@ -174,9 +174,12 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
             auto const formatDesc = fmt::format("{}\n\n{}", m_impl->option.description, m_impl->getTierDescString(m_impl->option.silly, m_impl->compatible));
 
             if (auto popup = FLAlertLayer::create(
+                    this,
                     m_impl->option.name.c_str(),
-                    formatDesc.c_str(),
-                    "OK")) popup->show();
+                    formatDesc,
+                    "OK",
+                    nullptr,
+                    375.f)) popup->show();
         });
     helpBtn->setID("help-btn");
     helpBtn->setScale(0.625f);

@@ -28,7 +28,7 @@ class $modify(BlinkingIconPlayLayer, PlayLayer) {
 
     void nextBlink() {
         auto delay = randng::get(2.f, 1.f);
-        log::debug("scheduling blink in {}s", delay);
+        log::trace("scheduling blink in {}s", delay);
 
         scheduleOnce(schedule_selector(BlinkingIconPlayLayer::blink), delay);
     };

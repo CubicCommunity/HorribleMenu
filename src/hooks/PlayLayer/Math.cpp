@@ -31,7 +31,7 @@ class $modify(MathPlayLayer, PlayLayer) {
     };
 
     void nextQuiz() {
-        log::debug("scheduling math quiz");
+        log::trace("scheduling math quiz");
 
         auto f = m_fields.self();
 
@@ -52,14 +52,14 @@ class $modify(MathPlayLayer, PlayLayer) {
                             if (!correct) s->resetLevelFromStart();
                             s->nextQuiz();
 
+                            cursor::hide();
+
                             if (auto quiz = math.lock()) quiz->removeMeAndCleanup();
                         };
                     });
 
-#ifdef GEODE_IS_WINDOWS
-                    CCEGLView::sharedOpenGLView()->showCursor(true);
-#endif
                     m_uiLayer->addChild(quiz, 99);
+                    cursor::show();
                 };
             } else {
                 queueInMainThread([self = WeakRef(this)]() {

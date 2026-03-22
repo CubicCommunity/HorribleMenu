@@ -19,7 +19,7 @@ public:
     int correctAnswer = 0;
     std::vector<int> answers;  // 4 answer options
 
-    ProgressBar* timer = nullptr;
+    ProgressBar* countdown = nullptr;
     CCMenu* answerMenu = nullptr;
     CCDrawNode* drawNode = nullptr;
 
@@ -141,19 +141,19 @@ bool MathQuiz::init() {
     addChild(problemLabel, 1);
 
     // i hope i did this right cheese, u added this progress bar thing
-    m_impl->timer = ProgressBar::create();
-    m_impl->timer->setID("timer");
-    m_impl->timer->setFillColor(colors::yellow);
-    m_impl->timer->setStyle(ProgressBarStyle::Solid);
-    m_impl->timer->setAnchorPoint({0.5, 0.5});
-    m_impl->timer->setPosition({winSize.width / 2.f, winSize.height - 20.f});
+    m_impl->countdown = ProgressBar::create();
+    m_impl->countdown->setID("countdown");
+    m_impl->countdown->setFillColor(colors::yellow);
+    m_impl->countdown->setStyle(ProgressBarStyle::Solid);
+    m_impl->countdown->setAnchorPoint({0.5, 0.5});
+    m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});
 
-    m_impl->timer->updateProgress(100.f);
+    m_impl->countdown->updateProgress(100.f);
 
-    addChild(m_impl->timer, 9);
+    addChild(m_impl->countdown, 9);
 
     m_impl->timeRemaining = m_impl->totalTime = 10.f;
-    m_impl->timer->updateProgress(100.f);
+    m_impl->countdown->updateProgress(100.f);
 
     m_impl->answers.push_back(m_impl->correctAnswer);
 
@@ -269,7 +269,7 @@ void MathQuiz::onAnswerClicked(CCObject* sender) {
             CCEaseSineOut::create(CCScaleTo::create(0.125f, 1.25f)),
             CCEaseSineOut::create(CCScaleTo::create(0.0875f, 1.f)),
             CCDelayTime::create(0.75f),
-            CCCallFuncN::create(this, callfuncN_selector(MathQuiz::closeAfterFeedback)),
+            CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)),
             nullptr));
 
         setKeypadEnabled(false);
@@ -289,7 +289,7 @@ void MathQuiz::keyBackClicked() {
     setCorrect(false);
 };
 
-void MathQuiz::closeAfterFeedback(CCNode*) {
+void MathQuiz::callAfterFeedback(CCNode*) {
     if (m_impl->callback) m_impl->callback(m_impl->correct);
 };
 
@@ -307,7 +307,7 @@ void MathQuiz::update(float dt) {
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->timer) m_impl->timer->updateProgress(pct);
+    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
 
     if (m_impl->timeRemaining <= 0.f) {
         // automatic incorrect
@@ -333,7 +333,7 @@ void MathQuiz::update(float dt) {
             CCScaleTo::create(0.0875f, 1.25f),
             CCScaleTo::create(0.125f, 1.f),
             CCDelayTime::create(0.75f),
-            CCCallFuncN::create(this, callfuncN_selector(MathQuiz::closeAfterFeedback)),
+            CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)),
             nullptr);
 
         feedbackLabel->runAction(seq);

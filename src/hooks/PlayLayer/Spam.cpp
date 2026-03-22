@@ -33,7 +33,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
     };
 
     void nextSpam() {
-        log::debug("scheduling spam challenge");
+        log::trace("scheduling spam challenge");
         if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
     };
 
@@ -53,15 +53,16 @@ class $modify(SpamPlayLayer, PlayLayer) {
                             if (!success) s->resetLevelFromStart();
                             s->nextSpam();
 
+                            cursor::hide();
+
                             if (auto spam = challenge.lock()) spam->removeMeAndCleanup();
                         };
                     });
 
-#ifdef GEODE_IS_WINDOWS
-                    CCEGLView::sharedOpenGLView()->showCursor(true);
-#endif
                     m_uiLayer->addChild(spam, 99);
                     f->m_currentSpam = spam;
+
+                    cursor::show();
                 };
             } else {
                 queueInMainThread([self = WeakRef(this)]() {

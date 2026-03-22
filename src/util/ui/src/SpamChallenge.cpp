@@ -13,7 +13,7 @@ public:
     int inputTarget = 45;
 
     CCLabelBMFont* counter = nullptr;
-    ProgressBar* timer = nullptr;
+    ProgressBar* countdown = nullptr;
 
     float totalTime = 7.5f;
     float timeRemaining = totalTime;
@@ -27,11 +27,11 @@ SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {};
 SpamChallenge::~SpamChallenge() {};
 
 bool SpamChallenge::init() {
+    m_impl->inputTarget = randng::get(m_impl->inputTarget, 20);
+
     if (!CCBlockLayer::init()) return false;
 
     setID("spam-jumps"_spr);
-
-    m_impl->inputTarget = randng::get(45, 20);
 
     auto const winSize = CCDirector::get()->getWinSize();
 
@@ -67,16 +67,16 @@ bool SpamChallenge::init() {
     addChild(m_impl->counter, 9);
     m_impl->counter->runAction(CCRepeatForever::create(seq));
 
-    m_impl->timer = ProgressBar::create();
-    m_impl->timer->setID("timer");
-    m_impl->timer->setFillColor(colors::yellow);
-    m_impl->timer->setStyle(ProgressBarStyle::Solid);
-    m_impl->timer->setAnchorPoint({0.5, 0.5});
-    m_impl->timer->setPosition({winSize.width / 2.f, winSize.height - 20.f});
+    m_impl->countdown = ProgressBar::create();
+    m_impl->countdown->setID("countdown");
+    m_impl->countdown->setFillColor(colors::yellow);
+    m_impl->countdown->setStyle(ProgressBarStyle::Solid);
+    m_impl->countdown->setAnchorPoint({0.5, 0.5});
+    m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});
 
-    m_impl->timer->updateProgress(100.f);
+    m_impl->countdown->updateProgress(100.f);
 
-    addChild(m_impl->timer, 9);
+    addChild(m_impl->countdown, 9);
 
     // @geode-ignore(unknown-resource)
     playSfx("chest07.ogg");
@@ -104,16 +104,16 @@ bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
     return false;
 };
 
-void SpamChallenge::closeAfterFeedback(float) {
+void SpamChallenge::callAfterFeedback(float) {
     if (m_impl->callback) m_impl->callback(m_impl->success);
 };
 
 void SpamChallenge::setSuccess(bool v) {
     m_impl->success = v;
 
-    if (m_impl->counter) m_impl->counter->removeFromParentAndCleanup(false);
+    if (m_impl->counter) m_impl->counter->removeMeAndCleanup();
 
-    auto symbol = CCSprite::createWithSpriteFrameName(v ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
+    auto symbol = CCSprite::createWithSpriteFrameName(m_impl->success ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");
     symbol->setScale(0.f);
     symbol->setPosition(getScaledContentSize() / 2.f);
@@ -124,8 +124,8 @@ void SpamChallenge::setSuccess(bool v) {
         CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
     // @geode-ignore(unknown-resource)
-    playSfx(v ? "crystal01.ogg" : "explode_11.ogg");
-    scheduleOnce(schedule_selector(SpamChallenge::closeAfterFeedback), 1.25f);
+    playSfx(m_impl->success ? "crystal01.ogg" : "explode_11.ogg");
+    scheduleOnce(schedule_selector(SpamChallenge::callAfterFeedback), 1.25f);
 };
 
 void SpamChallenge::update(float dt) {
@@ -142,7 +142,7 @@ void SpamChallenge::update(float dt) {
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->timer) m_impl->timer->updateProgress(pct);
+    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
 
     if (m_impl->timeRemaining <= 0.f) {
         setSuccess(false);

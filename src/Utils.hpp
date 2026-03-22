@@ -2,6 +2,7 @@
 
 #include <Horrible.hpp>
 
+#include <util/Cursor.hpp>
 #include <util/Jumpscares.hpp>
 #include <util/Menu.hpp>
 #include <util/Options.hpp>
@@ -11,6 +12,7 @@
 #include <util/ui/MathQuiz.hpp>
 #include <util/ui/RandomAd.hpp>
 #include <util/ui/SpamChallenge.hpp>
+#include <util/ui/WhackButton.hpp>
 
 #include <cocos2d.h>
 

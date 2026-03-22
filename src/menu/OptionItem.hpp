@@ -12,7 +12,7 @@ struct PinEvent final : Event<PinEvent, bool()> {
     using Event::Event;
 };
 
-class OptionItem final : public CCMenu {
+class OptionItem final : public CCMenu, private FLAlertLayerProtocol {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;

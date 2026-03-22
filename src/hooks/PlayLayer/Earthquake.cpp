@@ -28,7 +28,7 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
 
     void nextQuake(float) {
         auto delay = randng::get(3.f, 1.f);
-        log::debug("scheduling quake in {}s", delay);
+        log::trace("scheduling quake in {}s", delay);
 
         scheduleOnce(schedule_selector(EarthquakePlayLayer::quake), delay);
     };

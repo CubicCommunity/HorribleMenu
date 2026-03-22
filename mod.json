@@ -178,6 +178,23 @@
                 "big-arrow-step": 20
             }
         },
+        "whack_a_face-chance": {
+            "type": "int",
+            "name": "Whack-A-Face Chance",
+            "description": "<cj>Whack-A-Face!</c> - Chance of whackable faces appearing in a level.",
+            "default": 65,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
         "math_quiz-chance": {
             "type": "int",
             "name": "Math Quiz Chance",

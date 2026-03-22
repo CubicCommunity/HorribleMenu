@@ -22,7 +22,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        RandomAd* m_ad = nullptr;
+        RandomAd* ad = nullptr;
     };
 
     void setupHasCompleted() {
@@ -32,7 +32,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
 
     void nextAd() {
         auto delay = randng::get(15.f, 5.f);
-        log::debug("scheduling ad in {}s", delay);
+        log::trace("scheduling ad in {}s", delay);
 
         scheduleOnce(schedule_selector(AdvertsPlayLayer::showAd), delay);
     };
@@ -40,15 +40,11 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     void showAd(float) {
         auto f = m_fields.self();
 
-        if (f->m_ad) f->m_ad->removeMeAndCleanup();
+        if (f->ad) f->ad->removeMeAndCleanup();
 
-#ifdef GEODE_IS_WINDOWS
-        // Show cursor when ad appears
-        CCEGLView::sharedOpenGLView()->showCursor(true);
-#endif
         if (auto popup = RandomAd::create()) {
-            f->m_ad = popup;
-            f->m_ad->show();
+            f->ad = popup;
+            f->ad->show();
         };
 
         nextAd();
