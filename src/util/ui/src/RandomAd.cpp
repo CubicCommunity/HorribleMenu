@@ -29,14 +29,16 @@ bool RandomAd::init() {
     projThumb->setAnchorPoint({0.5, 0.5});
     projThumb->setPosition({m_mainLayer->getContentWidth() / 2.f, 110.f});
 
-    projThumb->setLoadCallback([projThumb](Result<> res) {
-        if (res.isOk()) {
-            log::info("Sprite loaded successfully");
+    projThumb->setLoadCallback([thumbnail = WeakRef(projThumb)](Result<> res) {
+        if (auto thumb = thumbnail.lock()) {
+            if (res.isOk()) {
+                log::info("Sprite loaded successfully");
 
-            projThumb->setScale(0.625);
-        } else {
-            log::error("Sprite failed to load: {}", res.unwrapErr());
-            projThumb->removeMeAndCleanup();
+                thumb->setScale(0.625);
+            } else {
+                log::error("Sprite failed to load: {}", res.unwrapErr());
+                thumb->removeMeAndCleanup();
+            };
         };
     });
 

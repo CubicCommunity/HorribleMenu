@@ -36,7 +36,6 @@ void OptionMenuButton::setupSprite() {
         "icon.png"_spr,
         0.925f,
         themes::getCircleBaseColor(m_impl->theme));
-    m_impl->sprite->setAnchorPoint({0.5, 0.5});
 
     setContentSize(m_impl->sprite->getScaledContentSize());
 

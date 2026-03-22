@@ -171,19 +171,18 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
         [this](Button*) {
             m_impl->notifyIncompat();
 
-            auto const formatDesc = fmt::format("{}\n\n{}", m_impl->option.description, m_impl->getTierDescString(m_impl->option.silly, m_impl->compatible));
+            auto formatDesc = fmt::format("{}\n\n{}", m_impl->option.description, m_impl->getTierDescString(m_impl->option.silly, m_impl->compatible));
 
             if (auto popup = FLAlertLayer::create(
                     this,
                     m_impl->option.name.c_str(),
-                    formatDesc,
+                    std::move(formatDesc),
                     "OK",
                     nullptr,
                     375.f)) popup->show();
         });
     helpBtn->setID("help-btn");
     helpBtn->setScale(0.625f);
-    helpBtn->setAnchorPoint({0.5f, 0.5f});
 
     menu->addChild(helpBtn);
 

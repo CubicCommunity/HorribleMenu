@@ -7,42 +7,43 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible;
 
-class OptionMenu final : public Popup {
-private:
-    class Impl;
-    std::unique_ptr<Impl> m_impl;
+namespace horrible {
+    class OptionMenu final : public Popup {
+    private:
+        class Impl;
+        std::unique_ptr<Impl> m_impl;
 
-    struct TierFilterBtnData final {
-        SillyTier tier;
-        const char* label;
-        const char* id;
-        ccColor3B color;
+        static OptionMenu* s_inst;
+
+        struct TierFilterBtnData final {
+            SillyTier tier;
+            const char* label;
+            const char* id;
+            ccColor3B color;
+        };
+
+        struct SocialBtnData final {
+            const char* sprite;
+            const char* id;
+            Button::ButtonCallback callback;
+        };
+
+        void setupSafeModeNode(bool safeMode);
+
+    protected:
+        OptionMenu();
+        ~OptionMenu();
+
+        void onClose(CCObject* sender) override;
+        void onExit() override;
+        void cleanup() override;
+
+        bool init() override;
+
+    public:
+        static OptionMenu* create();
+
+        static OptionMenu* get() noexcept;
     };
-
-    struct SocialBtnData final {
-        const char* sprite;
-        const char* id;
-        Button::ButtonCallback callback;
-    };
-
-    void setupSafeModeNode(bool safeMode);
-
-protected:
-    static OptionMenu* s_inst;
-
-    OptionMenu();
-    ~OptionMenu();
-
-    void onClose(CCObject* sender) override;
-    void onExit() override;
-    void cleanup() override;
-
-    bool init() override;
-
-public:
-    static OptionMenu* create();
-
-    static OptionMenu* get() noexcept;
 };

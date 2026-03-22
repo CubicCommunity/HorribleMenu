@@ -55,13 +55,13 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     void confetti(float) {
         log::info("unleashing confetti!");
 
+        // @geode-ignore(unknown-resource)
         playSfx("explode_11.ogg");
-        shakeCamera(1.25f, 2.5f, 0.00875F);
-        for (int i = 0; i < randng::get(125, 75); i++)
-            createConfetti();
+        shakeCamera(1.25f, 2.5f, 0.00875f);
+
+        for (int i = 0; i < randng::get(125, 75); i++) createConfetti();
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
-        ;
     };
 
     void createConfetti() {

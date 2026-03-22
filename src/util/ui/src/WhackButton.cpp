@@ -30,7 +30,7 @@ public:
     Button* button = nullptr;
     ProgressBar* countdown = nullptr;
 
-    float totalTime = 7.5f * randng::get(1.25f, 0.5f);
+    float totalTime = 5.f * randng::get(1.25f, 0.5f);
     float timeRemaining = totalTime;
     float timeDt = 0.f;
 
