@@ -25,7 +25,7 @@ public:
     int inputCount = 0;
     int inputTarget = s_severities.size();
 
-    float scale = randng::get(0.875f, 0.5f);
+    float scale = randng::get(0.875f, 0.625f);
 
     Button* button = nullptr;
     ProgressBar* countdown = nullptr;
