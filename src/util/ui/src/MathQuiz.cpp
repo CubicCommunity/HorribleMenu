@@ -227,7 +227,7 @@ bool MathQuiz::init() {
     scheduleUpdate();
 
     // @geode-ignore(unknown-resource)
-    playSfx("chest07.ogg");
+    sfx::play("chest07.ogg");
 
     return true;
 };
@@ -239,7 +239,7 @@ void MathQuiz::setCallback(Callback&& cb) {
 void MathQuiz::setCorrect(bool v) {
     m_impl->correct = v;
     // @geode-ignore(unknown-resource)
-    playSfx(v ? "crystal01.ogg" : "explode_11.ogg");
+    sfx::play(v ? "crystal01.ogg" : "explode_11.ogg");
 };
 
 void MathQuiz::onAnswerClicked(CCObject* sender) {
@@ -300,7 +300,7 @@ void MathQuiz::update(float dt) {
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         // @geode-ignore(unknown-resource)
-        playSfx("counter003.ogg");
+        sfx::play("counter003.ogg");
         m_impl->timeDt = 0.f;
     };
 

@@ -32,6 +32,28 @@ class $modify(SpamPlayLayer, PlayLayer) {
         nextSpam();
     };
 
+    void levelComplete() {
+        PlayLayer::levelComplete();
+        if (auto spam = WeakRef(m_fields->m_currentSpam).lock()) spam->removeMeAndCleanup();
+    };
+
+    void destroyPlayer(PlayerObject* player, GameObject* object) {
+        PlayLayer::destroyPlayer(player, object);
+
+        auto f = m_fields.self();
+
+        if (player->m_isDead) {
+            if (auto spam = WeakRef(f->m_currentSpam).lock()) {
+                log::trace("removing activate spam challenge after player death");
+
+                spam->removeMeAndCleanup();
+                nextSpam();
+            };
+
+            f->m_currentSpam = nullptr;
+        };
+    };
+
     void nextSpam() {
         log::trace("scheduling spam challenge");
         if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
@@ -69,23 +91,6 @@ class $modify(SpamPlayLayer, PlayLayer) {
                     if (auto s = self.lock()) s->nextSpam();
                 });
             };
-        };
-    };
-
-    void destroyPlayer(PlayerObject* player, GameObject* object) {
-        PlayLayer::destroyPlayer(player, object);
-
-        auto f = m_fields.self();
-
-        if (player->m_isDead) {
-            if (auto spam = WeakRef(f->m_currentSpam).lock()) {
-                log::trace("removing activate spam challenge after player death");
-
-                spam->removeMeAndCleanup();
-                nextSpam();
-            };
-
-            f->m_currentSpam = nullptr;
         };
     };
 };

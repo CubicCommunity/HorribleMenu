@@ -23,11 +23,18 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     struct Fields {
         int chance = options::getChance(id);
+
+        MathQuiz* m_currentMath = nullptr;
     };
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         nextQuiz();
+    };
+
+    void levelComplete() {
+        PlayLayer::levelComplete();
+        if (auto quiz = WeakRef(m_fields->m_currentMath).lock()) quiz->removeMeAndCleanup();
     };
 
     void nextQuiz() {
@@ -59,6 +66,8 @@ class $modify(MathPlayLayer, PlayLayer) {
                     });
 
                     m_uiLayer->addChild(quiz, 99);
+                    m_fields->m_currentMath = quiz;
+
                     cursor::show();
                 };
             } else {

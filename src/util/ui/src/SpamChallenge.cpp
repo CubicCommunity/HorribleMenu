@@ -79,7 +79,7 @@ bool SpamChallenge::init() {
     addChild(m_impl->countdown, 9);
 
     // @geode-ignore(unknown-resource)
-    playSfx("chest07.ogg");
+    sfx::play("chest07.ogg");
 
     scheduleUpdate();
 
@@ -124,7 +124,7 @@ void SpamChallenge::setSuccess(bool v) {
         CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
     // @geode-ignore(unknown-resource)
-    playSfx(m_impl->success ? "crystal01.ogg" : "explode_11.ogg");
+    sfx::play(m_impl->success ? "crystal01.ogg" : "explode_11.ogg");
     scheduleOnce(schedule_selector(SpamChallenge::callAfterFeedback), 1.25f);
 };
 
@@ -135,7 +135,7 @@ void SpamChallenge::update(float dt) {
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         // @geode-ignore(unknown-resource)
-        playSfx("counter003.ogg");
+        sfx::play("counter003.ogg");
         m_impl->timeDt = 0.f;
     };
 

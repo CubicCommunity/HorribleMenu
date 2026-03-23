@@ -34,6 +34,6 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
         log::trace("button menu chance {}", rnd);
 
         // @geode-ignore(unknown-resource)
-        if (rnd <= f->chance) playSfx("achievement_01.ogg");
+        if (rnd <= f->chance) sfx::play("achievement_01.ogg");
     };
 };

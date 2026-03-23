@@ -36,7 +36,7 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
         if (!f->m_destroyingObject) f->m_destroyingObject = game;
 
         // @geode-ignore(unknown-resource)
-        playSfx("explode_11.ogg");
+        sfx::play("explode_11.ogg");
         GJBaseGameLayer::shakeCamera(1.f, 2.f, 1.f);
 
         if (m_player1) {

@@ -61,6 +61,7 @@ void WhackButton::reload() {
         [self = WeakRef(this)](auto) {
             if (auto s = self.lock()) {
                 s->m_impl->inputCount += 1;
+                sfx::play("chestClick.ogg");
 
                 if (s->m_impl->inputCount >= s->m_impl->inputTarget) {
                     s->unscheduleUpdate();
@@ -103,7 +104,7 @@ bool WhackButton::init() {
     addChild(m_impl->countdown, 9);
 
     // @geode-ignore(unknown-resource)
-    playSfx("chest07.ogg");
+    sfx::play("chest07.ogg");
 
     scheduleUpdate();
 
@@ -134,7 +135,7 @@ void WhackButton::setSuccess(bool v) {
         CCEaseSineOut::create(CCScaleTo::create(0.125f, m_impl->scale * 1.25f))));
 
     // @geode-ignore(unknown-resource)
-    playSfx(v ? "crystal01.ogg" : "explode_11.ogg");
+    sfx::play(v ? "crystal01.ogg" : "explode_11.ogg");
     scheduleOnce(schedule_selector(WhackButton::callAfterFeedback), 1.25f);
 };
 
@@ -145,7 +146,7 @@ void WhackButton::update(float dt) {
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         // @geode-ignore(unknown-resource)
-        playSfx("counter003.ogg");
+        sfx::play("counter003.ogg");
         m_impl->timeDt = 0.f;
     };
 

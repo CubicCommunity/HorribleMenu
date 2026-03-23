@@ -56,7 +56,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         log::info("unleashing confetti!");
 
         // @geode-ignore(unknown-resource)
-        playSfx("explode_11.ogg");
+        sfx::play("explode_11.ogg");
         shakeCamera(1.25f, 2.5f, 0.00875f);
 
         for (int i = 0; i < randng::get(125, 75); i++) createConfetti();

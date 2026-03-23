@@ -292,12 +292,16 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(settingsBtn);
 
+    auto resetFiltersBtnSpr = CircleButtonSprite::createWithSpriteFrameName(
+        // @geode-ignore(unknown-resource)
+        "geode.loader/reload.png",
+        1.f,
+        btns,
+        CircleBaseSize::Small);
+    resetFiltersBtnSpr->setTopOffset({1.f, -0.25f});
+
     auto resetFiltersBtn = Button::createWithNode(
-        CircleButtonSprite::createWithSpriteFrameName(
-            "edit_cwBtn_001.png",
-            1.f,
-            btns,
-            CircleBaseSize::Small),
+        resetFiltersBtnSpr,
         [this](Button*) {
             createQuickPopup(
                 "Reset Filters",

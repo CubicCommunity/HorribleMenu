@@ -69,7 +69,7 @@ HORRIBLE_REGISTER_OPTION(o);
 
 //                 // play effects
 //                 playSpawnEffect();
-//                 playSfx("chestClick.ogg");
+//                 sfx::play("chestClick.ogg");
 
 //                 // Player 2 cancel
 //             } else if (this == pl->m_player2 && s_parryActive2) {
@@ -86,7 +86,7 @@ HORRIBLE_REGISTER_OPTION(o);
 //                 s_activeParryPlayer = nullptr;
 
 //                 playSpawnEffect();
-//                 playSfx("chestClick.ogg");
+//                 sfx::play("chestClick.ogg");
 //             };
 //         };
 

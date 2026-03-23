@@ -37,13 +37,16 @@ namespace horrible {
         return ((100.f - static_cast<float>(chance)) + 1.f) / 100.f;
     };
 
-    /**
-     * Play a sound effect using FMOD
-     *
-     * @param name Name of the audio file
-     */
-    inline void playSfx(const char* file) {
-        if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
+    // For convenience
+    namespace sfx {
+        /**
+         * Play a sound effect using FMOD
+         *
+         * @param name Name of the audio file
+         */
+        inline void play(const char* file) {
+            if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
+        };
     };
 
     namespace str = geode::utils::string;  // Shortcut for geode::utils::string
@@ -64,6 +67,7 @@ namespace horrible {
         inline constexpr auto misc = "Misc";
     };
 
+    // All namespace includes
     namespace prelude {
         using namespace ::horrible;
         using namespace ::horrible::ui;
