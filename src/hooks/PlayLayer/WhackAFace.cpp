@@ -51,16 +51,21 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
             });
 
             clearWhackBtns();
+            cursor::show();
         };
     };
 
     void resetLevel() {
         PlayLayer::resetLevel();
+
+        clearWhackBtns();
         cursor::show();
     };
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
+
+        clearWhackBtns();
         cursor::show();
     };
 
@@ -83,6 +88,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                                 if (auto s = self.lock()) s->resetLevelFromStart();
                             };
 
+                            cursor::show();
                             whack->removeMeAndCleanup();
                         };
                     });
