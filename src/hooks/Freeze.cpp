@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -8,15 +8,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "freeze";
+static constexpr auto id = "freeze";
 
-inline static Option const o = {
-    id,
-    "Random 90%+ FPS Drop",
-    "Your visual framerate starts randomly dropping during 90-99% in a level.\n<cl>Credit: Hexfire</c>",
-    category::randoms,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Random 90%+ FPS Drop")
+                          .setDescription("Your visual framerate starts randomly dropping during 90-99% in a level.\n<cl>Credit: Hexfire</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FreezeMenuLayer, MenuLayer) {
@@ -41,7 +39,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
     };
 
     void setupHasCompleted() {

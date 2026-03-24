@@ -1,5 +1,5 @@
 #define GEODE_DEFINE_EVENT_EXPORTS
-#include <Horrible.hpp>
+#include <Horrible.h>
 #include <OptionalAPI.hpp>
 
 #include <ranges>
@@ -12,16 +12,89 @@ using namespace horrible;
 Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matjson::Value const& value) {
     GEODE_UNWRAP_INTO(bool enabled, value["enabled"].asBool());
     GEODE_UNWRAP_INTO(bool pin, value["pin"].asBool());
+    GEODE_UNWRAP_INTO(unsigned int chance, value["chance"].asUInt());
+    GEODE_UNWRAP_INTO(int64_t min, value["min"].asInt());
+    GEODE_UNWRAP_INTO(int64_t max, value["max"].asInt());
 
-    return Ok(HorribleOptionSave{enabled, pin});
+    return Ok(HorribleOptionSave{enabled, pin, chance, min, max});
 };
 
 matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave const& value) {
     auto obj = matjson::Value();
     obj["enabled"] = value.enabled;
     obj["pin"] = value.pin;
+    obj["chance"] = value.chance;
+    obj["min"] = value.min;
+    obj["max"] = value.max;
 
     return obj;
+};
+
+Option& Option::setID(std::string id) {
+    m_id = std::move(id);
+    return *this;
+};
+
+Option& Option::setName(std::string name) {
+    m_name = std::move(name);
+    return *this;
+};
+
+Option& Option::setDescription(std::string description) {
+    m_description = std::move(description);
+    return *this;
+};
+
+Option& Option::setCategory(std::string category) {
+    m_category = std::move(category);
+    return *this;
+};
+
+Option& Option::setSillyTier(SillyTier tier) {
+    m_silly = tier;
+    return *this;
+};
+
+Option& Option::setRequiresRestart(bool required) {
+    m_restart = required;
+    return *this;
+};
+
+Option& Option::setSupportedPlatforms(std::vector<Platform> platforms) {
+    m_platforms = std::move(platforms);
+    return *this;
+};
+
+ZStringView Option::getID() const noexcept {
+    return m_id;
+};
+
+ZStringView Option::getName() const noexcept {
+    return m_name;
+};
+
+ZStringView Option::getDescription() const noexcept {
+    return m_description;
+};
+
+ZStringView Option::getCategory() const noexcept {
+    return m_category;
+};
+
+SillyTier Option::getSillyTier() const noexcept {
+    return m_silly;
+};
+
+bool Option::isRestartRequired() const noexcept {
+    return m_restart;
+};
+
+std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
+    return m_platforms;
+};
+
+Option Option::create(std::string id) {
+    return Option().setID(std::move(id));
 };
 
 void OptionManager::registerCategory(std::string category) {
@@ -30,19 +103,19 @@ void OptionManager::registerCategory(std::string category) {
 
 bool OptionManager::doesOptionExist(std::string_view id) const noexcept {
     for (auto const& option : getOptions()) {
-        if (option.id == id) return true;
+        if (option.getID() == id) return true;
     };
 
     return false;
 };
 
 void OptionManager::registerOption(Option option) {
-    if (doesOptionExist(option.id)) {
-        log::error("Could not register option '{}' ({}) because it already exists!", option.name, option.id);
+    if (doesOptionExist(option.getID())) {
+        log::error("Could not register option '{}' ({}) because it already exists!", option.getName(), option.getID());
     } else {
-        registerCategory(option.category);
+        registerCategory(option.getCategory());
 
-        log::debug("Registered option {} of category {}", option.id, option.category);
+        log::debug("Registered option {} of category {}", option.getID(), option.getCategory());
         m_options.push_back(std::move(option));
     };
 };
@@ -74,7 +147,7 @@ HorribleOptionSave OptionManager::getOption(std::string_view id) const {
 
 Result<Option> OptionManager::getOptionInfo(std::string_view id) const noexcept {
     for (auto const& option : getOptions()) {
-        if (option.id == id) return Ok(option);
+        if (option.getID() == id) return Ok(option);
     };
 
     return Err("Option not found");
@@ -137,8 +210,18 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
     };
 };
 
-void OptionManagerV2::registerOption(Option option) {
-    if (auto om = OptionManager::get()) om->registerOption(std::move(option));
+void OptionManagerV2::registerOption(OptionV2 const& option) {
+    if (auto om = OptionManager::get()) {
+        auto opt = Option::create(option.id)
+                       .setName(option.name)
+                       .setDescription(option.description)
+                       .setCategory(option.category)
+                       .setSillyTier(option.silly)
+                       .setRequiresRestart(option.restart)
+                       .setSupportedPlatforms(option.platforms);
+
+        om->registerOption(std::move(opt));
+    };
 };
 
 Result<bool> OptionManagerV2::isEnabled(std::string_view id) {

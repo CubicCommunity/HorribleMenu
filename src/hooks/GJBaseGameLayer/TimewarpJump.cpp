@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "timewarp_jump";
+static constexpr auto id = "timewarp_jump";
 
-inline static Option const o = {
-    id,
-    "Timewarp Jump",
-    "When you jump, there's a chance time will briefly slow down or speed up.\n<cl>Credit: KGplayerA</c>",
-    category::randoms,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Timewarp Jump")
+                          .setDescription("When you jump, there's a chance time will briefly slow down or speed up.\n<cl>Credit: KGplayerA</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {

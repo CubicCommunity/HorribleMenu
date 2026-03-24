@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -10,20 +10,14 @@ using namespace horrible::prelude;
 
 namespace fs = std::filesystem;  // Shortcut for std::filesystem
 
-inline static constexpr auto id = "mock";
+static constexpr auto id = "mock";
 
-inline static Option const o = {
-    id,
-    "Mock your 90%+ Fail",
-    "Taunts you in the main me with a screenshot of one of your 90%-99% fails.\n<cl>Credit: Wuffin</c>",
-    category::misc,
-    SillyTier::Medium,
-    false,
-    {
-        Platform::Windows,
-        Platform::Android,
-    },
-};
+static auto const o = Option::create(id)
+                          .setName("Mock your 90%+ Fail")
+                          .setDescription("Taunts you in the main me with a screenshot of one of your 90%-99% fails.\n<cl>Credit: Wuffin</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::Medium)
+                          .setSupportedPlatforms({Platform::Windows, Platform::Android});
 HORRIBLE_REGISTER_OPTION(o);
 
 #if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms
@@ -31,7 +25,7 @@ class $modify(MockMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
     };
 
     bool init() {

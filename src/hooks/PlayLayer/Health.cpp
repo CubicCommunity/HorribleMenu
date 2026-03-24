@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "health";
+static constexpr auto id = "health";
 
-inline static Option const o = {
-    id,
-    "Player Health",
-    "Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>Credit: Cheeseworks</c>",
-    category::playerlife,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Player Health")
+                          .setDescription("Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::playerlife)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(HealthPlayLayer, PlayLayer) {

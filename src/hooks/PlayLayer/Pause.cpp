@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "pauses";
+static constexpr auto id = "pauses";
 
-inline static Option const o = {
-    id,
-    "Random Pauses",
-    "While playing a level, it will randomly pause itself.\n<cl>Credit: DragonixGD</c>",
-    category::randoms,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Random Pauses")
+                          .setDescription("While playing a level, it will randomly pause itself.\n<cl>Credit: DragonixGD</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(PausePlayerObject, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
     };
 
     void setupHasCompleted() {

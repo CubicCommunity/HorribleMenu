@@ -1,8 +1,8 @@
 #include "../Menu.hpp"
 
-#include <menu/OptionMenu.hpp>
+#include <menu/OptionMenu.h>
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 using namespace horrible::util;
 

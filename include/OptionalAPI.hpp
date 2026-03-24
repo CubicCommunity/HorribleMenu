@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Horrible.hpp"
+#include "Horrible.h"
 
 #include <Geode/Result.hpp>
 
@@ -18,6 +18,36 @@ namespace horrible {
         using Event::Event;
     };
 
+    // Metadata for a horrible option
+    struct OptionV2 final {
+        std::string id;                   // Unique ID of the option
+        std::string name;                 // Name of the option
+        std::string description;          // Description of the option
+        std::string category;             // Name of the category this option should be under
+        SillyTier silly;                  // How silly the option is
+        bool restart;                     // If the option requires a restart to take effect
+        std::vector<Platform> platforms;  // Platforms that the option supports
+
+        OptionV2() = default;  // Default constructor
+
+        // Constructor
+        inline OptionV2(
+            std::string id,
+            std::string name,
+            std::string description,
+            std::string category,
+            SillyTier silly = SillyTier::Low,
+            bool restart = false,
+            std::vector<Platform> platforms = {Platform::All}) :
+            id(std::move(id)),
+            name(std::move(name)),
+            description(std::move(description)),
+            category(std::move(category)),
+            silly(silly),
+            restart(restart),
+            platforms(std::move(platforms)) {};
+    };
+
     // Optional bridge to option manager for Horrible Ideas
     class OptionManagerV2 final {
     public:
@@ -26,8 +56,8 @@ namespace horrible {
          *
          * @param option Constructed option object
          */
-        static void registerOption(Option option)
-            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::registerOption, (std::move(option)));
+        static void registerOption(OptionV2 const& option)
+            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::registerOption, (option));
 
         /**
          * Quickly check the toggle state of an option

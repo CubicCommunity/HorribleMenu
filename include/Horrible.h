@@ -1,18 +1,6 @@
 #pragma once
 
-#ifdef GEODE_IS_WINDOWS
-#ifdef AWCW_HORRIBLE_API_EXPORTING
-#define AWCW_HORRIBLE_API_DLL __declspec(dllexport)
-#else
-#define AWCW_HORRIBLE_API_DLL __declspec(dllimport)
-#endif
-#else
-#ifdef AWCW_HORRIBLE_API_EXPORTING
-#define AWCW_HORRIBLE_API_DLL __attribute__((visibility("default")))
-#else
-#define AWCW_HORRIBLE_API_DLL
-#endif
-#endif
+#include "DLL.hpp"
 
 #include "Option.hpp"
 
@@ -29,6 +17,9 @@
 struct HorribleOptionSave final {
     bool enabled = false;
     bool pin = false;
+    unsigned int chance = 0;
+    int64_t min = 0;
+    int64_t max = 1;
 };
 
 template <>

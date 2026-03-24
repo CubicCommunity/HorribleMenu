@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,26 +7,25 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "fake_crash";
+static constexpr auto id = "fake_crash";
 
-inline static Option const o = {
-    id,
-    "Random Fake Crash",
-    "While playing a level, there's a chance your game will fake a crash.\n<cl>Credit: Timered</c>",
-    category::randoms,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Random Fake Crash")
+                          .setDescription("While playing a level, there's a chance your game will fake a crash.\n<cl>Credit: Timered</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int m_chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
-        float m_lastTimeWarp = LevelTools::getLastTimewarp();
-        bool m_inFakeCrash = false;
-        float m_fakeCrashStartTime = 0.f;
+        float lastTimeWarp = LevelTools::getLastTimewarp();
+
+        bool inFakeCrash = false;
+        float fakeCrashStartTime = 0.f;
     };
 
     bool init() {
@@ -41,22 +40,22 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
         auto f = m_fields.self();
 
         // log::debug("FakeCrash update tick");
-        if (!f->m_inFakeCrash && randng::fast() % f->m_chance == 0) {
+        if (!f->inFakeCrash && randng::fast() % f->chance == 0) {
             log::debug("Faking crash");
-            f->m_lastTimeWarp = LevelTools::getLastTimewarp();
+            f->lastTimeWarp = LevelTools::getLastTimewarp();
 
             GJBaseGameLayer::updateTimeWarp(0.f);
 
-            f->m_inFakeCrash = true;
-            f->m_fakeCrashStartTime = m_gameState.m_currentProgress;
+            f->inFakeCrash = true;
+            f->fakeCrashStartTime = m_gameState.m_currentProgress;
         };
 
-        if (f->m_inFakeCrash) {
-            if ((m_gameState.m_currentProgress - f->m_fakeCrashStartTime) >= 5.f) {
-                log::debug("Reverting timewarp to: {}", f->m_lastTimeWarp);
+        if (f->inFakeCrash) {
+            if ((m_gameState.m_currentProgress - f->fakeCrashStartTime) >= 5.f) {
+                log::debug("Reverting timewarp to: {}", f->lastTimeWarp);
 
-                GJBaseGameLayer::updateTimeWarp(f->m_lastTimeWarp);
-                f->m_inFakeCrash = false;
+                GJBaseGameLayer::updateTimeWarp(f->lastTimeWarp);
+                f->inFakeCrash = false;
             };
         };
     };

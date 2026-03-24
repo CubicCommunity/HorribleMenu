@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "math_quiz";
+static constexpr auto id = "math_quiz";
 
-inline static Option const o = {
-    id,
-    "Richard's Math Quiz!",
-    "When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cl>Credit: CyanBoi</c>",
-    category::obstructive,
-    SillyTier::High,
-};
+static auto const o = Option::create(id)
+                          .setName("Richard's Math Quiz!")
+                          .setDescription("When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cl>Credit: CyanBoi</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(MathPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         MathQuiz* m_currentMath = nullptr;
     };

@@ -1,7 +1,7 @@
-#include "../OptionCategoryItem.hpp"
+#include "../OptionCategoryItem.h"
 
 #include <Geode/Geode.hpp>
-#include <Utils.hpp>
+#include <Utils.h>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;

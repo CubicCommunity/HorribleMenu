@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "whack_a_face";
+static constexpr auto id = "whack_a_face";
 
-inline static Option const o = {
-    id,
-    "Whack-A-Face!",
-    "Buttons with difficulty faces will start to pop up on your screen while playing a level. You'll have a very limited amount of time to press each one until they all disappear, or else you restart the entire level! The higher the difficulty of the face on the button, the more times you'll need to press it.\n<cl>Credit: Cheeseworks</c>",
-    category::obstructive,
-    SillyTier::High,
-};
+static auto const o = Option::create(id)
+                          .setName("Whack-A-Face!")
+                          .setDescription("Buttons with difficulty faces will start to pop up on your screen while playing a level. You'll have a very limited amount of time to press each one until they all disappear, or else you restart the entire level! The higher the difficulty of the face on the button, the more times you'll need to press it.\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(WhackAFacePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         std::vector<WeakRef<WhackButton>> active;
     };

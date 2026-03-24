@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "random_mirror";
+static constexpr auto id = "random_mirror";
 
-inline static Option const o = {
-    id,
-    "Random Mirror Portal",
-    "Randomly activates a mirror portal while playing.\n<cl>Credit: TimeRed</c>",
-    category::randoms,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Random Mirror Portal")
+                          .setDescription("Randomly activates a mirror portal while playing.\n<cl>Credit: TimeRed</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(RandomMirrorPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         bool isFlipped = false;
     };

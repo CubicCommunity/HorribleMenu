@@ -1,5 +1,9 @@
 #pragma once
 
+#include "DLL.hpp"
+
+#include <Geode/utils/ZStringView.hpp>
+
 #include <Geode/platform/platform.hpp>
 
 // Container for Horrible Ideas API
@@ -9,39 +13,42 @@ namespace horrible {
 
     // How silly an option is
     enum class SillyTier : unsigned int {
-        None = 0,    // Null
+        None = 0,    // Null, act as placeholder
         Low = 1,     // Not so silly
         Medium = 2,  // Somewhat silly
         High = 3     // Very silly
     };
 
     // Metadata for a horrible option
-    struct Option final {
-        std::string id;                   // Unique ID of the option
-        std::string name;                 // Name of the option
-        std::string description;          // Description of the option
-        std::string category;             // Name of the category this option should be under
-        SillyTier silly;                  // How silly the option is
-        bool restart;                     // If the option requires a restart to take effect
-        std::vector<Platform> platforms;  // Platforms that the option supports
+    struct AWCW_HORRIBLE_API_DLL Option final {
+    private:
+        std::string m_id = "";                                // Unique ID of the option
+        std::string m_name = "Example Option";                // Name of the option
+        std::string m_description = "";                       // Description of the option
+        std::string m_category = "Uncategorized";             // Name of the category this option should be under
+        SillyTier m_silly = SillyTier::None;                  // How silly the option is
+        bool m_restart = false;                               // If the option requires a restart to take effect
+        std::vector<Platform> m_platforms = {Platform::All};  // Platforms that the option supports
 
+    public:
         Option() = default;  // Default constructor
 
-        // Constructor
-        inline Option(
-            std::string id,
-            std::string name,
-            std::string description,
-            std::string category,
-            SillyTier silly = SillyTier::Low,
-            bool restart = false,
-            std::vector<Platform> platforms = {Platform::Desktop, Platform::Mobile}) :
-            id(std::move(id)),
-            name(std::move(name)),
-            description(std::move(description)),
-            category(std::move(category)),
-            silly(silly),
-            restart(restart),
-            platforms(std::move(platforms)) {};
+        static Option create(std::string id);
+
+        Option& setID(std::string id);
+        Option& setName(std::string name);
+        Option& setDescription(std::string description);
+        Option& setCategory(std::string category);
+        Option& setSillyTier(SillyTier tier);
+        Option& setRequiresRestart(bool required);
+        Option& setSupportedPlatforms(std::vector<Platform> platforms);
+
+        geode::ZStringView getID() const noexcept;
+        geode::ZStringView getName() const noexcept;
+        geode::ZStringView getDescription() const noexcept;
+        geode::ZStringView getCategory() const noexcept;
+        SillyTier getSillyTier() const noexcept;
+        bool isRestartRequired() const noexcept;
+        std::span<const Platform> getSupportedPlatforms() const noexcept;
     };
 };

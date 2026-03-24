@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "gravity";
+static constexpr auto id = "gravity";
 
-inline static Option const o = {
-    id,
-    "Randomize Gravity",
-    "Every time you jump in a level, gravity force will increase or decrease randomly.\n<cl>Credit: NJAgain</c>",
-    category::randoms,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Randomize Gravity")
+                          .setDescription("Every time you jump in a level, gravity force will increase or decrease randomly.\n<cl>Credit: NJAgain</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(GravityPlayerObject, PlayerObject) {

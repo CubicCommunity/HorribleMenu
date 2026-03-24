@@ -1,6 +1,6 @@
-#include "../SettingV3.hpp"
+#include "../SettingV3.h"
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 

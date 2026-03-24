@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -40,7 +40,7 @@ namespace horrible {
              *
              * @returns Integer of the chance value
              */
-            int getChance(std::string_view id);
+            unsigned int getChance(std::string_view id);
 
             /**
              * Get the saved data of an option

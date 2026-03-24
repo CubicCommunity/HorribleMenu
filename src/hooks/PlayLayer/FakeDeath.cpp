@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "death";
+static constexpr auto id = "death";
 
-inline static Option const o = {
-    id,
-    "Fake Death",
-    "The player's death effect will show without dying.\n<cl>Credit: DragonixGD</c>",
-    category::obstructive,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Fake Death")
+                          .setDescription("The player's death effect will show without dying.\n<cl>Credit: DragonixGD</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeDeathPlayLayer, PlayLayer) {

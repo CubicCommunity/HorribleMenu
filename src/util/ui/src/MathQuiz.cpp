@@ -1,6 +1,6 @@
 #include "../MathQuiz.hpp"
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 

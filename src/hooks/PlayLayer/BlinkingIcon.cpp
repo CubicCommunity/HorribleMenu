@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "blinking_icon";
+static constexpr auto id = "blinking_icon";
 
-inline static Option const o = {
-    id,
-    "Blinking Icon",
-    "Your icon will start to randomly blink.\n<cl>Credit: DragonixGD</c>",
-    category::obstructive,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Blinking Icon")
+                          .setDescription("Your icon will start to randomly blink.\n<cl>Credit: DragonixGD</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(BlinkingIconPlayLayer, PlayLayer) {

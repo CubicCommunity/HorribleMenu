@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "black_screen";
+static constexpr auto id = "black_screen";
 
-inline static Option const o = {
-    id,
-    "Black Screen Blink",
-    "The screen can suddenly blink while playing a level.\n<cl>Credit: elite_smiler_ispro</c>",
-    category::obstructive,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Black Screen Blink")
+                          .setDescription("The screen can suddenly blink while playing a level.\n<cl>Credit: elite_smiler_ispro</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(BlackScreenPlayLayer, PlayLayer) {

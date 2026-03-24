@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "size_changer";
+static constexpr auto id = "size_changer";
 
-inline static Option const o = {
-    id,
-    "Size Changer",
-    "Randomly change the player size every time you jump.\n<cl>Credit: himynameisryan21</c>",
-    category::randoms,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Size Changer")
+                          .setDescription("Randomly change the player size every time you jump.\n<cl>Credit: himynameisryan21</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SizeChangerPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         bool scaled = false;
     };

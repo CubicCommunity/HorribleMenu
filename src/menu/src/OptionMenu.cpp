@@ -1,13 +1,13 @@
-#include "../OptionMenu.hpp"
+#include "../OptionMenu.h"
 
 #include <Geode/Geode.hpp>
 #include <Geode/ui/GeodeUI.hpp>
 #include <Geode/utils/terminate.hpp>
-#include <Utils.hpp>
+#include <Utils.h>
 #include <algorithm>
 #include <memory>
-#include <menu/OptionCategoryItem.hpp>
-#include <menu/OptionItem.hpp>
+#include <menu/OptionCategoryItem.h>
+#include <menu/OptionItem.h>
 #include <vector>
 #include "Geode/cocos/base_nodes/CCNode.h"
 #include "Geode/cocos/sprite_nodes/CCSprite.h"
@@ -47,8 +47,8 @@ public:
             std::vector<Option> list = {optList.begin(), optList.end()};
 
             std::sort(list.begin(), list.end(), [this](Option const& a, Option const& b) -> bool {
-                auto aFav = options::isPinned(a.id);
-                auto bFav = options::isPinned(b.id);
+                auto aFav = options::isPinned(a.getID());
+                auto bFav = options::isPinned(b.getID());
 
                 return aFav > bFav;
             });
@@ -57,16 +57,16 @@ public:
 
             for (auto const& opt : list) {
                 // tier filter
-                auto tierMatches = tier == SillyTier::None || tier == opt.silly;
+                auto tierMatches = tier == SillyTier::None || tier == opt.getSillyTier();
                 // category filter
-                auto categoryMatches = !useCategory || (opt.category == category);
+                auto categoryMatches = !useCategory || (opt.getCategory() == category);
 
                 // search filter
                 auto searchMatches = true;
                 if (!searchText.empty()) {
                     auto const searchLower = str::toLower(searchText);
 
-                    searchMatches = str::contains(str::toLower(opt.name), searchLower) || str::contains(str::toLower(opt.id), searchLower) || str::contains(str::toLower(opt.category), searchLower);
+                    searchMatches = str::contains(str::toLower(opt.getName()), searchLower) || str::contains(str::toLower(opt.getID()), searchLower) || str::contains(str::toLower(opt.getCategory()), searchLower);
                 };
 
                 if (tierMatches && categoryMatches && searchMatches) {
@@ -77,7 +77,7 @@ public:
                         if (modOption->isCompatible() || showIncompatible) {
                             optionList->m_contentLayer->addChild(modOption);
                         } else {
-                            log::error("{} is incompatible with the current platform", modOption->getOption().id);
+                            log::error("{} is incompatible with the current platform", modOption->getOption().getID());
                             modOption->removeMeAndCleanup();
                         };
                     };

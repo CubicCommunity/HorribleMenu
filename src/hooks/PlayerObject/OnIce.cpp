@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "ice_level";
+static constexpr auto id = "ice_level";
 
-inline static Option const o = {
-    id,
-    "Ice Level",
-    "Makes every surface icy. Slip n' slide!\n<cl>Credit: TimeRed</c>",
-    category::misc,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Ice Level")
+                          .setDescription("Makes every surface icy. Slip n' slide!\n<cl>Credit: TimeRed</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(OnIcePlayerObject, PlayerObject) {

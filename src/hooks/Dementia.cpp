@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -8,22 +8,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "dementia";
+static constexpr auto id = "dementia";
 
-inline static Option const o = {
-    id,
-    "Dementia",
-    "Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cl>Credit: imdissapearinghelp</c>",
-    category::misc,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Dementia")
+                          .setDescription("Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cl>Credit: imdissapearinghelp</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(DementiaPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         int lastMusicTime = 0;  // last music time in milliseconds
 

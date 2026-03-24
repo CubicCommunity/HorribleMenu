@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -11,17 +11,15 @@
 // using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "parry";
+static constexpr auto id = "parry";
 
-inline static Option const o = {
-    id,
-    "Parry Obstacles",
-    "Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>Credit: Wuffin</c>",
-    category::misc,
-    SillyTier::Low,
-    true,
-    {},
-};
+static auto const o = Option::create(id)
+                          .setName("Parry Obstacles")
+                          .setDescription("Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>Credit: Wuffin</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::None)
+                          .setRequiresRestart(true)
+                          .setSupportedPlatforms({});
 HORRIBLE_REGISTER_OPTION(o);
 
 // static GameObject* s_pendingKiller1 = nullptr;

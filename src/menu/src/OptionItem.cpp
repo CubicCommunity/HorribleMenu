@@ -1,6 +1,6 @@
-#include "../OptionItem.hpp"
+#include "../OptionItem.h"
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -12,25 +12,20 @@ public:
     bool compatible = false;  // If this option is compatible with the current platform
 
     // The option
-    Option option = {
-        "unk"_spr,
-        "Unknown Option",
-        "No description provided.",
-        category::misc,
-    };
+    Option option;
 
     CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
 
     // Save the current state of the toggler as the option state
     void saveTogglerState() {
-        if (toggler) options::set(option.id, toggler->isToggled(), options::isPinned(option.id));
+        if (toggler) options::set(option.getID(), toggler->isToggled(), options::isPinned(option.getID()));
     };
 
     // Notify the user if this option is not compatible for their current platform
     void notifyIncompat() {
         if (!compatible) {
-            log::warn("Option {} is not available for platform {}", option.id, GEODE_PLATFORM_SHORT_IDENTIFIER);
-            if (auto notif = Notification::create(fmt::format("{} is unavailable for {}", option.name, GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
+            log::warn("Option {} is not available for platform {}", option.getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
+            if (auto notif = Notification::create(fmt::format("{} is unavailable for {}", option.getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
         };
     };
 
@@ -55,7 +50,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     m_impl->option = std::move(option);
 
     // check for compatibility
-    for (auto const& p : m_impl->option.platforms) {
+    for (auto const& p : m_impl->option.getSupportedPlatforms()) {
         if (p & GEODE_PLATFORM_TARGET) {
             m_impl->compatible = true;
             break;
@@ -64,7 +59,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
 
     if (!CCMenu::init()) return false;
 
-    setID(m_impl->option.id);
+    setID(m_impl->option.getID());
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 
@@ -95,21 +90,21 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     m_impl->toggler->setScale(0.875f);
 
     // Set toggler state based on saved mod option value
-    m_impl->toggler->toggle(options::isEnabled(m_impl->option.id));
+    m_impl->toggler->toggle(options::isEnabled(m_impl->option.getID()));
 
     addChild(m_impl->toggler);
 
     x += 30.f;
 
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(m_impl->option.name.c_str(), "bigFont.fnt", getScaledContentWidth() - 40.f, kCCTextAlignmentLeft);
+    auto nameLabel = CCLabelBMFont::create(m_impl->option.getName().c_str(), "bigFont.fnt", getScaledContentWidth() - 40.f, kCCTextAlignmentLeft);
     nameLabel->setID("name-label");
     nameLabel->setLineBreakWithoutSpace(true);
     nameLabel->setAnchorPoint({0.f, 0.5f});
     nameLabel->setPosition({x, yCenter});
     nameLabel->setScale(0.4f);
 
-    auto categoryLabel = CCLabelBMFont::create(m_impl->option.category.c_str(), "goldFont.fnt", getScaledContentWidth() - 60.f, kCCTextAlignmentLeft);
+    auto categoryLabel = CCLabelBMFont::create(m_impl->option.getCategory().c_str(), "goldFont.fnt", getScaledContentWidth() - 60.f, kCCTextAlignmentLeft);
     categoryLabel->setID("category-label");
     categoryLabel->setLineBreakWithoutSpace(true);
     categoryLabel->setAnchorPoint({0.f, 0.5f});
@@ -118,7 +113,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     categoryLabel->setScale(0.25f);
 
     // Set color based on m_impl->option.Tier
-    switch (m_impl->option.silly) {
+    switch (m_impl->option.getSillyTier()) {
         default:  // white
             nameLabel->setColor(colors::white);
             break;
@@ -140,7 +135,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     addChild(categoryLabel);
 
     if (devMode) {
-        auto str = fmt::format("{} | {} delegate(s)", m_impl->option.id, options::getDelegates(m_impl->option.id));
+        auto str = fmt::format("{} | {} delegate(s)", m_impl->option.getID(), options::getDelegates(m_impl->option.getID()));
 
         auto idLabel = CCLabelBMFont::create(str.c_str(), "chatFont.fnt", getScaledContentWidth() - 20.f, kCCTextAlignmentLeft);
         idLabel->setID("id-label");
@@ -171,11 +166,11 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
         [this](Button*) {
             m_impl->notifyIncompat();
 
-            auto formatDesc = fmt::format("{}\n\n{}", m_impl->option.description, m_impl->getTierDescString(m_impl->option.silly, m_impl->compatible));
+            auto formatDesc = fmt::format("{}\n\n{}", m_impl->option.getDescription(), m_impl->getTierDescString(m_impl->option.getSillyTier(), m_impl->compatible));
 
             if (auto popup = FLAlertLayer::create(
                     this,
-                    m_impl->option.name.c_str(),
+                    m_impl->option.getName().c_str(),
                     std::move(formatDesc),
                     "OK",
                     nullptr,
@@ -201,7 +196,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(OptionItem::onPin));
     pinBtn->setID("pin-btn");
 
-    pinBtn->toggle(options::isPinned(m_impl->option.id));
+    pinBtn->toggle(options::isPinned(m_impl->option.getID()));
 
     menu->addChild(pinBtn);
 
@@ -230,14 +225,14 @@ void OptionItem::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
         auto now = !m_impl->toggler->isToggled();
 
-        options::set(m_impl->option.id, now, options::isPinned(m_impl->option.id));
+        options::set(m_impl->option.getID(), now, options::isPinned(m_impl->option.getID()));
 
-        if (m_impl->option.restart) {
+        if (m_impl->option.isRestartRequired()) {
             Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
-            log::warn("Restart required to apply option {}", m_impl->option.id);
+            log::warn("Restart required to apply option {}", m_impl->option.getID());
         };
 
-        log::info("Option {} now set to {}", m_impl->option.name, now ? "enabled" : "disabled");
+        log::info("Option {} now set to {}", m_impl->option.getName(), now ? "enabled" : "disabled");
     } else if (m_impl->toggler) {
         m_impl->notifyIncompat();
 
@@ -247,7 +242,7 @@ void OptionItem::onToggle(CCObject*) {
 
 void OptionItem::onPin(CCObject* sender) {
     if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
-        options::set(m_impl->option.id, options::isEnabled(m_impl->option.id), !pinBtn->isToggled());
+        options::set(m_impl->option.getID(), options::isEnabled(m_impl->option.getID()), !pinBtn->isToggled());
         PinEvent().send();
     };
 };

@@ -1,6 +1,6 @@
 #include "../Options.hpp"
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 using namespace horrible;
 using namespace horrible::util;
@@ -20,8 +20,8 @@ bool options::isPinned(std::string_view id) {
     return false;
 };
 
-int options::getChance(std::string_view id) {
-    return thisMod->getSettingValue<int>(fmt::format("{}-chance", id));
+unsigned int options::getChance(std::string_view id) {
+    return thisMod->getSettingValue<unsigned int>(fmt::format("{}-chance", id));
 };
 
 HorribleOptionSave options::get(std::string_view id) {

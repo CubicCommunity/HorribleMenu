@@ -1,8 +1,8 @@
 #pragma once
 
-#include "OptionCategoryItem.hpp"
+#include "OptionCategoryItem.h"
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 

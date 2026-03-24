@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "crash_death";
+static constexpr auto id = "crash_death";
 
-inline static Option const o = {
-    id,
-    "Crash Chance on Death",
-    "When you die in a level, there's a chance your game will die too.\n<co>Your progress will save!</c> :)\n<cl>Credit: DragonixGD</c>",
-    category::chances,
-    SillyTier::High,
-};
+static auto const o = Option::create(id)
+                          .setName("Crash Chance on Death")
+                          .setDescription("When you die in a level, there's a chance your game will die too.\n<co>Your progress will save!</c> :)\n<cl>Credit: DragonixGD</c>")
+                          .setCategory(category::chances)
+                          .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(CrashGamePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
     };
 
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {

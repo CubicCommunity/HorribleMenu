@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "spam";
+static constexpr auto id = "spam";
 
-inline static Option const o = {
-    id,
-    "Spam Challenge!",
-    "Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cl>Credit: Cheeseworks</c>",
-    category::obstructive,
-    SillyTier::High,
-};
+static auto const o = Option::create(id)
+                          .setName("Spam Challenge!")
+                          .setDescription("Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SpamPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         SpamChallenge* m_currentSpam = nullptr;
     };

@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "random_icon";
+static constexpr auto id = "random_icon";
 
-inline static Option const o = {
-    id,
-    "Random Icon Change",
-    "Randomly change your icon every time you jump.\n<cl>Credit: JompyDoJump</c>",
-    category::randoms,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Random Icon Change")
+                          .setDescription("Randomly change your icon every time you jump.\n<cl>Credit: JompyDoJump</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(RandomIconPlayerObject, PlayerObject) {

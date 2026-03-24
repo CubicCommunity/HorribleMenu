@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "random_speed";
+static constexpr auto id = "random_speed";
 
-inline static Option const o = {
-    id,
-    "Random Speed Change",
-    "Randomly changes your speed while playing a level.\n<cl>Credit: imdissapearinghelp</c>",
-    category::randoms,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Random Speed Change")
+                          .setDescription("Randomly changes your speed while playing a level.\n<cl>Credit: imdissapearinghelp</c>")
+                          .setCategory(category::randoms)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(RandomSpeedPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
     };
 
     bool pushButton(PlayerButton button) {

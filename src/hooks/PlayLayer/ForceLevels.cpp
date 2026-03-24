@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,31 +7,27 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static Option const oGrief = {
-    "grief",
-    "Get Back on Grief",
-    "A chance at death of forcing you to play Grief.\n<cl>Credit: Sweep</c>",
-    category::jumpscares,
-    SillyTier::High,
-};
+static auto const oGrief = Option::create("grief")
+                               .setName("Get Back on Grief")
+                               .setDescription("A chance at death of forcing you to play Grief.\n<cl>Credit: Sweep</c>")
+                               .setCategory(category::jumpscares)
+                               .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(oGrief);
 
-inline static Option const oCongregation = {
-    "congregation",
-    "Congregation Jumpscare",
-    "A chance at death of forcing you to play Congregation.\n<cl>Credit: StaticGD</c>",
-    category::jumpscares,
-    SillyTier::High,
-};
+static auto const oCongregation = Option::create("congregation")
+                                      .setName("Congregation Jumpscare")
+                                      .setDescription("A chance at death of forcing you to play Congregation.\n<cl>Credit: StaticGD</c>")
+                                      .setCategory(category::jumpscares)
+                                      .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(oCongregation);
 
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
     struct Fields {
-        bool griefEnabled = options::isEnabled(oGrief.id);
-        bool congregEnabled = options::isEnabled(oCongregation.id);
+        bool griefEnabled = options::isEnabled(oGrief.getID());
+        bool congregEnabled = options::isEnabled(oCongregation.getID());
 
-        int griefChance = options::getChance(oGrief.id);
-        int congregChance = options::getChance(oCongregation.id);
+        int griefChance = options::getChance(oGrief.getID());
+        int congregChance = options::getChance(oCongregation.getID());
 
         bool m_dontCreateObjects = false;
         GameObject* m_destroyingObject;

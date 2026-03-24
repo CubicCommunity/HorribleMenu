@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "friends";
+static constexpr auto id = "friends";
 
-inline static Option const o = {
-    id,
-    "Friends",
-    "Random friends fly across your screen while you play a level!\n<cl>Credit: Cheeseworks</c>",
-    category::obstructive,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Friends")
+                          .setDescription("Random friends fly across your screen while you play a level!\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 static constexpr auto s_friends = std::to_array<const char*>({
@@ -51,7 +49,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         float xA = -125.f;                           // starting x pos
         float xB = getScaledContentWidth() + 125.f;  // ending x pos
 
-        if ((rnd / 2) <= 50.0) {
+        if ((static_cast<float>(rnd) / 2) <= 50.0) {
             xA = xB;
             xB = -125.f;
         };  // swap sides

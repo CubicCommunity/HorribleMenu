@@ -9,9 +9,9 @@ Let's start off by adding this mod as a dependency in your `mod.json`!
 }
 ```
 
-You can directly access the Horrible Ideas mod menu API by including the [`Horrible.hpp`](Horrible.hpp) file in your code. Make sure to include the **`horrible`** namespace to directly access all needed classes and methods.
+You can directly access the Horrible Ideas mod menu API by including the [`Horrible.h`](Horrible.h) file in your code. Make sure to include the **`horrible`** namespace to directly access all needed classes and methods.
 ```cpp
-#include <arcticwoof.horribleideas/include/Horrible.hpp>
+#include <arcticwoof.horribleideas/include/Horrible.h>
 
 using namespace horrible;
 ```

@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "confetti";
+static constexpr auto id = "confetti";
 
-inline static Option const o = {
-    id,
-    "Confetti Explosion",
-    "While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>Credit: Cheeseworks</c>",
-    category::obstructive,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Confetti Explosion")
+                          .setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 static constexpr auto s_confettis = std::to_array<const char*>({

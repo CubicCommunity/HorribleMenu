@@ -1,13 +1,13 @@
 #include "../WhackButton.hpp"
 
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static std::unordered_map<int, const char*> const s_severities = {
+static std::unordered_map<int, const char*> const s_severities = {
     {1, "diffIcon_01_btn_001.png"},
     {2, "diffIcon_02_btn_001.png"},
     {3, "diffIcon_03_btn_001.png"},

@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "sleepy";
+static constexpr auto id = "sleepy";
 
-inline static Option const o = {
-    id,
-    "Sleepy Player",
-    "Your character will occasionally fall asleep while playing.\n<cl>Credit: this_guy_yt</c>",
-    category::misc,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Sleepy Player")
+                          .setDescription("Your character will occasionally fall asleep while playing.\n<cl>Credit: this_guy_yt</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SleepyPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         bool m_sleepy = false;  // decelerating-to-zero stage
         bool m_waking = false;  // 5s buffer stage (cannot be re-slept)

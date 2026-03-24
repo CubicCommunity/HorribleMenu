@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "double_jump";
+static constexpr auto id = "double_jump";
 
-inline static Option const o = {
-    id,
-    "Double-Jump",
-    "Allows your character to double-jump in a level.\n<cl>Credit: Cheeseworks</c>",
-    category::misc,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Double-Jump")
+                          .setDescription("Allows your character to double-jump in a level.\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(DoubleJumpPlayerObject, PlayerObject) {

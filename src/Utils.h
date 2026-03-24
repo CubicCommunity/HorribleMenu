@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Horrible.hpp>
+#include <Horrible.h>
 
 #include <util/Cursor.hpp>
 #include <util/Jumpscares.hpp>

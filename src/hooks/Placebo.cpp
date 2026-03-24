@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -8,15 +8,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "placebo";
+static constexpr auto id = "placebo";
 
-inline static Option const o = {
-    id,
-    "Placebo",
-    "A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>Credit: tmdXD</c>",
-    category::misc,
-    SillyTier::High,
-};
+static auto const o = Option::create(id)
+                          .setName("Placebo")
+                          .setDescription("A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>Credit: tmdXD</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 void placeboEffect() {
@@ -29,9 +27,9 @@ void placeboEffect() {
         log::info("Placebo effect activated! Toggling all options...");
 
         for (auto const& option : options::getAll()) {
-            auto toggle = options::isEnabled(option.id);
-            log::debug("Placebo {} option {}", toggle ? "disabled" : "enabled", option.id);
-            options::set(option.id, !toggle);
+            auto toggle = options::isEnabled(option.getID());
+            log::debug("Placebo {} option {}", toggle ? "disabled" : "enabled", option.getID());
+            options::set(option.getID(), !toggle);
         };
     };
 };

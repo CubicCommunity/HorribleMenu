@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,22 +7,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "sticky";
+static constexpr auto id = "sticky";
 
-inline static Option const o = {
-    id,
-    "Sticky Grounds",
-    "When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cl>Credit: Cheeseworks</c>",
-    category::misc,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Sticky Grounds")
+                          .setDescription("When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::misc)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(StickyPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(id);
 
     struct Fields {
-        int chance = options::getChance(id);
+        unsigned int chance = options::getChance(id);
 
         float m_defSpeed = 0.f;
 

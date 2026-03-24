@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "earthquake";
+static constexpr auto id = "earthquake";
 
-inline static Option const o = {
-    id,
-    "Earthquake",
-    "Constantly shakes the camera while playing a level.\n<cl>Credit: ArcticWoof</c>",
-    category::obstructive,
-    SillyTier::Medium,
-};
+static auto const o = Option::create(id)
+                          .setName("Earthquake")
+                          .setDescription("Constantly shakes the camera while playing a level.\n<cl>Credit: ArcticWoof</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(EarthquakePlayLayer, PlayLayer) {

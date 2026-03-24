@@ -1,4 +1,4 @@
-#include <Utils.hpp>
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
 
@@ -7,15 +7,13 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-inline static constexpr auto id = "motivation";
+static constexpr auto id = "motivation";
 
-inline static Option const o = {
-    id,
-    "Motivational Quotes",
-    "You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cl>Credit: Cheeseworks</c>",
-    category::obstructive,
-    SillyTier::Low,
-};
+static auto const o = Option::create(id)
+                          .setName("Motivational Quotes")
+                          .setDescription("You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cl>Credit: Cheeseworks</c>")
+                          .setCategory(category::obstructive)
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 static constexpr auto s_msgs = std::to_array<const char*>({
@@ -24,6 +22,7 @@ static constexpr auto s_msgs = std::to_array<const char*>({
     "mrrp meow :3",
     "No, it wasn't lag, dummy.",
     "OwO what's this?",
+    "*completes level*",
     "If you press Alt and F4 together, you can quit faster.",
     "Did you know? The first level was created in 2013!",
     "Keep going! I guess...",
@@ -118,7 +117,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        log::debug("Preparing {} motivational messages", s_msgs.size());
+        log::trace("Preparing {} motivational messages", s_msgs.size());
 
         auto delay = randng::get(10.f, 3.f);
         log::debug("Motivational message will show after {} seconds", delay);
