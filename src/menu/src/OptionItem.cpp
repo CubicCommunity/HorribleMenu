@@ -16,9 +16,14 @@ public:
 
     CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
 
+    CCNode* newContainer = nullptr;
+
     // Save the current state of the toggler as the option state
     void saveTogglerState() {
-        if (toggler) options::set(option.getID(), toggler->isToggled(), options::isPinned(option.getID()));
+        auto saved = options::get(option.getID());
+        if (toggler) options::set(option.getID(), toggler->isToggled(), saved.pin, saved.viewed);
+
+        clearNewLabel();
     };
 
     // Notify the user if this option is not compatible for their current platform
@@ -27,6 +32,10 @@ public:
             log::warn("Option {} is not available for platform {}", option.getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
             if (auto notif = Notification::create(fmt::format("{} is unavailable for {}", option.getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
         };
+    };
+
+    void clearNewLabel() {
+        if (auto label = WeakRef(newContainer).lock()) label->setVisible(false);
     };
 
     constexpr const char* getTierDescString(SillyTier silly, bool compat) noexcept {
@@ -134,22 +143,10 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     addChild(nameLabel);
     addChild(categoryLabel);
 
-    if (devMode) {
-        auto str = fmt::format("{} | {} delegate(s)", m_impl->option.getID(), options::getDelegates(m_impl->option.getID()));
-
-        auto idLabel = CCLabelBMFont::create(str.c_str(), "chatFont.fnt", getScaledContentWidth() - 20.f, kCCTextAlignmentLeft);
-        idLabel->setID("id-label");
-        idLabel->setLineBreakWithoutSpace(true);
-        idLabel->setPosition({x, yCenter - 10.f});
-        idLabel->setAnchorPoint({0.f, 0.5f});
-        idLabel->setColor(colors::black);
-        idLabel->setOpacity(125);
-        idLabel->setScale(0.5f);
-
-        addChild(idLabel);
-    };
-
-    auto menuLayout = RowLayout::create()->setGap(5.f)->setAxisReverse(true)->setAutoGrowAxis(0.f);
+    auto menuLayout = RowLayout::create()
+                          ->setGap(5.f)
+                          ->setAxisReverse(true)
+                          ->setAutoGrowAxis(0.f);
 
     auto menu = CCMenu::create();
     menu->setID("menu");
@@ -161,7 +158,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     addChild(menu);
 
     // info button
-    auto helpBtn = Button::createWithSpriteFrameName(
+    auto infoBtn = Button::createWithSpriteFrameName(
         m_impl->compatible ? "GJ_infoIcon_001.png" : "geode.loader/info-alert.png",
         [this](Button*) {
             m_impl->notifyIncompat();
@@ -175,11 +172,17 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
                     "OK",
                     nullptr,
                     375.f)) popup->show();
-        });
-    helpBtn->setID("help-btn");
-    helpBtn->setScale(0.625f);
 
-    menu->addChild(helpBtn);
+            auto saved = options::get(m_impl->option.getID());
+            if (!saved.viewed) {
+                options::set(m_impl->option.getID(), saved.enabled, saved.pin, true);
+                m_impl->clearNewLabel();
+            };
+        });
+    infoBtn->setID("info-btn");
+    infoBtn->setScale(0.625f);
+
+    menu->addChild(infoBtn);
 
     // @geode-ignore(unknown-resource)
     auto pinOff = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
@@ -202,6 +205,36 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
 
     menu->updateLayout();
 
+    auto newContainerLayout = RowLayout::create()
+                                  ->setGap(1.25f)
+                                  ->setAutoScale(false)
+                                  ->setAutoGrowAxis(0.f);
+
+    m_impl->newContainer = CCNode::create();
+    m_impl->newContainer->setID("new-option-container");
+    m_impl->newContainer->setAnchorPoint({0, 0.5});
+    m_impl->newContainer->setPosition({x, 5.25f});
+    m_impl->newContainer->setLayout(newContainerLayout);
+
+    addChild(m_impl->newContainer, 9);
+
+    auto newIcon = CCSprite::createWithSpriteFrameName("geode.loader/updates-available.png");
+    newIcon->setID("new-option-icon");
+    newIcon->setScale(0.25f);
+
+    auto newLabel = CCLabelBMFont::create("New!", "bigFont.fnt");
+    newLabel->setID("new-option-label");
+    newLabel->setScale(0.25f);
+    newLabel->setColor(colors::cyan);
+
+    m_impl->newContainer->addChild(newIcon);
+    m_impl->newContainer->addChild(newLabel);
+
+    m_impl->newContainer->updateLayout();
+
+    m_impl->newContainer->setVisible(!options::isViewed(m_impl->option.getID()));
+    m_impl->newContainer->setScale(0.75f);
+
     if (!m_impl->compatible) {
         m_impl->toggler->toggle(false);
 
@@ -218,6 +251,21 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
         m_impl->saveTogglerState();
     };
 
+    if (devMode) {
+        auto str = fmt::format("{} | {} delegate(s)", m_impl->option.getID(), options::getDelegates(m_impl->option.getID()));
+
+        auto idLabel = CCLabelBMFont::create(str.c_str(), "chatFont.fnt", getScaledContentWidth() - 20.f, kCCTextAlignmentLeft);
+        idLabel->setID("id-label");
+        idLabel->setLineBreakWithoutSpace(true);
+        idLabel->setPosition({getScaledContentWidth() - 7.5f, 5.25f});
+        idLabel->setAnchorPoint({1, 0.5});
+        idLabel->setColor(colors::black);
+        idLabel->setOpacity(125);
+        idLabel->setScale(0.5f);
+
+        addChild(idLabel);
+    };
+
     return true;
 };
 
@@ -225,7 +273,8 @@ void OptionItem::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
         auto now = !m_impl->toggler->isToggled();
 
-        options::set(m_impl->option.getID(), now, options::isPinned(m_impl->option.getID()));
+        auto saved = options::get(m_impl->option.getID());
+        options::set(m_impl->option.getID(), now, saved.pin, true);
 
         if (m_impl->option.isRestartRequired()) {
             Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
@@ -233,6 +282,8 @@ void OptionItem::onToggle(CCObject*) {
         };
 
         log::info("Option {} now set to {}", m_impl->option.getName(), now ? "enabled" : "disabled");
+
+        m_impl->clearNewLabel();
     } else if (m_impl->toggler) {
         m_impl->notifyIncompat();
 
@@ -242,14 +293,20 @@ void OptionItem::onToggle(CCObject*) {
 
 void OptionItem::onPin(CCObject* sender) {
     if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
-        options::set(m_impl->option.getID(), options::isEnabled(m_impl->option.getID()), !pinBtn->isToggled());
+        options::set(m_impl->option.getID(), options::isEnabled(m_impl->option.getID()), !pinBtn->isToggled(), true);
         PinEvent().send();
+
+        m_impl->clearNewLabel();
     };
 };
 
-Option const& OptionItem::getOption() const noexcept { return m_impl->option; };
+Option const& OptionItem::getOption() const noexcept {
+    return m_impl->option;
+};
 
-bool OptionItem::isCompatible() const noexcept { return m_impl->compatible; };
+bool OptionItem::isCompatible() const noexcept {
+    return m_impl->compatible;
+};
 
 OptionItem* OptionItem::create(CCSize const& size, Option option, bool devMode) {
     auto ret = new OptionItem();

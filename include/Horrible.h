@@ -17,9 +17,7 @@
 struct HorribleOptionSave final {
     bool enabled = false;
     bool pin = false;
-    unsigned int chance = 0;
-    int64_t min = 0;
-    int64_t max = 1;
+    bool viewed = false;
 };
 
 template <>
@@ -100,6 +98,15 @@ namespace horrible {
         [[nodiscard]] bool isPinned(std::string_view id) const;
 
         /**
+         * Quickly check the viewed state of an option
+         *
+         * @param id The ID of the option to check
+         *
+         * @returns Boolean of the current value
+         */
+        [[nodiscard]] bool isViewed(std::string_view id) const;
+
+        /**
          * Get the saved data of an option
          *
          * @param id The ID of the option to check
@@ -140,8 +147,9 @@ namespace horrible {
          * @param id The ID of the option to toggle
          * @param enable Boolean to toggle to
          * @param pin If this option is pinned by the user
+         * @param viewed If this option was already viewed by the user
          */
-        void setOption(geode::ZStringView id, bool enable, bool pin = false);
+        void setOption(geode::ZStringView id, bool enable, bool pin = false, bool viewed = true);
 
         /**
          * Upsert a new hook delegate

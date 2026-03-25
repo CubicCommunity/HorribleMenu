@@ -12,20 +12,16 @@ using namespace horrible;
 Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matjson::Value const& value) {
     GEODE_UNWRAP_INTO(bool enabled, value["enabled"].asBool());
     GEODE_UNWRAP_INTO(bool pin, value["pin"].asBool());
-    GEODE_UNWRAP_INTO(unsigned int chance, value["chance"].asUInt());
-    GEODE_UNWRAP_INTO(int64_t min, value["min"].asInt());
-    GEODE_UNWRAP_INTO(int64_t max, value["max"].asInt());
+    GEODE_UNWRAP_INTO(bool viewed, value["viewed"].asBool());
 
-    return Ok(HorribleOptionSave{enabled, pin, chance, min, max});
+    return Ok(HorribleOptionSave{enabled, pin, viewed});
 };
 
 matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave const& value) {
     auto obj = matjson::Value();
     obj["enabled"] = value.enabled;
     obj["pin"] = value.pin;
-    obj["chance"] = value.chance;
-    obj["min"] = value.min;
-    obj["max"] = value.max;
+    obj["viewed"] = value.viewed;
 
     return obj;
 };
@@ -141,6 +137,10 @@ bool OptionManager::isPinned(std::string_view id) const {
     return getOption(id).pin;
 };
 
+bool OptionManager::isViewed(std::string_view id) const {
+    return getOption(id).viewed;
+};
+
 HorribleOptionSave OptionManager::getOption(std::string_view id) const {
     return Mod::get()->getSavedValue<HorribleOptionSave>(id);
 };
@@ -165,7 +165,7 @@ void OptionManager::toggleOption(ZStringView id, bool enable) {
     setOption(id, enable, isPinned(id));
 };
 
-void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
+void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed) {
     auto it = m_delegates.find(id);
     if (it != m_delegates.end()) {
         for (auto& cb : it->second) cb(enable);
@@ -173,7 +173,7 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin) {
 
     log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
 
-    auto save = HorribleOptionSave{enable, pin};
+    auto save = HorribleOptionSave{enable, pin, viewed};
 
     (void)Mod::get()->setSavedValue(id, save);
     (void)OptionEvent(id).send(std::move(save));

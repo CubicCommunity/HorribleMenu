@@ -20,6 +20,11 @@ bool options::isPinned(std::string_view id) {
     return false;
 };
 
+bool options::isViewed(std::string_view id) {
+    if (auto om = OptionManager::get()) return om->isViewed(id);
+    return false;
+};
+
 unsigned int options::getChance(std::string_view id) {
     return thisMod->getSettingValue<unsigned int>(fmt::format("{}-chance", id));
 };
@@ -29,8 +34,8 @@ HorribleOptionSave options::get(std::string_view id) {
     return {};
 };
 
-void options::set(ZStringView id, bool enable, bool pin) {
-    if (auto om = OptionManager::get()) om->setOption(id, enable, pin);
+void options::set(ZStringView id, bool enable, bool pin, bool viewed) {
+    if (auto om = OptionManager::get()) om->setOption(id, enable, pin, viewed);
 };
 
 size_t options::getDelegates(std::string_view id) noexcept {

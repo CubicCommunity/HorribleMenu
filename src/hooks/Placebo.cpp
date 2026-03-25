@@ -27,9 +27,9 @@ void placeboEffect() {
         log::info("Placebo effect activated! Toggling all options...");
 
         for (auto const& option : options::getAll()) {
-            auto toggle = options::isEnabled(option.getID());
-            log::debug("Placebo {} option {}", toggle ? "disabled" : "enabled", option.getID());
-            options::set(option.getID(), !toggle);
+            auto saved = options::get(option.getID());
+            log::debug("Placebo {} option {}", saved.enabled ? "enabled" : "disabled", option.getID());
+            options::set(option.getID(), !saved.enabled, saved.pin, saved.viewed);
         };
     };
 };

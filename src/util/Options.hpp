@@ -34,6 +34,15 @@ namespace horrible {
             bool isPinned(std::string_view id);
 
             /**
+             * Quickly check the viewed state of an option
+             *
+             * @param id The ID of the option to check
+             *
+             * @returns Boolean of the current value
+             */
+            bool isViewed(std::string_view id);
+
+            /**
              * Returns the chance value for an option
              *
              * @param id The ID of the option to check
@@ -57,8 +66,9 @@ namespace horrible {
              * @param id The ID of the option to toggle
              * @param enable Boolean to toggle to
              * @param pin If this option is pinned by the user
+             * @param viewed If this option was already viewed by the user
              */
-            void set(geode::ZStringView id, bool enable, bool pin = false);
+            void set(geode::ZStringView id, bool enable, bool pin = false, bool viewed = true);
 
             /**
              * Returns the amount of delegate callbacks registered for an option
