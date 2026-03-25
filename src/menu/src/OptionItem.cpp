@@ -166,7 +166,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
         [this](Button*) {
             m_impl->notifyIncompat();
 
-            auto formatDesc = fmt::format("{}\n\n{}", m_impl->option.getDescription(), m_impl->getTierDescString(m_impl->option.getSillyTier(), m_impl->compatible));
+            auto formatDesc = fmt::format("{}\n\n{}", (m_impl->option.getDescription().size() > 0) ? m_impl->option.getDescription() : "<cc>No description provided.</c>", m_impl->getTierDescString(m_impl->option.getSillyTier(), m_impl->compatible));
 
             if (auto popup = FLAlertLayer::create(
                     this,

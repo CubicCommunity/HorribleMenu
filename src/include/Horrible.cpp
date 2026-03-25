@@ -192,6 +192,7 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
         for (auto const& hook : hooks | std::views::values) {
             hook->setAutoEnable(value);
             log::trace("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
+            hook->setPriority(geode::Priority::FirstPre);
             allHooks.push_back(hook);
         };
 

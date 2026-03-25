@@ -84,6 +84,8 @@ public:
                 };
             };
 
+            log::trace("Finished sorting {} options", list.size());
+
             optionList->m_contentLayer->updateLayout();
             optionList->scrollToTop();
         } else {
@@ -278,6 +280,7 @@ bool OptionMenu::init() {
 
     // get all the options data
     m_impl->filterOptions(options::getAll());
+    log::debug("Processed {} options", options::getAll().size());
 
     auto settingsBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
@@ -293,7 +296,6 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(settingsBtn);
 
     auto resetFiltersBtnSpr = CircleButtonSprite::createWithSpriteFrameName(
-        // @geode-ignore(unknown-resource)
         "geode.loader/reload.png",
         1.f,
         btns,
@@ -334,35 +336,36 @@ bool OptionMenu::init() {
     socialContainer->setContentWidth(0.f);
     socialContainer->setLayout(socialContainerLayout);
 
-    auto socialBtns = std::to_array<SocialBtnData>({{"gj_ytIcon_001.png",
-                                                        "horrible-mods-series-btn",
-                                                        [](auto) {
-                                                            createQuickPopup(
-                                                                "Horrible Mods",
-                                                                "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
-                                                                "Cancel",
-                                                                "OK",
-                                                                [](bool, bool ok) {
-                                                                    if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
-                                                                });
-                                                        }},
-        {"gj_discordIcon_001.png",
-            "discord-btn",
-            [](auto) {
-                createQuickPopup(
-                    "Discord",
-                    "Join the <cj>Cubic Studios</c> official community Discord server?",
-                    "Cancel",
-                    "OK",
-                    [](bool, bool ok) {
-                        if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
-                    });
-            }},
-        {"geode.loader/gift.png",
-            "support-btn",
-            [](auto) {
-                openSupportPopup(thisMod);
-            }}});
+    auto socialBtns = std::to_array<SocialBtnData>(
+        {{"gj_ytIcon_001.png",
+             "horrible-mods-series-btn",
+             [](auto) {
+                 createQuickPopup(
+                     "Horrible Mods",
+                     "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
+                     "Cancel",
+                     "OK",
+                     [](bool, bool ok) {
+                         if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
+                     });
+             }},
+            {"gj_discordIcon_001.png",
+                "discord-btn",
+                [](auto) {
+                    createQuickPopup(
+                        "Discord",
+                        "Join the <cj>Cubic Studios</c> official community Discord server?",
+                        "Cancel",
+                        "OK",
+                        [](bool, bool ok) {
+                            if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
+                        });
+                }},
+            {"geode.loader/gift.png",
+                "support-btn",
+                [](auto) {
+                    openSupportPopup(thisMod);
+                }}});
 
     for (auto& socialBtn : socialBtns) {
         if (auto btn = Button::createWithSpriteFrameName(
