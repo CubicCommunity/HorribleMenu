@@ -34,7 +34,8 @@
     },
     "api": {
         "include": [
-            "include/*.hpp"
+            "include/*.hpp",
+            "include/*.h"
         ]
     },
     "dependencies": {
