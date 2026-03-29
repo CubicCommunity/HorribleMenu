@@ -41,7 +41,7 @@ By default, this mod implements its own safe mode to prevent accidental progress
 ---
 
 ### Developers
-Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can see its [documentation here](https://github.com/DumbCaveSpider/HorribleIdeas/tree/main/include). We're hyped to see how much more you can really mess up this game.
+Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can see its [documentation here](https://github.com/CubicCommunity/HorribleMenu/tree/main/include). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
 using namespace horrible;
@@ -67,7 +67,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 };
 ```
 
-> ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*If you plan on publishing a mod that acts as an add-on to Horrible Menu, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](https://github.com/DumbCaveSpider/HorribleIdeas/tree/main/include) to the best of your ability!*</c>
+> ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*If you plan on publishing a mod that acts as an add-on to Horrible Menu, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](https://github.com/CubicCommunity/HorribleMenu/tree/main/include) to the best of your ability!*</c>
 
 ---
 
