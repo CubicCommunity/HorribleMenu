@@ -6,7 +6,7 @@
 
 #include <Geode/platform/platform.hpp>
 
-// Container for Horrible Ideas API
+// Container for Horrible Menu API
 namespace horrible {
     // Alias for `geode::PlatformID`
     using Platform = geode::PlatformID;

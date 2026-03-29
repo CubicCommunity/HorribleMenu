@@ -6,8 +6,8 @@
         "mac": "2.2081",
         "ios": "2.2081"
     },
-    "id": "arcticwoof.horribleideas",
-    "name": "Horrible Ideas",
+    "id": "cubicstudios.horriblemenu",
+    "name": "Horrible Menu",
     "version": "1.0.0-alpha.1",
     "developers": [
         "ArcticWoof",
@@ -15,8 +15,8 @@
     ],
     "description": "A plethora of ways to ruin your experience...",
     "links": {
-        "source": "https://github.com/DumbCaveSpider/HorribleIdeas",
-        "homepage": "https://avalanche.cubicstudios.xyz/",
+        "source": "https://github.com/CubicCommunity/HorribleMenu",
+        "homepage": "https://breakeode.cubicstudios.xyz/",
         "community": "https://www.dsc.gg/cubic"
     },
     "tags": [
@@ -48,7 +48,7 @@
         "safe-mode": {
             "type": "bool",
             "name": "Safe Mode",
-            "description": "Prevent saving any progression made in levels. <cr>Keeping this enabled while using Horrible Ideas's options is highly recommended!</cr>",
+            "description": "Prevent saving any progression made in levels. <cr>Keeping this enabled while using Horrible Menu's options is highly recommended!</cr>",
             "default": true
         },
         "button": {

@@ -10,7 +10,7 @@
 #ifdef MY_MOD_ID
 #undef MY_MOD_ID
 #endif
-#define MY_MOD_ID "arcticwoof.horribleideas"
+#define MY_MOD_ID "cubicstudios.horriblemenu"
 
 namespace horrible {
     // Event for option toggles
@@ -48,7 +48,7 @@ namespace horrible {
             platforms(std::move(platforms)) {};
     };
 
-    // Optional bridge to option manager for Horrible Ideas
+    // Optional bridge to option manager for Horrible Menu
     class OptionManagerV2 final {
     public:
         /**

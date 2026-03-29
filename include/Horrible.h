@@ -26,9 +26,9 @@ struct matjson::Serialize<HorribleOptionSave> final {
     static matjson::Value toJson(HorribleOptionSave const& value);
 };
 
-// Container for Horrible Ideas API functions
+// Container for Horrible Menu API functions
 namespace horrible {
-    // Option manager for Horrible Ideas
+    // Option manager for Horrible Menu
     class AWCW_HORRIBLE_API_DLL OptionManager final {
     private:
         std::vector<Option> m_options;          // Array of registered options

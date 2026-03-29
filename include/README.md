@@ -1,17 +1,17 @@
-# [<img src="../logo.png" width="30" alt="The mod's logo." />](https://www.geode-sdk.org/mods/arcticwoof.horribleideas) Horrible Ideas
+# [<img src="../logo.png" width="30" alt="The mod's logo." />](https://www.geode-sdk.org/mods/cubicstudios.horriblemenu) Horrible Menu
 A plethora of ways to ruin your gaming experience...
 
 ## API
 Let's start off by adding this mod as a dependency in your `mod.json`!
 ```jsonc
 "dependencies": {
-    "arcticwoof.horribleideas": ">=1.0.0"
+    "cubicstudios.horriblemenu": ">=1.0.0"
 }
 ```
 
-You can directly access the Horrible Ideas mod menu API by including the [`Horrible.h`](Horrible.h) file in your code. Make sure to include the **`horrible`** namespace to directly access all needed classes and methods.
+You can directly access the Horrible Menu mod menu API by including the [`Horrible.h`](Horrible.h) file in your code. Make sure to include the **`horrible`** namespace to directly access all needed classes and methods.
 ```cpp
-#include <arcticwoof.horribleideas/include/Horrible.h>
+#include <cubicstudios.horriblemenu/include/Horrible.h>
 
 using namespace horrible;
 ```
