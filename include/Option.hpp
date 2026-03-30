@@ -22,11 +22,11 @@ namespace horrible {
     // Metadata for a horrible option
     struct AWCW_HORRIBLE_API_DLL Option final {
     private:
-        std::string m_id = "";                                // Unique ID of the option
+        std::string m_id = "id"_spr;                          // Unique ID of the option
         std::string m_name = "Example Option";                // Name of the option
         std::string m_description = "";                       // Description of the option
         std::string m_category = "Uncategorized";             // Name of the category this option should be under
-        SillyTier m_silly = SillyTier::None;                  // How silly the option is
+        SillyTier m_silly = SillyTier::Low;                   // How silly the option is
         bool m_restart = false;                               // If the option requires a restart to take effect
         std::vector<Platform> m_platforms = {Platform::All};  // Platforms that the option supports
 
@@ -43,12 +43,18 @@ namespace horrible {
         Option& setRequiresRestart(bool required);
         Option& setSupportedPlatforms(std::vector<Platform> platforms);
 
-        geode::ZStringView getID() const noexcept;
-        geode::ZStringView getName() const noexcept;
-        geode::ZStringView getDescription() const noexcept;
-        geode::ZStringView getCategory() const noexcept;
-        SillyTier getSillyTier() const noexcept;
-        bool isRestartRequired() const noexcept;
-        std::span<const Platform> getSupportedPlatforms() const noexcept;
+        [[nodiscard]] geode::ZStringView getID() const noexcept;
+        [[nodiscard]] geode::ZStringView getName() const noexcept;
+        [[nodiscard]] geode::ZStringView getDescription() const noexcept;
+        [[nodiscard]] geode::ZStringView getCategory() const noexcept;
+        [[nodiscard]] SillyTier getSillyTier() const noexcept;
+        [[nodiscard]] bool isRestartRequired() const noexcept;
+        [[nodiscard]] std::span<const Platform> getSupportedPlatforms() const noexcept;
+
+        void enable();
+        void disable();
+
+        [[nodiscard]] bool isEnabled() const;
+        [[nodiscard]] bool isPinned() const;
     };
 };

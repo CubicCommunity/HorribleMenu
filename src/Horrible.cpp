@@ -89,6 +89,24 @@ std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
     return m_platforms;
 };
 
+bool Option::isEnabled() const {
+    if (auto om = OptionManager::get()) return om->isEnabled(getID());
+    return false;
+};
+
+bool Option::isPinned() const {
+    if (auto om = OptionManager::get()) return om->isPinned(getID());
+    return false;
+};
+
+void Option::enable() {
+    if (auto om = OptionManager::get()) om->toggleOption(getID(), true);
+};
+
+void Option::disable() {
+    if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
+};
+
 Option Option::create(std::string id) {
     return Option().setID(std::move(id));
 };
@@ -192,7 +210,9 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
         for (auto const& hook : hooks | std::views::values) {
             hook->setAutoEnable(value);
             log::trace("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
-            hook->setPriority(geode::Priority::FirstPre);
+
+            if (hook->getOwner()->getID() == GEODE_MOD_ID) hook->setPriority(geode::Priority::FirstPre);
+
             allHooks.push_back(hook);
         };
 

@@ -3,6 +3,8 @@
 
 *by [ArcticWoof](user:7689052) & [Cheeseworks](user:6408873)!*
 
+> ![✳️](frame:collaborationIcon_001.png) <cg>*This mod has settings you can utilize to customize your experience.*</c>
+
 ---
 
 ## About
@@ -11,7 +13,7 @@ This silly lil' mod adds a funny mod menu filled to the brim with **over 30 craz
 ---
 
 ### Options
-When <cf>pressing `\` on your keyboard</c> or by <cl>pressing the floating *![Horrible Options](cubicstudios.horriblemenu/icon.png?scale=0.375)* button on your screen</c>, a <cg>menu</c> will pop up with <cg>a list of horrible mod options</c> you can <cy>toggle anytime</c> on your game to do some interesting things to your gaming experience. You can view more information within the menu itself.
+When <cf>pressing `\` on your keyboard</c> or by <cl>pressing the floating *![Horrible Options](cubicstudios.horriblemenu/icon.png?scale=0.375)* button on your screen</c>, a <cg>menu</c> will pop up with <cg>a list of horrible mod options</c> you can <cy>toggle anytime</c> on your game to do some interesting things to it. You can view more information within the menu itself.
 
 > ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*You can customize any keybinds in this mod through its settings.*</c>
 
@@ -81,4 +83,5 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 ---
 
-**![YT](frame:gj_ytIcon_001.png?scale=0.375) Watch the [Horrible Mods](https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu) series out now on YouTube!**
+### Developers
+###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [Breakeode](https://breakeode.cubicstudios.xyz/) team.

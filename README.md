@@ -1,9 +1,12 @@
-# [<img src="logo.png" width="25" alt="The mod's logo." />](https://www.geode-sdk.org/mods/cubicstudios.horriblemenu) Horrible Menu
+# [<img src="logo.png" width="25" alt="The mod's logo." />](https://geode-sdk.org/mods/cubicstudios.horriblemenu) Horrible Menu
 A plethora of ways to ruin your experience...
 
-> [<img alt="Latest Version" src="https://img.shields.io/github/v/release/CubicCommunity/HorribleMenu?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">](../../releases/) [<img alt="Code License" src="https://img.shields.io/github/license/CubicCommunity/HorribleMenu?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">](LICENSE.md)
+> [![Version](https://img.shields.io/github/v/release/CubicCommunity/HorribleMenu?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version)](../../releases/) [![License](https://img.shields.io/github/license/CubicCommunity/HorribleMenu?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License)](LICENSE.md)
 >  
-> [<img alt="Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/HorribleMenu/total?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.horriblemenu)
+> [![Downloads](https://img.shields.io/github/downloads/CubicCommunity/HorribleMenu/total?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+
+> [!TIP]
+> *This mod has settings you can utilize to customize your experience.*
 
 ---
 
@@ -13,7 +16,7 @@ This silly lil' mod adds a funny mod menu filled to the brim with **over 30 craz
 ---
 
 ### Options
-When pressing `\` or by pressing the floating *<img src="resources/icon.png" width="15" alt="Horrible Options">* button on your screen, a menu will pop up with a list of joke mod options you can toggle anytime on your game to do some interesting things to your gaming experience. You can view more information within the menu itself.
+When pressing `\` or by pressing the floating *<img src="resources/icon.png" width="15" alt="Horrible Options">* button on your screen, a menu will pop up with a list of joke mod options you can toggle anytime on your game to do some interesting things to it. You can view more information within the menu itself.
 
 > [!NOTE]
 > *You can customize any keybinds in this mod through its settings.*
@@ -77,7 +80,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 ### Thanks
-- **[Geode SDK](https://www.geode-sdk.org/)**: Created an incredible SDK to make this mod possible!
+- **[Geode SDK](https://geode-sdk.org/)**: Created an incredible SDK to make this mod possible!
 - **[RobTop Games](https://www.robtopgames.com/)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
 
 *and...*
@@ -94,4 +97,5 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 ---
 
-### [<img alt="Trailer Likes" height="15" src="https://img.shields.io/youtube/likes/PI_poDUUauw?style=for-the-badge&logo=youtube">](https://www.youtube.com/watch?v=PI_poDUUauw&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu) Watch the [Horrible Mods](https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu) series out now on YouTube!
+### Developers
+###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Breakeode logo" /> Breakeode](https://breakeode.cubicstudios.xyz/) team.

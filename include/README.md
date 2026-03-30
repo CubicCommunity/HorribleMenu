@@ -1,4 +1,4 @@
-# [<img src="../logo.png" width="30" alt="The mod's logo." />](https://www.geode-sdk.org/mods/cubicstudios.horriblemenu) Horrible Menu
+# [<img src="../logo.png" width="30" alt="The mod's logo." />](https://geode-sdk.org/mods/cubicstudios.horriblemenu) Horrible Menu
 A plethora of ways to ruin your gaming experience...
 
 ## API
