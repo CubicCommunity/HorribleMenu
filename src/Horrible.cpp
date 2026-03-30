@@ -211,8 +211,6 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
             hook->setAutoEnable(value);
             log::trace("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
 
-            if (hook->getOwner()->getID() == GEODE_MOD_ID) hook->setPriority(geode::Priority::FirstPre);
-
             allHooks.push_back(hook);
         };
 
