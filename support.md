@@ -1,4 +1,4 @@
-# ![YT](frame:gj_ytIcon_001.png?scale=0.625) [Watch 'Horrible Mods'](https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu)
+# ![:D](frame:geode.loader/gift.png?scale=0.625) [Support Us](https://breakeode.cubicstudios.xyz/)!
 
 ## ArcticWoof...
 ### Dono?

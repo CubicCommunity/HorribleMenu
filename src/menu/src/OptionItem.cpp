@@ -11,12 +11,12 @@ class OptionItem::Impl final {
 public:
     bool compatible = false;  // If this option is compatible with the current platform
 
-    // The option
-    Option option;
+    Option option;  // A copy of the option
 
     CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
+    CCNode* newContainer = nullptr;        // Container for the "New!" label and icon
 
-    CCNode* newContainer = nullptr;
+    Callback pinCallback = nullptr;  // Callback for when the option is pinned or unpinned
 
     // Save the current state of the toggler as the option state
     void saveTogglerState() {
@@ -294,10 +294,14 @@ void OptionItem::onToggle(CCObject*) {
 void OptionItem::onPin(CCObject* sender) {
     if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
         options::set(m_impl->option.getID(), options::isEnabled(m_impl->option.getID()), !pinBtn->isToggled(), true);
-        PinEvent().send();
 
+        if (m_impl->pinCallback) m_impl->pinCallback();
         m_impl->clearNewLabel();
     };
+};
+
+void OptionItem::setPinCallback(Callback&& callback) {
+    m_impl->pinCallback = std::move(callback);
 };
 
 Option const& OptionItem::getOption() const noexcept {

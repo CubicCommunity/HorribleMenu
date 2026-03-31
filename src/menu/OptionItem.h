@@ -4,31 +4,27 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-using namespace horrible;
-
 namespace horrible {
-    // Event for pin toggles
-    struct PinEvent final : Event<PinEvent, bool()> {
-        using Event::Event;
-    };
-
-    class OptionItem final : public CCMenu, private FLAlertLayerProtocol {
+    class OptionItem final : public cocos2d::CCMenu, private FLAlertLayerProtocol {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
+
+        using Callback = Function<void()>;
 
     protected:
         OptionItem();
         ~OptionItem();
 
-        void onToggle(CCObject*);
-        void onPin(CCObject* sender);
+        void onToggle(cocos2d::CCObject*);
+        void onPin(cocos2d::CCObject* sender);
 
-        bool init(CCSize const& size, Option option, bool devMode);
+        bool init(cocos2d::CCSize const& size, Option option, bool devMode);
 
     public:
-        static OptionItem* create(CCSize const& size, Option option, bool devMode);
+        static OptionItem* create(cocos2d::CCSize const& size, Option option, bool devMode);
+
+        void setPinCallback(Callback&& callback);
 
         Option const& getOption() const noexcept;
         bool isCompatible() const noexcept;

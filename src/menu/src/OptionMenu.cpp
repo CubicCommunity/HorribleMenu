@@ -1,20 +1,15 @@
 #include "../OptionMenu.h"
 
-#include <Geode/Geode.hpp>
-#include <Geode/ui/GeodeUI.hpp>
-#include <Geode/utils/terminate.hpp>
+#include "../OptionItem.h"
+#include "../OptionCategoryItem.h"
+
 #include <Utils.h>
-#include <algorithm>
-#include <memory>
-#include <menu/OptionCategoryItem.h>
-#include <menu/OptionItem.h>
-#include <vector>
-#include "Geode/cocos/base_nodes/CCNode.h"
-#include "Geode/cocos/sprite_nodes/CCSprite.h"
-#include "Geode/loader/SettingV3.hpp"
-#include "Geode/ui/Layout.hpp"
-#include "Geode/ui/ScrollLayer.hpp"
-#include "Geode/ui/Scrollbar.hpp"
+
+#include <Geode/Geode.hpp>
+
+#include <Geode/ui/GeodeUI.hpp>
+
+#include <Geode/utils/terminate.hpp>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
@@ -39,6 +34,8 @@ public:
     std::string theme = thisMod->getSettingValue<std::string>("theme");
 
     CCNode* safeModeContainer = nullptr;
+
+    std::vector<WeakRef<OptionCategoryItem>> categoryItems;
 
     void filterOptions(std::span<const Option> optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
         if (optionList) {
@@ -75,6 +72,10 @@ public:
                             opt,
                             devMode)) {
                         if (modOption->isCompatible() || showIncompatible) {
+                            modOption->setPinCallback([this]() {
+                                filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
+                            });
+
                             optionList->m_contentLayer->addChild(modOption);
                         } else {
                             log::error("{} is incompatible with the current platform", modOption->getOption().getID());
@@ -164,7 +165,26 @@ bool OptionMenu::init() {
     };
 
     for (auto const& category : sortedCats) {
-        if (auto categoryItem = OptionCategoryItem::create({m_impl->categoryList->getScaledContentWidth(), 20.f}, category)) m_impl->categoryList->m_contentLayer->addChild(categoryItem);
+        if (auto categoryItem = OptionCategoryItem::create({m_impl->categoryList->getScaledContentWidth(), 20.f}, category)) {
+            categoryItem->setToggleCallback([this](std::string_view category, bool enabled) {
+                if (enabled) {
+                    m_impl->selectedCategory = category;
+
+                    for (auto const& item : m_impl->categoryItems) {
+                        if (auto cat = item.lock()) {
+                            if (cat->getCategory() != category) cat->setToggled(false);
+                        };
+                    };
+                } else if (m_impl->selectedCategory == category) {
+                    m_impl->selectedCategory = "";
+                };
+
+                m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
+            });
+
+            m_impl->categoryList->m_contentLayer->addChild(categoryItem);
+            m_impl->categoryItems.push_back(categoryItem);
+        };
     };
 
     m_impl->categoryList->m_contentLayer->updateLayout();
@@ -307,13 +327,19 @@ bool OptionMenu::init() {
         [this](Button*) {
             createQuickPopup(
                 "Reset Filters",
-                "Would you like to <cr>reset all search filters</c>?\n<cy>This will not affect your pins.</c>",
+                "Would you like to <cr>reset all search filters</c>?\n<cy>This will not clear your pins.</c>",
                 "Cancel",
                 "OK",
-                [this](bool, bool ok) {
+                [this](auto, bool ok) {
                     if (ok) {
                         m_impl->selectedTier = SillyTier::None;
-                        CategoryEvent().send("", false);
+                        m_impl->selectedCategory = "";
+
+                        for (auto const& category : m_impl->categoryItems) {
+                            if (auto cat = category.lock()) cat->setToggled(false);
+                        };
+
+                        m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
                     };
                 });
         });
@@ -337,16 +363,16 @@ bool OptionMenu::init() {
     socialContainer->setLayout(socialContainerLayout);
 
     auto socialBtns = std::to_array<SocialBtnData>(
-        {{"gj_ytIcon_001.png",
-             "horrible-mods-series-btn",
+        {{"geode.loader/homepage.png",
+             "website-btn",
              [](auto) {
                  createQuickPopup(
-                     "Horrible Mods",
-                     "Watch the series '<cr>Horrible Mods</c>' on <cl>Avalanche</c>'s YouTube channel?",
+                     "Breakeode",
+                     "Visit <cr>Breakeode</c>'s official website?",
                      "Cancel",
                      "OK",
-                     [](bool, bool ok) {
-                         if (ok) web::openLinkInBrowser("https://www.youtube.com/watch?v=Ssl49pNmW_0&list=PL0dsSu2pR5cERnq7gojZTKVRvUwWo2Ohu");
+                     [](auto, bool ok) {
+                         if (ok) web::openLinkInBrowser("https://breakeode.cubicstudios.xyz/");
                      });
              }},
             {"gj_discordIcon_001.png",
@@ -357,7 +383,7 @@ bool OptionMenu::init() {
                         "Join the <cj>Cubic Studios</c> official community Discord server?",
                         "Cancel",
                         "OK",
-                        [](bool, bool ok) {
+                        [](auto, bool ok) {
                             if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
                         });
                 }},
@@ -398,19 +424,6 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(m_impl->safeModeContainer, 9);
 
     setupSafeModeNode(thisMod->getSettingValue<bool>(setting::SafeMode));
-
-    addEventListener(
-        CategoryEvent(),
-        [this](std::string_view category, bool enabled) {
-            m_impl->selectedCategory = (enabled) ? category : "";
-            m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
-        });
-
-    addEventListener(
-        PinEvent(),
-        [this]() {
-            m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
-        });
 
     addEventListener(
         SettingChangedEvent(thisMod, setting::SafeMode),

@@ -11,6 +11,8 @@ public:
     std::string category = "";  // The category name
 
     CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
+
+    Callback toggleCallback = nullptr;  // Callback for when the category is toggled
 };
 
 OptionCategoryItem::OptionCategoryItem() : m_impl(std::make_unique<Impl>()) {};
@@ -67,19 +69,25 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
 
     addChild(nameLabel);
 
-    addEventListener(
-        CategoryEvent(),
-        [this](std::string_view category, bool enabled) {
-            if (m_impl->toggler) {
-                if (category != m_impl->category) m_impl->toggler->toggle(false);
-            };
-        });
-
     return true;
 };
 
 void OptionCategoryItem::onToggle(CCObject* sender) {
-    if (m_impl->toggler) CategoryEvent().send(m_impl->category, !m_impl->toggler->isOn());
+    if (m_impl->toggler) {
+        if (m_impl->toggleCallback) m_impl->toggleCallback(m_impl->category, !m_impl->toggler->isOn());
+    };
+};
+
+void OptionCategoryItem::setToggleCallback(Callback&& callback) {
+    m_impl->toggleCallback = std::move(callback);
+};
+
+void OptionCategoryItem::setToggled(bool on) {
+    if (m_impl->toggler) m_impl->toggler->toggle(on);
+};
+
+ZStringView OptionCategoryItem::getCategory() const noexcept {
+    return m_impl->category;
 };
 
 OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string category) {

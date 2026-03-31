@@ -2,10 +2,8 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
-    class OptionMenuButton final : public CCLayer {
+    class OptionMenuButton final : public cocos2d::CCLayer {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
@@ -31,14 +29,14 @@ namespace horrible {
         void onEnter() override;
 
         void setScale(float scale) override;
-        void setPosition(CCPoint const& position) override;
+        void setPosition(cocos2d::CCPoint const& position) override;
 
         void setTheme(std::string theme);
 
         // CCLayer targeted touch listener methods
-        bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;
-        virtual void ccTouchMoved(CCTouch* touch, CCEvent* event) override;
-        virtual void ccTouchEnded(CCTouch* touch, CCEvent* event) override;
+        bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
+        virtual void ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
+        virtual void ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
 
         int64_t getOpacitySetting() const noexcept;
         float getScaleSetting() const noexcept;

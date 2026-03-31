@@ -6,8 +6,6 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
     class OptionMenu final : public Popup {
     private:

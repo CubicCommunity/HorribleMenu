@@ -4,12 +4,10 @@
 
 #include <Geode/loader/SettingV3.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
-    class HorribleSettingV3 final : public SettingV3 {
+    class HorribleSettingV3 final : public geode::SettingV3 {
     public:
-        static Result<std::shared_ptr<SettingV3>> parse(
+        static geode::Result<std::shared_ptr<SettingV3>> parse(
             std::string key,
             std::string modID,
             matjson::Value const& json);
@@ -21,10 +19,10 @@ namespace horrible {
 
         void reset() override;
 
-        SettingNodeV3* createNode(float width) override;
+        geode::SettingNodeV3* createNode(float width) override;
     };
 
-    class HorribleSettingNodeV3 final : public SettingNodeV3 {
+    class HorribleSettingNodeV3 final : public geode::SettingNodeV3 {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
@@ -33,7 +31,7 @@ namespace horrible {
         HorribleSettingNodeV3();
         ~HorribleSettingNodeV3();
 
-        void updateState(CCNode* invoker) override;
+        void updateState(cocos2d::CCNode* invoker) override;
         void onCommit() override;
         void onResetToDefault() override;
 

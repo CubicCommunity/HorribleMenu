@@ -2,18 +2,13 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
-    // Event for option toggles
-    struct CategoryEvent final : Event<CategoryEvent, bool(std::string_view, bool)> {
-        using Event::Event;
-    };
-
-    class OptionCategoryItem final : public CCMenu {
+    class OptionCategoryItem final : public cocos2d::CCMenu {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
+
+        using Callback = geode::Function<void(std::string_view, bool)>;
 
     protected:
         OptionCategoryItem();
@@ -21,9 +16,14 @@ namespace horrible {
 
         void onToggle(CCObject* sender);
 
-        bool init(CCSize const& size, std::string category);
+        bool init(cocos2d::CCSize const& size, std::string category);
 
     public:
-        static OptionCategoryItem* create(CCSize const& size, std::string category);
+        static OptionCategoryItem* create(cocos2d::CCSize const& size, std::string category);
+
+        void setToggleCallback(Callback&& callback);
+        void setToggled(bool on);
+
+        geode::ZStringView getCategory() const noexcept;
     };
 };
