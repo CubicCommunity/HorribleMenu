@@ -11,7 +11,7 @@ static constexpr auto id = "gravity";
 
 static auto const o = Option::create(id)
                           .setName("Randomize Gravity")
-                          .setDescription("Every time you jump in a level, gravity force will increase or decrease randomly.\n<cl>Credit: NJAgain</c>")
+                          .setDescription("Every time you jump in a level, gravity force will increase or decrease randomly.\n<cl>suggested by NJAgain</c>")
                           .setCategory(category::randoms)
                           .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);

@@ -11,7 +11,7 @@ static constexpr auto id = "motivation";
 
 static auto const o = Option::create(id)
                           .setName("Motivational Quotes")
-                          .setDescription("You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cl>Credit: Cheeseworks</c>")
+                          .setDescription("You'll get motivational messages while playing! The motivator isn't in the best mood, though...\n<cl>created by Cheeseworks</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);

@@ -9,14 +9,14 @@ using namespace horrible::prelude;
 
 static auto const oGrief = Option::create("grief")
                                .setName("Get Back on Grief")
-                               .setDescription("A chance at death of forcing you to play Grief.\n<cl>Credit: Sweep</c>")
+                               .setDescription("A chance at death of forcing you to play Grief.\n<cl>suggested by Sweep</c>")
                                .setCategory(category::jumpscares)
                                .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(oGrief);
 
 static auto const oCongregation = Option::create("congregation")
                                       .setName("Congregation Jumpscare")
-                                      .setDescription("A chance at death of forcing you to play Congregation.\n<cl>Credit: StaticGD</c>")
+                                      .setDescription("A chance at death of forcing you to play Congregation.\n<cl>suggested by StaticGD</c>")
                                       .setCategory(category::jumpscares)
                                       .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(oCongregation);

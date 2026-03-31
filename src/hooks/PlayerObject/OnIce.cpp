@@ -11,9 +11,9 @@ static constexpr auto id = "ice_level";
 
 static auto const o = Option::create(id)
                           .setName("Ice Level")
-                          .setDescription("Makes every surface icy. Slip n' slide!\n<cl>Credit: TimeRed</c>")
+                          .setDescription("Makes every surface icy. Slip n' slide!\n<cl>suggested by TimeRed</c>")
                           .setCategory(category::misc)
-                          .setSillyTier(SillyTier::Medium);
+                          .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(OnIcePlayerObject, PlayerObject) {

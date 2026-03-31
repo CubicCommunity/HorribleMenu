@@ -11,7 +11,7 @@ static constexpr auto id = "fake_crash";
 
 static auto const o = Option::create(id)
                           .setName("Random Fake Crash")
-                          .setDescription("While playing a level, there's a chance your game will fake a crash.\n<cl>Credit: Timered</c>")
+                          .setDescription("While playing a level, there's a chance your game will fake a crash.\n<cl>suggested by Timered</c>")
                           .setCategory(category::randoms)
                           .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);

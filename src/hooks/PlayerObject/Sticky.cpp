@@ -11,7 +11,7 @@ static constexpr auto id = "sticky";
 
 static auto const o = Option::create(id)
                           .setName("Sticky Grounds")
-                          .setDescription("When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cl>Credit: Cheeseworks</c>")
+                          .setDescription("When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cl>created by Cheeseworks</c>")
                           .setCategory(category::misc)
                           .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);

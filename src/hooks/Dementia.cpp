@@ -12,7 +12,7 @@ static constexpr auto id = "dementia";
 
 static auto const o = Option::create(id)
                           .setName("Dementia")
-                          .setDescription("Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cl>Credit: imdissapearinghelp</c>")
+                          .setDescription("Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cl>suggested by imdissapearinghelp</c>")
                           .setCategory(category::misc)
                           .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);

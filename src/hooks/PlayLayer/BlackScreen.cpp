@@ -11,7 +11,7 @@ static constexpr auto id = "black_screen";
 
 static auto const o = Option::create(id)
                           .setName("Black Screen Blink")
-                          .setDescription("The screen can suddenly blink while playing a level.\n<cl>Credit: elite_smiler_ispro</c>")
+                          .setDescription("The screen can suddenly blink while playing a level.\n<cl>suggested by elite_smiler_ispro</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);

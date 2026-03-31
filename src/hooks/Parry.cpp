@@ -15,7 +15,7 @@ static constexpr auto id = "parry";
 
 static auto const o = Option::create(id)
                           .setName("Parry Obstacles")
-                          .setDescription("Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>Credit: Wuffin</c>")
+                          .setDescription("Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>suggested by Wuffin</c>")
                           .setCategory(category::misc)
                           .setSillyTier(SillyTier::None)
                           .setRequiresRestart(true)

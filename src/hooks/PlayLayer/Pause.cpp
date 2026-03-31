@@ -11,7 +11,7 @@ static constexpr auto id = "pauses";
 
 static auto const o = Option::create(id)
                           .setName("Random Pauses")
-                          .setDescription("While playing a level, it will randomly pause itself.\n<cl>Credit: DragonixGD</c>")
+                          .setDescription("While playing a level, it will randomly pause itself.\n<cl>suggested by DragonixGD</c>")
                           .setCategory(category::randoms)
                           .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);

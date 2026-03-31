@@ -11,7 +11,7 @@ static constexpr auto id = "friends";
 
 static auto const o = Option::create(id)
                           .setName("Friends")
-                          .setDescription("Random friends fly across your screen while you play a level!\n<cl>Credit: Cheeseworks</c>")
+                          .setDescription("Random friends fly across your screen while you play a level!\n<cl>created by Cheeseworks</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);

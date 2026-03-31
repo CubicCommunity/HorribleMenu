@@ -11,7 +11,7 @@ static constexpr auto id = "random_icon";
 
 static auto const o = Option::create(id)
                           .setName("Random Icon Change")
-                          .setDescription("Randomly change your icon every time you jump.\n<cl>Credit: JompyDoJump</c>")
+                          .setDescription("Randomly change your icon every time you jump.\n<cl>suggested by JompyDoJump</c>")
                           .setCategory(category::randoms)
                           .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);

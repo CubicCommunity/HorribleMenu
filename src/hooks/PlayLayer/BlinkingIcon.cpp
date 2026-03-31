@@ -11,7 +11,7 @@ static constexpr auto id = "blinking_icon";
 
 static auto const o = Option::create(id)
                           .setName("Blinking Icon")
-                          .setDescription("Your icon will start to randomly blink.\n<cl>Credit: DragonixGD</c>")
+                          .setDescription("Your icon will start to randomly blink.\n<cl>suggested by DragonixGD</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);

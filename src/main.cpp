@@ -16,17 +16,19 @@ using namespace horrible::prelude;
 static std::vector<std::weak_ptr<Hook>> s_safeModeHooks;
 static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
 
-#define HORRIBLE_HOOK_INTERNAL(vectorRef)                                   \
-    static void onModify(auto& self) {                                      \
-        utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;      \
-        auto enable = thisMod->getSettingValue<bool>(setting::FloatingBtn); \
-                                                                            \
-        for (auto& hook : hooks | std::views::values) {                     \
-            hook->setAutoEnable(enable);                                    \
-            (void)hook->toggle(enable);                                     \
-                                                                            \
-            vectorRef.push_back(hook);                                      \
-        };                                                                  \
+#define HORRIBLE_HOOK_INTERNAL(vectorRef)                                              \
+    static void onModify(auto& self) {                                                 \
+        utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;                 \
+        auto enable = thisMod->getSettingValue<bool>(setting::FloatingBtn);            \
+                                                                                       \
+        for (auto& hook : hooks | std::views::values) {                                \
+            hook->setAutoEnable(enable);                                               \
+            (void)hook->toggle(enable);                                                \
+                                                                                       \
+            (void)self.setHookPriorityPre(hook->getDisplayName(), Priority::FirstPre); \
+                                                                                       \
+            vectorRef.push_back(hook);                                                 \
+        };                                                                             \
     }
 
 $on_game(Loaded) {
@@ -87,7 +89,7 @@ $on_game(Loaded) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
         });
 
-    // TODO: host custom branding image in mod dev branding server for this mod
+    // TODO: host custom branding image in mod dev branding server for breakeode
     (void)branding::registerBrand(GEODE_MOD_ID, "https://github.com/CubicCommunity/HorribleMenu/blob/main/logo.png?raw=true", branding::Type::URL);
 };
 

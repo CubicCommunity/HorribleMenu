@@ -163,7 +163,7 @@ HorribleOptionSave OptionManager::getOption(std::string_view id) const {
     return Mod::get()->getSavedValue<HorribleOptionSave>(id);
 };
 
-Result<Option> OptionManager::getOptionInfo(std::string_view id) const noexcept {
+Result<Option const&> OptionManager::getOptionInfo(std::string_view id) const noexcept {
     for (auto const& option : getOptions()) {
         if (option.getID() == id) return Ok(option);
     };

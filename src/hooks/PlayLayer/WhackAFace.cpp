@@ -11,7 +11,7 @@ static constexpr auto id = "whack_a_face";
 
 static auto const o = Option::create(id)
                           .setName("Whack-A-Face!")
-                          .setDescription("Buttons with difficulty faces will start to pop up on your screen while playing a level. You'll have a very limited amount of time to press each one until they all disappear, or else you restart the entire level! The higher the difficulty of the face on the button, the more times you'll need to press it.\n<cl>Credit: Cheeseworks</c>")
+                          .setDescription("Buttons with difficulty faces will start to pop up on your screen while playing a level. You'll have a very limited amount of time to press each one until they all disappear, or else you restart the entire level! The higher the difficulty of the face on the button, the more times you'll need to press it.\n<cl>created by Cheeseworks</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);

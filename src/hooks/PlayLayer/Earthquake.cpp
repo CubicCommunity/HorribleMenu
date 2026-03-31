@@ -11,7 +11,7 @@ static constexpr auto id = "earthquake";
 
 static auto const o = Option::create(id)
                           .setName("Earthquake")
-                          .setDescription("Constantly shakes the camera while playing a level.\n<cl>Credit: ArcticWoof</c>")
+                          .setDescription("Constantly shakes the camera while playing a level.\n<cl>created by ArcticWoof</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);

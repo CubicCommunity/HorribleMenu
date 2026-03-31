@@ -11,7 +11,7 @@ static constexpr auto id = "crash_death";
 
 static auto const o = Option::create(id)
                           .setName("Crash Chance on Death")
-                          .setDescription("When you die in a level, there's a chance your game will die too.\n<co>Your progress will save!</c> :)\n<cl>Credit: DragonixGD</c>")
+                          .setDescription("When you die in a level, there's a chance your game will die too.\n<co>Your progress will save!</c> :)\n<cl>suggested by DragonixGD</c>")
                           .setCategory(category::chances)
                           .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);

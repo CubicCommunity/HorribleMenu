@@ -26,7 +26,7 @@ namespace horrible {
         std::string m_name = "Example Option";                // Name of the option
         std::string m_description = "";                       // Description of the option
         std::string m_category = "Uncategorized";             // Name of the category this option should be under
-        SillyTier m_silly = SillyTier::Low;                   // How silly the option is
+        SillyTier m_silly = SillyTier::None;                  // How silly the option is
         bool m_restart = false;                               // If the option requires a restart to take effect
         std::vector<Platform> m_platforms = {Platform::All};  // Platforms that the option supports
 

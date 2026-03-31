@@ -122,7 +122,7 @@ namespace horrible {
          *
          * @returns A result possibly containing the option object
          */
-        [[nodiscard]] geode::Result<Option> getOptionInfo(std::string_view id) const noexcept;
+        [[nodiscard]] geode::Result<Option const&> getOptionInfo(std::string_view id) const noexcept;
 
         /**
          * Returns the amount of delegate callbacks registered for an option

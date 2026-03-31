@@ -97,5 +97,19 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 ---
 
+### Changelog
+###### What's new?!
+**[📜 View the latest updates and patches](./changelog.md)**
+
+### Issues
+###### What's wrong?!
+**[⚠️ Report a problem with the mod](../../issues/)**
+
+### Development
+###### Work with the mod directly.
+**[⌨️ Check the API out](./include/)**
+
+---
+
 ### Developers
 ###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Breakeode logo" /> Breakeode](https://breakeode.cubicstudios.xyz/) team.

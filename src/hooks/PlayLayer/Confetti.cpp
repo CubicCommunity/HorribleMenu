@@ -11,7 +11,7 @@ static constexpr auto id = "confetti";
 
 static auto const o = Option::create(id)
                           .setName("Confetti Explosion")
-                          .setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>Credit: Cheeseworks</c>")
+                          .setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>created by Cheeseworks</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);

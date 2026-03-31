@@ -11,7 +11,7 @@ static constexpr auto id = "oxygen";
 
 static auto const o = Option::create(id)
                           .setName("Oxygen Level")
-                          .setDescription("Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cl>Credit: ArcticWoof</c>")
+                          .setDescription("Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cl>created by ArcticWoof</c>")
                           .setCategory(category::playerlife)
                           .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);

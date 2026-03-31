@@ -11,7 +11,7 @@ static constexpr auto id = "spam";
 
 static auto const o = Option::create(id)
                           .setName("Spam Challenge!")
-                          .setDescription("Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cl>Credit: Cheeseworks</c>")
+                          .setDescription("Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cl>created by Cheeseworks</c>")
                           .setCategory(category::obstructive)
                           .setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
