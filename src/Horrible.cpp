@@ -1,6 +1,6 @@
 #define GEODE_DEFINE_EVENT_EXPORTS
-#include <Horrible.h>
-#include <OptionalAPI.hpp>
+#include <horrible/API.h>
+#include <horrible/OptionalAPI.hpp>
 
 #include <ranges>
 
@@ -194,7 +194,7 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed
     auto save = HorribleOptionSave{enable, pin, viewed};
 
     (void)Mod::get()->setSavedValue(id, save);
-    (void)OptionEvent(id).send(std::move(save));
+    (void)OptionEvent(id).send(save);
 };
 
 OptionManager* OptionManager::get() noexcept {

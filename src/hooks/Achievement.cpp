@@ -1,5 +1,5 @@
 #include <Utils.h>
-#include <Horrible.h>
+#include <horrible/API.h>
 
 #include <Geode/Geode.hpp>
 

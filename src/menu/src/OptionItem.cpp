@@ -249,6 +249,12 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
         categoryLabel->setColor(colors::gray);
 
         m_impl->saveTogglerState();
+    } else {
+        addEventListener(
+            OptionEvent(m_impl->option.getID()),
+            [this](HorribleOptionSave ev) {
+                if (m_impl->toggler) m_impl->toggler->toggle(ev.enabled);
+            });
     };
 
     if (devMode) {

@@ -40,10 +40,10 @@ namespace horrible {
         std::unordered_map<std::string_view, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
 
     protected:
-        OptionManager() = default;  // Default constructor
+        OptionManager() = default;
 
-        OptionManager(const OptionManager&) = delete;             // No copying
-        OptionManager& operator=(const OptionManager&) = delete;  // No copy assignment
+        OptionManager(const OptionManager&) = delete;
+        OptionManager& operator=(const OptionManager&) = delete;
 
         /**
          * Register a category if not already registered

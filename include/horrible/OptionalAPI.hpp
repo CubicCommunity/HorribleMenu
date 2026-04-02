@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Horrible.h"
+#include "API.h"
 
 #include <Geode/Result.hpp>
 
@@ -14,7 +14,7 @@
 
 namespace horrible {
     // Event for option toggles
-    struct OptionEvent final : geode::Event<OptionEvent, bool(HorribleOptionSave), std::string> {
+    struct OptionEvent final : geode::Event<OptionEvent, bool(HorribleOptionSave), std::string_view> {
         using Event::Event;
     };
 
