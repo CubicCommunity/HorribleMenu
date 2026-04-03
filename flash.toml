@@ -5,7 +5,7 @@ repository = "https://github.com/CubicCommunity/HorribleMenu"
 tree = "https://github.com/CubicCommunity/HorribleMenu/tree/main"
 icon = "logo.png"
 
-[[docs]]
+[[sources]]
 name = "Horrible"
 dir = "include"
 include = ["horrible/*.h*"]

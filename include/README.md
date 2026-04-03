@@ -9,7 +9,7 @@ Let's start off by adding this mod as a dependency in your `mod.json`!
 }
 ```
 
-Optionally, you can shorten include paths in your code by adding the following line to your [`CMakeLists.txt`](../CMakeLists.txt). The documentation moving forward will use this practice in its code samples.
+Optionally, you can shorten include paths in your code by adding the the full path as a private include directory through your [`CMakeLists.txt`](../CMakeLists.txt) file. The rest of the documentation will use this practice in its code samples.
 ```cmake
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/geode-deps/cubicstudios.horriblemenu/include)
 ```
