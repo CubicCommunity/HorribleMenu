@@ -13,7 +13,7 @@ jobs:
             contents: write
 
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: Check for Discord webhook URL
               id: check-discord
@@ -52,7 +52,7 @@ jobs:
         needs: ["release"]
 
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: Publish to Geode
               uses: hiimjasmine00/release-geode-mod/publish@main

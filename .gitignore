@@ -47,6 +47,11 @@ build-*/
 # Workspace files are user-specific
 *.sublime-workspace
 
+# Docs folders
+docs/**
+docs
+docs-dist/
+
 # ILY vscode
 **/.vscode
 

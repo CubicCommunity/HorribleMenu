@@ -18,13 +18,11 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 void placeboEffect() {
-    log::info("Checking for placebo effect...");
-
     int rnd = randng::fast();
-    log::info("placebo effect roll: {}", rnd);
+    log::debug("placebo effect roll: {}", rnd);
 
     if (rnd <= 1) {  // 1% chance :trol:
-        log::info("Placebo effect activated! Toggling all options...");
+        log::warn("Placebo effect activated! Toggling all options...");
 
         for (auto const& option : options::getAll()) {
             auto saved = options::get(option.getID());
@@ -39,7 +37,7 @@ class $modify(PlaceboLevelPage, LevelPage) {
 
     void onPlay(CCObject* sender) {
         placeboEffect();
-        log::debug("Placebo triggered in level page");
+        log::trace("Placebo triggered in level page");
 
         LevelPage::onPlay(sender);
     };
@@ -50,7 +48,7 @@ class $modify(PlaceboLevelInfoLayer, LevelInfoLayer) {
 
     void onPlay(CCObject* sender) {
         placeboEffect();
-        log::debug("Placebo triggered in level info layer");
+        log::trace("Placebo triggered in level info layer");
 
         LevelInfoLayer::onPlay(sender);
     };
