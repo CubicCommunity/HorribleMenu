@@ -251,7 +251,7 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(filterContainerLabel);
 
     auto filterContainerLayout = ColumnLayout::create()
-                                     ->setGap(2.5f)
+                                     ->setGap(3.75f)
                                      ->setAxisReverse(true)  // Top to bottom
                                      ->setAxisAlignment(AxisAlignment::End)
                                      ->setAutoGrowAxis(0.f);
@@ -260,7 +260,7 @@ bool OptionMenu::init() {
     auto filterContainer = CCNode::create();
     filterContainer->setID("filter-container");
     filterContainer->setAnchorPoint({0.5, 1});
-    filterContainer->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 55.f});
+    filterContainer->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 53.75f});
     filterContainer->setContentHeight(0.f);
     filterContainer->setLayout(filterContainerLayout);
 
@@ -271,7 +271,7 @@ bool OptionMenu::init() {
     };
 
     for (auto const& filterBtn : filterBtns) {
-        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 155, true, "bigFont.fnt", themes::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
+        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 140, true, "bigFont.fnt", themes::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
             btnSprite->m_label->setColor(filterBtn.color);
 
             if (auto btn = Button::createWithNode(
