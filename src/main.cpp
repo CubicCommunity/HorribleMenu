@@ -84,6 +84,12 @@ $on_game(Loaded) {
         });
 
     listenForSettingChanges<std::string>(
+        "floating-btn-icon",
+        [](std::string value) {
+            if (auto fb = OptionMenuButton::get()) fb->setButtonIcon(std::move(value));
+        });
+
+    listenForSettingChanges<std::string>(
         "theme",
         [](std::string value) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));

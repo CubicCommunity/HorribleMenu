@@ -246,7 +246,7 @@ bool OptionMenu::init() {
     filterContainerLabel->setAnchorPoint({0.5, 0});
     filterContainerLabel->setAlignment(kCCTextAlignmentCenter);
     filterContainerLabel->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 50.f});
-    filterContainerLabel->setScale(0.325f);
+    filterContainerLabel->setScale(0.375f);
 
     m_mainLayer->addChild(filterContainerLabel);
 

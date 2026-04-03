@@ -1,5 +1,5 @@
 # Contributing to Horrible Menu
-First off, thank you for considering contributing! We simply ask that you follow the guidelines listed below.
+First off, thank you for considering contributing! We simply ask that you follow the guidelines listed below before helping out.
 
 ## Pull Requests
 You're free to fork our repository and [open a pull request](../../pulls/) if you'd like to submit a new feature or propose a fix for an unknown issue.

@@ -91,6 +91,32 @@ namespace horrible {
 
                 return colors::white;
             };
+
+            // Floating button icon options
+            namespace icons {
+                inline constexpr auto Default = "Default";
+                inline constexpr auto Classic = "Classic";
+                inline constexpr auto Pride = "Pride";
+                inline constexpr auto TransPride = "Trans Pride";
+                inline constexpr auto BoomEmoji = "Boom Emoji";
+                inline constexpr auto CryingSkull = "Crying Skull";
+                inline constexpr auto ColonThree = ":3";
+                inline constexpr auto SapphireSDK = "Sapphire SDK";
+            };
+
+            // Get the current icon's sprite name
+            inline constexpr const char* getIconSprite(std::string_view icon) noexcept {
+                if (icon == icons::Default) return "icon.png"_spr;
+                if (icon == icons::Classic) return "icon_classic.png"_spr;
+                if (icon == icons::Pride) return "icon_pride.png"_spr;
+                if (icon == icons::TransPride) return "icon_transpride.png"_spr;
+                if (icon == icons::BoomEmoji) return "icon_boom.png"_spr;
+                if (icon == icons::CryingSkull) return "icon_skull.png"_spr;
+                if (icon == icons::ColonThree) return "icon_colonthree.png"_spr;
+                if (icon == icons::SapphireSDK) return "icon_sapphire.png"_spr;
+
+                return "icon.png"_spr;
+            };
         };
     };
 };

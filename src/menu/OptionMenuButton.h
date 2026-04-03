@@ -32,6 +32,7 @@ namespace horrible {
         void setPosition(cocos2d::CCPoint const& position) override;
 
         void setTheme(std::string theme);
+        void setButtonIcon(std::string icon);
 
         // CCLayer targeted touch listener methods
         bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;

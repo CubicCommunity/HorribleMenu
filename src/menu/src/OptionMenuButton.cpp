@@ -25,6 +25,7 @@ public:
     bool isAnimating = false;
 
     std::string theme = thisMod->getSettingValue<std::string>("theme");
+    std::string btnIcon = thisMod->getSettingValue<std::string>("floating-btn-icon");
 };
 
 OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
@@ -33,8 +34,8 @@ OptionMenuButton::~OptionMenuButton() {};
 void OptionMenuButton::setupSprite() {
     if (auto sprite = m_impl->sprite.take()) sprite->removeMeAndCleanup();
 
-    m_impl->sprite = CircleButtonSprite::createWithSprite(
-        "icon.png"_spr,
+    m_impl->sprite = CircleButtonSprite::createWithSpriteFrameName(
+        themes::getIconSprite(m_impl->btnIcon),
         0.925f,
         themes::getCircleBaseColor(m_impl->theme));
 
@@ -113,6 +114,11 @@ void OptionMenuButton::setPosition(CCPoint const& position) {
 
 void OptionMenuButton::setTheme(std::string theme) {
     m_impl->theme = std::move(theme);
+    setupSprite();
+};
+
+void OptionMenuButton::setButtonIcon(std::string icon) {
+    m_impl->btnIcon = std::move(icon);
     setupSprite();
 };
 
