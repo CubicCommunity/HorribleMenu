@@ -8,38 +8,6 @@ else()
 endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-if(ANDROID)
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        add_custom_command(
-            TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_OBJCOPY} --only-keep-debug
-            $<TARGET_FILE:${PROJECT_NAME}>
-            $<TARGET_FILE:${PROJECT_NAME}>.dbg
-        )
-        add_custom_command(
-            TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_STRIP} --strip-all
-            $<TARGET_FILE:${PROJECT_NAME}>
-        )
-        add_custom_command(
-            TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=$<TARGET_FILE:${PROJECT_NAME}>.dbg
-            $<TARGET_FILE:${PROJECT_NAME}>
-        )
-    endif()
-elseif(APPLE)
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        add_custom_command(
-            TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND dsymutil $<TARGET_FILE:${PROJECT_NAME}> -o $<TARGET_FILE:${PROJECT_NAME}>.dSYM
-        )
-        add_custom_command(
-            TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:${PROJECT_NAME}>
-        )
-    endif()
-endif()
-
 project(HorribleMenu VERSION 1.0.0)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
@@ -49,6 +17,35 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMA
 
 if(PROJECT_IS_TOP_LEVEL)
     target_compile_definitions(${PROJECT_NAME} PRIVATE AWCW_HORRIBLE_API_EXPORTING)
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(ANDROID)
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} --only-keep-debug
+            $<TARGET_FILE:${PROJECT_NAME}>
+            $<TARGET_FILE:${PROJECT_NAME}>.so.sym
+        )
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_STRIP} --strip-all $<TARGET_FILE:${PROJECT_NAME}>
+        )
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=$<TARGET_FILE:${PROJECT_NAME}>.so.sym
+            $<TARGET_FILE:${PROJECT_NAME}>
+        )
+    elseif(APPLE)
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND dsymutil $<TARGET_FILE:${PROJECT_NAME}> -o $<TARGET_FILE:${PROJECT_NAME}>.dSYM
+        )
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:${PROJECT_NAME}>
+        )
+    endif()
 endif()
 
 if(NOT DEFINED ENV{GEODE_SDK})
