@@ -74,11 +74,6 @@ jobs:
                   path: ./artifacts/
                   merge-multiple: true
 
-            - name: List downloaded artifacts
-              run: |
-                  echo "Contents of ./artifacts:"
-                  ls -R ./artifacts
-
             - name: Get latest release tag
               id: getrelease
               run: echo "tag=$(curl -s https://api.github.com/repos/${{ github.event.repository.full_name }}/releases/latest | jq -r '.tag_name // "${{ github.event.repository.default_branch }}"')" >> $GITHUB_OUTPUT
