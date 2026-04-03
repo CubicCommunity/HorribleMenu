@@ -11,36 +11,31 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 if(ANDROID)
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         add_custom_command(
-            TARGET "${PROJECT_NAME}" POST_BUILD
-            DEPENDS "${PROJECT_NAME}"
-            COMMAND ${CMAKE_OBJCOPY}
-            ARGS --only-keep-debug "$<TARGET_FILE:${PROJECT_NAME}>" "$<TARGET_FILE:${PROJECT_NAME}>.dbg"
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} --only-keep-debug
+            $<TARGET_FILE:${PROJECT_NAME}>
+            $<TARGET_FILE:${PROJECT_NAME}>.dbg
         )
         add_custom_command(
-            TARGET "${PROJECT_NAME}" POST_BUILD
-            DEPENDS "${PROJECT_NAME}"
-            COMMAND $<$<CONFIG:release>:${CMAKE_STRIP}>
-            ARGS --strip-all $<TARGET_FILE:${PROJECT_NAME}>
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_STRIP} --strip-all
+            $<TARGET_FILE:${PROJECT_NAME}>
         )
         add_custom_command(
-            TARGET "${PROJECT_NAME}" POST_BUILD
-            DEPENDS "${PROJECT_NAME}"
-            COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink="$<TARGET_FILE:${PROJECT_NAME}>.dbg" "$<TARGET_FILE:${PROJECT_NAME}>"
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=$<TARGET_FILE:${PROJECT_NAME}>.dbg
+            $<TARGET_FILE:${PROJECT_NAME}>
         )
     endif()
 elseif(APPLE)
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         add_custom_command(
-            TARGET "${PROJECT_NAME}" POST_BUILD
-            DEPENDS "${PROJECT_NAME}"
-            COMMAND dsymutil $<TARGET_FILE:${PROJECT_NAME}>
-            ARGS -o $<TARGET_FILE:${PROJECT_NAME}>.dSYM
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND dsymutil $<TARGET_FILE:${PROJECT_NAME}> -o $<TARGET_FILE:${PROJECT_NAME}>.dSYM
         )
         add_custom_command(
-            TARGET "${PROJECT_NAME}" POST_BUILD
-            DEPENDS "${PROJECT_NAME}"
-            COMMAND $<$<CONFIG:release>:${CMAKE_STRIP}>
-            ARGS -x $<TARGET_FILE:${PROJECT_NAME}>
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:${PROJECT_NAME}>
         )
     endif()
 endif()
