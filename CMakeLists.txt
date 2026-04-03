@@ -25,7 +25,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
             TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_OBJCOPY} --only-keep-debug
             $<TARGET_FILE:${PROJECT_NAME}>
-            $<TARGET_FILE:${PROJECT_NAME}>.so.sym
+            $<TARGET_FILE:${PROJECT_NAME}>.dbg
         )
         add_custom_command(
             TARGET ${PROJECT_NAME} POST_BUILD
@@ -33,7 +33,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         )
         add_custom_command(
             TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=$<TARGET_FILE:${PROJECT_NAME}>.so.sym
+            COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=$<TARGET_FILE:${PROJECT_NAME}>.dbg
             $<TARGET_FILE:${PROJECT_NAME}>
         )
     elseif(APPLE)
