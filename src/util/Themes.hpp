@@ -26,8 +26,8 @@ namespace horrible {
 
             // Theme options
             namespace enums {
-                inline constexpr auto Blue = "Blue";
-                inline constexpr auto Green = "Green";
+                inline constexpr auto Icy = "Icy";
+                inline constexpr auto Grass = "Grass";
                 inline constexpr auto Dark = "Dark";
                 inline constexpr auto Light = "Light";
                 inline constexpr auto Dim = "Dim";
@@ -38,8 +38,8 @@ namespace horrible {
 
             // Get the current theme's background sprite name
             inline constexpr const char* getBackgroundSprite(std::string_view theme) noexcept {
-                if (theme == enums::Blue) return "GJ_square02.png";
-                if (theme == enums::Green) return "GJ_square03.png";
+                if (theme == enums::Icy) return "GJ_square02.png";
+                if (theme == enums::Grass) return "GJ_square03.png";
                 if (theme == enums::Dark) return "geode.loader/GE_square02.png";
                 if (theme == enums::Light) return "geode.loader/white-square.png";
                 if (theme == enums::Dim) return "GJ_square05.png";
@@ -52,8 +52,8 @@ namespace horrible {
 
             // Get the current theme's circle base color enum
             inline constexpr geode::CircleBaseColor getCircleBaseColor(std::string_view theme) noexcept {
-                if (theme == enums::Blue) return geode::CircleBaseColor::Blue;
-                if (theme == enums::Green) return geode::CircleBaseColor::Green;
+                if (theme == enums::Icy) return geode::CircleBaseColor::Blue;
+                if (theme == enums::Grass) return geode::CircleBaseColor::Green;
                 if (theme == enums::Dark) return geode::CircleBaseColor::Gray;
                 if (theme == enums::Light) return geode::CircleBaseColor::Gray;
                 if (theme == enums::Dim) return geode::CircleBaseColor::Gray;
@@ -66,8 +66,8 @@ namespace horrible {
 
             // Get the current theme's square button sprite name
             inline constexpr const char* getButtonSquareSprite(std::string_view theme) noexcept {
-                if (theme == enums::Blue) return "GJ_button_02.png";
-                if (theme == enums::Green) return "GJ_button_01.png";
+                if (theme == enums::Icy) return "GJ_button_02.png";
+                if (theme == enums::Grass) return "GJ_button_01.png";
                 if (theme == enums::Dark) return "GJ_button_05.png";
                 if (theme == enums::Light) return "GJ_button_04.png";
                 if (theme == enums::Dim) return "GJ_button_04.png";
@@ -80,8 +80,8 @@ namespace horrible {
 
             // Get the current theme's color
             inline constexpr cocos2d::ccColor3B getColor(std::string_view theme) noexcept {
-                if (theme == enums::Blue) return colors::blue;
-                if (theme == enums::Green) return colors::green;
+                if (theme == enums::Icy) return colors::blue;
+                if (theme == enums::Grass) return colors::green;
                 if (theme == enums::Dark) return colors::white;
                 if (theme == enums::Light) return colors::white;
                 if (theme == enums::Dim) return colors::gray;
@@ -101,8 +101,10 @@ namespace horrible {
                 inline constexpr auto Breakeode = "Breakeode";
                 inline constexpr auto BoomEmoji = "Boom Emoji";
                 inline constexpr auto CryingSkull = "Crying Skull";
+                inline constexpr auto TheYellowOne = "The Yellow One";
                 inline constexpr auto ColonThree = ":3";
                 inline constexpr auto Durr = "durr";
+                inline constexpr auto SixSeven = "67";
                 inline constexpr auto SapphireSDK = "Sapphire SDK";
             };
 
@@ -115,8 +117,10 @@ namespace horrible {
                 if (icon == icons::Breakeode) return "icon_breakeode.png"_spr;
                 if (icon == icons::BoomEmoji) return "icon_boom.png"_spr;
                 if (icon == icons::CryingSkull) return "icon_skull.png"_spr;
+                if (icon == icons::TheYellowOne) return "icon_yellow.png"_spr;
                 if (icon == icons::ColonThree) return "icon_colonthree.png"_spr;
                 if (icon == icons::Durr) return "icon_durr.png"_spr;
+                if (icon == icons::SixSeven) return "icon_sixseven.png"_spr;
                 if (icon == icons::SapphireSDK) return "icon_sapphire.png"_spr;
 
                 return "icon.png"_spr;

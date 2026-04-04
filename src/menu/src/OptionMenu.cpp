@@ -145,6 +145,7 @@ bool OptionMenu::init() {
     m_impl->categoryList->setAnchorPoint({0.5, 0.5});
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
     m_impl->categoryList->setPosition(categoryListBg->getPosition());
+
     m_impl->categoryList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout());
 
     auto cats = options::getAllCategories();  // mrrp meow
@@ -208,6 +209,7 @@ bool OptionMenu::init() {
     m_impl->optionList->setAnchorPoint({0.5, 0.5});
     m_impl->optionList->ignoreAnchorPointForPosition(false);
     m_impl->optionList->setPosition(optionListBg->getPosition());
+
     m_impl->optionList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout(3.75f));
 
     auto optionListScroll = Scrollbar::create(m_impl->optionList);

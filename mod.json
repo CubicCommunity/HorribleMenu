@@ -78,8 +78,8 @@
             "default": "Default",
             "one-of": [
                 "Default",
-                "Blue",
-                "Green",
+                "Icy",
+                "Grass",
                 "Dark",
                 "Light",
                 "Dim",
@@ -119,8 +119,10 @@
                 "Breakeode",
                 "Boom Emoji",
                 "Crying Skull",
+                "The Yellow One",
                 ":3",
                 "durr",
+                "67",
                 "Sapphire SDK"
             ],
             "enable-if": "floating-btn"
