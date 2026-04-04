@@ -80,7 +80,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 ### Thanks
-- **[Geode SDK](https://geode-sdk.org/)**: Created an incredible SDK to make this mod possible!
+- **[Geode SDK](https://geode-sdk.org/)**: Created an incredible SDK that made this mod possible!
 - **[RobTop Games](https://www.robtopgames.com/)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
 
 *and...*
@@ -112,4 +112,4 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 ### Developers
-###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Breakeode logo" /> Breakeode](https://breakeode.cubicstudios.xyz/) team.
+###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/XBtMpm3.png" width="15" alt="Breakeode logo" /> Breakeode](https://breakeode.cubicstudios.xyz/) team.

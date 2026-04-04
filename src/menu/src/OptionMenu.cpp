@@ -1,6 +1,7 @@
 #include "../OptionMenu.h"
 
 #include "../OptionItem.h"
+#include "../OptionMenuCredits.h"
 #include "../OptionCategoryItem.h"
 
 #include <Utils.h>
@@ -252,6 +253,7 @@ bool OptionMenu::init() {
 
     auto filterContainerLayout = ColumnLayout::create()
                                      ->setGap(3.75f)
+                                     ->setAutoScale(false)
                                      ->setAxisReverse(true)  // Top to bottom
                                      ->setAxisAlignment(AxisAlignment::End)
                                      ->setAutoGrowAxis(0.f);
@@ -261,7 +263,6 @@ bool OptionMenu::init() {
     filterContainer->setID("filter-container");
     filterContainer->setAnchorPoint({0.5, 1});
     filterContainer->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 53.75f});
-    filterContainer->setContentHeight(0.f);
     filterContainer->setLayout(filterContainerLayout);
 
     constexpr TierFilterBtnData filterBtns[] = {
@@ -294,9 +295,8 @@ bool OptionMenu::init() {
         };
     };
 
-    filterContainer->updateLayout();
-
     m_mainLayer->addChild(filterContainer);
+    filterContainer->updateLayout();
 
     // get all the options data
     m_impl->filterOptions(options::getAll());
@@ -351,6 +351,7 @@ bool OptionMenu::init() {
 
     auto socialContainerLayout = RowLayout::create()
                                      ->setGap(1.25f)
+                                     ->setAutoScale(false)
                                      ->setAxisReverse(true)
                                      ->setAxisAlignment(AxisAlignment::End)
                                      ->setAutoGrowAxis(0.f);
@@ -359,22 +360,15 @@ bool OptionMenu::init() {
     socialContainer->setID("social-container");
     socialContainer->setAnchorPoint({1, 0.5});
     socialContainer->setPosition({mainLayerSize.width - 7.5f, mainLayerSize.height - 20.f});
-    socialContainer->setContentWidth(0.f);
     socialContainer->setLayout(socialContainerLayout);
 
     auto socialBtns = std::to_array<SocialBtnData>(
-        {{"geode.loader/homepage.png",
-             "website-btn",
-             [](auto) {
-                 createQuickPopup(
-                     "Breakeode",
-                     "Visit <cr>Breakeode</c>'s official website?",
-                     "Cancel",
-                     "OK",
-                     [](auto, bool ok) {
-                         if (ok) web::openLinkInBrowser("https://breakeode.cubicstudios.xyz/");
-                     });
-             }},
+        {{"accountBtn_myLists_001.png",
+             "credits-btn",
+             [this](auto) {
+                 if (auto popup = OptionMenuCredits::create(m_impl->theme)) popup->show();
+             },
+             0.55f},
             {"gj_discordIcon_001.png",
                 "discord-btn",
                 [](auto) {
@@ -398,7 +392,7 @@ bool OptionMenu::init() {
                 socialBtn.sprite,
                 std::move(socialBtn.callback))) {
             btn->setID(socialBtn.id);
-            btn->setScale(0.75f);
+            btn->setScale(socialBtn.scale);
 
             socialContainer->addChild(btn);
         } else {
@@ -406,9 +400,8 @@ bool OptionMenu::init() {
         };
     };
 
-    socialContainer->updateLayout();
-
     m_mainLayer->addChild(socialContainer);
+    socialContainer->updateLayout();
 
     auto safeModeContainerLayout = RowLayout::create()
                                        ->setGap(2.5f)
@@ -436,17 +429,23 @@ bool OptionMenu::init() {
 };
 
 void OptionMenu::onClose(CCObject* sender) {
+    if (auto credits = OptionMenuCredits::get()) credits->removeMeAndCleanup();
     s_inst = nullptr;
+
     Popup::onClose(sender);
 };
 
 void OptionMenu::onExit() {
+    if (auto credits = OptionMenuCredits::get()) credits->removeMeAndCleanup();
     s_inst = nullptr;
+
     Popup::onExit();
 };
 
 void OptionMenu::cleanup() {
+    if (auto credits = OptionMenuCredits::get()) credits->removeMeAndCleanup();
     s_inst = nullptr;
+
     Popup::cleanup();
 };
 

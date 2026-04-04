@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OptionCategoryItem.h"
+#include "OptionMenuCredits.h"
 
 #include <Utils.h>
 
@@ -25,6 +25,7 @@ namespace horrible {
             const char* sprite;
             const char* id;
             Button::ButtonCallback callback;
+            float scale = 0.75f;
         };
 
         void setupSafeModeNode(bool safeMode);

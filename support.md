@@ -1,7 +1,7 @@
-# ![:D](frame:geode.loader/gift.png?scale=0.625) [Support Us](https://breakeode.cubicstudios.xyz/)!
+# ![:D](frame:geode.loader/gift.png?scale=0.625) [Support Development](https://breakeode.cubicstudios.xyz/)!
+Here are some links that take you directly to the mod's lead developers' support pages.
 
 ## ArcticWoof...
-#### Dono?
 - [Donate via Kofi](https://ko-fi.com/arcticwoof)
 
 ## Cheeseworks...

@@ -42,7 +42,7 @@ By default, this mod implements its own safe mode to prevent accidental progress
 
 ---
 
-### Developers
+### Integrations
 Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can see its [documentation here](https://github.com/CubicCommunity/HorribleMenu/tree/main/include). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
@@ -73,8 +73,20 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 ---
 
-### Thanks
-- **[Geode SDK](mod:geode.loader)**: Created an incredible SDK to make this mod possible!
+#### Contributions
+[Horrible Menu is free and open-source](https://github.com/CubicCommunity/HorribleMenu). You're welcome to visit our GitHub repository and report any issues, make suggestions, or open pull requests aimed at fixing bugs or adding new exciting features.
+
+![💻](frame:geode.loader/github.png?scale=0.375) **[Contribute to Horrible Menu on GitHub](https://github.com/CubicCommunity/HorribleMenu)**
+
+#### Community
+Projects like *Horrible Menu* are carried by community support and hype. If you're looking for a sprawling yet cozy space to hang out with other cool people, consider joining [Cubic Studios's community Discord server](https://www.dsc.gg/cubic)!
+
+![🏘](frame:gj_discordIcon_001.png?scale=0.375) **[Join Cubic Community on Discord](https://www.dsc.gg/cubic)**
+
+---
+
+#### Thanks
+- **[Geode SDK](mod:geode.loader)**: Created an incredible SDK that made this mod possible!
 - **[RobTop Games](user:71)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
 
 *and...*
@@ -83,5 +95,5 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 ---
 
-### Developers
+### Development
 ###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [Breakeode](https://breakeode.cubicstudios.xyz/) team.

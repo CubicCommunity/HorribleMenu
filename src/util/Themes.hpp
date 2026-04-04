@@ -98,9 +98,11 @@ namespace horrible {
                 inline constexpr auto Classic = "Classic";
                 inline constexpr auto Pride = "Pride";
                 inline constexpr auto TransPride = "Trans Pride";
+                inline constexpr auto Breakeode = "Breakeode";
                 inline constexpr auto BoomEmoji = "Boom Emoji";
                 inline constexpr auto CryingSkull = "Crying Skull";
                 inline constexpr auto ColonThree = ":3";
+                inline constexpr auto Durr = "durr";
                 inline constexpr auto SapphireSDK = "Sapphire SDK";
             };
 
@@ -110,9 +112,11 @@ namespace horrible {
                 if (icon == icons::Classic) return "icon_classic.png"_spr;
                 if (icon == icons::Pride) return "icon_pride.png"_spr;
                 if (icon == icons::TransPride) return "icon_transpride.png"_spr;
+                if (icon == icons::Breakeode) return "icon_breakeode.png"_spr;
                 if (icon == icons::BoomEmoji) return "icon_boom.png"_spr;
                 if (icon == icons::CryingSkull) return "icon_skull.png"_spr;
                 if (icon == icons::ColonThree) return "icon_colonthree.png"_spr;
+                if (icon == icons::Durr) return "icon_durr.png"_spr;
                 if (icon == icons::SapphireSDK) return "icon_sapphire.png"_spr;
 
                 return "icon.png"_spr;
