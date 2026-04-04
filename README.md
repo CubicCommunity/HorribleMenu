@@ -75,7 +75,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 ```
 
 > [!NOTE]
-> *If you plan on publishing a mod that acts as an add-on, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](./include) to the best of your ability!*
+> *If you plan on publishing **a mod that acts as an add-on**, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](./include) to the best of your ability!*
 
 ---
 
