@@ -160,7 +160,7 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
     // info button
     auto infoBtn = Button::createWithSpriteFrameName(
         m_impl->compatible ? "GJ_infoIcon_001.png" : "geode.loader/info-alert.png",
-        [this](Button*) {
+        [this](auto) {
             m_impl->notifyIncompat();
 
             auto formatDesc = fmt::format("{}\n\n{}", (m_impl->option.getDescription().size() > 0) ? m_impl->option.getDescription() : "<cc>No description provided.</c>", m_impl->getTierDescString(m_impl->option.getSillyTier(), m_impl->compatible));
@@ -184,11 +184,9 @@ bool OptionItem::init(CCSize const& size, Option option, bool devMode) {
 
     menu->addChild(infoBtn);
 
-    // @geode-ignore(unknown-resource)
     auto pinOff = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
     pinOff->setScale(0.5f);
     pinOff->setOpacity(75);
-    // @geode-ignore(unknown-resource)
     auto pinOn = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
     pinOn->setScale(0.5f);
     pinOn->setOpacity(225);

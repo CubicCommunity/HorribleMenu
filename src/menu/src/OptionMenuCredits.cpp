@@ -4,6 +4,8 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/ui/GeodeUI.hpp>
+
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
@@ -58,7 +60,7 @@ OptionMenuCredits* OptionMenuCredits::s_inst = nullptr;
 bool OptionMenuCredits::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
-    if (!Popup::init(400.f, 265.f, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init(425.f, 265.f, themes::getBackgroundSprite(theme))) return false;
 
     setID("credits"_spr);
     setTitle("Credits");
@@ -113,12 +115,15 @@ bool OptionMenuCredits::init(ZStringView theme) {
     m_mainLayer->addChild(leadDevContainer);
     leadDevContainer->updateLayout();
 
-    auto creditsMd = MDTextArea::create(
+    constexpr auto creditsTxt =
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Additional Resources\n"
-        "**[alk1m123](user:11535118)**: 'Sapphire SDK' logo\n\n"
+        "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: 'The Yellow One' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
-        "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n",
-        {m_mainLayer->getScaledContentWidth() - 50.f,
+        "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n";
+
+    auto creditsMd = MDTextArea::create(
+        creditsTxt,
+        {m_mainLayer->getScaledContentWidth() - 55.f,
             140.f});
     creditsMd->setID("credits");
     creditsMd->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 90.f});
@@ -145,6 +150,37 @@ bool OptionMenuCredits::init(ZStringView theme) {
     websiteBtn->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 0.f});
 
     m_mainLayer->addChild(websiteBtn, 1);
+
+    auto modBtn = Button::createWithNode(
+        CircleButtonSprite::createWithSpriteFrameName(
+            "geode.loader/geode-logo-outline-gold.png",
+            1.f,
+            themes::getCircleBaseColor(theme)),
+        [](auto) {
+            openInfoPopup(thisMod);
+        });
+    modBtn->setID("mod-information-btn");
+    modBtn->setScale(0.5f);
+    modBtn->setPosition({15.f, 15.f});
+
+    m_mainLayer->addChild(modBtn, 9);
+
+    auto infoBtn = Button::createWithSpriteFrameName(
+        "GJ_infoIcon_001.png",
+        [this](auto) {
+            if (auto popup = FLAlertLayer::create(
+                    this,
+                    "Help",
+                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n<co>If you don't appear here and you've contributed, please contact us on Discord or open an issue on the mod's GitHub repository.</c>\n\n<cd>Thanks to everyone who has contributed to this project in any way! We really appreciate it! <3</c>",
+                    "OK",
+                    nullptr,
+                    400.f)) popup->show();
+        });
+    infoBtn->setID("info-btn");
+    infoBtn->setScale(0.75f);
+    infoBtn->setPosition(m_mainLayer->getScaledContentSize() - 12.5f);
+
+    m_mainLayer->addChild(infoBtn, 9);
 
     return true;
 };

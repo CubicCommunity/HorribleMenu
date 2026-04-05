@@ -13,7 +13,7 @@ namespace horrible {
         static OptionMenuPlayer* create(geode::ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor);
     };
 
-    class OptionMenuCredits final : public Popup {
+    class OptionMenuCredits final : public Popup, private FLAlertLayerProtocol {
     private:
         static OptionMenuCredits* s_inst;
 

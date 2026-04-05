@@ -64,7 +64,6 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
     void createConfetti() {
         auto conf = CCSprite::createWithSpriteFrameName(s_confettis[randng::get(s_confettis.size() - 1)]);
-        conf->setPosition({0.f, 0.f});
         conf->setScale(0.875f * randng::pc());
 
         auto useY = randng::get(1) > 0;
