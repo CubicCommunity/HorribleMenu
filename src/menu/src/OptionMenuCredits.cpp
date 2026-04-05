@@ -115,14 +115,16 @@ bool OptionMenuCredits::init(ZStringView theme) {
     m_mainLayer->addChild(leadDevContainer);
     leadDevContainer->updateLayout();
 
-    constexpr auto creditsTxt =
-        "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Additional Resources\n"
+    constexpr auto creditsMdTxt =
+        "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
         "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
-        "**[Uproxide](user:25397826)**: 'The Yellow One' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
-        "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n";
+        "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
+        "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n"
+        "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
+        "**[Team Avalanche](https://avalanche.cubicstudios.xyz/)**: Supporting the project since its experimental days\n\n";
 
     auto creditsMd = MDTextArea::create(
-        creditsTxt,
+        creditsMdTxt,
         {m_mainLayer->getScaledContentWidth() - 55.f,
             140.f});
     creditsMd->setID("credits");
@@ -155,7 +157,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
         CircleButtonSprite::createWithSpriteFrameName(
             "geode.loader/geode-logo-outline-gold.png",
             1.f,
-            themes::getCircleBaseColor(theme)),
+            btns),
         [](auto) {
             openInfoPopup(thisMod);
         });

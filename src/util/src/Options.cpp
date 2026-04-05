@@ -5,7 +5,7 @@
 using namespace horrible;
 using namespace horrible::util;
 
-std::span<const Option> options::getAll() noexcept {
+std::vector<std::weak_ptr<Option>> options::getAll() noexcept {
     if (auto om = OptionManager::get()) return om->getOptions();
     return {};
 };

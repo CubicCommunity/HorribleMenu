@@ -29,10 +29,10 @@ struct matjson::Serialize<HorribleOptionSave> final {
 // Container for Horrible Menu API functions
 namespace horrible {
     // Option manager for Horrible Menu
-    class AWCW_HORRIBLE_API_DLL OptionManager final {
+    class BRKD_HORRIBLE_API_DLL OptionManager final {
     private:
-        std::vector<Option> m_options;          // Array of registered options
-        std::vector<std::string> m_categories;  // Array of auto-registered categories
+        std::unordered_map<std::string, std::shared_ptr<Option>> m_options;  // Array of registered options
+        std::vector<std::string> m_categories;                               // Array of auto-registered categories
 
         // Type alias for `geode::Function<void(bool)>`, used in hook delegation
         using Callback = geode::Function<void(bool)>;
@@ -59,7 +59,7 @@ namespace horrible {
          *
          * @returns Whether this option already exists or not
          */
-        bool doesOptionExist(std::string_view id) const noexcept;
+        bool doesOptionExist(geode::ZStringView id) const noexcept;
 
     public:
         // Get option manager singleton
@@ -77,7 +77,7 @@ namespace horrible {
          *
          * @returns An array of every registered option, main and external
          */
-        [[nodiscard]] std::span<const Option> getOptions() const noexcept;
+        [[nodiscard]] std::vector<std::weak_ptr<Option>> getOptions() const noexcept;
 
         /**
          * Quickly check the toggle state of an option
@@ -122,7 +122,7 @@ namespace horrible {
          *
          * @returns A result possibly containing the option object
          */
-        [[nodiscard]] geode::Result<Option const&> getOptionInfo(std::string_view id) const noexcept;
+        [[nodiscard]] std::weak_ptr<Option> getOptionInfo(geode::ZStringView id) const noexcept;
 
         /**
          * Returns the amount of delegate callbacks registered for an option
@@ -173,7 +173,7 @@ namespace horrible {
      * @param id The ID of the option to delegate for
      * @param hooks The map of hooks to delegate
      */
-    AWCW_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>> const& hooks);
+    BRKD_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>> const& hooks);
 };
 
 // Statically register an option

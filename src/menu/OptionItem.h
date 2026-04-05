@@ -19,14 +19,14 @@ namespace horrible {
         void onToggle(cocos2d::CCObject*);
         void onPin(cocos2d::CCObject* sender);
 
-        bool init(cocos2d::CCSize const& size, Option option, bool devMode);
+        bool init(cocos2d::CCSize const& size, std::weak_ptr<Option> option, bool devMode);
 
     public:
-        static OptionItem* create(cocos2d::CCSize const& size, Option option, bool devMode);
+        static OptionItem* create(cocos2d::CCSize const& size, std::weak_ptr<Option> option, bool devMode);
 
         void setPinCallback(Callback&& callback);
 
-        Option const& getOption() const noexcept;
+        std::weak_ptr<Option> getOption() const noexcept;
         bool isCompatible() const noexcept;
     };
 };

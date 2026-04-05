@@ -13,7 +13,7 @@ namespace horrible {
              *
              * @returns An array of every registered option, main and external
              */
-            std::span<const Option> getAll() noexcept;
+            std::vector<std::weak_ptr<Option>> getAll() noexcept;
 
             /**
              * Returns the toggle state of an option

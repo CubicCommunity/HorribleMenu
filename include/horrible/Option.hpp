@@ -20,7 +20,7 @@ namespace horrible {
     };
 
     // Metadata for a horrible option
-    struct AWCW_HORRIBLE_API_DLL Option final {
+    struct BRKD_HORRIBLE_API_DLL Option final {
     private:
         std::string m_id = "id"_spr;                          // Unique ID of the option
         std::string m_name = "Example Option";                // Name of the option

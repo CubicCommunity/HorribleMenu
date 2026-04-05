@@ -38,55 +38,55 @@ public:
 
     std::vector<WeakRef<OptionCategoryItem>> categoryItems;
 
-    void filterOptions(std::span<const Option> optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
+    void filterOptions(std::vector<std::weak_ptr<Option>>&& optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
         if (optionList) {
             optionList->m_contentLayer->removeAllChildren();
 
-            std::vector<Option> list = {optList.begin(), optList.end()};
-
-            std::sort(list.begin(), list.end(), [this](Option const& a, Option const& b) -> bool {
-                auto aFav = options::isPinned(a.getID());
-                auto bFav = options::isPinned(b.getID());
+            std::sort(optList.begin(), optList.end(), [this](std::weak_ptr<Option> const& a, std::weak_ptr<Option> const& b) -> bool {
+                auto aFav = options::isPinned(a.lock()->getID());
+                auto bFav = options::isPinned(b.lock()->getID());
 
                 return aFav > bFav;
             });
 
             auto useCategory = options::doesCategoryExist(category);
 
-            for (auto const& opt : list) {
-                // tier filter
-                auto tierMatches = tier == SillyTier::None || tier == opt.getSillyTier();
-                // category filter
-                auto categoryMatches = !useCategory || (opt.getCategory() == category);
+            for (auto const& opt : optList) {
+                if (auto o = opt.lock()) {
+                    // tier filter
+                    auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
+                    // category filter
+                    auto categoryMatches = !useCategory || (o->getCategory() == category);
 
-                // search filter
-                auto searchMatches = true;
-                if (!searchText.empty()) {
-                    auto const searchLower = str::toLower(searchText);
+                    // search filter
+                    auto searchMatches = true;
+                    if (!searchText.empty()) {
+                        auto const searchLower = str::toLower(searchText);
 
-                    searchMatches = str::contains(str::toLower(opt.getName()), searchLower) || str::contains(str::toLower(opt.getID()), searchLower) || str::contains(str::toLower(opt.getCategory()), searchLower);
-                };
+                        searchMatches = str::contains(str::toLower(o->getName()), searchLower) || str::contains(str::toLower(o->getID()), searchLower) || str::contains(str::toLower(o->getCategory()), searchLower);
+                    };
 
-                if (tierMatches && categoryMatches && searchMatches) {
-                    if (auto modOption = OptionItem::create(
-                            {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
-                            opt,
-                            devMode)) {
-                        if (modOption->isCompatible() || showIncompatible) {
-                            modOption->setPinCallback([this]() {
-                                filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
-                            });
+                    if (tierMatches && categoryMatches && searchMatches) {
+                        if (auto modOption = OptionItem::create(
+                                {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
+                                opt,
+                                devMode)) {
+                            if (modOption->isCompatible() || showIncompatible) {
+                                modOption->setPinCallback([this]() {
+                                    filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
+                                });
 
-                            optionList->m_contentLayer->addChild(modOption);
-                        } else {
-                            log::error("{} is incompatible with the current platform", modOption->getOption().getID());
-                            modOption->removeMeAndCleanup();
+                                optionList->m_contentLayer->addChild(modOption);
+                            } else {
+                                log::error("{} is incompatible with the current platform", o->getID());
+                                modOption->removeMeAndCleanup();
+                            };
                         };
                     };
                 };
             };
 
-            log::trace("Finished sorting {} options", list.size());
+            log::trace("Finished sorting {} options", optList.size());
 
             optionList->m_contentLayer->updateLayout();
             optionList->scrollToTop();

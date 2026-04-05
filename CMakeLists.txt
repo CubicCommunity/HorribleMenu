@@ -16,7 +16,7 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include)
 
 if(PROJECT_IS_TOP_LEVEL)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE AWCW_HORRIBLE_API_EXPORTING)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE BRKD_HORRIBLE_API_EXPORTING)
 endif()
 
 if(NOT DEFINED ENV{GEODE_SDK})

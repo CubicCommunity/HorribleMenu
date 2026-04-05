@@ -10,6 +10,8 @@ using namespace geode::prelude;
 using namespace horrible;
 
 Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matjson::Value const& value) {
+    if (!value.isObject()) return Err("Expected an object");
+
     GEODE_UNWRAP_INTO(bool enabled, value["enabled"].asBool());
     GEODE_UNWRAP_INTO(bool pin, value["pin"].asBool());
     GEODE_UNWRAP_INTO(bool viewed, value["viewed"].asBool());
@@ -115,12 +117,8 @@ void OptionManager::registerCategory(std::string category) {
     if (!utils::string::containsAny(category, getCategories())) m_categories.push_back(std::move(category));
 };
 
-bool OptionManager::doesOptionExist(std::string_view id) const noexcept {
-    for (auto const& option : getOptions()) {
-        if (option.getID() == id) return true;
-    };
-
-    return false;
+bool OptionManager::doesOptionExist(ZStringView id) const noexcept {
+    return m_options.find(id) != m_options.end();
 };
 
 void OptionManager::registerOption(Option option) {
@@ -129,8 +127,10 @@ void OptionManager::registerOption(Option option) {
     } else {
         registerCategory(option.getCategory());
 
-        log::debug("Registered option {} of category {}", option.getID(), option.getCategory());
-        m_options.push_back(std::move(option));
+        std::string id = option.getID();
+
+        log::debug("Registering option {} of category {}", option.getID(), option.getCategory());
+        m_options.emplace(std::move(id), std::make_shared<Option>(std::move(option)));
     };
 };
 
@@ -139,8 +139,13 @@ void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
     thisDelegate.push_back(std::move(callback));
 };
 
-std::span<const Option> OptionManager::getOptions() const noexcept {
-    return m_options;
+std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const noexcept {
+    std::vector<std::weak_ptr<Option>> out;
+    out.reserve(m_options.size());
+
+    for (const auto& [k, v] : m_options) out.push_back(v);
+
+    return out;
 };
 
 std::span<const std::string> OptionManager::getCategories() const noexcept {
@@ -163,12 +168,9 @@ HorribleOptionSave OptionManager::getOption(std::string_view id) const {
     return Mod::get()->getSavedValue<HorribleOptionSave>(id);
 };
 
-Result<Option const&> OptionManager::getOptionInfo(std::string_view id) const noexcept {
-    for (auto const& option : getOptions()) {
-        if (option.getID() == id) return Ok(option);
-    };
-
-    return Err("Option not found");
+std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const noexcept {
+    if (auto it = m_options.find(id); it != m_options.end()) return it->second;
+    return std::weak_ptr<Option>();
 };
 
 size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
