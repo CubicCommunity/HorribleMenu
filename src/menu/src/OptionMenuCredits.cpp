@@ -60,7 +60,7 @@ OptionMenuCredits* OptionMenuCredits::s_inst = nullptr;
 bool OptionMenuCredits::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
-    if (!Popup::init(425.f, 265.f, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init(400.f, 265.f, themes::getBackgroundSprite(theme))) return false;
 
     setID("credits"_spr);
     setTitle("Credits");
@@ -121,7 +121,8 @@ bool OptionMenuCredits::init(ZStringView theme) {
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
-        "**[Team Avalanche](https://avalanche.cubicstudios.xyz/)**: Supporting the project since its experimental days\n\n";
+        "**[Team Avalanche](https://avalanche.cubicstudios.xyz/)**: Supporting the project since its experimental days\n\n"
+        "**[dank_meme](user:9735891)**: helped with pretty important programming decisions :D\n\n";
 
     auto creditsMd = MDTextArea::create(
         creditsMdTxt,
@@ -173,14 +174,14 @@ bool OptionMenuCredits::init(ZStringView theme) {
             if (auto popup = FLAlertLayer::create(
                     this,
                     "Help",
-                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n<co>If you don't appear here and you've contributed, please contact us on Discord or open an issue on the mod's GitHub repository.</c>\n\n<cd>Thanks to everyone who has contributed to this project in any way! We really appreciate it! <3</c>",
+                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n<co>If we missed anyone, let us know by opening an issue on the GitHub repository!</c>\n\n<cd>Thanks to anyone and everyone who has contributed to this project in any way! We sincere;y appreciate you! <3</c>",
                     "OK",
                     nullptr,
-                    400.f)) popup->show();
+                    365.f)) popup->show();
         });
     infoBtn->setID("info-btn");
     infoBtn->setScale(0.75f);
-    infoBtn->setPosition(m_mainLayer->getScaledContentSize() - 12.5f);
+    infoBtn->setPosition(m_mainLayer->getScaledContentSize() - 13.75f);
 
     m_mainLayer->addChild(infoBtn, 9);
 

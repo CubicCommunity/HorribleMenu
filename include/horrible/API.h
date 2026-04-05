@@ -31,8 +31,8 @@ namespace horrible {
     // Option manager for Horrible Menu
     class BRKD_HORRIBLE_API_DLL OptionManager final {
     private:
-        std::unordered_map<std::string, std::shared_ptr<Option>> m_options;  // Array of registered options
-        std::vector<std::string> m_categories;                               // Array of auto-registered categories
+        geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Array of registered options
+        std::vector<std::string> m_categories;                       // Array of auto-registered categories
 
         // Type alias for `geode::Function<void(bool)>`, used in hook delegation
         using Callback = geode::Function<void(bool)>;
