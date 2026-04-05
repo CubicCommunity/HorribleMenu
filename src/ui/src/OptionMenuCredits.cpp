@@ -174,7 +174,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
             if (auto popup = FLAlertLayer::create(
                     this,
                     "Help",
-                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n<co>If we missed anyone, let us know by opening an issue on the GitHub repository!</c>\n\n<cd>Thanks to anyone and everyone who has contributed to this project in any way! We sincere;y appreciate you! <3</c>",
+                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n<co>If we missed anyone, let us know by opening an issue about it on the GitHub repository!</c>\n\n<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>",
                     "OK",
                     nullptr,
                     365.f)) popup->show();

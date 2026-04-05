@@ -2,8 +2,8 @@
 
 #include <ranges>
 
-#include <menu/OptionMenuButton.h>
-#include <menu/SettingV3.h>
+#include <ui/OptionMenuButton.h>
+#include <ui/SettingV3.h>
 
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
