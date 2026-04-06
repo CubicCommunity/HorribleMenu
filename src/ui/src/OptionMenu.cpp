@@ -6,6 +6,8 @@
 
 #include <Utils.h>
 
+#include <asp/fs.hpp>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/GeodeUI.hpp>
@@ -14,6 +16,8 @@
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
+
+namespace fs = asp::fs;  // :troll:
 
 OptionMenu* OptionMenu::s_inst = nullptr;
 
@@ -32,9 +36,12 @@ public:
     ScrollLayer* categoryList = nullptr;
     TextInput* searchInput = nullptr;
 
+    bool safeMode = thisMod->getSettingValue<bool>(setting::SafeMode);
     std::string theme = thisMod->getSettingValue<std::string>("theme");
+    fs::path themeBgPath = thisMod->getSettingValue<fs::path>("theme-background");
 
     CCNode* safeModeContainer = nullptr;
+    LazySprite* themeBackground = nullptr;
 
     std::vector<WeakRef<OptionCategoryItem>> categoryItems;
 
@@ -100,22 +107,59 @@ OptionMenu::OptionMenu() : m_impl(std::make_unique<Impl>()) {};
 OptionMenu::~OptionMenu() {};
 
 void OptionMenu::setupSafeModeNode(bool safeMode) {
-    if (m_impl->safeModeContainer) {
-        m_impl->safeModeContainer->removeAllChildrenWithCleanup(true);
+    if (m_impl->safeMode != safeMode) {
+        m_impl->safeMode = safeMode;
 
-        auto safeModeIcon = CCSprite::createWithSpriteFrameName(safeMode ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
-        safeModeIcon->setScale(0.375f);
+        if (m_impl->safeModeContainer) {
+            m_impl->safeModeContainer->removeAllChildrenWithCleanup(true);
 
-        m_impl->safeModeContainer->addChild(safeModeIcon);
+            auto safeModeIcon = CCSprite::createWithSpriteFrameName(safeMode ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
+            safeModeIcon->setScale(0.375f);
 
-        auto safeModeLabel = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
-        safeModeLabel->setColor(safeMode ? colors::green : colors::red);
-        safeModeLabel->setAlignment(kCCTextAlignmentCenter);
-        safeModeLabel->setScale(0.25f);
+            m_impl->safeModeContainer->addChild(safeModeIcon);
 
-        m_impl->safeModeContainer->addChild(safeModeLabel);
+            auto safeModeLabel = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
+            safeModeLabel->setColor(safeMode ? colors::green : colors::red);
+            safeModeLabel->setAlignment(kCCTextAlignmentCenter);
+            safeModeLabel->setScale(0.25f);
 
-        m_impl->safeModeContainer->updateLayout();
+            m_impl->safeModeContainer->addChild(safeModeLabel);
+
+            m_impl->safeModeContainer->updateLayout();
+        };
+    };
+};
+
+void OptionMenu::setupImageBackground(fs::path path) {
+    if (m_impl->themeBgPath != path) {
+        m_impl->themeBgPath = std::move(path);
+
+        if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeMeAndCleanup();
+
+        if (fs::exists(m_impl->themeBgPath)) {
+            m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
+            m_impl->themeBackground->setID("theme-bg");
+            m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+
+            m_impl->themeBackground->setLoadCallback([this](Result<> res) {
+                if (res.isOk()) {
+                    m_impl->themeBackground->setScaleX(m_bgSprite->getScaledContentWidth() / m_impl->themeBackground->getScaledContentWidth());
+                    m_impl->themeBackground->setScaleY(m_bgSprite->getScaledContentHeight() / m_impl->themeBackground->getScaledContentHeight());
+
+                    m_impl->themeBackground->setOpacity(100);
+
+                    log::debug("Successfully loaded theme background");
+                } else if (res.isErr()) {
+                    log::error("Failed to load theme background: {}", res.unwrapErr());
+                } else {
+                    log::error("Failed to load theme background for an unknown reason");
+                };
+            });
+
+            m_mainLayer->addChild(m_impl->themeBackground, -1);
+
+            m_impl->themeBackground->loadFromFile(m_impl->themeBgPath);
+        };
     };
 };
 
@@ -128,7 +172,18 @@ bool OptionMenu::init() {
     setTitle("Horrible Options");
     setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, btns, CircleBaseSize::Small));
 
+    m_bgSprite->setZOrder(-9);
+
     auto mainLayerSize = m_mainLayer->getScaledContentSize();
+
+    auto corner = CCSprite::createWithSpriteFrameName("rewardCorner_001.png");
+    corner->setFlipX(true);
+    corner->setFlipY(true);
+    corner->setScale(0.375f);
+    corner->setAnchorPoint({1, 1});
+    corner->setPosition(mainLayerSize);
+
+    m_mainLayer->addChild(corner);
 
     auto categoryListBg = NineSlice::create(themes::square);
     categoryListBg->setAnchorPoint({0.5, 0.5});
@@ -197,8 +252,8 @@ bool OptionMenu::init() {
     // Add a background sprite to the popup
     auto optionListBg = NineSlice::create(themes::square);
     optionListBg->setAnchorPoint({0.5, 0.5});
-    optionListBg->setPosition({(mainLayerSize.width / 2.f) - 82.5f, (mainLayerSize.height / 2.f) - 30.f});
-    optionListBg->setContentSize({(mainLayerSize.width / 1.5f) - 35.f, mainLayerSize.height - 82.5f});
+    optionListBg->setPosition({(mainLayerSize.width / 2.f) - 82.5f, (mainLayerSize.height / 2.f) - 31.25f});
+    optionListBg->setContentSize({(mainLayerSize.width / 1.5f) - 35.f, mainLayerSize.height - 83.25f});
     optionListBg->setOpacity(50);
 
     m_mainLayer->addChild(optionListBg);
@@ -418,13 +473,21 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(m_impl->safeModeContainer, 9);
 
-    setupSafeModeNode(thisMod->getSettingValue<bool>(setting::SafeMode));
+    setupSafeModeNode(m_impl->safeMode);
+    setupImageBackground(m_impl->themeBgPath);
 
     addEventListener(
         SettingChangedEvent(thisMod, setting::SafeMode),
         [this](std::shared_ptr<SettingV3> setting) {
             auto settingBool = std::static_pointer_cast<BoolSettingV3>(setting);
             setupSafeModeNode(settingBool->getValue());
+        });
+
+    addEventListener(
+        SettingChangedEvent(thisMod, "theme-background"),
+        [this](std::shared_ptr<SettingV3> setting) {
+            auto settingPath = std::static_pointer_cast<FileSettingV3>(setting);
+            setupImageBackground(settingPath->getValue());
         });
 
     return true;

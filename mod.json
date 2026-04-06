@@ -88,6 +88,30 @@
                 "Geode"
             ]
         },
+        "theme-background": {
+            "type": "file",
+            "name": "Menu Theme Background",
+            "description": "Local image file to use as a background for the <cg>Horrible Options Menu</c> interface. <co>Selected image will be stretched to fit menu window's size.</c>\n\n> ![✳️](frame:collaborationIcon_001.png) <cg>*To load animated images, install [ImagePlus](mod:prevter.imageplus).*</c>\n\n<mod:prevter.imageplus>",
+            "default": "",
+            "control": {
+                "dialog": "open",
+                "filters": [
+                    {
+                        "files": [
+                            "*.png",
+                            "*.jpg",
+                            "*.jpeg",
+                            "*.webp",
+                            "*.apng",
+                            "*.gif",
+                            "*.qoi",
+                            "*.jxl"
+                        ],
+                        "description": "Image files"
+                    }
+                ]
+            }
+        },
         "floating-btn": {
             "type": "bool",
             "name": "Floating Menu Button",

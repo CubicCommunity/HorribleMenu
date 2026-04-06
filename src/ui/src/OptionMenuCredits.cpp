@@ -109,7 +109,10 @@ bool OptionMenuCredits::init(ZStringView theme) {
     };
 
     for (auto const& dev : devs) {
-        if (auto player = OptionMenuPlayer::create(dev.name, dev.account, dev.icon, dev.color1, dev.color2, dev.glowColor)) leadDevContainer->addChild(player);
+        if (auto player = OptionMenuPlayer::create(dev.name, dev.account, dev.icon, dev.color1, dev.color2, dev.glowColor)) {
+            player->setID(dev.id);
+            leadDevContainer->addChild(player);
+        };
     };
 
     m_mainLayer->addChild(leadDevContainer);
@@ -122,7 +125,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
         "**[Team Avalanche](https://avalanche.cubicstudios.xyz/)**: Supporting the project since its experimental days\n\n"
-        "**[dank_meme](user:9735891)**: helped with pretty important programming decisions :D\n\n";
+        "**[dankmeme](user:9735891)**: helped with pretty important programming decisions :D\n\n";
 
     auto creditsMd = MDTextArea::create(
         creditsMdTxt,
