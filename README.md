@@ -112,4 +112,4 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 ### Developers
-###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/XBtMpm3.png" width="15" alt="Breakeode logo" /> Breakeode](https://breakeode.cubicstudios.xyz/) team.
+###### This mod is published by **[<img src="https://i.imgur.com/1Rjt4bg.png" width="15" alt="Cubic Studios logo" /> Cubic Studios](https://www.cubicstudios.xyz/)**, on behalf of the [<img src="https://i.imgur.com/XBtMpm3.png" width="15" alt="Breakeode logo" /> Breakeode](https://breakeode.cubicstudios.xyz/) team.

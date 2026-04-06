@@ -93,5 +93,5 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 
 ---
 
-### Development
-###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [Breakeode](https://breakeode.cubicstudios.xyz/) team.
+### Developers
+###### This mod is published by **[Cubic Studios](https://www.cubicstudios.xyz/)**, on behalf of the [Breakeode](https://breakeode.cubicstudios.xyz/) team.
