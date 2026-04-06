@@ -88,6 +88,7 @@ public:
 
     CCNode* safeModeContainer = nullptr;
     LazySprite* themeBackground = nullptr;
+    CCClippingNode* themeBgContainer = nullptr;
 
     std::vector<WeakRef<OptionCategoryItem>> categoryItems;
 
@@ -185,29 +186,30 @@ void OptionMenu::setupSafeModeNode(bool safeMode) {
 void OptionMenu::setupImageBackground(fs::path path) {
     if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeMeAndCleanup();
 
-    if (fs::exists(path)) {
-        m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
-        m_impl->themeBackground->setID("theme-bg");
-        m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+    if (m_impl->themeBgContainer) {
+        if (fs::exists(path)) {
+            m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
+            m_impl->themeBackground->setID("theme-bg");
+            m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
-        m_impl->themeBackground->setLoadCallback([this](Result<> res) {
-            if (res.isOk()) {
-                m_impl->themeBackground->setScaleX(m_bgSprite->getScaledContentWidth() / m_impl->themeBackground->getScaledContentWidth());
-                m_impl->themeBackground->setScaleY(m_bgSprite->getScaledContentHeight() / m_impl->themeBackground->getScaledContentHeight());
+            m_impl->themeBackground->setLoadCallback([this](Result<> res) {
+                if (res.isOk()) {
+                    m_impl->themeBackground->setScaleX(m_bgSprite->getScaledContentWidth() / m_impl->themeBackground->getScaledContentWidth());
+                    m_impl->themeBackground->setScaleY(m_bgSprite->getScaledContentHeight() / m_impl->themeBackground->getScaledContentHeight());
 
-                m_impl->themeBackground->setOpacity(100);
+                    m_impl->themeBackground->setOpacity(100);
 
-                log::debug("Successfully loaded theme background");
-            } else if (res.isErr()) {
-                log::error("Failed to load theme background: {}", res.unwrapErr());
-            } else {
-                log::error("Failed to load theme background for an unknown reason");
-            };
-        });
+                    log::debug("Successfully loaded theme background");
+                } else if (res.isErr()) {
+                    log::error("Failed to load theme background: {}", res.unwrapErr());
+                } else {
+                    log::error("Failed to load theme background for an unknown reason");
+                };
+            });
 
-        m_mainLayer->addChild(m_impl->themeBackground, -1);
-
-        m_impl->themeBackground->loadFromFile(path);
+            m_impl->themeBgContainer->addChild(m_impl->themeBackground);
+            m_impl->themeBackground->loadFromFile(path);
+        };
     };
 
     if (m_impl->themeBgPath != path) m_impl->themeBgPath = std::move(path);
@@ -226,14 +228,15 @@ bool OptionMenu::init() {
 
     auto mainLayerSize = m_mainLayer->getScaledContentSize();
 
-    auto corner = CCSprite::createWithSpriteFrameName("rewardCorner_001.png");
-    corner->setFlipX(true);
-    corner->setFlipY(true);
-    corner->setScale(0.375f);
-    corner->setAnchorPoint({1, 1});
-    corner->setPosition(mainLayerSize);
+    m_impl->themeBgContainer = CCClippingNode::create();
+    m_impl->themeBgContainer->setID("bg-container");
+    m_impl->themeBgContainer->setAnchorPoint({0.5, 0.5});
+    m_impl->themeBgContainer->setContentSize(m_bgSprite->getScaledContentSize());
+    m_impl->themeBgContainer->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+    m_impl->themeBgContainer->setStencil(m_bgSprite);
+    m_impl->themeBgContainer->setAlphaThreshold(0);
 
-    m_mainLayer->addChild(corner);
+    m_mainLayer->addChild(m_impl->themeBgContainer, -1);
 
     auto categoryListBg = NineSlice::create(themes::square);
     categoryListBg->setAnchorPoint({0.5, 0.5});

@@ -50,7 +50,7 @@
         "safe-mode": {
             "type": "bool",
             "name": "Safe Mode",
-            "description": "Prevent saving any progression made in levels. <co>We recommend keeping this enabled if you're actively using Horrible Menu's options!</cr>",
+            "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active!</cr>",
             "default": true
         },
         "button": {
@@ -60,7 +60,7 @@
         "key-popup": {
             "type": "keybind",
             "name": "Options Menu",
-            "description": "Key to open the <cg>Horrible Options</c> menu.",
+            "description": "Keybind to open the <cg>Horrible Options</c> menu.",
             "default": [
                 "\\"
             ],
@@ -74,7 +74,7 @@
         "theme": {
             "type": "string",
             "name": "Menu Theme",
-            "description": "Theme to use for the <cg>Horrible Options</c> menu. <co>Re-open the menu for changes to take effect.</c>",
+            "description": "Theme to use for the <cg>Horrible Options</c> menu interface. <co>Re-open the menu for changes to take effect.</c>",
             "default": "Default",
             "one-of": [
                 "Default",
@@ -91,7 +91,7 @@
         "theme-background": {
             "type": "file",
             "name": "Menu Theme Background",
-            "description": "Local image file to use as a semi-transparent background image for the <cg>Horrible Options Menu</c> interface. <co>Selected image will be stretched to fit menu window's size.</c>\n\n> ![✳️](frame:collaborationIcon_001.png) <cg>*To load animated images, install [ImagePlus](mod:prevter.imageplus).*</c>\n\n<mod:prevter.imageplus>",
+            "description": "Local image file to use as a semi-transparent background image for the <cg>Horrible Options</c> menu interface. <co>Selected image will be stretched to fit the menu window's size.</c>\n\n> ![✳️](frame:collaborationIcon_001.png) <cg>*To load animated images, first install [ImagePlus](mod:prevter.imageplus).*</c>\n\n<mod:prevter.imageplus>",
             "default": "",
             "control": {
                 "dialog": "open",
@@ -115,7 +115,7 @@
         "floating-btn": {
             "type": "bool",
             "name": "Floating Menu Button",
-            "description": "Show a floating button on the main menu to quickly access the <cg>Horrible Options</c> menu.",
+            "description": "Show a floating button to quickly open the <cg>Horrible Options</c> menu.",
             "default": {
                 "win": false,
                 "mac": false,
@@ -523,13 +523,13 @@
         "show-incompatible": {
             "type": "bool",
             "name": "Show Incompatible Options",
-            "description": "Include options incompatible with your current platform when loading the <cg>Horrible Options</c> menu.",
+            "description": "Include options incompatible with your current platform on the options list when loading the <cg>Horrible Options</c> menu.",
             "default": false
         },
         "dev-mode": {
             "type": "bool",
             "name": "Developer Mode",
-            "description": "Shows debug information in the interface.",
+            "description": "Shows some debug information in the interface.",
             "default": false
         }
     },
