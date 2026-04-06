@@ -126,11 +126,11 @@ public:
                 nothingLabel->setVisible(false);
                 optionList->setVisible(true);
 
-                for (auto const& oRef : list) {
-                    if (auto o = oRef.get().lock()) {
+                for (std::weak_ptr<Option>& oRef : list) {
+                    if (auto o = oRef.lock()) {
                         if (auto modOption = OptionItem::create(
                                 {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
-                                oRef,
+                                std::move(oRef),
                                 devMode)) {
                             if (modOption->isCompatible() || showIncompatible) {
                                 modOption->setPinCallback([this]() {
