@@ -62,7 +62,7 @@ class $modify(MyPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        // do insane stuff with my option!
+        // do evil stuff with my option!
     };
 };
 ```

@@ -124,7 +124,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
-        "**[Team Avalanche](https://avalanche.cubicstudios.xyz/)**: Supporting the project since its experimental days\n\n"
+        "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
         "**[dankmeme](user:9735891)**: helped with pretty important programming decisions :D\n\n";
 
     auto creditsMd = MDTextArea::create(
