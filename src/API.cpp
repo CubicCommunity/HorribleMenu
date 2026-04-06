@@ -174,10 +174,7 @@ std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const noexcep
 };
 
 size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
-    for (auto const& [optionID, delegates] : m_delegates) {
-        if (optionID == id) return delegates.size();
-    };
-
+    if (auto it = m_delegates.find(id); it != m_delegates.end()) return it->second.size();
     return 0;
 };
 

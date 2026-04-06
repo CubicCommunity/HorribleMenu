@@ -104,36 +104,35 @@ public:
 
             auto useCategory = !category.empty() && options::doesCategoryExist(category);
 
-            optList = asp::iter::from(optList)
-                          .filter([tier, category, useCategory, this](std::weak_ptr<Option> const& opt) {
-                              if (auto o = opt.lock()) {
-                                  auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
-                                  auto categoryMatches = !useCategory || (o->getCategory() == category);
+            auto list = asp::iter::from(std::move(optList))
+                            .filter([tier, category, useCategory, this](std::weak_ptr<Option> const& opt) {
+                                if (auto o = opt.lock()) {
+                                    auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
+                                    auto categoryMatches = !useCategory || (o->getCategory() == category);
 
-                                  auto searchMatches = true;
-                                  if (!searchText.empty()) {
-                                      auto const searchLower = str::toLower(searchText);
+                                    auto searchMatches = true;
+                                    if (!searchText.empty()) {
+                                        auto const searchLower = str::toLower(searchText);
 
-                                      searchMatches = str::contains(str::toLower(o->getName()), searchLower) || str::contains(str::toLower(o->getID()), searchLower) || str::contains(str::toLower(o->getCategory()), searchLower);
-                                  };
+                                        searchMatches = str::contains(str::toLower(o->getName()), searchLower) || str::contains(str::toLower(o->getID()), searchLower) || str::contains(str::toLower(o->getCategory()), searchLower);
+                                    };
 
-                                  return tierMatches && categoryMatches && searchMatches;
-                              };
+                                    return tierMatches && categoryMatches && searchMatches;
+                                };
 
-                              return false;
-                          })
-                          .map([](std::weak_ptr<Option> const& opt) { return opt; })
-                          .collect();
+                                return false;
+                            })
+                            .collect();
 
-            if (optList.empty()) {
+            if (list.empty()) {
                 nothingLabel->setVisible(true);
                 optionList->setVisible(false);
             } else {
                 nothingLabel->setVisible(false);
                 optionList->setVisible(true);
 
-                for (auto const& opt : optList) {
-                    if (auto o = opt.lock()) {
+                for (auto const& opt : list) {
+                    if (auto o = opt.get().lock()) {
                         if (auto modOption = OptionItem::create(
                                 {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
                                 opt,
@@ -153,7 +152,7 @@ public:
                 };
             };
 
-            log::trace("Finished sorting {} options", optList.size());
+            log::trace("Finished sorting {} options", list.size());
 
             optionList->m_contentLayer->updateLayout();
             optionList->scrollToTop();
@@ -167,8 +166,6 @@ OptionMenu::OptionMenu() : m_impl(std::make_unique<Impl>()) {};
 OptionMenu::~OptionMenu() {};
 
 void OptionMenu::setupSafeModeNode(bool safeMode) {
-    if (m_impl->safeMode != safeMode) m_impl->safeMode = safeMode;
-
     if (m_impl->safeModeContainer) {
         m_impl->safeModeContainer->removeAllChildrenWithCleanup(true);
 
@@ -186,14 +183,14 @@ void OptionMenu::setupSafeModeNode(bool safeMode) {
 
         m_impl->safeModeContainer->updateLayout();
     };
+
+    if (m_impl->safeMode != safeMode) m_impl->safeMode = safeMode;
 };
 
 void OptionMenu::setupImageBackground(fs::path path) {
-    if (m_impl->themeBgPath != path) m_impl->themeBgPath = std::move(path);
-
     if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeMeAndCleanup();
 
-    if (fs::exists(m_impl->themeBgPath)) {
+    if (fs::exists(path)) {
         m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
         m_impl->themeBackground->setID("theme-bg");
         m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
@@ -215,8 +212,10 @@ void OptionMenu::setupImageBackground(fs::path path) {
 
         m_mainLayer->addChild(m_impl->themeBackground, -1);
 
-        m_impl->themeBackground->loadFromFile(m_impl->themeBgPath);
+        m_impl->themeBackground->loadFromFile(path);
     };
+
+    if (m_impl->themeBgPath != path) m_impl->themeBgPath = std::move(path);
 };
 
 bool OptionMenu::init() {
