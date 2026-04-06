@@ -95,27 +95,17 @@ public:
         if (optionList) {
             optionList->m_contentLayer->removeAllChildren();
 
-            std::sort(optList.begin(), optList.end(), [this](std::weak_ptr<Option> const& a, std::weak_ptr<Option> const& b) -> bool {
-                auto aFav = options::isPinned(a.lock()->getID());
-                auto bFav = options::isPinned(b.lock()->getID());
-
-                return aFav > bFav;
-            });
-
             auto useCategory = !category.empty() && options::doesCategoryExist(category);
+            auto searchLower = str::toLower(searchText);
 
             auto list = asp::iter::from(std::move(optList))
-                            .filter([tier, category, useCategory, this](std::weak_ptr<Option> const& opt) {
+                            .filter([this, tier, category, useCategory, search = std::move(searchLower)](std::weak_ptr<Option> const& opt) {
                                 if (auto o = opt.lock()) {
                                     auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
                                     auto categoryMatches = !useCategory || (o->getCategory() == category);
 
                                     auto searchMatches = true;
-                                    if (!searchText.empty()) {
-                                        auto const searchLower = str::toLower(searchText);
-
-                                        searchMatches = str::contains(str::toLower(o->getName()), searchLower) || str::contains(str::toLower(o->getID()), searchLower) || str::contains(str::toLower(o->getCategory()), searchLower);
-                                    };
+                                    if (!search.empty()) searchMatches = str::contains(str::toLower(o->getName()), search) || str::contains(str::toLower(o->getID()), search) || str::contains(str::toLower(o->getCategory()), search);
 
                                     return tierMatches && categoryMatches && searchMatches;
                                 };
@@ -124,6 +114,11 @@ public:
                             })
                             .collect();
 
+            std::sort(list.begin(), list.end(), [](std::weak_ptr<Option> const& a, std::weak_ptr<Option> const& b) -> bool {
+                if (auto optA = a.lock(), optB = b.lock(); optA && optB) return options::isPinned(optA->getID()) > options::isPinned(optB->getID());
+                return false;
+            });
+
             if (list.empty()) {
                 nothingLabel->setVisible(true);
                 optionList->setVisible(false);
@@ -131,11 +126,11 @@ public:
                 nothingLabel->setVisible(false);
                 optionList->setVisible(true);
 
-                for (auto const& opt : list) {
-                    if (auto o = opt.get().lock()) {
+                for (auto const& oRef : list) {
+                    if (auto o = oRef.get().lock()) {
                         if (auto modOption = OptionItem::create(
                                 {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
-                                opt,
+                                oRef,
                                 devMode)) {
                             if (modOption->isCompatible() || showIncompatible) {
                                 modOption->setPinCallback([this]() {
