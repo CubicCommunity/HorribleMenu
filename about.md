@@ -1,8 +1,6 @@
 # Horrible Menu
 **A plethora of ways to ruin your experience...**
 
-*by [ArcticWoof](user:7689052) & [Cheeseworks](user:6408873)!*
-
 > ![✳️](frame:collaborationIcon_001.png) <cg>*This mod has settings you can utilize to customize your experience.*</c>
 
 ---

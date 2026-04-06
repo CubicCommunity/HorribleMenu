@@ -107,59 +107,55 @@ OptionMenu::OptionMenu() : m_impl(std::make_unique<Impl>()) {};
 OptionMenu::~OptionMenu() {};
 
 void OptionMenu::setupSafeModeNode(bool safeMode) {
-    if (m_impl->safeMode != safeMode) {
-        m_impl->safeMode = safeMode;
+    if (m_impl->safeMode != safeMode) m_impl->safeMode = safeMode;
 
-        if (m_impl->safeModeContainer) {
-            m_impl->safeModeContainer->removeAllChildrenWithCleanup(true);
+    if (m_impl->safeModeContainer) {
+        m_impl->safeModeContainer->removeAllChildrenWithCleanup(true);
 
-            auto safeModeIcon = CCSprite::createWithSpriteFrameName(safeMode ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
-            safeModeIcon->setScale(0.375f);
+        auto safeModeIcon = CCSprite::createWithSpriteFrameName(safeMode ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
+        safeModeIcon->setScale(0.375f);
 
-            m_impl->safeModeContainer->addChild(safeModeIcon);
+        m_impl->safeModeContainer->addChild(safeModeIcon);
 
-            auto safeModeLabel = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
-            safeModeLabel->setColor(safeMode ? colors::green : colors::red);
-            safeModeLabel->setAlignment(kCCTextAlignmentCenter);
-            safeModeLabel->setScale(0.25f);
+        auto safeModeLabel = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
+        safeModeLabel->setColor(safeMode ? colors::green : colors::red);
+        safeModeLabel->setAlignment(kCCTextAlignmentCenter);
+        safeModeLabel->setScale(0.25f);
 
-            m_impl->safeModeContainer->addChild(safeModeLabel);
+        m_impl->safeModeContainer->addChild(safeModeLabel);
 
-            m_impl->safeModeContainer->updateLayout();
-        };
+        m_impl->safeModeContainer->updateLayout();
     };
 };
 
 void OptionMenu::setupImageBackground(fs::path path) {
-    if (m_impl->themeBgPath != path) {
-        m_impl->themeBgPath = std::move(path);
+    if (m_impl->themeBgPath != path) m_impl->themeBgPath = std::move(path);
 
-        if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeMeAndCleanup();
+    if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeMeAndCleanup();
 
-        if (fs::exists(m_impl->themeBgPath)) {
-            m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
-            m_impl->themeBackground->setID("theme-bg");
-            m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+    if (fs::exists(m_impl->themeBgPath)) {
+        m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
+        m_impl->themeBackground->setID("theme-bg");
+        m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
-            m_impl->themeBackground->setLoadCallback([this](Result<> res) {
-                if (res.isOk()) {
-                    m_impl->themeBackground->setScaleX(m_bgSprite->getScaledContentWidth() / m_impl->themeBackground->getScaledContentWidth());
-                    m_impl->themeBackground->setScaleY(m_bgSprite->getScaledContentHeight() / m_impl->themeBackground->getScaledContentHeight());
+        m_impl->themeBackground->setLoadCallback([this](Result<> res) {
+            if (res.isOk()) {
+                m_impl->themeBackground->setScaleX(m_bgSprite->getScaledContentWidth() / m_impl->themeBackground->getScaledContentWidth());
+                m_impl->themeBackground->setScaleY(m_bgSprite->getScaledContentHeight() / m_impl->themeBackground->getScaledContentHeight());
 
-                    m_impl->themeBackground->setOpacity(100);
+                m_impl->themeBackground->setOpacity(100);
 
-                    log::debug("Successfully loaded theme background");
-                } else if (res.isErr()) {
-                    log::error("Failed to load theme background: {}", res.unwrapErr());
-                } else {
-                    log::error("Failed to load theme background for an unknown reason");
-                };
-            });
+                log::debug("Successfully loaded theme background");
+            } else if (res.isErr()) {
+                log::error("Failed to load theme background: {}", res.unwrapErr());
+            } else {
+                log::error("Failed to load theme background for an unknown reason");
+            };
+        });
 
-            m_mainLayer->addChild(m_impl->themeBackground, -1);
+        m_mainLayer->addChild(m_impl->themeBackground, -1);
 
-            m_impl->themeBackground->loadFromFile(m_impl->themeBgPath);
-        };
+        m_impl->themeBackground->loadFromFile(m_impl->themeBgPath);
     };
 };
 
