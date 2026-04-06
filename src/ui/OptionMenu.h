@@ -1,7 +1,5 @@
 #pragma once
 
-#include "OptionMenuCredits.h"
-
 #include <Utils.h>
 
 #include <asp/fs.hpp>
@@ -9,7 +7,15 @@
 #include <Geode/Geode.hpp>
 
 namespace horrible {
-    class OptionMenu final : public Popup {
+    class OptionMenuNothingNode final : public CCNode {
+    protected:
+        bool init(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);
+
+    public:
+        static OptionMenuNothingNode* create(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);
+    };
+
+    class OptionMenu final : public geode::Popup {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;

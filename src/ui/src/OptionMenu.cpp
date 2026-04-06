@@ -7,6 +7,7 @@
 #include <Utils.h>
 
 #include <asp/fs.hpp>
+#include <asp/iter.hpp>
 
 #include <Geode/Geode.hpp>
 
@@ -18,6 +19,49 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 namespace fs = asp::fs;  // :troll:
+
+bool OptionMenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
+    if (!CCNode::init()) return false;
+
+    setID("nothing-label");
+    setPosition(pos);
+    setContentSize(size);
+    setAnchorPoint({0.5, 0.5});
+    setVisible(false);
+
+    auto label = CCLabelBMFont::create("No options found :(", "bigFont.fnt");
+    label->setScale(0.5f);
+    label->setOpacity(250);
+    label->setAnchorPoint({0.5, 0});
+    label->setAlignment(kCCTextAlignmentCenter);
+    label->limitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale());
+    label->setPosition(getScaledContentSize() / 2.f);
+
+    addChild(label, 1);
+
+    auto labelHint = CCLabelBMFont::create("Try searching other keywords, or change some filters!", "chatFont.fnt");
+    labelHint->setScale(0.625f);
+    labelHint->setOpacity(200);
+    labelHint->setAnchorPoint({0.5, 1});
+    labelHint->setAlignment(kCCTextAlignmentCenter);
+    labelHint->limitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale());
+    labelHint->setPosition(getScaledContentSize() / 2.f);
+
+    addChild(labelHint);
+
+    return true;
+};
+
+OptionMenuNothingNode* OptionMenuNothingNode::create(CCSize const& size, CCPoint const& pos) {
+    auto ret = new OptionMenuNothingNode();
+    if (ret->init(size, pos)) {
+        ret->autorelease();
+        return ret;
+    };
+
+    delete ret;
+    return nullptr;
+};
 
 OptionMenu* OptionMenu::s_inst = nullptr;
 
@@ -35,6 +79,8 @@ public:
     ScrollLayer* optionList = nullptr;
     ScrollLayer* categoryList = nullptr;
     TextInput* searchInput = nullptr;
+
+    OptionMenuNothingNode* nothingLabel = nullptr;
 
     bool safeMode = thisMod->getSettingValue<bool>(setting::SafeMode);
     std::string theme = thisMod->getSettingValue<std::string>("theme");
@@ -56,24 +102,38 @@ public:
                 return aFav > bFav;
             });
 
-            auto useCategory = options::doesCategoryExist(category);
+            auto useCategory = !category.empty() && options::doesCategoryExist(category);
 
-            for (auto const& opt : optList) {
-                if (auto o = opt.lock()) {
-                    // tier filter
-                    auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
-                    // category filter
-                    auto categoryMatches = !useCategory || (o->getCategory() == category);
+            optList = asp::iter::from(optList)
+                          .filter([tier, category, useCategory, this](std::weak_ptr<Option> const& opt) {
+                              if (auto o = opt.lock()) {
+                                  auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
+                                  auto categoryMatches = !useCategory || (o->getCategory() == category);
 
-                    // search filter
-                    auto searchMatches = true;
-                    if (!searchText.empty()) {
-                        auto const searchLower = str::toLower(searchText);
+                                  auto searchMatches = true;
+                                  if (!searchText.empty()) {
+                                      auto const searchLower = str::toLower(searchText);
 
-                        searchMatches = str::contains(str::toLower(o->getName()), searchLower) || str::contains(str::toLower(o->getID()), searchLower) || str::contains(str::toLower(o->getCategory()), searchLower);
-                    };
+                                      searchMatches = str::contains(str::toLower(o->getName()), searchLower) || str::contains(str::toLower(o->getID()), searchLower) || str::contains(str::toLower(o->getCategory()), searchLower);
+                                  };
 
-                    if (tierMatches && categoryMatches && searchMatches) {
+                                  return tierMatches && categoryMatches && searchMatches;
+                              };
+
+                              return false;
+                          })
+                          .map([](std::weak_ptr<Option> const& opt) { return opt; })
+                          .collect();
+
+            if (optList.empty()) {
+                nothingLabel->setVisible(true);
+                optionList->setVisible(false);
+            } else {
+                nothingLabel->setVisible(false);
+                optionList->setVisible(true);
+
+                for (auto const& opt : optList) {
+                    if (auto o = opt.lock()) {
                         if (auto modOption = OptionItem::create(
                                 {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
                                 opt,
@@ -269,6 +329,9 @@ bool OptionMenu::init() {
 
     m_mainLayer->addChild(m_impl->optionList, 9);
     m_mainLayer->addChild(optionListScroll);
+
+    m_impl->nothingLabel = OptionMenuNothingNode::create(optionListBg->getScaledContentSize(), optionListBg->getPosition());
+    m_mainLayer->addChild(m_impl->nothingLabel, 9);
 
     // add search bar
     m_impl->searchInput = TextInput::create(optionListBg->getScaledContentWidth() + 11.25f, "Search...", "bigFont.fnt");
