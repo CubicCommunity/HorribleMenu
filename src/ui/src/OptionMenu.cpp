@@ -98,7 +98,7 @@ public:
             auto useCategory = !category.empty() && options::doesCategoryExist(category);
             auto searchLower = str::toLower(searchText);
 
-            auto list = asp::iter::from(std::move(optList))
+            auto list = asp::iter::consume(optList)
                             .filter([this, tier, category, useCategory, search = std::move(searchLower)](std::weak_ptr<Option> const& opt) {
                                 if (auto o = opt.lock()) {
                                     auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
@@ -114,7 +114,7 @@ public:
                             })
                             .collect();
 
-            std::sort(list.begin(), list.end(), [](std::weak_ptr<Option> const& a, std::weak_ptr<Option> const& b) -> bool {
+            std::sort(list.begin(), list.end(), [](auto const& a, auto const& b) -> bool {
                 if (auto optA = a.lock(), optB = b.lock(); optA && optB) return options::isPinned(optA->getID()) > options::isPinned(optB->getID());
                 return false;
             });
@@ -126,7 +126,7 @@ public:
                 nothingLabel->setVisible(false);
                 optionList->setVisible(true);
 
-                for (std::weak_ptr<Option>& oRef : list) {
+                for (auto& oRef : list) {
                     if (auto o = oRef.lock()) {
                         if (auto modOption = OptionItem::create(
                                 {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
