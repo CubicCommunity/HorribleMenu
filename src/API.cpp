@@ -246,6 +246,7 @@ void OptionManagerV2::registerOption(OptionV2 const& option) {
                        ->setDescription(option.description)
                        ->setCategory(option.category)
                        ->setSillyTier(option.silly)
+                       ->setOnline(option.online)
                        ->setRequiresRestart(option.restart)
                        ->setSupportedPlatforms(option.platforms);
 

@@ -25,7 +25,8 @@ namespace horrible {
         std::string description;          // Description of the option
         std::string category;             // Name of the category this option should be under
         SillyTier silly;                  // How silly the option is
-        bool restart;                     // If the option requires a restart to take effect
+        bool online;                      // If the option requires an active internet connection to work properly
+        bool restart;                     // If the option requires a game restart to take effect
         std::vector<Platform> platforms;  // Platforms that the option supports
 
         OptionV2() = default;  // Default constructor
@@ -37,6 +38,7 @@ namespace horrible {
             std::string description,
             std::string category,
             SillyTier silly = SillyTier::Low,
+            bool online = false,
             bool restart = false,
             std::vector<Platform> platforms = {Platform::All}) :
             id(std::move(id)),
@@ -44,6 +46,7 @@ namespace horrible {
             description(std::move(description)),
             category(std::move(category)),
             silly(silly),
+            online(online),
             restart(restart),
             platforms(std::move(platforms)) {};
     };
