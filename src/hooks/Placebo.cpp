@@ -11,10 +11,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "placebo";
 
 static auto const o = Option::create(id)
-                          .setName("Placebo")
-                          .setDescription("A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>suggested by tmdXD</c>")
-                          .setCategory(category::misc)
-                          .setSillyTier(SillyTier::High);
+                          ->setName("Placebo")
+                          ->setDescription("A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>suggested by tmdXD</c>")
+                          ->setCategory(category::misc)
+                          ->setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 void placeboEffect() {

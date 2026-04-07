@@ -28,39 +28,46 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
     return obj;
 };
 
-Option& Option::setID(std::string id) {
+Option::Option(std::string id) : m_id(std::move(id)) {};
+
+std::shared_ptr<Option> Option::setID(std::string id) {
     m_id = std::move(id);
-    return *this;
+    return shared_from_this();
 };
 
-Option& Option::setName(std::string name) {
+std::shared_ptr<Option> Option::setName(std::string name) {
     m_name = std::move(name);
-    return *this;
+    return shared_from_this();
 };
 
-Option& Option::setDescription(std::string description) {
+std::shared_ptr<Option> Option::setDescription(std::string description) {
     m_description = std::move(description);
-    return *this;
+    return shared_from_this();
 };
 
-Option& Option::setCategory(std::string category) {
+std::shared_ptr<Option> Option::setCategory(std::string category) {
     m_category = std::move(category);
-    return *this;
+    return shared_from_this();
 };
 
-Option& Option::setSillyTier(SillyTier tier) {
+std::shared_ptr<Option> Option::setSillyTier(SillyTier tier) {
     m_silly = tier;
-    return *this;
+    return shared_from_this();
 };
 
-Option& Option::setRequiresRestart(bool required) {
+std::shared_ptr<Option> Option::setOnline(bool online) {
+    m_online = online;
+    return shared_from_this();
+};
+
+std::shared_ptr<Option> Option::setRequiresRestart(bool required) {
     m_restart = required;
-    return *this;
+    return shared_from_this();
 };
 
-Option& Option::setSupportedPlatforms(std::vector<Platform> platforms) {
+std::shared_ptr<Option> Option::setSupportedPlatforms(std::vector<Platform> platforms) {
     m_platforms = std::move(platforms);
-    return *this;
+    return shared_from_this();
 };
 
 ZStringView Option::getID() const noexcept {
@@ -81,6 +88,10 @@ ZStringView Option::getCategory() const noexcept {
 
 SillyTier Option::getSillyTier() const noexcept {
     return m_silly;
+};
+
+bool Option::isOnline() const noexcept {
+    return m_online;
 };
 
 bool Option::isRestartRequired() const noexcept {
@@ -109,8 +120,8 @@ void Option::disable() {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
 };
 
-Option Option::create(std::string id) {
-    return Option().setID(std::move(id));
+std::shared_ptr<Option> Option::create(std::string id) {
+    return std::make_shared<Option>(std::move(id));
 };
 
 void OptionManager::registerCategory(std::string category) {
@@ -121,16 +132,16 @@ bool OptionManager::doesOptionExist(ZStringView id) const noexcept {
     return m_options.find(id) != m_options.end();
 };
 
-void OptionManager::registerOption(Option option) {
-    if (doesOptionExist(option.getID())) {
-        log::error("Could not register option '{}' ({}) because it already exists!", option.getName(), option.getID());
+void OptionManager::registerOption(std::shared_ptr<Option> option) {
+    if (doesOptionExist(option->getID())) {
+        log::error("Could not register option '{}' ({}) because it already exists!", option->getName(), option->getID());
     } else {
-        registerCategory(option.getCategory());
+        registerCategory(option->getCategory());
 
-        std::string id = option.getID();
+        std::string id = option->getID();
 
-        log::debug("Registering option {} of category {}", option.getID(), option.getCategory());
-        m_options.emplace(std::move(id), std::make_shared<Option>(std::move(option)));
+        m_options.emplace(std::move(id), option);
+        log::debug("Registered option {} of category {}", option->getID(), option->getCategory());
     };
 };
 
@@ -231,14 +242,14 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
 void OptionManagerV2::registerOption(OptionV2 const& option) {
     if (auto om = OptionManager::get()) {
         auto opt = Option::create(option.id)
-                       .setName(option.name)
-                       .setDescription(option.description)
-                       .setCategory(option.category)
-                       .setSillyTier(option.silly)
-                       .setRequiresRestart(option.restart)
-                       .setSupportedPlatforms(option.platforms);
+                       ->setName(option.name)
+                       ->setDescription(option.description)
+                       ->setCategory(option.category)
+                       ->setSillyTier(option.silly)
+                       ->setRequiresRestart(option.restart)
+                       ->setSupportedPlatforms(option.platforms);
 
-        om->registerOption(std::move(opt));
+        om->registerOption(opt);
     };
 };
 

@@ -10,10 +10,11 @@ using namespace horrible::prelude;
 static constexpr auto id = "ads";
 
 static auto const o = Option::create(id)
-                          .setName("Level Ads")
-                          .setDescription("While playing a level in normal mode, an ad for a random level will pop up on your screen from time to time.\n<co>An internet connection is required.</c>\n<cl>suggested by staticGD</c>")
-                          .setCategory(category::obstructive)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Level Ads")
+                          ->setDescription("While playing a level in normal mode, an ad for a random level will pop up on your screen from time to time.\n<cl>suggested by staticGD</c>")
+                          ->setCategory(category::obstructive)
+                          ->setSillyTier(SillyTier::Medium)
+                          ->setOnline(true);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(AdvertsPlayLayer, PlayLayer) {

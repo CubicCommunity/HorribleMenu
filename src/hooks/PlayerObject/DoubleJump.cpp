@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "double_jump";
 
 static auto const o = Option::create(id)
-                          .setName("Double-Jump")
-                          .setDescription("Allows your character to double-jump in a level.\n<cl>created by Cheeseworks</c>")
-                          .setCategory(category::misc)
-                          .setSillyTier(SillyTier::Low);
+                          ->setName("Double-Jump")
+                          ->setDescription("Allows your character to double-jump in a level.\n<cl>created by Cheeseworks</c>")
+                          ->setCategory(category::misc)
+                          ->setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(DoubleJumpPlayerObject, PlayerObject) {

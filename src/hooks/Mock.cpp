@@ -13,11 +13,11 @@ namespace fs = std::filesystem;  // Shortcut for std::filesystem
 static constexpr auto id = "mock";
 
 static auto const o = Option::create(id)
-                          .setName("Mock your 90%+ Fail")
-                          .setDescription("Taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<cl>suggested by Wuffin</c>")
-                          .setCategory(category::misc)
-                          .setSillyTier(SillyTier::Medium)
-                          .setSupportedPlatforms({Platform::Windows, Platform::Android});
+                          ->setName("Mock your 90%+ Fail")
+                          ->setDescription("Taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<cl>suggested by Wuffin</c>")
+                          ->setCategory(category::misc)
+                          ->setSillyTier(SillyTier::Medium)
+                          ->setSupportedPlatforms({Platform::Windows, Platform::Android});
 HORRIBLE_REGISTER_OPTION(o);
 
 #if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms

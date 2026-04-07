@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "ice_level";
 
 static auto const o = Option::create(id)
-                          .setName("Ice Level")
-                          .setDescription("Makes every surface icy. Slip n' slide!\n<cl>suggested by TimeRed</c>")
-                          .setCategory(category::misc)
-                          .setSillyTier(SillyTier::Low);
+                          ->setName("Ice Level")
+                          ->setDescription("Makes every surface icy. Slip n' slide!\n<cl>suggested by TimeRed</c>")
+                          ->setCategory(category::misc)
+                          ->setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(OnIcePlayerObject, PlayerObject) {

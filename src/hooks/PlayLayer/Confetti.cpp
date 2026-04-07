@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "confetti";
 
 static auto const o = Option::create(id)
-                          .setName("Confetti Explosion")
-                          .setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>created by Cheeseworks</c>")
-                          .setCategory(category::obstructive)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Confetti Explosion")
+                          ->setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>created by Cheeseworks</c>")
+                          ->setCategory(category::obstructive)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 static constexpr auto s_confettis = std::to_array<const char*>({

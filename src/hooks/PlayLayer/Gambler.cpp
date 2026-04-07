@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "gambler";
 
 static auto const o = Option::create(id)
-                          .setName("Gambler")
-                          .setDescription("When reaching 95% in a level, you have a chance at randomly being blasted way far back.\n<cl>suggested by Timered</c>")
-                          .setCategory(category::misc)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Gambler")
+                          ->setDescription("When reaching 95% in a level, you have a chance at randomly being blasted way far back.\n<cl>suggested by Timered</c>")
+                          ->setCategory(category::misc)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(GamblerPlayLayer, PlayLayer) {

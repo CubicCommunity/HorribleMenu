@@ -11,10 +11,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "achieve";
 
 static auto const o = Option::create(id)
-                          .setName("Random Achievements")
-                          .setDescription("Randomly play the achievement sound when clicking buttons.\n<cl>suggested by Cheeseworks</c>")
-                          .setCategory(category::randoms)
-                          .setSillyTier(SillyTier::Low);
+                          ->setName("Random Achievements")
+                          ->setDescription("Randomly play the achievement sound when clicking buttons.\n<cl>suggested by Cheeseworks</c>")
+                          ->setCategory(category::randoms)
+                          ->setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(AchievementCCMenuItem, CCMenuItem) {

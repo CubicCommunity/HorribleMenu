@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "flipped";
 
 static auto const o = Option::create(id)
-                          .setName("FLIPPED")
-                          .setDescription("Sometimes while playing, your entire screen will just do a flip!\n<cl>created by Cheeseworks</c>")
-                          .setCategory(category::obstructive)
-                          .setSillyTier(SillyTier::High);
+                          ->setName("FLIPPED")
+                          ->setDescription("Sometimes while playing, your entire screen will just do a flip!\n<cl>created by Cheeseworks</c>")
+                          ->setCategory(category::obstructive)
+                          ->setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FlippedPlayLayer, PlayLayer) {

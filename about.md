@@ -49,10 +49,10 @@ using namespace horrible;
 static constexpr auto id = "my-option"_spr;
 
 static auto const opt = Option::create(id)
-    .setName("My Very Cool Option!");
-    .setDescription("This option is so very cool!");
-    .setCategory("Cool Options");
-    .setSillyTier(SillyTier::Medium);
+    ->setName("My Very Cool Option!");
+    ->setDescription("This option is so very cool!");
+    ->setCategory("Cool Options");
+    ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(opt);
 
 class $modify(MyPlayLayer, PlayLayer) {

@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "death";
 
 static auto const o = Option::create(id)
-                          .setName("Fake Death")
-                          .setDescription("The player's death effect will show without dying.\n<cl>suggested by DragonixGD</c>")
-                          .setCategory(category::obstructive)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Fake Death")
+                          ->setDescription("The player's death effect will show without dying.\n<cl>suggested by DragonixGD</c>")
+                          ->setCategory(category::obstructive)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FakeDeathPlayLayer, PlayLayer) {

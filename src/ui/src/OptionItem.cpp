@@ -13,6 +13,8 @@ public:
 
     std::weak_ptr<Option> option;  // A view into the option value :)
 
+    bool hasInternet = false;  // would rather call doWeHaveInternet once
+
     CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
     CCNode* newContainer = nullptr;        // Container for the "New!" label and icon
 
@@ -25,20 +27,25 @@ public:
             if (toggler) options::set(o->getID(), toggler->isToggled(), saved.pin, saved.viewed);
         };
 
-        clearNewLabel();
+        hideNewLabel();
     };
 
     // Notify the user if this option is not compatible for their current platform
-    void notifyIncompat() {
-        if (!compatible) {
-            if (auto o = option.lock()) {
-                log::warn("Option {} is not available for platform {}", o->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
-                if (auto notif = Notification::create(fmt::format("{} is unavailable for {}", o->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
+    void notifyIncompats() {
+        if (auto o = option.lock()) {
+            if (compatible) {
+                if (!(o->isOnline() ? hasInternet : true)) {  // woah evil gay ternaries !!!
+                    log::warn("Option {} requires a working internet connection to function", o->getID());
+                    if (auto notif = Notification::create(fmt::format("{} needs internet to work properly", o->getName()), NotificationIcon::Warning, 2.5f)) notif->show();
+                };
+            } else {
+                log::warn("Option {} is unavailable for platform {}", o->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
+                if (auto notif = Notification::create(fmt::format("{} is not available for {}", o->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
             };
         };
     };
 
-    void clearNewLabel() {
+    void hideNewLabel() {
         if (auto label = WeakRef(newContainer).lock()) label->setVisible(false);
     };
 
@@ -59,8 +66,9 @@ public:
 OptionItem::OptionItem() : m_impl(std::make_unique<Impl>()) {};
 OptionItem::~OptionItem() {};
 
-bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, bool devMode) {
+bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
     m_impl->option = std::move(option);
+    m_impl->hasInternet = hasInternet;
 
     auto o = m_impl->option.lock();
 
@@ -151,6 +159,7 @@ bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, bool dev
 
     auto menuLayout = RowLayout::create()
                           ->setGap(5.f)
+                          ->setAutoScale(false)
                           ->setAxisReverse(true)
                           ->setAutoGrowAxis(0.f);
 
@@ -163,12 +172,12 @@ bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, bool dev
 
     addChild(menu);
 
+    auto onlineCompat = (o->isOnline() ? m_impl->hasInternet : true);
+
     // info button
     auto infoBtn = Button::createWithSpriteFrameName(
-        m_impl->compatible ? "GJ_infoIcon_001.png" : "geode.loader/info-alert.png",
+        (m_impl->compatible) ? (onlineCompat ? "GJ_infoIcon_001.png" : "geode.loader/info-warning.png") : "geode.loader/info-alert.png",
         [this](auto) {
-            m_impl->notifyIncompat();
-
             if (auto o = m_impl->option.lock()) {
                 auto formatDesc = fmt::format("{}\n\n{}", (o->getDescription().size() > 0) ? o->getDescription() : "<cc>No description provided.</c>", m_impl->getTierDescString(o->getSillyTier(), m_impl->compatible));
 
@@ -183,24 +192,26 @@ bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, bool dev
                 auto saved = options::get(o->getID());
                 if (!saved.viewed) {
                     options::set(o->getID(), saved.enabled, saved.pin, true);
-                    m_impl->clearNewLabel();
+                    m_impl->hideNewLabel();
                 };
             };
+
+            m_impl->notifyIncompats();
         });
     infoBtn->setID("info-btn");
-    infoBtn->setScale(0.625f);
+    infoBtn->setScale(onlineCompat ? 0.75f : 0.625f);
 
     menu->addChild(infoBtn);
 
     auto pinOff = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
-    pinOff->setScale(0.5f);
+    pinOff->setScale(0.425f);
     pinOff->setOpacity(75);
     auto pinOn = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
-    pinOn->setScale(0.5f);
+    pinOn->setScale(0.425f);
     pinOn->setOpacity(225);
 
     pinOff->setBlendFunc({GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA});
-    pinOn->setColor(themes::getColor(thisMod->getSettingValue<std::string>("theme")));
+    pinOn->setColor(themes::getColor(theme));
 
     auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(OptionItem::onPin));
     pinBtn->setID("pin-btn");
@@ -291,12 +302,12 @@ void OptionItem::onToggle(CCObject*) {
             log::info("Option {} now set to {}", o->getName(), now ? "enabled" : "disabled");
         };
 
-        m_impl->clearNewLabel();
+        m_impl->hideNewLabel();
     } else if (m_impl->toggler) {
-        m_impl->notifyIncompat();
-
         m_impl->toggler->toggle(false);
     };
+
+    m_impl->notifyIncompats();
 };
 
 void OptionItem::onPin(CCObject* sender) {
@@ -304,7 +315,7 @@ void OptionItem::onPin(CCObject* sender) {
         if (auto o = m_impl->option.lock()) options::set(o->getID(), options::isEnabled(o->getID()), !pinBtn->isToggled(), true);
 
         if (m_impl->pinCallback) m_impl->pinCallback();
-        m_impl->clearNewLabel();
+        m_impl->hideNewLabel();
     };
 };
 
@@ -312,7 +323,7 @@ void OptionItem::setPinCallback(Callback&& callback) {
     m_impl->pinCallback = std::move(callback);
 };
 
-std::weak_ptr<Option> OptionItem::getOption() const noexcept {
+std::weak_ptr<Option> const& OptionItem::getOption() const noexcept {
     return m_impl->option;
 };
 
@@ -320,9 +331,9 @@ bool OptionItem::isCompatible() const noexcept {
     return m_impl->compatible;
 };
 
-OptionItem* OptionItem::create(CCSize const& size, std::weak_ptr<Option> option, bool devMode) {
+OptionItem* OptionItem::create(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
     auto ret = new OptionItem();
-    if (ret->init(size, std::move(option), devMode)) {
+    if (ret->init(size, std::move(option), theme, devMode, hasInternet)) {
         ret->autorelease();
         return ret;
     };

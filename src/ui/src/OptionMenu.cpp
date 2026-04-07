@@ -80,6 +80,9 @@ public:
     ScrollLayer* categoryList = nullptr;
     TextInput* searchInput = nullptr;
 
+    bool hasInternet = GameToolbox::doWeHaveInternet();
+    bool hideIfOffline = thisMod->getSettingValue<bool>("hide-if-offline");
+
     OptionMenuNothingNode* nothingLabel = nullptr;
 
     bool safeMode = thisMod->getSettingValue<bool>(setting::SafeMode);
@@ -108,7 +111,9 @@ public:
                                     auto searchMatches = true;
                                     if (!search.empty()) searchMatches = str::contains(str::toLower(o->getName()), search) || str::contains(str::toLower(o->getID()), search) || str::contains(str::toLower(o->getCategory()), search);
 
-                                    return tierMatches && categoryMatches && searchMatches;
+                                    auto onlineCompat = o->isOnline() ? hasInternet || !hideIfOffline : true;
+
+                                    return tierMatches && categoryMatches && searchMatches && onlineCompat;
                                 };
 
                                 return false;
@@ -132,7 +137,9 @@ public:
                         if (auto modOption = OptionItem::create(
                                 {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
                                 std::move(oRef),
-                                devMode)) {
+                                theme,
+                                devMode,
+                                hasInternet)) {
                             if (modOption->isCompatible() || showIncompatible) {
                                 modOption->setPinCallback([this]() {
                                     filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting

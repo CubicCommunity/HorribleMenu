@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "earthquake";
 
 static auto const o = Option::create(id)
-                          .setName("Earthquake")
-                          .setDescription("Constantly shakes the camera while playing a level.\n<cl>created by ArcticWoof</c>")
-                          .setCategory(category::obstructive)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Earthquake")
+                          ->setDescription("Constantly shakes the camera while playing a level.\n<cl>created by ArcticWoof</c>")
+                          ->setCategory(category::obstructive)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(EarthquakePlayLayer, PlayLayer) {

@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "no_jump";
 
 static auto const o = Option::create(id)
-                          .setName("Randomly Don't Jump")
-                          .setDescription("When making an input in a level, there's a chance the player does not respond to it.\n<cl>suggested by GilanyKing12</c>")
-                          .setCategory(category::randoms)
-                          .setSillyTier(SillyTier::Low);
+                          ->setName("Randomly Don't Jump")
+                          ->setDescription("When making an input in a level, there's a chance the player does not respond to it.\n<cl>suggested by GilanyKing12</c>")
+                          ->setCategory(category::randoms)
+                          ->setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {

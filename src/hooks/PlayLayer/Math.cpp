@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "math_quiz";
 
 static auto const o = Option::create(id)
-                          .setName("Richard's Math Quiz!")
-                          .setDescription("When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cl>suggested by CyanBoi</c>")
-                          .setCategory(category::obstructive)
-                          .setSillyTier(SillyTier::High);
+                          ->setName("Richard's Math Quiz!")
+                          ->setDescription("When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cl>suggested by CyanBoi</c>")
+                          ->setCategory(category::obstructive)
+                          ->setSillyTier(SillyTier::High);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(MathPlayLayer, PlayLayer) {

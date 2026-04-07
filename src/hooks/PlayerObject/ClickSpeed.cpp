@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "click_speed";
 
 static auto const o = Option::create(id)
-                          .setName("Click Player Speed")
-                          .setDescription("Randomly increases or decreases the player speed everytime you jump.\n<cl>suggested by KGplayerA</c>")
-                          .setCategory(category::randoms)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Click Player Speed")
+                          ->setDescription("Randomly increases or decreases the player speed everytime you jump.\n<cl>suggested by KGplayerA</c>")
+                          ->setCategory(category::randoms)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(ClickSpeedPlayerObject, PlayerObject) {

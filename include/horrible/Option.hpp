@@ -20,34 +20,37 @@ namespace horrible {
     };
 
     // Metadata for a horrible option
-    struct BRKD_HORRIBLE_API_DLL Option final {
+    struct BRKD_HORRIBLE_API_DLL Option final : std::enable_shared_from_this<Option> {
     private:
         std::string m_id = "id"_spr;                          // Unique ID of the option
         std::string m_name = "Example Option";                // Name of the option
         std::string m_description = "";                       // Description of the option
         std::string m_category = "Uncategorized";             // Name of the category this option should be under
         SillyTier m_silly = SillyTier::None;                  // How silly the option is
-        bool m_restart = false;                               // If the option requires a restart to take effect
+        bool m_online = false;                                // If the option requires an active internet connection to work properly
+        bool m_restart = false;                               // If the option requires a game restart to take effect
         std::vector<Platform> m_platforms = {Platform::All};  // Platforms that the option supports
 
     public:
-        Option() = default;  // Default constructor
+        Option(std::string id);
 
-        static Option create(std::string id);
+        static std::shared_ptr<Option> create(std::string id);
 
-        Option& setID(std::string id);
-        Option& setName(std::string name);
-        Option& setDescription(std::string description);
-        Option& setCategory(std::string category);
-        Option& setSillyTier(SillyTier tier);
-        Option& setRequiresRestart(bool required);
-        Option& setSupportedPlatforms(std::vector<Platform> platforms);
+        std::shared_ptr<Option> setID(std::string id);
+        std::shared_ptr<Option> setName(std::string name);
+        std::shared_ptr<Option> setDescription(std::string description);
+        std::shared_ptr<Option> setCategory(std::string category);
+        std::shared_ptr<Option> setSillyTier(SillyTier tier);
+        std::shared_ptr<Option> setOnline(bool online);
+        std::shared_ptr<Option> setRequiresRestart(bool required);
+        std::shared_ptr<Option> setSupportedPlatforms(std::vector<Platform> platforms);
 
         [[nodiscard]] geode::ZStringView getID() const noexcept;
         [[nodiscard]] geode::ZStringView getName() const noexcept;
         [[nodiscard]] geode::ZStringView getDescription() const noexcept;
         [[nodiscard]] geode::ZStringView getCategory() const noexcept;
         [[nodiscard]] SillyTier getSillyTier() const noexcept;
+        [[nodiscard]] bool isOnline() const noexcept;
         [[nodiscard]] bool isRestartRequired() const noexcept;
         [[nodiscard]] std::span<const Platform> getSupportedPlatforms() const noexcept;
 

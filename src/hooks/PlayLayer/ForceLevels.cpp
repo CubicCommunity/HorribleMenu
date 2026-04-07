@@ -8,27 +8,29 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 static constexpr auto idGrief = "grief";
-static constexpr auto idCongregation = "congregation";
+static constexpr auto idCongreg = "congregation";
 
 static auto const oGrief = Option::create(idGrief)
-                               .setName("Get Back on Grief")
-                               .setDescription("A chance at death of forcing you to play Grief.\n<cl>suggested by Sweep</c>")
-                               .setCategory(category::jumpscares)
-                               .setSillyTier(SillyTier::High);
+                               ->setName("Get Back on Grief")
+                               ->setDescription("A chance at death of forcing you to play Grief.\n<cl>suggested by Sweep</c>")
+                               ->setCategory(category::jumpscares)
+                               ->setSillyTier(SillyTier::High)
+                               ->setOnline(true);
 HORRIBLE_REGISTER_OPTION(oGrief);
 
-static auto const oCongregation = Option::create(idCongregation)
-                                      .setName("Congregation Jumpscare")
-                                      .setDescription("A chance at death of forcing you to play Congregation.\n<cl>suggested by StaticGD</c>")
-                                      .setCategory(category::jumpscares)
-                                      .setSillyTier(SillyTier::High);
-HORRIBLE_REGISTER_OPTION(oCongregation);
+static auto const oCongreg = Option::create(idCongreg)
+                                 ->setName("Congregation Jumpscare")
+                                 ->setDescription("A chance at death of forcing you to play Congregation.\n<cl>suggested by StaticGD</c>")
+                                 ->setCategory(category::jumpscares)
+                                 ->setSillyTier(SillyTier::High)
+                                 ->setOnline(true);
+HORRIBLE_REGISTER_OPTION(oCongreg);
 
-static bool isAlreadyInLevel(PlayLayer* layer, int levelID) {
-    return layer->m_level && layer->m_level->m_levelID.value() == levelID;
+static bool isAlreadyInLevel(PlayLayer* pl, int levelID) {
+    return pl->m_level && pl->m_level->m_levelID.value() == levelID;
 };
 
-static bool trySwitchToLevel(PlayLayer* layer, PlayerObject* player, GameObject* killer, int levelID, int chance, int rng, std::string_view levelName, bool dontCreateObjects, bool useReplay) {
+static bool trySwitchToLevel(PlayLayer* pl, PlayerObject* player, GameObject* killer, int levelID, int chance, int rng, std::string_view levelName, bool dontCreateObjects, bool useReplay) {
     if (rng > chance) {
         log::info("{} jumpscare not triggered {}", levelName, chance);
         return false;
@@ -39,13 +41,13 @@ static bool trySwitchToLevel(PlayLayer* layer, PlayerObject* player, GameObject*
 
     if (!targetLevel || targetLevel->m_levelNotDownloaded) return false;
 
-    if (isAlreadyInLevel(layer, levelID)) {
+    if (isAlreadyInLevel(pl, levelID)) {
         log::debug("Already in {} level", levelName);
         return false;
     };
 
-    layer->PlayLayer::destroyPlayer(player, killer);
-    layer->onExit();
+    pl->PlayLayer::destroyPlayer(player, killer);
+    pl->onExit();
 
     auto scene = PlayLayer::scene(targetLevel, useReplay, dontCreateObjects);
     CCDirector::get()->replaceScene(scene);
@@ -59,7 +61,7 @@ class $modify(GriefPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(idGrief);
 
     struct Fields {
-        int chance = options::getChance(oGrief.getID());
+        int chance = options::getChance(oGrief->getID());
 
         bool dontCreateObjects = false;
 
@@ -85,10 +87,10 @@ class $modify(GriefPlayLayer, PlayLayer) {
 };
 
 class $modify(CongregationPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(idCongregation);
+    HORRIBLE_DELEGATE_HOOKS(idCongreg);
 
     struct Fields {
-        int chance = options::getChance(oCongregation.getID());
+        int chance = options::getChance(oCongreg->getID());
 
         bool dontCreateObjects = false;
 

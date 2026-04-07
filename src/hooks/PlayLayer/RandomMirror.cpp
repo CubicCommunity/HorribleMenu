@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "random_mirror";
 
 static auto const o = Option::create(id)
-                          .setName("Random Mirror Portal")
-                          .setDescription("Randomly activates a mirror portal while playing.\n<cl>suggested by TimeRed</c>")
-                          .setCategory(category::randoms)
-                          .setSillyTier(SillyTier::Low);
+                          ->setName("Random Mirror Portal")
+                          ->setDescription("Randomly activates a mirror portal while playing.\n<cl>suggested by TimeRed</c>")
+                          ->setCategory(category::randoms)
+                          ->setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(RandomMirrorPlayLayer, PlayLayer) {

@@ -11,10 +11,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "freeze";
 
 static auto const o = Option::create(id)
-                          .setName("Random 90%+ FPS Drop")
-                          .setDescription("Your visual framerate starts randomly dropping during 90-99% in a level.\n<cl>suggested by Hexfire</c>")
-                          .setCategory(category::randoms)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Random 90%+ FPS Drop")
+                          ->setDescription("Your visual framerate starts randomly dropping during 90-99% in a level.\n<cl>suggested by Hexfire</c>")
+                          ->setCategory(category::randoms)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(FreezeMenuLayer, MenuLayer) {

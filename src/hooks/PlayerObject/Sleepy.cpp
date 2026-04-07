@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "sleepy";
 
 static auto const o = Option::create(id)
-                          .setName("Sleepy Player")
-                          .setDescription("Your character will occasionally fall asleep while playing.\n<cl>suggested by this_guy_yt</c>")
-                          .setCategory(category::misc)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Sleepy Player")
+                          ->setDescription("Your character will occasionally fall asleep while playing.\n<cl>suggested by this_guy_yt</c>")
+                          ->setCategory(category::misc)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SleepyPlayerObject, PlayerObject) {

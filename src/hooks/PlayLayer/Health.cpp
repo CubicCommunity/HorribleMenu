@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "health";
 
 static auto const o = Option::create(id)
-                          .setName("Player Health")
-                          .setDescription("Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>suggested by Cheeseworks</c>")
-                          .setCategory(category::playerlife)
-                          .setSillyTier(SillyTier::Medium);
+                          ->setName("Player Health")
+                          ->setDescription("Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>suggested by Cheeseworks</c>")
+                          ->setCategory(category::playerlife)
+                          ->setSillyTier(SillyTier::Medium);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(HealthPlayLayer, PlayLayer) {

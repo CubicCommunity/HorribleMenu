@@ -10,10 +10,10 @@ using namespace horrible::prelude;
 static constexpr auto id = "size_changer";
 
 static auto const o = Option::create(id)
-                          .setName("Size Changer")
-                          .setDescription("Randomly change the player size every time you jump.\n<cl>suggested by himynameisryan21</c>")
-                          .setCategory(category::randoms)
-                          .setSillyTier(SillyTier::Low);
+                          ->setName("Size Changer")
+                          ->setDescription("Randomly change the player size every time you jump.\n<cl>suggested by himynameisryan21</c>")
+                          ->setCategory(category::randoms)
+                          ->setSillyTier(SillyTier::Low);
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SizeChangerPlayerObject, PlayerObject) {

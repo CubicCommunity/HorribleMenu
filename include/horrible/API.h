@@ -70,7 +70,7 @@ namespace horrible {
          *
          * @param option Constructed option object
          */
-        void registerOption(Option option);
+        void registerOption(std::shared_ptr<Option> option);
 
         /**
          * Returns a reference to the array of all registered options
