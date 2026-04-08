@@ -233,7 +233,7 @@ bool OptionMenu::init() {
 
     m_bgSprite->setZOrder(-9);
 
-    auto mainLayerSize = m_mainLayer->getScaledContentSize();
+    auto const mainLayerSize = m_mainLayer->getScaledContentSize();
 
     m_impl->themeBgContainer = CCClippingNode::create();
     m_impl->themeBgContainer->setID("bg-container");
@@ -243,7 +243,13 @@ bool OptionMenu::init() {
     m_impl->themeBgContainer->setStencil(m_bgSprite);
     m_impl->themeBgContainer->setAlphaThreshold(0);
 
-    m_mainLayer->addChild(m_impl->themeBgContainer, -1);
+    m_mainLayer->addChild(m_impl->themeBgContainer, -8);
+
+    auto border = NineSlice::create("GJ_square07.png");
+    border->setContentSize(m_bgSprite->getScaledContentSize());
+    border->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+
+    m_mainLayer->addChild(border, -1);
 
     auto categoryListBg = NineSlice::create(themes::square);
     categoryListBg->setAnchorPoint({0.5, 0.5});
