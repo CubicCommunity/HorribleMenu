@@ -80,6 +80,11 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 #### Thanks
+- **[ArcticWoof](https://www.github.com/DumbCaveSpider/)**: UI, options' features
+- **[Cheeseworks](https://www.github.com/BlueWitherer/)**: UI/UX, API/DX, options' features
+
+*as well as...*
+
 - **[Geode SDK](https://geode-sdk.org/)**: Created an incredible SDK that made this mod possible!
 - **[RobTop Games](https://www.robtopgames.com/)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
 

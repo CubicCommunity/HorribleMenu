@@ -95,8 +95,7 @@ $on_game(Loaded) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
         });
 
-    // TODO: host custom branding image in mod dev branding server for breakeode
-    (void)branding::registerBrand(GEODE_MOD_ID, "https://github.com/CubicCommunity/HorribleMenu/blob/main/logo.png?raw=true", branding::Type::URL);
+    (void)branding::registerBrand(GEODE_MOD_ID, "https://moddev.cheeseworks.gay/cdn/cubic_horriblemenu.webp", branding::Type::URL);
 };
 
 // safe mode

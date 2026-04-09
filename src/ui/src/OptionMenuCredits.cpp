@@ -122,7 +122,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
         "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
-        "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for Horrible Menu\n\n<mod:cheeseworks.moddevbranding>\n\n"
+        "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
         "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
         "**[dankmeme](user:9735891)**: helped with pretty important programming decisions :D\n\n";

@@ -84,6 +84,11 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 ---
 
 #### Thanks
+- **[ArcticWoof](user:7689052)**: UI, options' features
+- **[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features
+
+*as well as...*
+
 - **[Geode SDK](mod:geode.loader)**: Created an incredible SDK that made this mod possible!
 - **[RobTop Games](user:71)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
 
