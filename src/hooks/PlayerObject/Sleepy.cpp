@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "sleepy";
+#define THIS_ID "sleepy"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Sleepy Player")
                           ->setDescription("Your character will occasionally fall asleep while playing.\n<cl>suggested by this_guy_yt</c>")
                           ->setCategory(category::misc)
@@ -17,10 +17,10 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(SleepyPlayerObject, PlayerObject) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(id);
+        unsigned int chance = options::getChance(THIS_ID);
 
         bool m_sleepy = false;  // decelerating-to-zero stage
         bool m_waking = false;  // 5s buffer stage (cannot be re-slept)

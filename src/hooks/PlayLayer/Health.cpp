@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "health";
+#define THIS_ID "health"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Player Health")
                           ->setDescription("Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>suggested by Cheeseworks</c>")
                           ->setCategory(category::playerlife)
@@ -17,7 +17,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(HealthPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
         float m_health = 100.f;

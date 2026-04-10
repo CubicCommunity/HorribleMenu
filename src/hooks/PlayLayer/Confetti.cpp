@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "confetti";
+#define THIS_ID "confetti"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Confetti Explosion")
                           ->setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
@@ -35,7 +35,7 @@ static constexpr auto s_confettis = std::to_array<const char*>({
 });
 
 class $modify(ConfettiPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();

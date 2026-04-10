@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "random_icon";
+#define THIS_ID "random_icon"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Random Icon Change")
                           ->setDescription("Randomly change your icon every time you jump.\n<cl>suggested by JompyDoJump</c>")
                           ->setCategory(category::randoms)
@@ -17,7 +17,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(RandomIconPlayerObject, PlayerObject) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     bool pushButton(PlayerButton p0) {
         // jump pls

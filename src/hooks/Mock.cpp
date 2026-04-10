@@ -10,9 +10,9 @@ using namespace horrible::prelude;
 
 namespace fs = std::filesystem;  // Shortcut for std::filesystem
 
-static constexpr auto id = "mock";
+#define THIS_ID "mock"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Mock your 90%+ Fail")
                           ->setDescription("Taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<cl>suggested by Wuffin</c>")
                           ->setCategory(category::misc)
@@ -22,10 +22,10 @@ HORRIBLE_REGISTER_OPTION(o);
 
 #if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms
 class $modify(MockMenuLayer, MenuLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(id);
+        unsigned int chance = options::getChance(THIS_ID);
     };
 
     bool init() {
@@ -124,7 +124,7 @@ class $modify(MockMenuLayer, MenuLayer) {
 };
 
 class $modify(MockPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void showNewBest(bool newReward, int orbs, int diamonds, bool demonKey, bool noRetry, bool noTitle) {
         int id = m_level->m_levelID;

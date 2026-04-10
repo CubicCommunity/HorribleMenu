@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "ads";
+#define THIS_ID "ads"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Level Ads")
                           ->setDescription("While playing a level in normal mode, an ad for a random level will pop up on your screen from time to time.\n<cl>suggested by staticGD</c>")
                           ->setCategory(category::obstructive)
@@ -18,7 +18,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(AdvertsPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
         RandomAd* ad = nullptr;

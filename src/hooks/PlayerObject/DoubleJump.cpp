@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "double_jump";
+#define THIS_ID "double_jump"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Double-Jump")
                           ->setDescription("Allows your character to double-jump in a level.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::misc)
@@ -17,7 +17,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(DoubleJumpPlayerObject, PlayerObject) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
         int m_jumps = 0;

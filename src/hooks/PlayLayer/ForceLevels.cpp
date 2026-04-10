@@ -7,10 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto idGrief = "grief";
-static constexpr auto idCongreg = "congregation";
+#define THIS_ID_GRIEF "grief"
+#define THIS_ID_CONGREG "congregation"
 
-static auto const oGrief = Option::create(idGrief)
+static auto const oGrief = Option::create(THIS_ID_GRIEF)
                                ->setName("Get Back on Grief")
                                ->setDescription("A chance at death of forcing you to play Grief.\n<cl>suggested by Sweep</c>")
                                ->setCategory(category::jumpscares)
@@ -18,7 +18,7 @@ static auto const oGrief = Option::create(idGrief)
                                ->setOnline(true);
 HORRIBLE_REGISTER_OPTION(oGrief);
 
-static auto const oCongreg = Option::create(idCongreg)
+static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setName("Congregation Jumpscare")
                                  ->setDescription("A chance at death of forcing you to play Congregation.\n<cl>suggested by StaticGD</c>")
                                  ->setCategory(category::jumpscares)
@@ -58,7 +58,7 @@ static bool trySwitchToLevel(PlayLayer* pl, PlayerObject* player, GameObject* ki
 };
 
 class $modify(GriefPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(idGrief);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID_GRIEF);
 
     struct Fields {
         int chance = options::getChance(oGrief->getID());
@@ -87,7 +87,7 @@ class $modify(GriefPlayLayer, PlayLayer) {
 };
 
 class $modify(CongregationPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(idCongreg);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID_CONGREG);
 
     struct Fields {
         int chance = options::getChance(oCongreg->getID());

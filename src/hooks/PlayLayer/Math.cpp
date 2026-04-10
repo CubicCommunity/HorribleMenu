@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "math_quiz";
+#define THIS_ID "math_quiz"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Richard's Math Quiz!")
                           ->setDescription("When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cl>suggested by CyanBoi</c>")
                           ->setCategory(category::obstructive)
@@ -17,10 +17,10 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(MathPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(id);
+        unsigned int chance = options::getChance(THIS_ID);
 
         MathQuiz* m_currentMath = nullptr;
     };
@@ -47,7 +47,7 @@ class $modify(MathPlayLayer, PlayLayer) {
         if (m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
             log::debug("Showing math quiz");
 
-            if (options::isEnabled(id)) {
+            if (options::isEnabled(THIS_ID)) {
                 if (auto quiz = MathQuiz::create()) {
                     // handle correct/wrong answer
                     quiz->setCallback([self = WeakRef(this), math = WeakRef(quiz)](bool correct) {

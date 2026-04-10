@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "pauses";
+#define THIS_ID "pauses"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Random Pauses")
                           ->setDescription("While playing a level, it will randomly pause itself.\n<cl>suggested by DragonixGD</c>")
                           ->setCategory(category::randoms)
@@ -17,10 +17,10 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(PausePlayerObject, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(id);
+        unsigned int chance = options::getChance(THIS_ID);
     };
 
     void setupHasCompleted() {

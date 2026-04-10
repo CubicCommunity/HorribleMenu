@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "timewarp_jump";
+#define THIS_ID "timewarp_jump"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Timewarp Jump")
                           ->setDescription("When you jump, there's a chance time will briefly slow down or speed up.\n<cl>suggested by KGplayerA</c>")
                           ->setCategory(category::randoms)
@@ -17,7 +17,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void handleButton(bool down, int button, bool isPlayer1) {
         if (button == 1 && !down) {

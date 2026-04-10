@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "black_screen";
+#define THIS_ID "black_screen"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Black Screen Blink")
                           ->setDescription("The screen can suddenly blink while playing a level.\n<cl>suggested by elite_smiler_ispro</c>")
                           ->setCategory(category::obstructive)
@@ -17,7 +17,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(BlackScreenPlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();

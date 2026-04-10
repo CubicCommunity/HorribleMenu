@@ -8,9 +8,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "placebo";
+#define THIS_ID "placebo"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Placebo")
                           ->setDescription("A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>suggested by tmdXD</c>")
                           ->setCategory(category::misc)
@@ -35,7 +35,7 @@ void placeboEffect() {
 };
 
 class $modify(PlaceboLevelPage, LevelPage) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void onPlay(CCObject* sender) {
         placeboEffect();
@@ -46,7 +46,7 @@ class $modify(PlaceboLevelPage, LevelPage) {
 };
 
 class $modify(PlaceboLevelInfoLayer, LevelInfoLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void onPlay(CCObject* sender) {
         placeboEffect();

@@ -8,9 +8,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "dementia";
+#define THIS_ID "dementia"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Dementia")
                           ->setDescription("Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cl>suggested by imdissapearinghelp</c>")
                           ->setCategory(category::misc)
@@ -18,10 +18,10 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(DementiaPlayerObject, PlayerObject) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(id);
+        unsigned int chance = options::getChance(THIS_ID);
 
         int lastMusicTime = 0;  // last music time in milliseconds
 
@@ -67,7 +67,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 };
 
 class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     bool hasBeenActivated() {
         return false;

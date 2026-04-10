@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "click_speed";
+#define THIS_ID "click_speed"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Click Player Speed")
                           ->setDescription("Randomly increases or decreases the player speed everytime you jump.\n<cl>suggested by KGplayerA</c>")
                           ->setCategory(category::randoms)
@@ -17,7 +17,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(ClickSpeedPlayerObject, PlayerObject) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     bool pushButton(PlayerButton p0) {
         int rng = randng::fast() % 100;

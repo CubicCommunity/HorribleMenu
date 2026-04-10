@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "ice_level";
+#define THIS_ID "ice_level"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Ice Level")
                           ->setDescription("Makes every surface icy. Slip n' slide!\n<cl>suggested by TimeRed</c>")
                           ->setCategory(category::misc)
@@ -17,7 +17,7 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(OnIcePlayerObject, PlayerObject) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void update(float p0) {
         // make the player always on ice. yea this is it xD

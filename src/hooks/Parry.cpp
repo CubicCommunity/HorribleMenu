@@ -11,9 +11,9 @@
 // using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "parry";
+#define THIS_ID "parry"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Parry Obstacles")
                           ->setDescription("Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>suggested by Wuffin</c>")
                           ->setCategory(category::misc)
@@ -40,7 +40,7 @@ HORRIBLE_REGISTER_OPTION(o);
 
 // class $modify(ParryPlayerObject, PlayerObject) {
 //     struct Fields {
-//         bool enabled = options::isEnabled(id);
+//         bool enabled = options::isEnabled(THIS_ID);
 //     };
 
 //     bool pushButton(PlayerButton p0) {
@@ -94,7 +94,7 @@ HORRIBLE_REGISTER_OPTION(o);
 
 // class $modify(ParryPlayLayer, PlayLayer) {
 //     struct Fields {
-//         bool enabled = options::isEnabled(id);
+//         bool enabled = options::isEnabled(THIS_ID);
 
 //         ProgressBar* m_parryBar = nullptr;
 //         CCLabelBMFont* m_parryLabel = nullptr;

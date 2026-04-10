@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "whack_a_face";
+#define THIS_ID "whack_a_face"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Whack-A-Face!")
                           ->setDescription("Buttons with difficulty faces will start to pop up on your screen while playing a level. You'll have a very limited amount of time to press each one until they all disappear, or else you restart the entire level! The higher the difficulty of the face on the button, the more times you'll need to press it.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
@@ -17,10 +17,10 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(WhackAFacePlayLayer, PlayLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(id);
+        unsigned int chance = options::getChance(THIS_ID);
 
         std::vector<WeakRef<WhackButton>> active;
     };
@@ -76,7 +76,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         if (!m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
             log::debug("Creating new whackable button");
 
-            if (options::isEnabled(id)) {
+            if (options::isEnabled(THIS_ID)) {
                 if (auto whack = WhackButton::create()) {
                     auto const winSize = m_uiLayer->getScaledContentSize();
 
@@ -107,7 +107,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         for (auto& whackBtn : f->active) {
-            if (auto whack = whackBtn.lock()) whack->removeMeAndCleanup();
+            if (auto btn = whackBtn.lock()) btn->removeMeAndCleanup();
         };
 
         f->active.clear();

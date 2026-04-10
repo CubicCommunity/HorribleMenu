@@ -7,9 +7,9 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static constexpr auto id = "no_jump";
+#define THIS_ID "no_jump"
 
-static auto const o = Option::create(id)
+static auto const o = Option::create(THIS_ID)
                           ->setName("Randomly Don't Jump")
                           ->setDescription("When making an input in a level, there's a chance the player does not respond to it.\n<cl>suggested by GilanyKing12</c>")
                           ->setCategory(category::randoms)
@@ -17,10 +17,10 @@ static auto const o = Option::create(id)
 HORRIBLE_REGISTER_OPTION(o);
 
 class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {
-    HORRIBLE_DELEGATE_HOOKS(id);
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::isEnabled(id);
+        unsigned int chance = options::isEnabled(THIS_ID);
     };
 
     void handleButton(bool down, int button, bool isPlayer1) {
