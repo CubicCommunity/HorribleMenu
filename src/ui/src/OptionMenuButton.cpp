@@ -7,6 +7,23 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+Result<CCPoint> matjson::Serialize<CCPoint>::fromJson(matjson::Value const& value) {
+    if (!value.isObject()) return Err("Expected an object");
+
+    GEODE_UNWRAP_INTO(float x, value["x"].asDouble());
+    GEODE_UNWRAP_INTO(float y, value["y"].asDouble());
+
+    return Ok(CCPoint{x, y});
+};
+
+matjson::Value matjson::Serialize<CCPoint>::toJson(CCPoint const& value) {
+    auto obj = matjson::Value();
+    obj["x"] = value.x;
+    obj["y"] = value.y;
+
+    return obj;
+};
+
 class OptionMenuButton::Impl final {
 public:
     bool inLevel = thisMod->getSettingValue<bool>("floating-btn-level");
@@ -19,6 +36,7 @@ public:
 
     CCSize const screenSize = CCDirector::sharedDirector()->getWinSize();
     CCPoint dragStartPos = {0, 0};
+    CCPoint comparePos = {0, 0};
 
     Ref<CircleButtonSprite> sprite = nullptr;
 
@@ -26,6 +44,10 @@ public:
 
     std::string theme = thisMod->getSettingValue<std::string>("theme");
     std::string btnIcon = thisMod->getSettingValue<std::string>("floating-btn-icon");
+
+    bool isDistant(CCPoint const& ccp1, CCPoint const& ccp2, float max) const {
+        return ccpDistance(ccp1, ccp2) <= max;
+    };
 };
 
 OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
@@ -56,15 +78,11 @@ bool OptionMenuButton::init() {
 
     setID("menu-btn"_spr);
     setAnchorPoint({0.5, 0.5});
+    setPosition(thisMod->getSavedValue<CCPoint>("menu-pos", m_impl->screenSize - 75.f));
     setTouchMode(kCCTouchesOneByOne);
     setTouchEnabled(true);
     setTouchPriority(-512);  // ewww touch priority
     setZOrder(99);
-
-    setPosition({
-        thisMod->getSavedValue<float>("button-x", 100.f),
-        thisMod->getSavedValue<float>("button-y", 125.f),
-    });
 
     setupSprite();
 
@@ -91,27 +109,6 @@ void OptionMenuButton::setScale(float scale) {
     };
 };
 
-void OptionMenuButton::setPosition(CCPoint const& position) {
-    if (m_impl->sprite) {
-        auto halfX = m_impl->sprite->getScaledContentWidth() / 2.f;
-        auto halfY = m_impl->sprite->getScaledContentHeight() / 2.f;
-
-        auto clampX = std::clamp<float>(position.x, halfX, m_impl->screenSize.width - halfX);
-        auto clampY = std::clamp<float>(position.y, halfY, m_impl->screenSize.height - halfY);
-
-        auto clampPos = ccp(clampX, clampY);
-        CCLayer::setPosition(clampPos);
-
-        // Save only when not dragging
-        if (!m_impl->isDragging) {
-            thisMod->setSavedValue<float>("button-x", clampPos.x);
-            thisMod->setSavedValue<float>("button-y", clampPos.y);
-        };
-    } else {
-        CCLayer::setPosition(position);
-    };
-};
-
 void OptionMenuButton::setTheme(std::string theme) {
     m_impl->theme = std::move(theme);
     setupSprite();
@@ -123,14 +120,16 @@ void OptionMenuButton::setButtonIcon(std::string icon) {
 };
 
 bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
-    if (m_impl->sprite && isVisible()) {
-        CCPoint const touchLocation = convertToNodeSpace(touch->getLocation());
+    if (m_impl->sprite) {
+        auto const box = m_impl->sprite->boundingBox();
 
-        auto box = m_impl->sprite->boundingBox();
-        if (box.containsPoint(touchLocation)) {
+        if (box.containsPoint(convertToNodeSpace(touch->getLocation()))) {
             m_impl->isDragging = true;
 
+            m_impl->comparePos = getPosition();
             m_impl->dragStartPos = ccpSub(getPosition(), touch->getLocation());
+
+            log::debug("Menu position starts at ({}, {})", m_impl->dragStartPos.x, m_impl->dragStartPos.y);
 
             m_impl->sprite->stopAllActions();
             m_impl->isAnimating = true;
@@ -140,7 +139,7 @@ bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
                     CCFadeTo::create(0.25f, 255)),
                 CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd))));
 
-            return true;  // swallow touch
+            return true;  // swallow touch like a...
         };
     };
 
@@ -149,39 +148,43 @@ bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
 
 void OptionMenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
     if (m_impl->isDragging) {
-        CCPoint const touchLocation = touch->getLocation();
-        CCPoint const newLocation = ccpAdd(touchLocation, m_impl->dragStartPos);
+        auto const touchLocation = touch->getLocation();
+        auto const newLocation = ccpAdd(touchLocation, m_impl->dragStartPos);
 
-        setPosition(newLocation);
+        auto clampX = std::max(0.f, std::min(newLocation.x, m_impl->screenSize.width - getScaledContentWidth()));
+        auto clampY = std::max(0.f, std::min(newLocation.y, m_impl->screenSize.height - getScaledContentHeight()));
 
-        m_impl->isMoving = true;
+        setPosition(ccp(clampX, clampY));
     };
 };
 
 void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
-    if (!m_impl->isMoving) menu::open();
+    if (m_impl->isDragging) {
+        auto pos = ccpSub(getPosition(), touch->getLocation());
+        if (m_impl->isDistant(m_impl->comparePos, getPosition(), 5.f)) menu::open();
 
-    // reset state
-    m_impl->isDragging = false;
-    m_impl->isMoving = false;
+        m_impl->isDragging = false;
 
-    // store position
-    thisMod->setSavedValue<float>("button-x", getPosition().x);
-    thisMod->setSavedValue<float>("button-y", getPosition().y);
+        thisMod->setSavedValue<CCPoint>("menu-pos", getPosition());
 
-    m_impl->isAnimating = true;
+        if (m_impl->sprite) {
+            m_impl->isAnimating = true;
 
-    if (auto sprite = m_impl->sprite.data()) {
-        // reset scale
-        sprite->stopAllActions();
-        sprite->runAction(CCSequence::create(
-            CCSpawn::createWithTwoActions(
-                CCFadeTo::create(0.125f, 255),
-                CCEaseElasticOut::create(CCScaleTo::create(0.875f, m_impl->scale))),
-            CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd)),
-            CCDelayTime::create(1.f),
-            CCFadeTo::create(0.5f, m_impl->opacity),
-            nullptr));
+            // reset scale
+            m_impl->sprite->stopAllActions();
+            m_impl->sprite->runAction(CCSequence::create(
+                CCSpawn::createWithTwoActions(
+                    CCFadeTo::create(0.125f, 255),
+                    CCEaseElasticOut::create(CCScaleTo::create(0.875f, m_impl->scale))),
+                CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd)),
+                CCDelayTime::create(1.f),
+                CCFadeTo::create(0.5f, m_impl->opacity / 1.25),
+                nullptr));
+        };
+
+        m_impl->dragStartPos = pos;
+
+        log::debug("Menu position stopped and saved at ({}, {})", m_impl->dragStartPos.x, m_impl->dragStartPos.y);
     };
 };
 

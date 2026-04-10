@@ -26,6 +26,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
+        cursor::show();
         nextAd();
     };
 
@@ -39,13 +40,15 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     void showAd(float) {
         auto f = m_fields.self();
 
-        if (f->ad) f->ad->removeMeAndCleanup();
+        if (auto ad = WeakRef(f->ad).lock()) ad.take()->removeMeAndCleanup();
 
         if (auto popup = RandomAd::create()) {
             f->ad = popup;
             f->ad->show();
         };
 
-        nextAd();
+        queueInMainThread([self = WeakRef(this)]() {
+            if (auto s = self.lock()) s->nextAd();
+        });
     };
 };

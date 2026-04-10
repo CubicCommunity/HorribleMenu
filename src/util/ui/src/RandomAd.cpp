@@ -58,6 +58,9 @@ bool RandomAd::init() {
 
     m_buttonMenu->addChild(playBtn, 3);
 
+    // @geode-ignore(unknown-resource)
+    sfx::play("chest07.ogg");
+
     return true;
 };
 
