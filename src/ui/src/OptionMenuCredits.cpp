@@ -173,7 +173,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
 
     if (auto om = OptionManager::get()) {
         auto integrations = om->getMods();
-        std::string str = "Here's a <cg>full list of the mods</c> that <cy>currently register options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---";
+        std::string str = "Here's the <cg>full list of the mods</c> that <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---";
         for (auto const& i : integrations) {
             log::trace("Listing mod {}", i->getID());
             str = fmt::format("{}\n\n<mod:{}>", str, i->getID());
@@ -195,7 +195,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
                     log::debug("Integration count is {}", integrations.size());
                     FLAlertLayer::create(
                         "Integrations",
-                        "If <cg>different mods</c> uses this mod's API to <cy>register its own options</c>, they will all be listed here.",
+                        "If <cg>different mods</c> use this mod's API to <cy>add its own options</c>, they will all be listed here.",
                         "OK")
                         ->show();
                 };
