@@ -70,6 +70,11 @@ std::shared_ptr<Option> Option::setSupportedPlatforms(std::vector<Platform> plat
     return shared_from_this();
 };
 
+std::shared_ptr<Option> Option::setDefaultToggleState(bool state) {
+    m_default = state;
+    return shared_from_this();
+};
+
 ZStringView Option::getID() const noexcept {
     return m_id;
 };
@@ -100,6 +105,10 @@ bool Option::isRestartRequired() const noexcept {
 
 std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
     return m_platforms;
+};
+
+bool Option::getDefaultToggleState() const noexcept {
+    return m_default;
 };
 
 const Mod* Option::getIntegration() const noexcept {
@@ -191,20 +200,25 @@ std::vector<const Mod*> OptionManager::getMods() const {
     return out;
 };
 
-bool OptionManager::isEnabled(std::string_view id) const {
+bool OptionManager::isEnabled(ZStringView id) const {
     return getOption(id).enabled;
 };
 
-bool OptionManager::isPinned(std::string_view id) const {
+bool OptionManager::isPinned(ZStringView id) const {
     return getOption(id).pin;
 };
 
-bool OptionManager::isViewed(std::string_view id) const {
+bool OptionManager::isViewed(ZStringView id) const {
     return getOption(id).viewed;
 };
 
-HorribleOptionSave OptionManager::getOption(std::string_view id) const {
-    return Mod::get()->getSavedValue<HorribleOptionSave>(id);
+bool OptionManager::getDefaultToggleState(ZStringView id) const {
+    if (auto o = getOptionInfo(id).lock()) return o->getDefaultToggleState();
+    return false;
+};
+
+HorribleOptionSave OptionManager::getOption(ZStringView id) const {
+    return Mod::get()->getSavedValue<HorribleOptionSave>(id, HorribleOptionSave{getDefaultToggleState(id)});
 };
 
 std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const noexcept {
@@ -282,7 +296,7 @@ void OptionManagerV2::registerOption(OptionV2 const& option) {
     };
 };
 
-Result<bool> OptionManagerV2::isEnabled(std::string_view id) {
+Result<bool> OptionManagerV2::isEnabled(geode::ZStringView id) {
     if (auto om = OptionManager::get()) return Ok(om->isEnabled(id));
     return Err("Failed to get OptionManager");
 };

@@ -10,17 +10,17 @@ std::vector<std::weak_ptr<Option>> options::getAll() noexcept {
     return {};
 };
 
-bool options::isEnabled(std::string_view id) {
+bool options::isEnabled(ZStringView id) {
     if (auto om = OptionManager::get()) return om->isEnabled(id);
     return false;
 };
 
-bool options::isPinned(std::string_view id) {
+bool options::isPinned(ZStringView id) {
     if (auto om = OptionManager::get()) return om->isPinned(id);
     return false;
 };
 
-bool options::isViewed(std::string_view id) {
+bool options::isViewed(ZStringView id) {
     if (auto om = OptionManager::get()) return om->isViewed(id);
     return false;
 };
@@ -29,7 +29,7 @@ unsigned int options::getChance(std::string_view id) {
     return thisMod->getSettingValue<unsigned int>(fmt::format("{}-chance", id));
 };
 
-HorribleOptionSave options::get(std::string_view id) {
+HorribleOptionSave options::get(ZStringView id) {
     if (auto om = OptionManager::get()) return om->getOption(id);
     return {};
 };

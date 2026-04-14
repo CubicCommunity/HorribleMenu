@@ -22,7 +22,7 @@ namespace horrible {
              *
              * @returns Boolean of the current value
              */
-            bool isEnabled(std::string_view id);
+            bool isEnabled(geode::ZStringView id);
 
             /**
              * Quickly check the pin state of an option
@@ -31,7 +31,7 @@ namespace horrible {
              *
              * @returns Boolean of the current value
              */
-            bool isPinned(std::string_view id);
+            bool isPinned(geode::ZStringView id);
 
             /**
              * Quickly check the viewed state of an option
@@ -40,7 +40,7 @@ namespace horrible {
              *
              * @returns Boolean of the current value
              */
-            bool isViewed(std::string_view id);
+            bool isViewed(geode::ZStringView id);
 
             /**
              * Returns the chance value for an option
@@ -58,7 +58,7 @@ namespace horrible {
              *
              * @returns The current save
              */
-            HorribleOptionSave get(std::string_view id);
+            HorribleOptionSave get(geode::ZStringView id);
 
             /**
              * Set the toggle state of an option

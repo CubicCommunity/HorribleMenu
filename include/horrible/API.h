@@ -99,7 +99,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] bool isEnabled(std::string_view id) const;
+        [[nodiscard]] bool isEnabled(geode::ZStringView id) const;
 
         /**
          * Quickly check the pin state of an option
@@ -108,7 +108,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] bool isPinned(std::string_view id) const;
+        [[nodiscard]] bool isPinned(geode::ZStringView id) const;
 
         /**
          * Quickly check the viewed state of an option
@@ -117,7 +117,16 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] bool isViewed(std::string_view id) const;
+        [[nodiscard]] bool isViewed(geode::ZStringView id) const;
+
+        /**
+         * Quickly check the default toggle state of an option
+         *
+         * @param id The ID of the option to check
+         *
+         * @returns Boolean of the default value
+         */
+        [[nodiscard]] bool getDefaultToggleState(geode::ZStringView id) const;
 
         /**
          * Get the saved data of an option
@@ -126,7 +135,7 @@ namespace horrible {
          *
          * @returns The current save
          */
-        [[nodiscard]] HorribleOptionSave getOption(std::string_view id) const;
+        [[nodiscard]] HorribleOptionSave getOption(geode::ZStringView id) const;
 
         /**
          * Returns the data of an option
