@@ -13,17 +13,11 @@ namespace horrible {
         using ThreadSafeGlobalEvent::ThreadSafeGlobalEvent;
     };
 
-    inline geode::ListenerHandle* listenForHorribleOptionChanges(std::string id, geode::FunctionRef<bool(HorribleOptionSave)> callback) {
-        return OptionEvent(std::move(id)).listen([callback](HorribleOptionSave data) {
-                                             return callback(data);
-                                         })
-            .leak();
+    inline geode::ListenerHandle* listenForHorribleOptionChanges(std::string id, geode::CopyableFunction<void(HorribleOptionSave)> callback) {
+        return OptionEvent(std::move(id)).listen(std::move(callback)).leak();
     };
 
-    inline geode::ListenerHandle* listenForAllHorribleOptionChanges(geode::FunctionRef<bool(std::string_view, HorribleOptionSave)> callback) {
-        return OptionEvent().listen([callback](std::string_view id, HorribleOptionSave data) {
-                                return callback(id, data);
-                            })
-            .leak();
+    inline geode::ListenerHandle* listenForAllHorribleOptionChanges(geode::CopyableFunction<void(std::string, HorribleOptionSave)> callback) {
+        return OptionEvent().listen(std::move(callback)).leak();
     };
 };
