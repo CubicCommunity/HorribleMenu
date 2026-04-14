@@ -8,8 +8,6 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-namespace fs = std::filesystem;  // Shortcut for std::filesystem
-
 #define THIS_ID "mock"
 
 static auto const o = Option::create(THIS_ID)
@@ -21,6 +19,9 @@ static auto const o = Option::create(THIS_ID)
 HORRIBLE_REGISTER_OPTION(o);
 
 #if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms
+// Shortcut for `std::filesystem`
+namespace fs = std::filesystem;
+
 class $modify(MockMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 

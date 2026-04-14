@@ -4,6 +4,7 @@
 
 #include <Geode/Result.hpp>
 
+#include <Geode/loader/Mod.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/loader/Dispatch.hpp>
 
@@ -20,6 +21,10 @@ namespace horrible {
 
     // Metadata for a horrible option
     struct OptionV2 final {
+    private:
+        const geode::Mod* const integration = nullptr;  // External mod that registered this option
+
+    public:
         std::string id;                   // Unique ID of the option
         std::string name;                 // Name of the option
         std::string description;          // Description of the option
@@ -48,7 +53,12 @@ namespace horrible {
             silly(silly),
             online(online),
             restart(restart),
-            platforms(std::move(platforms)) {};
+            platforms(std::move(platforms)),
+            integration(geode::Mod::get()) {};
+
+        inline const geode::Mod* getIntegration() const noexcept {
+            return integration;
+        };
     };
 
     // Optional bridge to option manager for Horrible Menu

@@ -4,6 +4,8 @@
 
 #include <Geode/utils/ZStringView.hpp>
 
+#include <Geode/loader/Mod.hpp>
+
 #include <Geode/platform/platform.hpp>
 
 // Container for Horrible Menu API
@@ -30,11 +32,12 @@ namespace horrible {
         bool m_online = false;                                // If the option requires an active internet connection to work properly
         bool m_restart = false;                               // If the option requires a game restart to take effect
         std::vector<Platform> m_platforms = {Platform::All};  // Platforms that the option supports
+        const geode::Mod* const m_integration = nullptr;      // External mod that registered this option
 
     public:
-        Option(std::string id);
+        Option(std::string id, const geode::Mod* integration = geode::Mod::get());
 
-        static std::shared_ptr<Option> create(std::string id);
+        static std::shared_ptr<Option> create(std::string id, const geode::Mod* integration = geode::Mod::get());
 
         std::shared_ptr<Option> setID(std::string id);
         std::shared_ptr<Option> setName(std::string name);
@@ -53,6 +56,7 @@ namespace horrible {
         [[nodiscard]] bool isOnline() const noexcept;
         [[nodiscard]] bool isRestartRequired() const noexcept;
         [[nodiscard]] std::span<const Platform> getSupportedPlatforms() const noexcept;
+        [[nodiscard]] const geode::Mod* getIntegration() const noexcept;
 
         void enable();
         void disable();

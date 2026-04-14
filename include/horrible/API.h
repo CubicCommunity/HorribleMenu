@@ -31,8 +31,10 @@ namespace horrible {
     // Option manager for Horrible Menu
     class BRKD_HORRIBLE_API_DLL OptionManager final {
     private:
-        geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Array of registered options
+        geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Map of registered options
         std::vector<std::string> m_categories;                       // Array of auto-registered categories
+
+        geode::utils::StringMap<const geode::Mod* const> m_integrations;  // Map of auto-registered external mods using this API
 
         // Type alias for `geode::Function<void(bool)>`, used in hook delegation
         using Callback = geode::Function<void(bool)>;
@@ -53,6 +55,13 @@ namespace horrible {
         void registerCategory(std::string category);
 
         /**
+         * Register an external Geode mod as an integration if not already registered
+         *
+         * @param category Pointer to the mod
+         */
+        void registerMod(const geode::Mod*);
+
+        /**
          * Check if an option already exists
          *
          * @param id The ID of the option to check
@@ -60,6 +69,15 @@ namespace horrible {
          * @returns Whether this option already exists or not
          */
         bool doesOptionExist(geode::ZStringView id) const noexcept;
+
+        /**
+         * Check if an external Geode mod has already been registered in the list of integrations
+         *
+         * @param id The ID of the option to check
+         *
+         * @returns Whether this option already exists or not
+         */
+        bool isModRegistered(geode::ZStringView id) const noexcept;
 
     public:
         // Get option manager singleton
@@ -77,7 +95,7 @@ namespace horrible {
          *
          * @returns An array of every registered option, main and external
          */
-        [[nodiscard]] std::vector<std::weak_ptr<Option>> getOptions() const noexcept;
+        [[nodiscard]] std::vector<std::weak_ptr<Option>> getOptions() const;
 
         /**
          * Quickly check the toggle state of an option
@@ -165,6 +183,13 @@ namespace horrible {
          * @returns An array of every category name
          */
         [[nodiscard]] std::span<const std::string> getCategories() const noexcept;
+
+        /**
+         * Returns an array of all registered Geode mod integrations
+         *
+         * @returns An array of every Geode mod integration
+         */
+        [[nodiscard]] std::vector<const geode::Mod*> getMods() const;
     };
 
     /**
@@ -178,7 +203,7 @@ namespace horrible {
 
 // Statically register an option
 #define HORRIBLE_REGISTER_OPTION(opt)                                          \
-    $execute {                                                                 \
+    $on_mod(Loaded) {                                                          \
         if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
     }
 

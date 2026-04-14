@@ -28,7 +28,7 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
     return obj;
 };
 
-Option::Option(std::string id) : m_id(std::move(id)) {};
+Option::Option(std::string id, const Mod* integration) : m_id(std::move(id)), m_integration(integration) {};
 
 std::shared_ptr<Option> Option::setID(std::string id) {
     m_id = std::move(id);
@@ -102,6 +102,10 @@ std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
     return m_platforms;
 };
 
+const Mod* Option::getIntegration() const noexcept {
+    return m_integration;
+};
+
 bool Option::isEnabled() const {
     if (auto om = OptionManager::get()) return om->isEnabled(getID());
     return false;
@@ -120,16 +124,30 @@ void Option::disable() {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
 };
 
-std::shared_ptr<Option> Option::create(std::string id) {
-    return std::make_shared<Option>(std::move(id));
+std::shared_ptr<Option> Option::create(std::string id, const Mod* integration) {
+    return std::make_shared<Option>(std::move(id), integration);
 };
 
 void OptionManager::registerCategory(std::string category) {
     if (!utils::string::containsAny(category, getCategories())) m_categories.push_back(std::move(category));
 };
 
+void OptionManager::registerMod(const Mod* mod) {
+    if (!isModRegistered(mod->getID())) {
+        log::trace("Attempting to register integrated mod {}...", mod->getID());
+        if (mod->getID() == GEODE_MOD_ID) return;
+
+        std::string id = mod->getID();
+        m_integrations.emplace(std::move(id), mod);
+    };
+};
+
 bool OptionManager::doesOptionExist(ZStringView id) const noexcept {
     return m_options.find(id) != m_options.end();
+};
+
+bool OptionManager::isModRegistered(ZStringView id) const noexcept {
+    return m_integrations.find(id) != m_integrations.end();
 };
 
 void OptionManager::registerOption(std::shared_ptr<Option> option) {
@@ -137,6 +155,7 @@ void OptionManager::registerOption(std::shared_ptr<Option> option) {
         log::error("Could not register option '{}' ({}) because it already exists!", option->getName(), option->getID());
     } else {
         registerCategory(option->getCategory());
+        registerMod(option->getIntegration());
 
         std::string id = option->getID();
 
@@ -150,17 +169,26 @@ void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
     thisDelegate.push_back(std::move(callback));
 };
 
-std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const noexcept {
+std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const {
     std::vector<std::weak_ptr<Option>> out;
     out.reserve(m_options.size());
 
-    for (const auto& [k, v] : m_options) out.push_back(v);
+    for (auto const& [k, v] : m_options) out.push_back(v);
 
     return out;
 };
 
 std::span<const std::string> OptionManager::getCategories() const noexcept {
     return m_categories;
+};
+
+std::vector<const Mod*> OptionManager::getMods() const {
+    std::vector<const Mod*> out;
+    out.reserve(m_integrations.size());
+
+    for (auto const& [k, v] : m_integrations) out.push_back(v);
+
+    return out;
 };
 
 bool OptionManager::isEnabled(std::string_view id) const {
@@ -241,7 +269,7 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
 
 void OptionManagerV2::registerOption(OptionV2 const& option) {
     if (auto om = OptionManager::get()) {
-        auto opt = Option::create(option.id)
+        auto opt = Option::create(option.id, option.getIntegration())
                        ->setName(option.name)
                        ->setDescription(option.description)
                        ->setCategory(option.category)
