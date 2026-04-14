@@ -173,10 +173,15 @@ bool OptionMenuCredits::init(ZStringView theme) {
 
     if (auto om = OptionManager::get()) {
         auto integrations = om->getMods();
-        std::string str = "Here's the <cg>full list of the mods</c> that <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---";
-        for (auto const& i : integrations) {
-            log::trace("Listing mod {}", i->getID());
-            str = fmt::format("{}\n\n<mod:{}>", str, i->getID());
+        auto str = (integrations.size() > 0)
+                       ? fmt::format("Here's the <cg>full list of the mods (**`{}`**)</c> that <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---", integrations.size())
+                       : "If <cg>different mods</c> use this mod's API to <cy>add their own options</c>, they will all be listed here.";
+
+        if (integrations.size() > 0) {
+            for (auto const& i : integrations) {
+                log::trace("Listing mod {}", i->getID());
+                str = fmt::format("{}\n\n<mod:{}>", str, i->getID());
+            };
         };
 
         auto integrationsBtn = Button::createWithNode(
@@ -184,18 +189,17 @@ bool OptionMenuCredits::init(ZStringView theme) {
                 "geode.loader/grid-view.png",
                 0.75f,
                 btns),
-            [integrations = std::move(integrations), str](auto) {
+            [integrations = std::move(integrations), str = std::move(str)](auto) {
                 if (integrations.size() > 0) {
                     MDPopup::create(
                         "Integrations",
-                        std::move(str),
+                        str,
                         "OK")
                         ->show();
                 } else {
-                    log::debug("Integration count is {}", integrations.size());
                     FLAlertLayer::create(
                         "Integrations",
-                        "If <cg>different mods</c> use this mod's API to <cy>add its own options</c>, they will all be listed here.",
+                        str,
                         "OK")
                         ->show();
                 };
@@ -213,7 +217,9 @@ bool OptionMenuCredits::init(ZStringView theme) {
             if (auto popup = FLAlertLayer::create(
                     this,
                     "Help",
-                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n<co>If we missed anyone, let us know by opening an issue about it on the GitHub repository!</c>\n\n<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>",
+                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n"
+                    "<co>If we missed anyone, let us know by opening an issue about it on our GitHub repository!</c>\n\n"
+                    "<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>",
                     "OK",
                     nullptr,
                     365.f)) popup->show();
