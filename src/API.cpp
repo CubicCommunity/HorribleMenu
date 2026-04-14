@@ -212,7 +212,7 @@ bool OptionManager::isViewed(ZStringView id) const {
     return getOption(id).viewed;
 };
 
-bool OptionManager::getDefaultToggleState(ZStringView id) const {
+bool OptionManager::getDefaultToggleState(ZStringView id) const noexcept {
     if (auto o = getOptionInfo(id).lock()) return o->getDefaultToggleState();
     return false;
 };
@@ -288,6 +288,7 @@ void OptionManagerV2::registerOption(OptionV2 const& option) {
                        ->setDescription(option.description)
                        ->setCategory(option.category)
                        ->setSillyTier(option.silly)
+                       ->setDefaultToggleState(option.state)
                        ->setOnline(option.online)
                        ->setRequiresRestart(option.restart)
                        ->setSupportedPlatforms(option.platforms);

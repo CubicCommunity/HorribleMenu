@@ -24,6 +24,7 @@ namespace horrible {
         std::string description;          // Description of the option
         std::string category;             // Name of the category this option should be under
         SillyTier silly;                  // How silly the option is
+        bool state;                       // Default toggle state for this option
         bool online;                      // If the option requires an active internet connection to work properly
         bool restart;                     // If the option requires a game restart to take effect
         std::vector<Platform> platforms;  // Platforms that the option supports
@@ -37,6 +38,7 @@ namespace horrible {
             std::string description,
             std::string category,
             SillyTier silly = SillyTier::Low,
+            bool state = false,
             bool online = false,
             bool restart = false,
             std::vector<Platform> platforms = {Platform::All}) :
@@ -45,6 +47,7 @@ namespace horrible {
             description(std::move(description)),
             category(std::move(category)),
             silly(silly),
+            state(state),
             online(online),
             restart(restart),
             platforms(std::move(platforms)),

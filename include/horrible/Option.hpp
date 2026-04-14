@@ -35,10 +35,10 @@ namespace horrible {
         std::string m_description = "";                       // Description of the option
         std::string m_category = "Uncategorized";             // Name of the category this option should be under
         SillyTier m_silly = SillyTier::None;                  // How silly the option is
+        bool m_default = false;                               // Default toggle state for this option
         bool m_online = false;                                // If the option requires an active internet connection to work properly
         bool m_restart = false;                               // If the option requires a game restart to take effect
         std::vector<Platform> m_platforms = {Platform::All};  // Platforms that the option supports
-        bool m_default = false;                               // Default toggle state for this option
         const geode::Mod* const m_integration = nullptr;      // External mod that registered this option
 
     public:
@@ -51,20 +51,20 @@ namespace horrible {
         std::shared_ptr<Option> setDescription(std::string description);
         std::shared_ptr<Option> setCategory(std::string category);
         std::shared_ptr<Option> setSillyTier(SillyTier tier);
+        std::shared_ptr<Option> setDefaultToggleState(bool state);
         std::shared_ptr<Option> setOnline(bool online);
         std::shared_ptr<Option> setRequiresRestart(bool required);
         std::shared_ptr<Option> setSupportedPlatforms(std::vector<Platform> platforms);
-        std::shared_ptr<Option> setDefaultToggleState(bool state);
 
         [[nodiscard]] geode::ZStringView getID() const noexcept;
         [[nodiscard]] geode::ZStringView getName() const noexcept;
         [[nodiscard]] geode::ZStringView getDescription() const noexcept;
         [[nodiscard]] geode::ZStringView getCategory() const noexcept;
+        [[nodiscard]] bool getDefaultToggleState() const noexcept;
         [[nodiscard]] SillyTier getSillyTier() const noexcept;
         [[nodiscard]] bool isOnline() const noexcept;
         [[nodiscard]] bool isRestartRequired() const noexcept;
         [[nodiscard]] std::span<const Platform> getSupportedPlatforms() const noexcept;
-        [[nodiscard]] bool getDefaultToggleState() const noexcept;
         [[nodiscard]] const geode::Mod* getIntegration() const noexcept;
 
         void enable();

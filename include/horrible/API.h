@@ -126,7 +126,7 @@ namespace horrible {
          *
          * @returns Boolean of the default value
          */
-        [[nodiscard]] bool getDefaultToggleState(geode::ZStringView id) const;
+        [[nodiscard]] bool getDefaultToggleState(geode::ZStringView id) const noexcept;
 
         /**
          * Get the saved data of an option
