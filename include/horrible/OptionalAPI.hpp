@@ -5,7 +5,6 @@
 #include <Geode/Result.hpp>
 
 #include <Geode/loader/Mod.hpp>
-#include <Geode/loader/Event.hpp>
 #include <Geode/loader/Dispatch.hpp>
 
 #ifdef MY_MOD_ID
@@ -14,11 +13,6 @@
 #define MY_MOD_ID "cubicstudios.horriblemenu"
 
 namespace horrible {
-    // Event for option toggles
-    struct OptionEvent final : geode::Event<OptionEvent, bool(HorribleOptionSave), std::string_view> {
-        using Event::Event;
-    };
-
     // Metadata for a horrible option
     struct OptionV2 final {
     private:

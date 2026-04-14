@@ -8,6 +8,12 @@
 
 #include <Geode/platform/platform.hpp>
 
+struct HorribleOptionSave final {
+    bool enabled = false;
+    bool pin = false;
+    bool viewed = false;
+};
+
 // Container for Horrible Menu API
 namespace horrible {
     // Alias for `geode::PlatformID`

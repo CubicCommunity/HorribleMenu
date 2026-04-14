@@ -2,6 +2,7 @@
 
 #include "DLL.hpp"
 
+#include "Events.hpp"
 #include "Option.hpp"
 
 #include <cocos2d.h>
@@ -13,12 +14,6 @@
 #include <Geode/utils/function.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/ZStringView.hpp>
-
-struct HorribleOptionSave final {
-    bool enabled = false;
-    bool pin = false;
-    bool viewed = false;
-};
 
 template <>
 struct matjson::Serialize<HorribleOptionSave> final {
