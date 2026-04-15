@@ -17,7 +17,7 @@ namespace horrible {
         return OptionEvent(std::move(id)).listen(std::move(callback)).leak();
     };
 
-    inline geode::ListenerHandle* listenForAllHorribleOptionChanges(geode::CopyableFunction<void(std::string, HorribleOptionSave)> callback) {
+    inline geode::ListenerHandle* listenForAllHorribleOptionChanges(geode::CopyableFunction<void(std::string_view, HorribleOptionSave)> callback) {
         return OptionEvent().listen(std::move(callback)).leak();
     };
 };

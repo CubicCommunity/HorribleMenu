@@ -95,6 +95,11 @@ $on_game(Loaded) {
             if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
         });
 
+    listenForAllHorribleOptionChanges(
+        [](std::string_view id, HorribleOptionSave data) {
+            log::trace("Global options listener detected {} being {}, {}, {}", id, data.enabled ? "enabled" : "disabled", data.pin ? "pinned" : "unpinned", data.viewed ? "viewed" : "not viewed yet");
+        });
+
     (void)branding::registerBrand(GEODE_MOD_ID, "https://moddev.cheeseworks.gay/cdn/cubic_horriblemenu.webp", branding::Type::URL);
 };
 

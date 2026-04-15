@@ -174,7 +174,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
     if (auto om = OptionManager::get()) {
         auto integrations = om->getMods();
         auto str = (integrations.size() > 0)
-                       ? fmt::format("Here's the <cg>full list of the mods (**`{}`**)</c> that <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---", integrations.size())
+                       ? fmt::format("Here's the <cg>full list of your installed mods (**`{}`**)</c> which <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---", integrations.size())
                        : "If <cg>different mods</c> use this mod's API to <cy>add their own options</c>, they will all be listed here.";
 
         if (integrations.size() > 0) {

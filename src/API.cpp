@@ -55,6 +55,11 @@ std::shared_ptr<Option> Option::setSillyTier(SillyTier tier) {
     return shared_from_this();
 };
 
+std::shared_ptr<Option> Option::setDefaultToggleState(bool state) {
+    m_default = state;
+    return shared_from_this();
+};
+
 std::shared_ptr<Option> Option::setOnline(bool online) {
     m_online = online;
     return shared_from_this();
@@ -67,11 +72,6 @@ std::shared_ptr<Option> Option::setRequiresRestart(bool required) {
 
 std::shared_ptr<Option> Option::setSupportedPlatforms(std::vector<Platform> platforms) {
     m_platforms = std::move(platforms);
-    return shared_from_this();
-};
-
-std::shared_ptr<Option> Option::setDefaultToggleState(bool state) {
-    m_default = state;
     return shared_from_this();
 };
 
@@ -95,6 +95,10 @@ SillyTier Option::getSillyTier() const noexcept {
     return m_silly;
 };
 
+bool Option::getDefaultToggleState() const noexcept {
+    return m_default;
+};
+
 bool Option::isOnline() const noexcept {
     return m_online;
 };
@@ -105,10 +109,6 @@ bool Option::isRestartRequired() const noexcept {
 
 std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
     return m_platforms;
-};
-
-bool Option::getDefaultToggleState() const noexcept {
-    return m_default;
 };
 
 const Mod* Option::getIntegration() const noexcept {
