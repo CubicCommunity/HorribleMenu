@@ -2,7 +2,10 @@
 <h1><a href="https://geode-sdk.org/mods/cubicstudios.horriblemenu"><img src="logo.png" width="25" alt="The mod's logo." /></a> Horrible Menu</h1>
 <h6>A plethora of ways to ruin your experience...</h6>
 
-[![Mod Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=version) ![Downloads](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=downloads) ![GD Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=gd_version) ![Geode Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=geode_version)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+![Mod Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=version)
+![Downloads](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=downloads)
+![Geometry Dash Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=gd_version)
+![Geode Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=geode_version)
 </div>
 
 > [!TIP]
@@ -77,7 +80,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 #### Thanks
 - **[ArcticWoof](https://www.github.com/DumbCaveSpider/)**: UI, options' features
-- **[Cheeseworks](https://www.github.com/BlueWitherer/)**: UI/UX, API/DX, options' features
+- **[Cheeseworks](https://www.github.com/BlueWitherer/)**: Internals, API/DX, UI/UX, options' features
 
 *as well as...*
 
