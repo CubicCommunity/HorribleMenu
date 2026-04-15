@@ -56,7 +56,7 @@ HORRIBLE_REGISTER_OPTION(opt);
 class $modify(MyPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS("my-option"_spr);
 
-    // a vanilla hook
+    // a vanilla function hook
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
@@ -96,5 +96,4 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 
 ---
 
-### Developers
-###### This mod is published by **[Cubic Studios](https://www.cubicstudios.xyz/)**, on behalf of the [Breakeode](https://breakeode.cubicstudios.xyz/) team.
+This mod is published by **[Cubic Studios](https://www.cubicstudios.xyz/)**, on behalf of the [Breakeode](https://breakeode.cubicstudios.xyz/) developer team.

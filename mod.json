@@ -8,7 +8,7 @@
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-beta.1",
     "developers": [
         "Team Breakeode",
         "ArcticWoof",
@@ -80,7 +80,7 @@
         "theme": {
             "type": "string",
             "name": "Menu Theme",
-            "description": "Theme to use for the <cg>Horrible Options</c> menu interface. <co>Re-open the menu for changes to take effect.</c>",
+            "description": "Theme to use for the <cg>Horrible Options</c> menu interface. <co>Texture packs are not supported.</c>",
             "default": "Default",
             "one-of": [
                 "Default",

@@ -1,14 +1,12 @@
-# [<img src="logo.png" width="25" alt="The mod's logo." />](https://geode-sdk.org/mods/cubicstudios.horriblemenu) Horrible Menu
-A plethora of ways to ruin your experience...
+<div align="center">
+<h1><a href="https://geode-sdk.org/mods/cubicstudios.horriblemenu"><img src="logo.png" width="25" alt="The mod's logo." /></a> Horrible Menu</h1>
+<h6>A plethora of ways to ruin your experience...</h6>
 
-> [![Version](https://img.shields.io/github/v/release/CubicCommunity/HorribleMenu?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version)](../../releases/) [![License](https://img.shields.io/github/license/CubicCommunity/HorribleMenu?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License)](LICENSE.md)
->  
-> [![Downloads](https://img.shields.io/github/downloads/CubicCommunity/HorribleMenu/total?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+[![Mod Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=version) ![Downloads](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=downloads) ![GD Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=gd_version) ![Geode Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=geode_version)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+</div>
 
 > [!TIP]
 > *This mod has settings you can utilize to customize your experience.*
-
----
 
 ## About
 This silly lil' mod adds a funny mod menu filled to the brim with **over 30 crazy troll options** to mess around with! Spice up your gameplay by adding some truly insane features to absolutely wreck your entire game.
@@ -63,7 +61,7 @@ HORRIBLE_REGISTER_OPTION(opt);
 class $modify(MyPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS("my-option"_spr);
 
-    // a vanilla hook
+    // a vanilla function hook
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
@@ -100,19 +98,6 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 ---
 
-### Changelog
-###### What's new?!
-**[📜 View the latest updates and patches](./changelog.md)**
-
-### Issues
-###### What's wrong?!
-**[⚠️ Report a problem with the mod](../../issues/)**
-
-### Development
-###### Work with the mod directly.
-**[⌨️ Check the API out](./include/)**
-
----
-
-### Developers
-###### This mod is published by **[<img src="https://i.imgur.com/1Rjt4bg.png" width="15" alt="Cubic Studios logo" /> Cubic Studios](https://www.cubicstudios.xyz/)**, on behalf of the [<img src="https://i.imgur.com/XBtMpm3.png" width="15" alt="Breakeode logo" /> Breakeode](https://breakeode.cubicstudios.xyz/) team.
+<div align="center">
+This mod is published by <b><a href="https://www.cubicstudios.xyz/"><img src="https://i.imgur.com/1Rjt4bg.png" width="15" alt="Cubic Studios logo" /> Cubic Studios</a></b>, on behalf of the <a href="https://breakeode.cubicstudios.xyz/"><img src="https://i.imgur.com/XBtMpm3.png" width="15" alt="Breakeode logo" /> Breakeode</a> developer team.
+</div>

@@ -55,7 +55,10 @@ $on_game(Loaded) {
     listenForSettingChanges<bool>(
         setting::FloatingBtn,
         [](bool value) {
-            if (auto fb = OptionMenuButton::get()) fb->setVisible(value);
+            if (auto fb = OptionMenuButton::get()) {
+                fb->setTouchEnabled(value);
+                fb->setVisible(value);
+            };
 
             for (auto const& hook : s_floatingBtnHooks) {
                 if (auto const h = hook.lock()) {
