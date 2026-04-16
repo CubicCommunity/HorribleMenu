@@ -8,9 +8,6 @@
 ![Geode Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=geode_version)
 </div>
 
-> [!TIP]
-> *This mod has settings you can utilize to customize your experience.*
-
 ## About
 This silly lil' mod adds a funny mod menu filled to the brim with **over 30 crazy troll options** to mess around with! Spice up your gameplay by adding some truly insane features to absolutely wreck your entire game.
 
@@ -79,8 +76,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 #### Thanks
-- **[ArcticWoof](https://www.github.com/DumbCaveSpider/)**: UI, options' features
 - **[Cheeseworks](https://www.github.com/BlueWitherer/)**: Internals, API/DX, UI/UX, options' features
+- **[ArcticWoof](https://www.github.com/DumbCaveSpider/)**: UI, options' features
 
 *as well as...*
 

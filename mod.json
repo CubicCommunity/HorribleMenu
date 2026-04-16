@@ -11,8 +11,8 @@
     "version": "1.0.0-beta.1",
     "developers": [
         "Team Breakeode",
-        "ArcticWoof",
-        "Cheeseworks"
+        "Cheeseworks",
+        "ArcticWoof"
     ],
     "description": "A plethora of ways to ruin your experience...",
     "links": {
@@ -30,7 +30,7 @@
     ],
     "resources": {
         "spritesheets": {
-            "HM_icons": [
+            "BRKD_HM_icons": [
                 "resources/*.png"
             ]
         }

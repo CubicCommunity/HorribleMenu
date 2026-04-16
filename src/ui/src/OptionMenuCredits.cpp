@@ -89,15 +89,6 @@ bool OptionMenuCredits::init(ZStringView theme) {
 
     constexpr LeadDevIcon devs[] = {
         {
-            "arcticwoof",
-            "ArcticWoof",
-            7689052,
-            290,
-            {160, 255, 255},
-            {255, 255, 255},
-            {0, 255, 255},
-        },
-        {
             "cheeseworks",
             "Cheeseworks",
             6408873,
@@ -105,6 +96,15 @@ bool OptionMenuCredits::init(ZStringView theme) {
             {64, 64, 64},
             {252, 181, 255},
             {255, 255, 255},
+        },
+        {
+            "arcticwoof",
+            "ArcticWoof",
+            7689052,
+            290,
+            {160, 255, 255},
+            {255, 255, 255},
+            {0, 255, 255},
         },
     };
 
