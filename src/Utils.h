@@ -13,6 +13,7 @@
 #include <util/ui/MathQuiz.hpp>
 #include <util/ui/RandomAd.hpp>
 #include <util/ui/SpamChallenge.hpp>
+#include <util/ui/TermsAndCondition.hpp>
 #include <util/ui/WhackButton.hpp>
 
 #include <cocos2d.h>
