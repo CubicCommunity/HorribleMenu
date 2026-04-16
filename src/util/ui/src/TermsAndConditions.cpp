@@ -21,9 +21,11 @@ bool TermsAndConditions::init(Callback cb) {
     m_closeBtn->setVisible(false);
     m_closeBtn->setEnabled(false);
 
+    addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupBlue);
+
     cursor::show();
 
-    auto tosArea = MDTextArea::create(
+    auto tosArea = MDTextArea::create(  // TODO: replace with funny rules
         "By using this mod, you agree to the following terms and conditions:\n\n"
         "1. You will not hold the developer liable for any damage caused to your game or account.\n"
         "2. You will not use this mod for cheating or exploiting in multiplayer modes.\n"
@@ -42,19 +44,27 @@ bool TermsAndConditions::init(Callback cb) {
 
     m_mainLayer->addChild(tosArea);
 
-    auto acceptButton = Button::createWithLabel(
-        "Accept",
-        "goldFont.fnt",
-        [cb](auto) {
+    auto acceptButton = Button::createWithNode(
+        ButtonSprite::create(
+            "Accept",
+            "bigFont.fnt",
+            themes::getButtonSquareSprite(theme)),
+        [this, cb](auto) {
             cb(true);
+            removeMeAndCleanup();
         });
+    acceptButton->setScale(0.75f);
 
-    auto declineButton = Button::createWithLabel(
-        "Decline",
-        "goldFont.fnt",
-        [cb](auto) {
+    auto declineButton = Button::createWithNode(
+        ButtonSprite::create(
+            "Decline",
+            "goldFont.fnt",
+            themes::getButtonSquareSprite(theme)),
+        [this, cb](auto) {
             cb(false);
+            removeMeAndCleanup();
         });
+    declineButton->setScale(0.75f);
 
     m_mainLayer->addChildAtPosition(acceptButton, Anchor::Bottom, {-60.f, 25.f});
     m_mainLayer->addChildAtPosition(declineButton, Anchor::Bottom, {60.f, 25.f});

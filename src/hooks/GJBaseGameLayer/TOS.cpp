@@ -19,15 +19,29 @@ HORRIBLE_REGISTER_OPTION(o);
 class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
+    struct Fields {
+        TermsAndConditions* currentTos = nullptr;
+    };
+
     void handleButton(bool down, int button, bool isPlayer1) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
 
         if (down) {
-            if (auto popup = TermsAndConditions::create(
-                    [this](bool accepted) {
-                        if (accepted) updateTimeMod(1.f, true, true);
-                        if (!accepted) Notification::create("You declined the terms and conditions.", NotificationIcon::Error)->show();
-                    })) popup->show();
+            auto f = m_fields.self();
+
+            if (auto popup = WeakRef(f->currentTos).lock()) {
+                popup.take()->removeMeAndCleanup();
+                f->currentTos = nullptr;
+            } else if (auto popup = TermsAndConditions::create(
+                           [this](bool accepted) {
+                               if (!accepted) {
+                                   Notification::create("You declined the terms and conditions.", NotificationIcon::Error)->show();
+                                   if (auto pl = PlayLayer::get()) pl->resetLevelFromStart();
+                               };
+                           })) {
+                popup->show();
+                f->currentTos = popup;
+            };
         };
     };
 };
