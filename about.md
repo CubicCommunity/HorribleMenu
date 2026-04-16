@@ -1,5 +1,5 @@
 # Horrible Menu
-**A plethora of ways to ruin your experience...**
+###### A plethora of ways to ruin your experience...
 
 ## About
 This silly lil' mod adds a funny mod menu filled to the brim with **over 30 crazy troll options** to mess around with! Spice up your gameplay by adding some truly insane features to absolutely wreck your entire game.

@@ -14,7 +14,7 @@ void jumpscares::util::download(int levelId, int songId, LevelDownloadDelegate* 
             log::info("{} already downloaded, skipping download", levelId);
             glm->updateLevel(glm->getSavedLevel(levelId));
         } else if (auto mdm = MusicDownloadManager::sharedState()) {
-            log::info("Downloading {} in background", levelId);
+            log::debug("Downloading {} in background", levelId);
 
             glm->m_levelDownloadDelegate = delegate;
 
