@@ -76,7 +76,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] static geode::Result<bool> isEnabled(geode::ZStringView id)
+        static geode::Result<bool> isEnabled(geode::ZStringView id)
             GEODE_EVENT_EXPORT(&OptionManagerV2::isEnabled, (id));
 
         /**
