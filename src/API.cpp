@@ -297,7 +297,7 @@ void OptionManagerV2::registerOption(OptionV2 const& option) {
     };
 };
 
-Result<bool> OptionManagerV2::isEnabled(geode::ZStringView id) {
+Result<bool> OptionManagerV2::isEnabled(ZStringView id) {
     if (auto om = OptionManager::get()) return Ok(om->isEnabled(id));
     return Err("Failed to get OptionManager");
 };
