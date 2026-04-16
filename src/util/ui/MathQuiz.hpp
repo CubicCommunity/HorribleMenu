@@ -6,7 +6,7 @@ using namespace geode::prelude;
 
 namespace horrible {
     namespace ui {
-        class MathQuiz final : public CCBlockLayer, public FLAlertLayerProtocol {
+        class MathQuiz final : public CCBlockLayer, private FLAlertLayerProtocol {
         private:
             class Impl;
             std::unique_ptr<Impl> m_impl;
@@ -25,11 +25,9 @@ namespace horrible {
             ~MathQuiz();
 
             void callAfterFeedback(CCNode* node);
-            void onAnswerClicked(CCObject* sender);
 
             bool hasAnswer(int answer) const noexcept;
 
-            void keyBackClicked() override;
             void update(float dt) override;
 
             bool init() override;

@@ -8,38 +8,28 @@ using namespace geode::prelude;
 
 using namespace horrible::util;
 
-void jumpscares::downloadGrief() {
-    if (auto glm = GameLevelManager::get()) {
-        if (glm->hasDownloadedLevel(129066933)) {
-            log::info("Grief already downloaded, skipping download");
-            glm->updateLevel(glm->getSavedLevel(129066933));
-        } else {
-            auto mdm = MusicDownloadManager::sharedState();
+void jumpscares::util::download(int levelId, int songId, LevelDownloadDelegate* delegate) {
+    if (auto glm = GameLevelManager::sharedState()) {
+        if (glm->hasDownloadedLevel(levelId)) {
+            log::info("{} already downloaded, skipping download", levelId);
+            glm->updateLevel(glm->getSavedLevel(levelId));
+        } else if (auto mdm = MusicDownloadManager::sharedState()) {
+            log::info("Downloading {} in background", levelId);
 
-            log::info("Downloading Grief in background");
+            glm->m_levelDownloadDelegate = delegate;
 
-            glm->downloadLevel(129066933, false, 0);
-            mdm->downloadSong(482872);
+            glm->downloadLevel(levelId, false, 0);
+            mdm->downloadSong(songId);
         };
     } else {
-        log::error("Cannot download Grief");
+        log::error("Cannot download {}", levelId);
     };
 };
 
-void jumpscares::downloadCongregation() {
-    if (auto glm = GameLevelManager::get()) {
-        if (glm->hasDownloadedLevel(129066879)) {
-            log::info("Congregation already downloaded, skipping download");
-            glm->updateLevel(glm->getSavedLevel(129066879));
-        } else {
-            auto mdm = MusicDownloadManager::sharedState();
+void jumpscares::downloadGrief(LevelDownloadDelegate* delegate) {
+    util::download(129066933, 482872, delegate);
+};
 
-            log::info("Downloading Congregation in background");
-
-            glm->downloadLevel(129066879, false, 0);
-            mdm->downloadSong(895761);
-        };
-    } else {
-        log::error("Cannot download Congregation");
-    };
+void jumpscares::downloadCongregation(LevelDownloadDelegate* delegate) {
+    util::download(129066879, 895761, delegate);
 };

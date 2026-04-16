@@ -6,7 +6,7 @@ using namespace geode::prelude;
 
 namespace horrible {
     namespace ui {
-        class SpamChallenge final : public CCBlockLayer, public FLAlertLayerProtocol {
+        class SpamChallenge final : public CCBlockLayer, private FLAlertLayerProtocol {
         private:
             class Impl;
             std::unique_ptr<Impl> m_impl;
@@ -20,7 +20,6 @@ namespace horrible {
             void callAfterFeedback(float);
             void setSuccess(bool v);
 
-            void keyBackClicked() override;
             void update(float dt) override;
 
             bool init() override;

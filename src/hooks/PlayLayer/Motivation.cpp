@@ -142,7 +142,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
             m_uiLayer->addChild(label, 9);
 
             // @geode-ignore(unknown-resource)
-            sfx::play("crystal01.ogg");
+            sfx::play(sfx::file::good);
             label->runAction(action);
         };
     };

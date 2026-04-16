@@ -86,7 +86,7 @@ public:
     OptionMenuNothingNode* nothingLabel = nullptr;
 
     bool safeMode = thisMod->getSettingValue<bool>(setting::SafeMode);
-    std::string theme = thisMod->getSettingValue<std::string>("theme");
+    std::string const theme = thisMod->getSettingValue<std::string>("theme");
     fs::path themeBgPath = thisMod->getSettingValue<fs::path>("theme-background");
 
     CCNode* safeModeContainer = nullptr;

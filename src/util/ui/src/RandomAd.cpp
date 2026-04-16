@@ -8,12 +8,15 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 bool RandomAd::init() {
-    if (!Popup::init(375.f, 250.f)) return false;
+    auto const theme = thisMod->getSettingValue<std::string>("theme");
+
+    if (!Popup::init(375.f, 250.f, themes::getBackgroundSprite(theme))) return false;
 
     setID("ad"_spr);
     setTitle("Sponsored");
+    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, themes::getCircleBaseColor(theme)));
 
-    jumpscares::downloadCongregation();
+    jumpscares::downloadCongregation(this);
 
     auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
     label->setID("message");
@@ -45,7 +48,7 @@ bool RandomAd::init() {
     projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
 
-    auto playBtnSprite = ButtonSprite::create("Play!");
+    auto playBtnSprite = ButtonSprite::create("Play!", "bigFont.fnt", themes::getButtonSquareSprite(theme));
 
     // takes u to congreg lol
     auto playBtn = CCMenuItemSpriteExtra::create(
@@ -53,13 +56,12 @@ bool RandomAd::init() {
         this,
         menu_selector(RandomAd::onPlayBtn));
     playBtn->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 2.5f});
-    playBtn->ignoreAnchorPointForPosition(false);
     playBtn->setVisible(true);
 
     m_buttonMenu->addChild(playBtn, 3);
 
     // @geode-ignore(unknown-resource)
-    sfx::play("chest07.ogg");
+    sfx::play(sfx::file::pop);
 
     return true;
 };

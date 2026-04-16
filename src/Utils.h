@@ -13,7 +13,7 @@
 #include <util/ui/MathQuiz.hpp>
 #include <util/ui/RandomAd.hpp>
 #include <util/ui/SpamChallenge.hpp>
-#include <util/ui/TermsAndCondition.hpp>
+#include <util/ui/TermsAndConditions.hpp>
 #include <util/ui/WhackButton.hpp>
 
 #include <cocos2d.h>
@@ -41,6 +41,12 @@ namespace horrible {
 
     // For convenience
     namespace sfx {
+        namespace file {
+            inline constexpr auto pop = "chest07.ogg";
+            inline constexpr auto good = "crystal01.ogg";
+            inline constexpr auto bad = "explode_11.ogg";
+        };
+
         /**
          * Play a sound effect using FMOD
          *

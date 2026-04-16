@@ -35,9 +35,13 @@ MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {};
 MathQuiz::~MathQuiz() {};
 
 bool MathQuiz::init() {
+    auto const theme = thisMod->getSettingValue<std::string>("theme");
+
     if (!CCBlockLayer::init()) return false;
 
     setID("math-quiz"_spr);
+    setKeypadEnabled(false);
+    setKeyboardEnabled(false);
 
     m_impl->numFirst = randng::get(10);
     m_impl->numSecond = randng::get(10);
@@ -201,22 +205,50 @@ bool MathQuiz::init() {
     m_impl->answerMenu->setPosition({winSize.width / 2.f, winSize.height / 2.f - 20.f});
     m_impl->answerMenu->setLayout(answerMenuLayout);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < m_impl->answers.size(); i++) {
         auto btnSprite = ButtonSprite::create(
             fmt::format("{}", m_impl->answers[i]).c_str(),
             80.f,
             true,
             "bigFont.fnt",
-            "GJ_button_01.png",
+            themes::getButtonSquareSprite(theme),
             0,
             0.825f);
 
-        auto answerBtn = CCMenuItemSpriteExtra::create(
+        auto answerBtn = Button::createWithNode(
             btnSprite,
-            this,
-            menu_selector(MathQuiz::onAnswerClicked));
+            [this, selectedAnswer = m_impl->answers[i]](auto) {
+                unscheduleUpdate();
+
+                auto correct = (selectedAnswer == m_impl->correctAnswer);
+
+                if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
+                if (m_impl->drawNode) m_impl->drawNode->removeFromParentAndCleanup(true);
+
+                auto const winSize = CCDirector::get()->getWinSize();
+
+                auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", "goldFont.fnt");
+                feedbackLabel->setID("feedback-label");
+                feedbackLabel->setScale(0.125f);
+                feedbackLabel->setAnchorPoint({0.5, 0.5});
+                feedbackLabel->setAlignment(kCCTextAlignmentCenter);
+                feedbackLabel->setPosition(winSize / 2.f);
+                feedbackLabel->setColor(correct ? colors::green : colors::red);
+
+                addChild(feedbackLabel, 9);
+
+                // Small scale animation, delay, then call close
+                feedbackLabel->runAction(CCSequence::create(
+                    CCEaseSineOut::create(CCScaleTo::create(0.125f, 1.25f)),
+                    CCEaseSineOut::create(CCScaleTo::create(0.0875f, 1.f)),
+                    CCDelayTime::create(0.75f),
+                    CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)),
+                    nullptr));
+
+                setKeypadEnabled(false);
+                setCorrect(correct);
+            });
         answerBtn->setID("submit-answer-btn");
-        answerBtn->setTag(m_impl->answers[i]);
 
         m_impl->answerMenu->addChild(answerBtn);
     };
@@ -227,7 +259,7 @@ bool MathQuiz::init() {
     scheduleUpdate();
 
     // @geode-ignore(unknown-resource)
-    sfx::play("chest07.ogg");
+    sfx::play(sfx::file::pop);
 
     return true;
 };
@@ -238,55 +270,13 @@ void MathQuiz::setCallback(Callback&& cb) {
 
 void MathQuiz::setCorrect(bool v) {
     m_impl->correct = v;
-    // @geode-ignore(unknown-resource)
-    sfx::play(v ? "crystal01.ogg" : "explode_11.ogg");
-};
-
-void MathQuiz::onAnswerClicked(CCObject* sender) {
-    unscheduleUpdate();
-
-    if (auto btn = typeinfo_cast<CCMenuItemSpriteExtra*>(sender)) {
-        int selectedAnswer = btn->getTag();
-        auto correct = (selectedAnswer == m_impl->correctAnswer);
-
-        if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
-        if (m_impl->drawNode) m_impl->drawNode->removeFromParentAndCleanup(true);
-
-        auto const winSize = CCDirector::get()->getWinSize();
-
-        auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", "goldFont.fnt");
-        feedbackLabel->setID("feedback-label");
-        feedbackLabel->setScale(0.125f);
-        feedbackLabel->setAnchorPoint({0.5, 0.5});
-        feedbackLabel->setAlignment(kCCTextAlignmentCenter);
-        feedbackLabel->setPosition(winSize / 2.f);
-        feedbackLabel->setColor(correct ? colors::green : colors::red);
-
-        addChild(feedbackLabel, 9);
-
-        // Small scale animation, delay, then call close
-        feedbackLabel->runAction(CCSequence::create(
-            CCEaseSineOut::create(CCScaleTo::create(0.125f, 1.25f)),
-            CCEaseSineOut::create(CCScaleTo::create(0.0875f, 1.f)),
-            CCDelayTime::create(0.75f),
-            CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)),
-            nullptr));
-
-        setKeypadEnabled(false);
-        setCorrect(correct);
-    };
+    sfx::play(v ? sfx::file::good : sfx::file::bad);
 };
 
 bool MathQuiz::hasAnswer(int answer) const noexcept {
     for (auto const& a : m_impl->answers)
         if (a == answer) return true;
     return false;
-};
-
-void MathQuiz::keyBackClicked() {
-    Notification::create("You can't escape the math quiz...", NotificationIcon::Error, 1.25f)->show();
-
-    setCorrect(false);
 };
 
 void MathQuiz::callAfterFeedback(CCNode*) {

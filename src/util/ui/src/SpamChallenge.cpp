@@ -32,10 +32,11 @@ bool SpamChallenge::init() {
     if (!CCBlockLayer::init()) return false;
 
     setID("spam-jumps"_spr);
+    setKeypadEnabled(false);
+    setKeyboardEnabled(false);
 
     auto const winSize = CCDirector::get()->getWinSize();
 
-    // reuse winSize declared above
     auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", "bigFont.fnt", getScaledContentWidth() - 1.25f);
     label->setID("label");
     label->setAlignment(kCCTextAlignmentCenter);
@@ -79,7 +80,7 @@ bool SpamChallenge::init() {
     addChild(m_impl->countdown, 9);
 
     // @geode-ignore(unknown-resource)
-    sfx::play("chest07.ogg");
+    sfx::play(sfx::file::pop);
 
     scheduleUpdate();
 
@@ -124,7 +125,7 @@ void SpamChallenge::setSuccess(bool v) {
         CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
     // @geode-ignore(unknown-resource)
-    sfx::play(m_impl->success ? "crystal01.ogg" : "explode_11.ogg");
+    sfx::play(m_impl->success ? sfx::file::good : sfx::file::bad);
     scheduleOnce(schedule_selector(SpamChallenge::callAfterFeedback), 1.25f);
 };
 
@@ -148,13 +149,6 @@ void SpamChallenge::update(float dt) {
         setSuccess(false);
         unscheduleUpdate();
     };
-};
-
-void SpamChallenge::keyBackClicked() {
-    Notification::create("You can't escape the spam challenge...", NotificationIcon::Error, 1.25f)->show();
-
-    unscheduleUpdate();
-    if (m_impl->callback) m_impl->callback(false);
 };
 
 SpamChallenge* SpamChallenge::create() {

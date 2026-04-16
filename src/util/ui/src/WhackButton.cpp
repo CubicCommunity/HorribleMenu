@@ -104,7 +104,7 @@ bool WhackButton::init() {
     addChild(m_impl->countdown, 9);
 
     // @geode-ignore(unknown-resource)
-    sfx::play("chest07.ogg");
+    sfx::play(sfx::file::pop);
 
     scheduleUpdate();
 
@@ -135,7 +135,7 @@ void WhackButton::setSuccess(bool v) {
         CCEaseSineOut::create(CCScaleTo::create(0.125f, m_impl->scale * 1.25f))));
 
     // @geode-ignore(unknown-resource)
-    sfx::play(v ? "crystal01.ogg" : "explode_11.ogg");
+    sfx::play(v ? sfx::file::good : sfx::file::bad);
     scheduleOnce(schedule_selector(WhackButton::callAfterFeedback), 1.25f);
 };
 
