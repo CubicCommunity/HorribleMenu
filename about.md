@@ -1,10 +1,6 @@
 # Horrible Menu
 **A plethora of ways to ruin your experience...**
 
-> ![✳️](frame:collaborationIcon_001.png) <cg>*This mod has settings you can utilize to customize your experience.*</c>
-
----
-
 ## About
 This silly lil' mod adds a funny mod menu filled to the brim with **over 30 crazy troll options** to mess around with! Spice up your gameplay by adding some truly insane features to absolutely wreck your entire game.
 
@@ -82,8 +78,8 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 ---
 
 #### Thanks
-- **[ArcticWoof](user:7689052)**: UI, options' features
 - **[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features
+- **[ArcticWoof](user:7689052)**: UI, options' features
 
 *as well as...*
 
