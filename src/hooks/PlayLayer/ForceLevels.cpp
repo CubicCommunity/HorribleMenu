@@ -26,33 +26,13 @@ static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setOnline(true);
 HORRIBLE_REGISTER_OPTION(oCongreg);
 
-static bool isAlreadyInLevel(PlayLayer* pl, int levelID) {
-    return pl->m_level && pl->m_level->m_levelID.value() == levelID;
-};
-
 static bool trySwitchToLevel(PlayLayer* pl, PlayerObject* player, GameObject* killer, int levelID, int chance, int rng, std::string_view levelName, bool dontCreateObjects, bool useReplay) {
     if (rng > chance) {
-        log::info("{} jumpscare not triggered {}", levelName, chance);
+        log::debug("{} jumpscare not triggered {}", levelName, chance);
         return false;
     };
 
-    auto glm = GameLevelManager::get();
-    auto targetLevel = glm->getSavedLevel(levelID);
-
-    if (!targetLevel || targetLevel->m_levelNotDownloaded) return false;
-
-    if (isAlreadyInLevel(pl, levelID)) {
-        log::debug("Already in {} level", levelName);
-        return false;
-    };
-
-    pl->PlayLayer::destroyPlayer(player, killer);
-    pl->onExit();
-
-    auto scene = PlayLayer::scene(targetLevel, useReplay, dontCreateObjects);
-    CCDirector::get()->replaceScene(scene);
-
-    log::info("Switching to {} level ({})", levelName, levelID);
+    jumpscares::util::switchToLevel(pl, levelID, levelName, player, killer, dontCreateObjects, useReplay);
 
     return true;
 };

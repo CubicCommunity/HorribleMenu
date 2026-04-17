@@ -138,7 +138,10 @@ class $modify(HIFloatBtnPauseLayer, PauseLayer) {
         auto toggle = thisMod->getSettingValue<bool>(setting::FloatingBtn);
 
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
-        if (auto fb = OptionMenuButton::get()) fb->setVisible(toggle);
+        if (auto fb = OptionMenuButton::get()) {
+            fb->setTouchEnabled(toggle);
+            fb->setVisible(toggle);
+        };
 
         PauseLayer::customSetup();
     };
@@ -174,6 +177,11 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
 
     void toggleButton(bool toggle = false) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
-        if (auto fb = OptionMenuButton::get()) fb->setVisible(thisMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle));
+        if (auto fb = OptionMenuButton::get()) {
+            auto toggleTo = thisMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle);
+
+            fb->setVisible(toggleTo);
+            fb->setTouchEnabled(toggleTo);
+        };
     };
 };

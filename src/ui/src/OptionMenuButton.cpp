@@ -120,6 +120,8 @@ void OptionMenuButton::setButtonIcon(std::string icon) {
 };
 
 bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
+    if (!isVisible()) return false;
+
     if (m_impl->sprite) {
         auto const box = m_impl->sprite->boundingBox();
 

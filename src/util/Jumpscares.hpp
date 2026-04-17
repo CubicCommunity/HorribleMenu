@@ -7,6 +7,8 @@ namespace horrible {
         // Jumpscare level manager
         namespace jumpscares {
             namespace util {
+                void switchToLevel(PlayLayer* pl, int levelID, std::string_view levelName, PlayerObject* player, GameObject* killer, bool dontCreateObjects, bool useReplay);
+
                 void download(int levelId, int songId, LevelDownloadDelegate* delegate);
             };
 
