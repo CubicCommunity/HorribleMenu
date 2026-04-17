@@ -5,7 +5,7 @@
 #include <Geode/Geode.hpp>
 
 namespace horrible {
-    class OptionItem final : public cocos2d::CCMenu, private FLAlertLayerProtocol {
+    class OptionItem final : public cocos2d::CCMenu {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;

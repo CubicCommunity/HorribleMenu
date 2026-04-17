@@ -6,7 +6,7 @@ using namespace geode::prelude;
 
 namespace horrible {
     namespace ui {
-        class MathQuiz final : public CCBlockLayer, private FLAlertLayerProtocol {
+        class MathQuiz final : public CCBlockLayer {
         private:
             class Impl;
             std::unique_ptr<Impl> m_impl;

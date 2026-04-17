@@ -197,11 +197,12 @@ bool OptionMenuCredits::init(ZStringView theme) {
                         "OK")
                         ->show();
                 } else {
-                    FLAlertLayer::create(
+                    createQuickPopup(
                         "Integrations",
                         str,
-                        "OK")
-                        ->show();
+                        "OK",
+                        nullptr,
+                        nullptr);
                 };
             });
         integrationsBtn->setID("integrations-btn");
@@ -214,15 +215,15 @@ bool OptionMenuCredits::init(ZStringView theme) {
     auto infoBtn = Button::createWithSpriteFrameName(
         "GJ_infoIcon_001.png",
         [this](auto) {
-            if (auto popup = FLAlertLayer::create(
-                    this,
-                    "Help",
-                    "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n"
-                    "<co>If we missed anyone, let us know by opening an issue about it on our GitHub repository!</c>\n\n"
-                    "<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>",
-                    "OK",
-                    nullptr,
-                    365.f)) popup->show();
+            createQuickPopup(
+                "Help",
+                "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n"
+                "<co>If we missed anyone, let us know by opening an issue about it on our GitHub repository!</c>\n\n"
+                "<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>",
+                "OK",
+                nullptr,
+                365.f,
+                nullptr);
         });
     infoBtn->setID("info-btn");
     infoBtn->setScale(0.75f);
@@ -233,19 +234,9 @@ bool OptionMenuCredits::init(ZStringView theme) {
     return true;
 };
 
-void OptionMenuCredits::onClose(CCObject* sender) {
-    s_inst = nullptr;
-    Popup::onClose(sender);
-};
-
 void OptionMenuCredits::onExit() {
     s_inst = nullptr;
     Popup::onExit();
-};
-
-void OptionMenuCredits::cleanup() {
-    s_inst = nullptr;
-    Popup::cleanup();
 };
 
 OptionMenuCredits* OptionMenuCredits::get() noexcept {

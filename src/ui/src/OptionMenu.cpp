@@ -562,25 +562,11 @@ bool OptionMenu::init() {
     return true;
 };
 
-void OptionMenu::onClose(CCObject* sender) {
-    if (auto credits = OptionMenuCredits::get()) credits->removeMeAndCleanup();
-    s_inst = nullptr;
-
-    Popup::onClose(sender);
-};
-
 void OptionMenu::onExit() {
     if (auto credits = OptionMenuCredits::get()) credits->removeMeAndCleanup();
     s_inst = nullptr;
 
     Popup::onExit();
-};
-
-void OptionMenu::cleanup() {
-    if (auto credits = OptionMenuCredits::get()) credits->removeMeAndCleanup();
-    s_inst = nullptr;
-
-    Popup::cleanup();
 };
 
 OptionMenu* OptionMenu::get() noexcept {

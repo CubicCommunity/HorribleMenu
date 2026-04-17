@@ -179,15 +179,15 @@ bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
         (m_impl->compatible) ? (onlineCompat ? "GJ_infoIcon_001.png" : "geode.loader/info-warning.png") : "geode.loader/info-alert.png",
         [this](auto) {
             if (auto o = m_impl->option.lock()) {
-                auto formatDesc = fmt::format("{}\n\n{}", (o->getDescription().size() > 0) ? o->getDescription() : "<cc>No description provided.</c>", m_impl->getTierDescString(o->getSillyTier(), m_impl->compatible));
+                auto formatDesc = fmt::format("{}\n\n{}{}", (o->getDescription().size() > 0) ? o->getDescription() : "<cc>No description provided.</c>", o->isOnline() ? "\n<co>An internet connection is required.</c>" : "", m_impl->getTierDescString(o->getSillyTier(), m_impl->compatible));
 
-                if (auto popup = FLAlertLayer::create(
-                        this,
-                        o->getName().c_str(),
-                        std::move(formatDesc),
-                        "OK",
-                        nullptr,
-                        375.f)) popup->show();
+                createQuickPopup(
+                    o->getName().c_str(),
+                    std::move(formatDesc),
+                    "OK",
+                    nullptr,
+                    375.f,
+                    nullptr);
 
                 auto saved = options::get(o->getID());
                 if (!saved.viewed) {

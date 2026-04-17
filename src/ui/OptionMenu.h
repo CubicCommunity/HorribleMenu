@@ -43,9 +43,7 @@ namespace horrible {
         OptionMenu();
         ~OptionMenu();
 
-        void onClose(CCObject* sender) override;
         void onExit() override;
-        void cleanup() override;
 
         bool init() override;
 
