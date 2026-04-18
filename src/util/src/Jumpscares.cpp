@@ -43,7 +43,7 @@ void jumpscares::util::JumpscareDownloadDelegate::levelDownloadFailed(int respon
 jumpscares::util::JumpscareSearchDelegate::JumpscareSearchDelegate(PlayLayer* pl, int levelId, std::string levelName, int songId, bool dontCreateObjects, bool useReplay) :
     m_playLayer(pl), m_levelId(levelId), m_levelName(std::move(levelName)), m_songId(songId), m_dontCreateObjects(dontCreateObjects), m_useReplay(useReplay) {};
 
-void jumpscares::util::JumpscareSearchDelegate::loadLevelsFinished(cocos2d::CCArray* levels, char const* key) {
+void jumpscares::util::JumpscareSearchDelegate::loadLevelsFinished(CCArray* levels, char const* key) {
     util::clearLevelManagerDelegate(this);
 
     if (!levels || levels->count() == 0) {

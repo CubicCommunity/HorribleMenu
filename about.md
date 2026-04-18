@@ -61,7 +61,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 };
 ```
 
-> ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*If you plan on publishing **a mod that acts as an add-on**, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](https://github.com/CubicCommunity/HorribleMenu/tree/main/include) to the best of your ability!*</c>
+> ![✳️](frame:collaborationIcon_001.png) <cg>*If you plan on publishing **a mod that acts as an add-on**, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](https://github.com/CubicCommunity/HorribleMenu/tree/main/include) to the best of your ability!*</c>
 
 ---
 
