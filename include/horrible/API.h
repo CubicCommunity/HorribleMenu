@@ -38,23 +38,27 @@ namespace horrible {
 
     protected:
         OptionManager() = default;
+        ~OptionManager() = default;
 
         OptionManager(const OptionManager&) = delete;
         OptionManager& operator=(const OptionManager&) = delete;
+
+        OptionManager(OptionManager&&) = delete;
+        OptionManager& operator=(OptionManager&&) = delete;
 
         /**
          * Register a category if not already registered
          *
          * @param category Name of the category
          */
-        void registerCategory(std::string category);
+        void registerCategory(std::string category) &;
 
         /**
          * Register an external Geode mod as an integration if not already registered
          *
          * @param category Pointer to the mod
          */
-        void registerMod(const geode::Mod*);
+        void registerMod(const geode::Mod*) &;
 
         /**
          * Check if an option already exists
@@ -63,7 +67,7 @@ namespace horrible {
          *
          * @returns Whether this option already exists or not
          */
-        bool doesOptionExist(geode::ZStringView id) const noexcept;
+        bool doesOptionExist(geode::ZStringView id) const& noexcept;
 
         /**
          * Check if an external Geode mod has already been registered in the list of integrations
@@ -72,7 +76,7 @@ namespace horrible {
          *
          * @returns Whether this option already exists or not
          */
-        bool isModRegistered(geode::ZStringView id) const noexcept;
+        bool isModRegistered(geode::ZStringView id) const& noexcept;
 
     public:
         // Get option manager singleton
@@ -83,14 +87,14 @@ namespace horrible {
          *
          * @param option Constructed option object
          */
-        void registerOption(std::shared_ptr<Option> option);
+        void registerOption(std::shared_ptr<Option> option) &;
 
         /**
          * Returns a reference to the array of all registered options
          *
          * @returns An array of every registered option, main and external
          */
-        [[nodiscard]] std::vector<std::weak_ptr<Option>> getOptions() const;
+        [[nodiscard]] std::vector<std::weak_ptr<Option>> getOptions() const&;
 
         /**
          * Quickly check the toggle state of an option
@@ -99,7 +103,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] bool isEnabled(geode::ZStringView id) const;
+        [[nodiscard]] bool isEnabled(geode::ZStringView id) const&;
 
         /**
          * Quickly check the pin state of an option
@@ -108,7 +112,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] bool isPinned(geode::ZStringView id) const;
+        [[nodiscard]] bool isPinned(geode::ZStringView id) const&;
 
         /**
          * Quickly check the viewed state of an option
@@ -117,7 +121,7 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        [[nodiscard]] bool isViewed(geode::ZStringView id) const;
+        [[nodiscard]] bool isViewed(geode::ZStringView id) const&;
 
         /**
          * Quickly check the default toggle state of an option
@@ -126,7 +130,7 @@ namespace horrible {
          *
          * @returns Boolean of the default value
          */
-        [[nodiscard]] bool getDefaultToggleState(geode::ZStringView id) const noexcept;
+        [[nodiscard]] bool getDefaultToggleState(geode::ZStringView id) const& noexcept;
 
         /**
          * Get the saved data of an option
@@ -135,7 +139,7 @@ namespace horrible {
          *
          * @returns The current save
          */
-        [[nodiscard]] HorribleOptionSave getOption(geode::ZStringView id) const;
+        [[nodiscard]] HorribleOptionSave getOption(geode::ZStringView id) const&;
 
         /**
          * Returns the data of an option
@@ -144,7 +148,7 @@ namespace horrible {
          *
          * @returns A result possibly containing the option object
          */
-        [[nodiscard]] std::weak_ptr<Option> getOptionInfo(geode::ZStringView id) const noexcept;
+        [[nodiscard]] std::weak_ptr<Option> getOptionInfo(geode::ZStringView id) const& noexcept;
 
         /**
          * Returns the amount of delegate callbacks registered for an option
@@ -153,7 +157,7 @@ namespace horrible {
          *
          * @returns The amount of callbacks registered for this option
          */
-        [[nodiscard]] size_t getDelegateCount(std::string_view id) const noexcept;
+        [[nodiscard]] size_t getDelegateCount(std::string_view id) const& noexcept;
 
         /**
          * Set the toggle state of an option
@@ -161,7 +165,7 @@ namespace horrible {
          * @param id The ID of the option to toggle
          * @param enable Boolean to toggle to
          */
-        void toggleOption(geode::ZStringView id, bool enable);
+        void toggleOption(geode::ZStringView id, bool enable) &;
 
         /**
          * Set the state of an option
@@ -171,7 +175,7 @@ namespace horrible {
          * @param pin If this option is pinned by the user
          * @param viewed If this option was already viewed by the user
          */
-        void setOption(geode::ZStringView id, bool enable, bool pin = false, bool viewed = true);
+        void setOption(geode::ZStringView id, bool enable, bool pin = false, bool viewed = true) &;
 
         /**
          * Upsert a new hook delegate
@@ -179,21 +183,21 @@ namespace horrible {
          * @param id The ID of the option to set the delegate for
          * @param callback The hook callback to register for this option's delegate
          */
-        void addDelegate(geode::ZStringView id, Callback&& callback);
+        void addDelegate(geode::ZStringView id, Callback&& callback) &;
 
         /**
          * Returns a reference to the array of all registered categories
          *
          * @returns An array of every category name
          */
-        [[nodiscard]] std::span<const std::string> getCategories() const noexcept;
+        [[nodiscard]] std::span<const std::string> getCategories() const& noexcept;
 
         /**
          * Returns an array of all registered Geode mod integrations
          *
          * @returns An array of every Geode mod integration
          */
-        [[nodiscard]] std::vector<const geode::Mod*> getMods() const;
+        [[nodiscard]] std::vector<const geode::Mod*> getMods() const&;
     };
 
     /**

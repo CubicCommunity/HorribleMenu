@@ -2,7 +2,7 @@
 
 #include <ranges>
 
-#include <ui/OptionMenuButton.h>
+#include <ui/MenuButton.h>
 #include <ui/SettingV3.h>
 
 #include <Geode/modify/PlayLayer.hpp>
@@ -33,7 +33,7 @@ static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
 
 $on_game(Loaded) {
     (void)thisMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
-    if (auto fb = OptionMenuButton::get()) OverlayManager::get()->addChild(fb);
+    if (auto fb = MenuButton::get()) OverlayManager::get()->addChild(fb);
 
     listenForSettingChanges<bool>(
         setting::SafeMode,
@@ -55,7 +55,7 @@ $on_game(Loaded) {
     listenForSettingChanges<bool>(
         setting::FloatingBtn,
         [](bool value) {
-            if (auto fb = OptionMenuButton::get()) {
+            if (auto fb = MenuButton::get()) {
                 fb->setTouchEnabled(value);
                 fb->setVisible(value);
             };
@@ -71,31 +71,31 @@ $on_game(Loaded) {
     listenForSettingChanges<bool>(
         "floating-btn-level",
         [](bool value) {
-            if (auto fb = OptionMenuButton::get()) fb->setShowInLevel(value);
+            if (auto fb = MenuButton::get()) fb->setShowInLevel(value);
         });
 
     listenForSettingChanges<float>(
         "floating-btn-scale",
         [](float value) {
-            if (auto fb = OptionMenuButton::get()) fb->setScale(value);
+            if (auto fb = MenuButton::get()) fb->setScale(value);
         });
 
     listenForSettingChanges<int64_t>(
         "floating-btn-opacity",
         [](int64_t value) {
-            if (auto fb = OptionMenuButton::get()) fb->setOpacity(value);
+            if (auto fb = MenuButton::get()) fb->setOpacity(value);
         });
 
     listenForSettingChanges<std::string>(
         "floating-btn-icon",
         [](std::string value) {
-            if (auto fb = OptionMenuButton::get()) fb->setButtonIcon(std::move(value));
+            if (auto fb = MenuButton::get()) fb->setButtonIcon(std::move(value));
         });
 
     listenForSettingChanges<std::string>(
         "theme",
         [](std::string value) {
-            if (auto fb = OptionMenuButton::get()) fb->setTheme(std::move(value));
+            if (auto fb = MenuButton::get()) fb->setTheme(std::move(value));
         });
 
     listenForAllHorribleOptionChanges(
@@ -138,7 +138,7 @@ class $modify(HIFloatBtnPauseLayer, PauseLayer) {
         auto toggle = thisMod->getSettingValue<bool>(setting::FloatingBtn);
 
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
-        if (auto fb = OptionMenuButton::get()) {
+        if (auto fb = MenuButton::get()) {
             fb->setTouchEnabled(toggle);
             fb->setVisible(toggle);
         };
@@ -177,7 +177,7 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
 
     void toggleButton(bool toggle = false) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
-        if (auto fb = OptionMenuButton::get()) {
+        if (auto fb = MenuButton::get()) {
             auto toggleTo = thisMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle);
 
             fb->setVisible(toggleTo);

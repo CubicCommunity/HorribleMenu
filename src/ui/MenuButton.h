@@ -9,7 +9,7 @@ struct matjson::Serialize<cocos2d::CCPoint> final {
 };
 
 namespace horrible {
-    class OptionMenuButton final : public cocos2d::CCLayer {
+    class MenuButton final : public cocos2d::CCLayer {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
@@ -17,8 +17,8 @@ namespace horrible {
         void setupSprite();
 
     protected:
-        OptionMenuButton();
-        ~OptionMenuButton();
+        MenuButton();
+        ~MenuButton();
 
         void onScaleEnd();
 
@@ -30,18 +30,18 @@ namespace horrible {
 
         bool init() override;
 
-        static OptionMenuButton* create();
+        static MenuButton* create();
 
     public:
-        static OptionMenuButton* get() noexcept;
+        static MenuButton* get() noexcept;
 
-        void setOpacity(GLubyte opacity);
-        void setShowInLevel(bool show);
+        void setOpacity(GLubyte opacity) &;
+        void setShowInLevel(bool show) &;
 
         void setScale(float scale) override;
 
-        void setTheme(std::string theme);
-        void setButtonIcon(std::string icon);
+        void setTheme(std::string theme) &;
+        void setButtonIcon(std::string icon) &;
 
         int64_t getOpacitySetting() const noexcept;
         float getScaleSetting() const noexcept;

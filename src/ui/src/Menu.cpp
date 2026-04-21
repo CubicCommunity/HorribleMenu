@@ -1,8 +1,8 @@
-#include "../OptionMenu.h"
+#include "../Menu.h"
 
-#include "../OptionItem.h"
-#include "../OptionMenuCredits.h"
-#include "../OptionCategoryItem.h"
+#include "../MenuOption.h"
+#include "../MenuCredits.h"
+#include "../MenuOptionCategory.h"
 
 #include <Utils.h>
 
@@ -20,7 +20,7 @@ using namespace horrible::prelude;
 
 namespace fs = asp::fs;  // :troll:
 
-bool OptionMenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
+bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     if (!CCNode::init()) return false;
 
     setID("nothing-label");
@@ -52,8 +52,8 @@ bool OptionMenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     return true;
 };
 
-OptionMenuNothingNode* OptionMenuNothingNode::create(CCSize const& size, CCPoint const& pos) {
-    auto ret = new OptionMenuNothingNode();
+MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos) {
+    auto ret = new MenuNothingNode();
     if (ret->init(size, pos)) {
         ret->autorelease();
         return ret;
@@ -63,9 +63,9 @@ OptionMenuNothingNode* OptionMenuNothingNode::create(CCSize const& size, CCPoint
     return nullptr;
 };
 
-OptionMenu* OptionMenu::s_inst = nullptr;
+Menu* Menu::s_inst = nullptr;
 
-class OptionMenu::Impl final {
+class Menu::Impl final {
 public:
     bool devMode = thisMod->getSettingValue<bool>("dev-mode");
 
@@ -83,7 +83,7 @@ public:
     bool hasInternet = GameToolbox::doWeHaveInternet();
     bool hideIfOffline = thisMod->getSettingValue<bool>("hide-if-offline");
 
-    OptionMenuNothingNode* nothingLabel = nullptr;
+    MenuNothingNode* nothingLabel = nullptr;
 
     bool safeMode = thisMod->getSettingValue<bool>(setting::SafeMode);
     std::string const theme = thisMod->getSettingValue<std::string>("theme");
@@ -93,7 +93,7 @@ public:
     LazySprite* themeBackground = nullptr;
     CCClippingNode* themeBgContainer = nullptr;
 
-    std::vector<WeakRef<OptionCategoryItem>> categoryItems;
+    std::vector<WeakRef<MenuOptionCategory>> categoryItems;
 
     void filterOptions(std::vector<std::weak_ptr<Option>>&& optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
         if (optionList) {
@@ -134,7 +134,7 @@ public:
 
                 for (auto& oRef : list) {
                     if (auto o = oRef.lock()) {
-                        if (auto modOption = OptionItem::create(
+                        if (auto modOption = MenuOption::create(
                                 {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
                                 std::move(oRef),
                                 theme,
@@ -165,10 +165,10 @@ public:
     };
 };
 
-OptionMenu::OptionMenu() : m_impl(std::make_unique<Impl>()) {};
-OptionMenu::~OptionMenu() {};
+Menu::Menu() : m_impl(std::make_unique<Impl>()) {};
+Menu::~Menu() {};
 
-void OptionMenu::setupSafeModeNode(bool safeMode) {
+void Menu::setupSafeModeNode(bool safeMode) {
     if (m_impl->safeModeContainer) {
         m_impl->safeModeContainer->removeAllChildrenWithCleanup(true);
 
@@ -190,7 +190,7 @@ void OptionMenu::setupSafeModeNode(bool safeMode) {
     if (m_impl->safeMode != safeMode) m_impl->safeMode = safeMode;
 };
 
-void OptionMenu::setupImageBackground(fs::path path) {
+void Menu::setupImageBackground(fs::path path) {
     if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeMeAndCleanup();
 
     if (m_impl->themeBgContainer) {
@@ -222,7 +222,7 @@ void OptionMenu::setupImageBackground(fs::path path) {
     if (m_impl->themeBgPath != path) m_impl->themeBgPath = std::move(path);
 };
 
-bool OptionMenu::init() {
+bool Menu::init() {
     auto btns = themes::getCircleBaseColor(m_impl->theme);
 
     if (!Popup::init(450.f, 280.f, themes::getBackgroundSprite(m_impl->theme))) return false;
@@ -288,7 +288,7 @@ bool OptionMenu::init() {
     };
 
     for (auto const& category : sortedCats) {
-        if (auto categoryItem = OptionCategoryItem::create({m_impl->categoryList->getScaledContentWidth(), 20.f}, category)) {
+        if (auto categoryItem = MenuOptionCategory::create({m_impl->categoryList->getScaledContentWidth(), 20.f}, category)) {
             categoryItem->setToggleCallback([this](std::string_view category, bool enabled) {
                 if (enabled) {
                     m_impl->selectedCategory = category;
@@ -340,7 +340,7 @@ bool OptionMenu::init() {
     m_mainLayer->addChild(m_impl->optionList, 9);
     m_mainLayer->addChild(optionListScroll);
 
-    m_impl->nothingLabel = OptionMenuNothingNode::create(optionListBg->getScaledContentSize(), optionListBg->getPosition());
+    m_impl->nothingLabel = MenuNothingNode::create(optionListBg->getScaledContentSize(), optionListBg->getPosition());
     m_mainLayer->addChild(m_impl->nothingLabel, 9);
 
     // add search bar
@@ -492,7 +492,7 @@ bool OptionMenu::init() {
         {{"accountBtn_myLists_001.png",
              "credits-btn",
              [this](auto) {
-                 if (auto popup = OptionMenuCredits::create(m_impl->theme)) popup->show();
+                 if (auto popup = MenuCredits::create(m_impl->theme)) popup->show();
              },
              0.55f},
             {"gj_discordIcon_001.png",
@@ -562,19 +562,19 @@ bool OptionMenu::init() {
     return true;
 };
 
-void OptionMenu::onExit() {
-    if (auto credits = OptionMenuCredits::get()) credits->removeMeAndCleanup();
+void Menu::onExit() {
+    if (auto credits = MenuCredits::get()) credits->removeMeAndCleanup();
     s_inst = nullptr;
 
     Popup::onExit();
 };
 
-OptionMenu* OptionMenu::get() noexcept {
+Menu* Menu::get() noexcept {
     return s_inst;
 };
 
-OptionMenu* OptionMenu::create() {
-    auto ret = new OptionMenu();
+Menu* Menu::create() {
+    auto ret = new Menu();
     if (ret->init()) {
         ret->autorelease();
         s_inst = ret;

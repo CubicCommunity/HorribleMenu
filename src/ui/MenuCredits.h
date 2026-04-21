@@ -5,17 +5,17 @@
 #include <Geode/Geode.hpp>
 
 namespace horrible {
-    class OptionMenuPlayer final : public cocos2d::CCNode {
+    class MenuPlayer final : public cocos2d::CCNode {
     protected:
         bool init(geode::ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor);
 
     public:
-        static OptionMenuPlayer* create(geode::ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor);
+        static MenuPlayer* create(geode::ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor);
     };
 
-    class OptionMenuCredits final : public geode::Popup {
+    class MenuCredits final : public geode::Popup {
     private:
-        static OptionMenuCredits* s_inst;
+        static MenuCredits* s_inst;
 
         struct LeadDevIcon final {
             const char* id;
@@ -33,8 +33,8 @@ namespace horrible {
         bool init(geode::ZStringView theme);
 
     public:
-        static OptionMenuCredits* create(geode::ZStringView theme);
+        static MenuCredits* create(geode::ZStringView theme);
 
-        static OptionMenuCredits* get() noexcept;
+        static MenuCredits* get() noexcept;
     };
 };

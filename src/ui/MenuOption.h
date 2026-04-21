@@ -5,7 +5,7 @@
 #include <Geode/Geode.hpp>
 
 namespace horrible {
-    class OptionItem final : public cocos2d::CCMenu {
+    class MenuOption final : public cocos2d::CCMenu {
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
@@ -13,8 +13,8 @@ namespace horrible {
         using Callback = Function<void()>;
 
     protected:
-        OptionItem();
-        ~OptionItem();
+        MenuOption();
+        ~MenuOption();
 
         void onToggle(cocos2d::CCObject*);
         void onPin(cocos2d::CCObject* sender);
@@ -22,9 +22,9 @@ namespace horrible {
         bool init(cocos2d::CCSize const& size, std::weak_ptr<Option> option, geode::ZStringView theme, bool devMode, bool hasInternet);
 
     public:
-        static OptionItem* create(cocos2d::CCSize const& size, std::weak_ptr<Option> option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
+        static MenuOption* create(cocos2d::CCSize const& size, std::weak_ptr<Option> option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
 
-        void setPinCallback(Callback&& callback);
+        void setPinCallback(Callback&& callback) &;
 
         std::weak_ptr<Option> const& getOption() const noexcept;
         bool isCompatible() const noexcept;

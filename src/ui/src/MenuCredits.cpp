@@ -1,4 +1,4 @@
-#include "../OptionMenuCredits.h"
+#include "../MenuCredits.h"
 
 #include <Utils.h>
 
@@ -9,7 +9,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-bool OptionMenuPlayer::init(ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor) {
+bool MenuPlayer::init(ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor) {
     if (!CCNode::init()) return false;
 
     setAnchorPoint({0.5, 0.5});
@@ -44,8 +44,8 @@ bool OptionMenuPlayer::init(ZStringView name, int account, int icon, ccColor3B c
     return true;
 };
 
-OptionMenuPlayer* OptionMenuPlayer::create(ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor) {
-    auto ret = new OptionMenuPlayer();
+MenuPlayer* MenuPlayer::create(ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor) {
+    auto ret = new MenuPlayer();
     if (ret->init(name, account, icon, color1, color2, glowColor)) {
         ret->autorelease();
         return ret;
@@ -55,9 +55,9 @@ OptionMenuPlayer* OptionMenuPlayer::create(ZStringView name, int account, int ic
     return nullptr;
 };
 
-OptionMenuCredits* OptionMenuCredits::s_inst = nullptr;
+MenuCredits* MenuCredits::s_inst = nullptr;
 
-bool OptionMenuCredits::init(ZStringView theme) {
+bool MenuCredits::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
     if (!Popup::init(400.f, 265.f, themes::getBackgroundSprite(theme))) return false;
@@ -109,7 +109,7 @@ bool OptionMenuCredits::init(ZStringView theme) {
     };
 
     for (auto const& dev : devs) {
-        if (auto player = OptionMenuPlayer::create(dev.name, dev.account, dev.icon, dev.color1, dev.color2, dev.glowColor)) {
+        if (auto player = MenuPlayer::create(dev.name, dev.account, dev.icon, dev.color1, dev.color2, dev.glowColor)) {
             player->setID(dev.id);
             leadDevContainer->addChild(player);
         };
@@ -234,17 +234,17 @@ bool OptionMenuCredits::init(ZStringView theme) {
     return true;
 };
 
-void OptionMenuCredits::onExit() {
+void MenuCredits::onExit() {
     s_inst = nullptr;
     Popup::onExit();
 };
 
-OptionMenuCredits* OptionMenuCredits::get() noexcept {
+MenuCredits* MenuCredits::get() noexcept {
     return s_inst;
 };
 
-OptionMenuCredits* OptionMenuCredits::create(ZStringView theme) {
-    auto ret = new OptionMenuCredits();
+MenuCredits* MenuCredits::create(ZStringView theme) {
+    auto ret = new MenuCredits();
     if (ret->init(theme)) {
         ret->autorelease();
         s_inst = ret;

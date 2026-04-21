@@ -264,7 +264,7 @@ bool MathQuiz::init() {
     return true;
 };
 
-void MathQuiz::setCallback(Callback&& cb) {
+void MathQuiz::setCallback(Callback&& cb) & {
     m_impl->callback = std::move(cb);
 };
 
@@ -274,8 +274,10 @@ void MathQuiz::setCorrect(bool v) {
 };
 
 bool MathQuiz::hasAnswer(int answer) const noexcept {
-    for (auto const& a : m_impl->answers)
+    for (auto const& a : m_impl->answers) {
         if (a == answer) return true;
+    };
+
     return false;
 };
 

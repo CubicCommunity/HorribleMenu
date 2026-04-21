@@ -1,4 +1,4 @@
-#include "../OptionMenuButton.h"
+#include "../MenuButton.h"
 
 #include <Utils.h>
 
@@ -24,7 +24,7 @@ matjson::Value matjson::Serialize<CCPoint>::toJson(CCPoint const& value) {
     return obj;
 };
 
-class OptionMenuButton::Impl final {
+class MenuButton::Impl final {
 public:
     bool inLevel = thisMod->getSettingValue<bool>("floating-btn-level");
 
@@ -50,10 +50,10 @@ public:
     };
 };
 
-OptionMenuButton::OptionMenuButton() : m_impl(std::make_unique<Impl>()) {};
-OptionMenuButton::~OptionMenuButton() {};
+MenuButton::MenuButton() : m_impl(std::make_unique<Impl>()) {};
+MenuButton::~MenuButton() {};
 
-void OptionMenuButton::setupSprite() {
+void MenuButton::setupSprite() {
     if (auto sprite = m_impl->sprite.take()) sprite->removeMeAndCleanup();
 
     m_impl->sprite = CircleButtonSprite::createWithSpriteFrameName(
@@ -73,7 +73,7 @@ void OptionMenuButton::setupSprite() {
     addChild(m_impl->sprite);
 };
 
-bool OptionMenuButton::init() {
+bool MenuButton::init() {
     if (!CCLayer::init()) return false;
 
     setID("menu-btn"_spr);
@@ -89,16 +89,16 @@ bool OptionMenuButton::init() {
     return true;
 };
 
-void OptionMenuButton::setOpacity(GLubyte opacity) {
+void MenuButton::setOpacity(GLubyte opacity) & {
     m_impl->opacity = opacity;
     if (m_impl->sprite) m_impl->sprite->setOpacity(isVisible() ? opacity : 0);
 };
 
-void OptionMenuButton::setShowInLevel(bool show) {
+void MenuButton::setShowInLevel(bool show) & {
     m_impl->inLevel = show;
 };
 
-void OptionMenuButton::setScale(float scale) {
+void MenuButton::setScale(float scale) {
     m_impl->scale = scale;
 
     if (!m_impl->isDragging && !m_impl->isAnimating) {
@@ -109,17 +109,17 @@ void OptionMenuButton::setScale(float scale) {
     };
 };
 
-void OptionMenuButton::setTheme(std::string theme) {
+void MenuButton::setTheme(std::string theme) & {
     m_impl->theme = std::move(theme);
     setupSprite();
 };
 
-void OptionMenuButton::setButtonIcon(std::string icon) {
+void MenuButton::setButtonIcon(std::string icon) & {
     m_impl->btnIcon = std::move(icon);
     setupSprite();
 };
 
-bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
+bool MenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
     if (!isVisible()) return false;
 
     if (m_impl->sprite) {
@@ -139,7 +139,7 @@ bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
                 CCSpawn::createWithTwoActions(
                     CCEaseExponentialOut::create(CCScaleTo::create(0.25f, m_impl->scale * 0.875f)),
                     CCFadeTo::create(0.25f, 255)),
-                CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd))));
+                CCCallFunc::create(this, callfunc_selector(MenuButton::onScaleEnd))));
 
             return true;  // swallow touch like a...
         };
@@ -148,7 +148,7 @@ bool OptionMenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
     return false;
 };
 
-void OptionMenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
+void MenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
     if (m_impl->isDragging) {
         auto const touchLocation = touch->getLocation();
         auto const newLocation = ccpAdd(touchLocation, m_impl->dragStartPos);
@@ -160,7 +160,7 @@ void OptionMenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
     };
 };
 
-void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
+void MenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
     if (m_impl->isDragging) {
         auto pos = ccpSub(getPosition(), touch->getLocation());
         if (m_impl->isDistant(m_impl->comparePos, getPosition(), 5.f)) menu::open();
@@ -178,7 +178,7 @@ void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
                 CCSpawn::createWithTwoActions(
                     CCFadeTo::create(0.125f, 255),
                     CCEaseElasticOut::create(CCScaleTo::create(0.875f, m_impl->scale))),
-                CCCallFunc::create(this, callfunc_selector(OptionMenuButton::onScaleEnd)),
+                CCCallFunc::create(this, callfunc_selector(MenuButton::onScaleEnd)),
                 CCDelayTime::create(1.f),
                 CCFadeTo::create(0.5f, m_impl->opacity / 1.25),
                 nullptr));
@@ -190,29 +190,29 @@ void OptionMenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
     };
 };
 
-void OptionMenuButton::onEnter() {
+void MenuButton::onEnter() {
     CCLayer::onEnter();
     setTouchEnabled(true);
 };
 
-void OptionMenuButton::onScaleEnd() {
+void MenuButton::onScaleEnd() {
     m_impl->isAnimating = false;
 };
 
-int64_t OptionMenuButton::getOpacitySetting() const noexcept {
+int64_t MenuButton::getOpacitySetting() const noexcept {
     return m_impl->opacity;
 };
 
-float OptionMenuButton::getScaleSetting() const noexcept {
+float MenuButton::getScaleSetting() const noexcept {
     return m_impl->scale;
 };
 
-bool OptionMenuButton::showInLevel() const noexcept {
+bool MenuButton::showInLevel() const noexcept {
     return m_impl->inLevel;
 };
 
-OptionMenuButton* OptionMenuButton::create() {
-    auto ret = new OptionMenuButton();
+MenuButton* MenuButton::create() {
+    auto ret = new MenuButton();
     if (ret->init()) {
         ret->autorelease();
         return ret;
@@ -222,7 +222,7 @@ OptionMenuButton* OptionMenuButton::create() {
     return nullptr;
 };
 
-OptionMenuButton* OptionMenuButton::get() noexcept {
-    static auto inst = OptionMenuButton::create();
+MenuButton* MenuButton::get() noexcept {
+    static auto inst = MenuButton::create();
     return inst;
 };

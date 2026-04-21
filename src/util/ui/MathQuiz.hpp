@@ -26,6 +26,7 @@ namespace horrible {
 
             void callAfterFeedback(CCNode* node);
 
+            void setCorrect(bool v);
             bool hasAnswer(int answer) const noexcept;
 
             void update(float dt) override;
@@ -35,8 +36,7 @@ namespace horrible {
         public:
             static MathQuiz* create();
 
-            void setCallback(Callback&& cb);
-            void setCorrect(bool v);
+            void setCallback(Callback&& cb) &;
         };
 
         class Richard final : public CCNode {

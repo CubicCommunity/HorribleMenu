@@ -1,4 +1,4 @@
-#include "../OptionItem.h"
+#include "../MenuOption.h"
 
 #include <Utils.h>
 
@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class OptionItem::Impl final {
+class MenuOption::Impl final {
 public:
     bool compatible = false;  // If this option is compatible with the current platform
 
@@ -63,10 +63,10 @@ public:
     };
 };
 
-OptionItem::OptionItem() : m_impl(std::make_unique<Impl>()) {};
-OptionItem::~OptionItem() {};
+MenuOption::MenuOption() : m_impl(std::make_unique<Impl>()) {};
+MenuOption::~MenuOption() {};
 
-bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
     m_impl->option = std::move(option);
     m_impl->hasInternet = hasInternet;
 
@@ -106,7 +106,7 @@ bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     togglerOn->setScale(0.875f);
 
     // toggler for the option
-    m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(OptionItem::onToggle));
+    m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(MenuOption::onToggle));
     m_impl->toggler->setID("toggler");
     m_impl->toggler->setAnchorPoint({0.5f, 0.5f});
     m_impl->toggler->setPosition({x + 12.f, yCenter});
@@ -213,7 +213,7 @@ bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     pinOff->setBlendFunc({GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA});
     pinOn->setColor(themes::getColor(theme));
 
-    auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(OptionItem::onPin));
+    auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(MenuOption::onPin));
     pinBtn->setID("pin-btn");
 
     pinBtn->toggle(options::isPinned(o->getID()));
@@ -286,7 +286,7 @@ bool OptionItem::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     return true;
 };
 
-void OptionItem::onToggle(CCObject*) {
+void MenuOption::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
         auto now = !m_impl->toggler->isToggled();
 
@@ -310,7 +310,7 @@ void OptionItem::onToggle(CCObject*) {
     m_impl->notifyIncompats();
 };
 
-void OptionItem::onPin(CCObject* sender) {
+void MenuOption::onPin(CCObject* sender) {
     if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
         if (auto o = m_impl->option.lock()) options::set(o->getID(), options::isEnabled(o->getID()), !pinBtn->isToggled(), true);
 
@@ -319,20 +319,20 @@ void OptionItem::onPin(CCObject* sender) {
     };
 };
 
-void OptionItem::setPinCallback(Callback&& callback) {
+void MenuOption::setPinCallback(Callback&& callback) & {
     m_impl->pinCallback = std::move(callback);
 };
 
-std::weak_ptr<Option> const& OptionItem::getOption() const noexcept {
+std::weak_ptr<Option> const& MenuOption::getOption() const noexcept {
     return m_impl->option;
 };
 
-bool OptionItem::isCompatible() const noexcept {
+bool MenuOption::isCompatible() const noexcept {
     return m_impl->compatible;
 };
 
-OptionItem* OptionItem::create(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
-    auto ret = new OptionItem();
+MenuOption* MenuOption::create(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+    auto ret = new MenuOption();
     if (ret->init(size, std::move(option), theme, devMode, hasInternet)) {
         ret->autorelease();
         return ret;

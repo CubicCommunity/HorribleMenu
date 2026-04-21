@@ -111,7 +111,7 @@ bool WhackButton::init() {
     return true;
 };
 
-void WhackButton::setCallback(Callback&& cb) {
+void WhackButton::setCallback(Callback&& cb) & {
     m_impl->callback = std::move(cb);
 };
 

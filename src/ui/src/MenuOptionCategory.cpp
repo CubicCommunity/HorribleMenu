@@ -1,12 +1,13 @@
-#include "../OptionCategoryItem.h"
+#include "../MenuOptionCategory.h"
+
+#include <Utils.h>
 
 #include <Geode/Geode.hpp>
-#include <Utils.h>
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class OptionCategoryItem::Impl final {
+class MenuOptionCategory::Impl final {
 public:
     std::string category = "";  // The category name
 
@@ -15,10 +16,10 @@ public:
     Callback toggleCallback = nullptr;  // Callback for when the category is toggled
 };
 
-OptionCategoryItem::OptionCategoryItem() : m_impl(std::make_unique<Impl>()) {};
-OptionCategoryItem::~OptionCategoryItem() {};
+MenuOptionCategory::MenuOptionCategory() : m_impl(std::make_unique<Impl>()) {};
+MenuOptionCategory::~MenuOptionCategory() {};
 
-bool OptionCategoryItem::init(CCSize const& size, std::string category) {
+bool MenuOptionCategory::init(CCSize const& size, std::string category) {
     m_impl->category = std::move(category);
 
     if (!CCMenu::init()) return false;
@@ -47,7 +48,7 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
         togglerOff,
         togglerOn,
         this,
-        menu_selector(OptionCategoryItem::onToggle));
+        menu_selector(MenuOptionCategory::onToggle));
     m_impl->toggler->setID("toggler");
     m_impl->toggler->setAnchorPoint({0.5f, 0.5f});
     m_impl->toggler->setPosition({10.f, getScaledContentHeight() / 2.f});
@@ -72,26 +73,26 @@ bool OptionCategoryItem::init(CCSize const& size, std::string category) {
     return true;
 };
 
-void OptionCategoryItem::onToggle(CCObject* sender) {
+void MenuOptionCategory::onToggle(CCObject* sender) {
     if (m_impl->toggler) {
         if (m_impl->toggleCallback) m_impl->toggleCallback(m_impl->category, !m_impl->toggler->isOn());
     };
 };
 
-void OptionCategoryItem::setToggleCallback(Callback&& callback) {
+void MenuOptionCategory::setToggleCallback(Callback&& callback) & {
     m_impl->toggleCallback = std::move(callback);
 };
 
-void OptionCategoryItem::setToggled(bool on) {
+void MenuOptionCategory::setToggled(bool on) & {
     if (m_impl->toggler) m_impl->toggler->toggle(on);
 };
 
-ZStringView OptionCategoryItem::getCategory() const noexcept {
+ZStringView MenuOptionCategory::getCategory() const noexcept {
     return m_impl->category;
 };
 
-OptionCategoryItem* OptionCategoryItem::create(CCSize const& size, std::string category) {
-    auto ret = new OptionCategoryItem();
+MenuOptionCategory* MenuOptionCategory::create(CCSize const& size, std::string category) {
+    auto ret = new MenuOptionCategory();
     if (ret->init(size, std::move(category))) {
         ret->autorelease();
         return ret;

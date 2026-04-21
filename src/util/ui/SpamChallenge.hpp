@@ -29,7 +29,7 @@ namespace horrible {
 
             bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;
 
-            void setCallback(Callback&& cb);
+            void setCallback(Callback&& cb) &;
         };
     };
 };

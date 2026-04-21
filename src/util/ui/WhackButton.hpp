@@ -29,7 +29,7 @@ namespace horrible {
         public:
             static WhackButton* create();
 
-            void setCallback(Callback&& cb);
+            void setCallback(Callback&& cb) &;
         };
     };
 };
