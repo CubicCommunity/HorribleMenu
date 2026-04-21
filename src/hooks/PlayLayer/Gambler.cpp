@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Gambler")
                           ->setDescription("When reaching 95% in a level, you have a chance at randomly being blasted way far back.\n<cl>suggested by Timered</c>")
                           ->setCategory(category::misc)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(GamblerPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

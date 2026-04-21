@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Oxygen Level")
                           ->setDescription("Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cl>created by ArcticWoof</c>")
                           ->setCategory(category::playerlife)
-                          ->setSillyTier(SillyTier::High);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::High)
+                          ->autoRegister();
 
 class $modify(OxygenPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

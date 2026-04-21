@@ -56,6 +56,8 @@ namespace horrible {
         std::shared_ptr<Option> setRequiresRestart(bool required) &;
         std::shared_ptr<Option> setSupportedPlatforms(std::vector<Platform> platforms) &;
 
+        std::shared_ptr<Option> autoRegister() &;
+
         [[nodiscard]] geode::ZStringView getID() const noexcept;
         [[nodiscard]] geode::ZStringView getName() const noexcept;
         [[nodiscard]] geode::ZStringView getDescription() const noexcept;

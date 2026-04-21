@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("FLIPPED")
                           ->setDescription("Sometimes while playing, your entire screen will just do a flip!\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::High);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::High)
+                          ->autoRegister();
 
 class $modify(FlippedPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

@@ -14,8 +14,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Dementia")
                           ->setDescription("Chance for the player to occasionally randomly teleport a few steps back while playing a level.\n<cl>suggested by imdissapearinghelp</c>")
                           ->setCategory(category::misc)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(DementiaPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

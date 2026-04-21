@@ -15,16 +15,16 @@ static auto const oGrief = Option::create(THIS_ID_GRIEF)
                                ->setDescription("A chance at death of forcing you to play Grief.\n<cl>suggested by Sweep</c>")
                                ->setCategory(category::jumpscares)
                                ->setSillyTier(SillyTier::High)
-                               ->setOnline(true);
-HORRIBLE_REGISTER_OPTION(oGrief);
+                               ->setOnline(true)
+                               ->autoRegister();
 
 static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setName("Congregation Jumpscare")
                                  ->setDescription("A chance at death of forcing you to play Congregation.\n<cl>suggested by StaticGD</c>")
                                  ->setCategory(category::jumpscares)
                                  ->setSillyTier(SillyTier::High)
-                                 ->setOnline(true);
-HORRIBLE_REGISTER_OPTION(oCongreg);
+                                 ->setOnline(true)
+                                 ->autoRegister();
 
 static bool trySwitchToLevel(PlayLayer* pl, PlayerObject* player, GameObject* killer, int levelID, int chance, int rng, std::string_view levelName, bool dontCreateObjects, bool useReplay) {
     if (rng > chance) {

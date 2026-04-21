@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Friends")
                           ->setDescription("Random friends fly across your screen while you play a level!\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 static constexpr auto s_friends = std::to_array<const char*>({
     "diffIcon_00_btn_001.png",

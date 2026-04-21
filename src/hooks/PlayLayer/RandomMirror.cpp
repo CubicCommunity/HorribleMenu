@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Random Mirror Portal")
                           ->setDescription("Randomly activates a mirror portal while playing.\n<cl>suggested by TimeRed</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(RandomMirrorPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

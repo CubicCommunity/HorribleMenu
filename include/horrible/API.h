@@ -25,6 +25,8 @@ struct matjson::Serialize<HorribleOptionSave> final {
 namespace horrible {
     // Option manager for Horrible Menu
     class BRKD_HORRIBLE_API_DLL OptionManager final {
+        friend class Option;
+
     private:
         geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Map of registered options
         std::vector<std::string> m_categories;                       // Array of auto-registered categories

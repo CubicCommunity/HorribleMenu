@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Random Icon Change")
                           ->setDescription("Randomly change your icon every time you jump.\n<cl>suggested by JompyDoJump</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(RandomIconPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

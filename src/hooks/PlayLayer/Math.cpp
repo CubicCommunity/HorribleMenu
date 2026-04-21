@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Richard's Math Quiz!")
                           ->setDescription("When playing a level in Practice mode, there's a chance Richard will pop out and give you a quick math quiz. Answer correctly to continue, or restart the level from the beginning.\n<cl>suggested by CyanBoi</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::High);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::High)
+                          ->autoRegister();
 
 class $modify(MathPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

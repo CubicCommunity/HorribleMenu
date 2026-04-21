@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Blinking Icon")
                           ->setDescription("Your icon will start to randomly blink.\n<cl>suggested by DragonixGD</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(BlinkingIconPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

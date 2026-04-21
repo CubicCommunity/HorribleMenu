@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Random Fake Crash")
                           ->setDescription("While playing a level, there's a chance your game will fake a crash.\n<cl>suggested by Timered</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

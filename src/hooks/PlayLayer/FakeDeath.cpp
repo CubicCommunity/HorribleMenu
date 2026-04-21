@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Fake Death")
                           ->setDescription("The player's death effect will show without dying.\n<cl>suggested by DragonixGD</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(FakeDeathPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

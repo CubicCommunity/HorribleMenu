@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Agree To Our Terms!")
                           ->setDescription("Whenever you try to jump, change gamemode, or interact with anything in the level, you must agree with the terms and conditions to continue playing.\n<cl>suggested by ArcticWoof</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

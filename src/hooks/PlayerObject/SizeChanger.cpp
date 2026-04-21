@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Size Changer")
                           ->setDescription("Randomly change the player size every time you jump.\n<cl>suggested by himynameisryan21</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(SizeChangerPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

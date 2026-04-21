@@ -19,8 +19,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::None)
                           ->setRequiresRestart(true)
-                          ->setSupportedPlatforms({});
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSupportedPlatforms({})
+                          ->autoRegister();
 
 // static GameObject* s_pendingKiller1 = nullptr;
 // static GameObject* s_pendingKiller2 = nullptr;

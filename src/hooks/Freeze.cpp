@@ -14,8 +14,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Random 90%+ FPS Drop")
                           ->setDescription("Your visual framerate starts randomly dropping during 90-99% in a level.\n<cl>suggested by Hexfire</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(FreezeMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

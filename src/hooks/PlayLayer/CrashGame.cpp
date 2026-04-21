@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Crash Chance on Death")
                           ->setDescription("When you die in a level, there's a chance your game will die too.\n<co>Your progress will save!</c> :)\n<cl>suggested by DragonixGD</c>")
                           ->setCategory(category::chances)
-                          ->setSillyTier(SillyTier::High);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::High)
+                          ->autoRegister();
 
 class $modify(CrashGamePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

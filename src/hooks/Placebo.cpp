@@ -14,8 +14,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Placebo")
                           ->setDescription("A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>suggested by tmdXD</c>")
                           ->setCategory(category::misc)
-                          ->setSillyTier(SillyTier::High);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::High)
+                          ->autoRegister();
 
 void placeboEffect() {
     int rnd = randng::fast();

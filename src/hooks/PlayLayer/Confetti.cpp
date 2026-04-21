@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Confetti Explosion")
                           ->setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 static constexpr auto s_confettis = std::to_array<const char*>({
     "diffIcon_02_btn_001.png",

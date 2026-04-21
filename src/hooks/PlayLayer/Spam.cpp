@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Spam Challenge!")
                           ->setDescription("Sometimes mercilessly forces a challenge on you to spam an input sometimes while playing a level in Normal mode.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::High);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::High)
+                          ->autoRegister();
 
 class $modify(SpamPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

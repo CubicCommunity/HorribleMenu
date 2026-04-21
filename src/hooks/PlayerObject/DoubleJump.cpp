@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Double-Jump")
                           ->setDescription("Allows your character to double-jump in a level.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::misc)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(DoubleJumpPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

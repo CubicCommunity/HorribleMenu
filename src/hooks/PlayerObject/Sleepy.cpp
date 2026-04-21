@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Sleepy Player")
                           ->setDescription("Your character will occasionally fall asleep while playing.\n<cl>suggested by this_guy_yt</c>")
                           ->setCategory(category::misc)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(SleepyPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

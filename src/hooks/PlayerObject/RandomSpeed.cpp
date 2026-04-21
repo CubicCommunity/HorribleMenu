@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Random Speed Change")
                           ->setDescription("Randomly changes your speed while playing a level.\n<cl>suggested by imdissapearinghelp</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(RandomSpeedPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

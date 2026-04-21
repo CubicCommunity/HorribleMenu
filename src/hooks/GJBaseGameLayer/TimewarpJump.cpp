@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Timewarp Jump")
                           ->setDescription("When you jump, there's a chance time will briefly slow down or speed up.\n<cl>suggested by KGplayerA</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

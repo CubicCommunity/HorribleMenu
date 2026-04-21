@@ -14,8 +14,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("While playing a level in normal mode, an ad for a random level will pop up on your screen from time to time.\n<cl>suggested by staticGD</c>")
                           ->setCategory(category::obstructive)
                           ->setSillyTier(SillyTier::Medium)
-                          ->setOnline(true);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setOnline(true)
+                          ->autoRegister();
 
 class $modify(AdvertsPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

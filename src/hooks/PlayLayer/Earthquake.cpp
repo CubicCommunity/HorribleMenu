@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Earthquake")
                           ->setDescription("Constantly shakes the camera while playing a level.\n<cl>created by ArcticWoof</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(EarthquakePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

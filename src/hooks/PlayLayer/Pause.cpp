@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Random Pauses")
                           ->setDescription("While playing a level, it will randomly pause itself.\n<cl>suggested by DragonixGD</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(PausePlayerObject, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

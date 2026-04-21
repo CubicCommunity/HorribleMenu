@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Click Player Speed")
                           ->setDescription("Randomly increases or decreases the player speed everytime you jump.\n<cl>suggested by KGplayerA</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Medium);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Medium)
+                          ->autoRegister();
 
 class $modify(ClickSpeedPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);

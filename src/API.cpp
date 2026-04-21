@@ -133,6 +133,11 @@ void Option::disable() {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
 };
 
+std::shared_ptr<Option> Option::autoRegister() & {
+    if (auto om = OptionManager::get()) om->registerOption(shared_from_this());
+    return shared_from_this();
+};
+
 std::shared_ptr<Option> Option::create(std::string id, const Mod* integration) {
     return std::make_shared<Option>(std::move(id), integration);
 };

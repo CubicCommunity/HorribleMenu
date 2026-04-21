@@ -15,8 +15,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<cl>suggested by Wuffin</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Medium)
-                          ->setSupportedPlatforms({Platform::Windows, Platform::Android});
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSupportedPlatforms({Platform::Windows, Platform::Android})
+                          ->autoRegister();
 
 #if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms
 // Shortcut for `std::filesystem`

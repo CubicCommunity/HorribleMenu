@@ -13,8 +13,8 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Randomize Gravity")
                           ->setDescription("Every time you jump in a level, gravity force will increase or decrease randomly.\n<cl>suggested by NJAgain</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Low);
-HORRIBLE_REGISTER_OPTION(o);
+                          ->setSillyTier(SillyTier::Low)
+                          ->autoRegister();
 
 class $modify(GravityPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
