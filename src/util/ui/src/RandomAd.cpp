@@ -48,39 +48,36 @@ bool RandomAd::init() {
     projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
 
-    auto playBtnSprite = ButtonSprite::create("Play!", "bigFont.fnt", themes::getButtonSquareSprite(theme));
-
     // takes u to congreg lol
-    auto playBtn = CCMenuItemSpriteExtra::create(
-        playBtnSprite,
-        this,
-        menu_selector(RandomAd::onPlayBtn));
+    auto playBtn = Button::createWithNode(
+        ButtonSprite::create(
+            "Play!",
+            "bigFont.fnt",
+            themes::getButtonSquareSprite(theme)),
+        [](auto) {
+            if (auto playLayer = PlayLayer::get()) {
+                auto glm = GameLevelManager::sharedState();
+
+                if (auto congregLevel = glm->getSavedLevel(93437568)) {
+                    auto scene = PlayLayer::scene(congregLevel, false, false);
+                    CCDirector::get()->replaceScene(scene);
+
+                    log::info("Switching to Congregation level (93437568)");
+                } else {
+                    log::error("Failed to fetch congregation :9");
+                };
+            } else {
+                log::error("Player not in a level");
+            };
+        });
+    playBtn->setID("play-btn");
     playBtn->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 2.5f});
-    playBtn->setVisible(true);
 
-    m_buttonMenu->addChild(playBtn, 3);
+    m_mainLayer->addChild(playBtn, 3);
 
-    // @geode-ignore(unknown-resource)
     sfx::play(sfx::file::pop);
 
     return true;
-};
-
-void RandomAd::onPlayBtn(CCObject*) {  // congregation jumpscare
-    if (auto playLayer = PlayLayer::get()) {
-        auto glm = GameLevelManager::sharedState();
-
-        if (auto congregLevel = glm->getSavedLevel(93437568)) {
-            auto scene = playLayer->scene(congregLevel, false, false);
-            CCDirector::get()->replaceScene(scene);
-
-            log::info("Switching to Congregation level (93437568)");
-        } else {
-            log::error("Failed to fetch congregation :9");
-        };
-    } else {
-        log::error("Player not in a level");
-    };
 };
 
 RandomAd* RandomAd::create() {

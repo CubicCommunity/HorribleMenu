@@ -53,7 +53,6 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     void confetti(float) {
         log::info("unleashing confetti!");
 
-        // @geode-ignore(unknown-resource)
         sfx::play(sfx::file::bad);
         shakeCamera(1.25f, 2.5f, 0.00875f);
 

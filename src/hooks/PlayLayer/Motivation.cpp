@@ -141,7 +141,6 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
             m_uiLayer->addChild(label, 9);
 
-            // @geode-ignore(unknown-resource)
             sfx::play(sfx::file::good);
             label->runAction(action);
         };

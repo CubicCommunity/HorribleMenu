@@ -33,7 +33,6 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
         if (game == m_anticheatSpike && player && !player->m_isDead) return PlayLayer::destroyPlayer(player, game);
         if (!f->m_destroyingObject) f->m_destroyingObject = game;
 
-        // @geode-ignore(unknown-resource)
         sfx::play(sfx::file::bad);
         GJBaseGameLayer::shakeCamera(1.f, 2.f, 1.f);
 

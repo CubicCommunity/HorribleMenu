@@ -79,7 +79,6 @@ bool SpamChallenge::init() {
 
     addChild(m_impl->countdown, 9);
 
-    // @geode-ignore(unknown-resource)
     sfx::play(sfx::file::pop);
 
     scheduleUpdate();
@@ -124,7 +123,6 @@ void SpamChallenge::setSuccess(bool v) {
         CCEaseSineOut::create(CCScaleTo::create(0.0875f, 2.75f)),
         CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
-    // @geode-ignore(unknown-resource)
     sfx::play(m_impl->success ? sfx::file::good : sfx::file::bad);
     scheduleOnce(schedule_selector(SpamChallenge::callAfterFeedback), 1.25f);
 };

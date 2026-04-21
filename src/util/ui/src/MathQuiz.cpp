@@ -258,7 +258,6 @@ bool MathQuiz::init() {
 
     scheduleUpdate();
 
-    // @geode-ignore(unknown-resource)
     sfx::play(sfx::file::pop);
 
     return true;
