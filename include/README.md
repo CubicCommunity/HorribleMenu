@@ -35,7 +35,6 @@ auto myOption = Option::create("my-option"_spr);
 
 You should now have a new smart pointer to an option's metadata. Before proceeding, be sure to provide more information about your option with the following setter functions.
 
-- **`setID(std::string)`**: Unique ID of the option, *already handled in `Option::create`*
 - **`setName(std::string)`**: Name of the option
 - **`setDescription(std::string)`**: Description of the option
 - **`setCategory(std::string)`**: Name of the category this option should be under
@@ -56,8 +55,50 @@ auto myOption = Option::create("my-option"_spr)
     ->setSillyTier(SillyTier::Low);
 ```
 
-> [!INFO] 
-> This should automatically register your option into Horrible Menu's option manager. If you wish to register it manually later, set the **`autoRegister`** parameter in your `Option::create` call to `false`.
-> ```cpp
-> auto myOption = Option::create("my-option"_spr, false);
-> ```
+#### Registering
+There are a few ways to register your option to Horrible Menu's option manager in your code. The example practices below assume you're creating each of your `Option` objects in their own respective source files.
+
+##### `HORRIBLE_REGISTER_OPTION` Macro
+This is the **safest** option, as **`HORRIBLE_REGISTER_OPTION`** expands into an `$on_mod(Loaded)` block which safely calls the register function for you once your mod finishes fully loading. It's recommended you call this right after creating your `Option` object globally.
+```cpp
+static auto myOption = Option::create("my-option"_spr)
+    ->setName("My Very Cool Option")
+    ->setDescription("A very detailed description about what this option does...")
+    ->setCategory("My Stuff!")
+    ->setSillyTier(SillyTier::Low);
+
+HORRIBLE_REGISTER_OPTION(myOption);
+```
+
+##### `Option::autoRegister` Builder Call
+In the same chain where you create and build your option, you can call **`autoRegister`** at the very end. This will register your option the moment it's created, during your mod's static initialization.
+```cpp
+static auto myOption = Option::create("my-option"_spr)
+    ->setName("My Very Cool Option")
+    ->setDescription("A very detailed description about what this option does...")
+    ->setCategory("My Stuff!")
+    ->setSillyTier(SillyTier::Low)
+    ->autoRegister();
+```
+
+> [!NOTE]
+> Metadata such as category names can be cached at option registration for the entire game session to help improve performance. Calling `autoRegister` on your builder before you actually finish setting up your option's metadata can cause unexpected issues in UI!
+
+##### Manual `OptionManager::registerOption` Call
+Of course, all of these still call **`OptionManager::registerOption`** in the end, if you prefer registering your option during a different loading phase for your mod, feel free to manually call the register function yourself!
+```cpp
+static auto myOption = Option::create("my-option"_spr)
+    ->setName("My Very Cool Option")
+    ->setDescription("A very detailed description about what this option does...")
+    ->setCategory("My Stuff!")
+    ->setSillyTier(SillyTier::Low);
+
+$on_game(Loaded) {
+    OptionManager::get()->registerOption(myOption);
+};
+```
+
+#### Handling
+So, your options should now be registered. Great! Now, we can move to actually handling them functionally by listening to when they're being toggled.
+
+TODO

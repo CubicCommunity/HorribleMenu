@@ -19,29 +19,11 @@ When pressing `\` or by pressing the floating *<img src="resources/icon.png" wid
 > [!NOTE]
 > *You can customize any keybinds in this mod through its settings.*
 
-#### Player Life
-Give the player a limited health-like meter that must always stay above 0 to prevent the player from dying.
-
-#### Jumpscares
-Typically give a chance to teleport you to a whole different level, mid-level. Boo. Haha.
-
-#### Randoms
-Minor but possibly devastating inconveniences that just pop in from time to time.
-
-#### Chances
-Trolls that usually happen on some sort of player interaction.
-
-#### Obstructive
-Disturb the player's accessibility to the gameplay.
-
-#### Misc
-Probably the worst of it all...
+### Safe Mode
+By default, this mod implements its own safe mode to prevent making accidental progression in levels while this mod is active. Remember, **using this mod counts as cheating**! You can also disable this in the mod's settings while you're not actively using any horrible options.
 
 > [!WARNING]
 > *Please keep in mind that certain game settings and hacks from mod menus may interfere with some parts of this mod's functionality.*
-
-### Safe Mode
-By default, this mod implements its own safe mode to prevent accidental progression in levels. Remember, **using this mod counts as cheating**! You can also disable this in the mod's settings while you're not actively using any horrible options.
 
 ---
 
@@ -56,6 +38,7 @@ static auto const opt = Option::create("my-option"_spr)
     ->setDescription("This option is so very cool!");
     ->setCategory("Cool Options");
     ->setSillyTier(SillyTier::Medium);
+
 HORRIBLE_REGISTER_OPTION(opt);
 
 class $modify(MyPlayLayer, PlayLayer) {

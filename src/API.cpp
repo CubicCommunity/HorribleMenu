@@ -30,11 +30,6 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
 
 Option::Option(std::string id, const Mod* integration) : m_id(std::move(id)), m_integration(integration) {};
 
-std::shared_ptr<Option> Option::setID(std::string id) & {
-    m_id = std::move(id);
-    return shared_from_this();
-};
-
 std::shared_ptr<Option> Option::setName(std::string name) & {
     m_name = std::move(name);
     return shared_from_this();

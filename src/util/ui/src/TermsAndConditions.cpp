@@ -25,19 +25,21 @@ bool TermsAndConditions::init(Callback cb) {
 
     cursor::show();
 
-    auto tosArea = MDTextArea::create(  // TODO: replace with funny rules
+    auto tosArea = MDTextArea::create(
         "By using this mod, you agree to the following terms and conditions:\n\n"
-        "1. You will not hold the developer liable for any damage caused to your game or account.\n"
-        "2. You will not use this mod for cheating or exploiting in multiplayer modes.\n"
-        "3. You will not redistribute this mod without permission from the developer.\n"
-        "4. You will respect the intellectual property rights of the developer and other modders.\n"
-        "5. You will not use this mod for commercial purposes without a license from the developer.\n"
-        "6. You will not reverse engineer or decompile this mod without permission from the developer.\n"
-        "7. You will not use this mod to create derivative works without permission from the developer.\n"
-        "8. You will not use this mod to harass, defame, or discriminate against any individual or group.\n"
-        "9. You will not use this mod to distribute malware or harmful software.\n"
+        "1. You will NOT make fun of the guy who's second in the credits.\n"
+        "2. You will love Breakeode and buy all their merch.\n"
+        "3. You will consent to using this mod forever and ever.\n"
+        "4. You will respect the intellectual... Yeah, that's it.\n"
+        "5. You will not poop on the floor.\n"
+        "6. You will NOT tell us Horrible Menu isn't perfect.\n"
+        "7. You will NOT!!!\n"
+        "8. You will love it when we release the next update. Just one update.\n"
+        "9. You will hate it when we release the next update. Just one update.\n"
         "10. You will not use this mod to violate any applicable laws or regulations.\n\n"
-        "By clicking 'Accept', you acknowledge that you have read and agree to these terms and conditions.",
+        "**By clicking 'Accept', you acknowledge that you have read and agree to these terms and conditions.**\n\n"
+        "---\n\n"
+        "For legal reasons, this is all a joke..!",
         {380.f, 140.f},
         false);
     tosArea->setPosition({m_mainLayer->getContentSize().width / 2.f, m_mainLayer->getContentSize().height / 2.f + 10.f});
