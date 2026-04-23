@@ -32,7 +32,7 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     void levelComplete() {
         PlayLayer::levelComplete();
-        if (auto quiz = WeakRef(m_fields->m_currentMath).lock()) quiz->removeMeAndCleanup();
+        if (auto quiz = WeakRef(m_fields->m_currentMath).lock()) quiz.take()->removeMeAndCleanup();
     };
 
     void nextQuiz() {

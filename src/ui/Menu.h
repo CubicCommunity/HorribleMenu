@@ -2,8 +2,6 @@
 
 #include <Utils.h>
 
-#include <asp/fs.hpp>
-
 #include <Geode/Geode.hpp>
 
 namespace horrible {
@@ -37,7 +35,7 @@ namespace horrible {
         };
 
         void setupSafeModeNode(bool safeMode);
-        void setupImageBackground(asp::fs::path path);
+        void setupImageBackground(std::filesystem::path path);
 
     protected:
         Menu();

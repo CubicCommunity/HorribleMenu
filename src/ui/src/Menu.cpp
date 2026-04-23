@@ -6,7 +6,6 @@
 
 #include <Utils.h>
 
-#include <asp/fs.hpp>
 #include <asp/iter.hpp>
 
 #include <Geode/Geode.hpp>
@@ -18,7 +17,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-namespace fs = asp::fs;  // :troll:
+namespace fs = std::filesystem;
 
 bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     if (!CCNode::init()) return false;
@@ -229,7 +228,7 @@ bool Menu::init() {
 
     setID("options"_spr);
     setTitle("Horrible Options");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, btns, CircleBaseSize::Small));
+    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, CircleBaseSize::Small));
 
     m_bgSprite->setZOrder(-9);
 

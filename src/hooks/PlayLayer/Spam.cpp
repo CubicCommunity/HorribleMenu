@@ -32,7 +32,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
     void levelComplete() {
         PlayLayer::levelComplete();
-        if (auto spam = WeakRef(m_fields->m_currentSpam).lock()) spam->removeMeAndCleanup();
+        if (auto spam = WeakRef(m_fields->m_currentSpam).lock()) spam.take()->removeMeAndCleanup();
     };
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
@@ -44,7 +44,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
             if (auto spam = WeakRef(f->m_currentSpam).lock()) {
                 log::trace("removing activate spam challenge after player death");
 
-                spam->removeMeAndCleanup();
+                spam.take()->removeMeAndCleanup();
                 nextSpam();
             };
 
@@ -75,7 +75,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
                             cursor::hide();
 
-                            if (auto spam = challenge.lock()) spam->removeMeAndCleanup();
+                            if (auto spam = challenge.lock()) spam.take()->removeMeAndCleanup();
                         };
                     });
 

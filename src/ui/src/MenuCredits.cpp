@@ -64,7 +64,7 @@ bool MenuCredits::init(ZStringView theme) {
 
     setID("credits"_spr);
     setTitle("Credits");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, btns, CircleBaseSize::Small));
+    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, CircleBaseSize::Small));
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 

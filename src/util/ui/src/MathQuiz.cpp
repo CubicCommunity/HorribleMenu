@@ -48,7 +48,7 @@ bool MathQuiz::init() {
 
     m_impl->operation = static_cast<MathOperation>(randng::get(3));
 
-    auto const winSize = CCDirector::get()->getWinSize();
+    auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
     // Create problem label
     std::string problemText;
@@ -225,7 +225,7 @@ bool MathQuiz::init() {
                 if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
                 if (m_impl->drawNode) m_impl->drawNode->removeFromParentAndCleanup(true);
 
-                auto const winSize = CCDirector::get()->getWinSize();
+                auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
                 auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", "goldFont.fnt");
                 feedbackLabel->setID("feedback-label");
@@ -306,7 +306,7 @@ void MathQuiz::update(float dt) {
 
         // Notification::create("Time's Up!", NotificationIcon::Error, 1.5f)->show();
 
-        auto const winSize = CCDirector::get()->getWinSize();
+        auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
         if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
 

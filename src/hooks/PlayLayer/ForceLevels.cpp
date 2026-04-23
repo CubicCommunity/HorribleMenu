@@ -50,7 +50,7 @@ class $modify(GriefPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        jumpscares::downloadGrief();
+        jumpscares::downloadGrief(new jumpscares::util::DownloadDelegate(this, 105001928, "Grief", false, false));
     };
 
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {
@@ -79,7 +79,7 @@ class $modify(CongregationPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        jumpscares::downloadCongregation();
+        jumpscares::downloadCongregation(new jumpscares::util::DownloadDelegate(this, 93437568, "Congregation", false, false));
     };
 
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {

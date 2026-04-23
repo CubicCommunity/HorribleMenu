@@ -49,7 +49,7 @@ WhackButton::WhackButton() : m_impl(std::make_unique<Impl>()) {};
 WhackButton::~WhackButton() {};
 
 void WhackButton::reload() {
-    if (auto btn = WeakRef(m_impl->button).lock()) btn->removeMeAndCleanup();
+    if (auto btn = WeakRef(m_impl->button).lock()) btn.take()->removeMeAndCleanup();
 
     auto diff = m_impl->inputTarget - m_impl->inputCount;
 

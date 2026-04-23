@@ -16,7 +16,7 @@ bool TermsAndConditions::init(Callback cb) {
     setTitle("Terms and Conditions");
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, themes::getCircleBaseColor(theme)));
+    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
 
     m_closeBtn->setVisible(false);
     m_closeBtn->setEnabled(false);

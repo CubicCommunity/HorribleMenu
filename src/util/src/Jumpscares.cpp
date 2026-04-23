@@ -7,10 +7,10 @@
 using namespace geode::prelude;
 using namespace horrible::util;
 
-jumpscares::util::JumpscareDownloadDelegate::JumpscareDownloadDelegate(PlayLayer* pl, int levelId, std::string levelName, bool dontCreateObjects, bool useReplay) :
+jumpscares::util::DownloadDelegate::DownloadDelegate(PlayLayer* pl, int levelId, std::string levelName, bool dontCreateObjects, bool useReplay) :
     m_playLayer(pl), m_levelId(levelId), m_levelName(std::move(levelName)), m_dontCreateObjects(dontCreateObjects), m_useReplay(useReplay) {}
 
-void jumpscares::util::JumpscareDownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
+void jumpscares::util::DownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
     if (!level || level->m_levelID.value() != m_levelId) {
         clearDownloadDelegate(this);
         delete this;
@@ -25,25 +25,25 @@ void jumpscares::util::JumpscareDownloadDelegate::levelDownloadFinished(GJGameLe
         return;
     };
 
-    if (auto playLayer = m_playLayer.lock()) {
+    if (m_playLayer.lock()) {
         auto scene = PlayLayer::scene(level, m_useReplay, m_dontCreateObjects);
-        CCDirector::get()->replaceScene(scene);
+        CCDirector::sharedDirector()->replaceScene(scene);
         log::warn("Downloaded and switching to {} level ({})", m_levelName, m_levelId);
     };
 
     delete this;
 };
 
-void jumpscares::util::JumpscareDownloadDelegate::levelDownloadFailed(int response) {
+void jumpscares::util::DownloadDelegate::levelDownloadFailed(int response) {
     clearDownloadDelegate(this);
     log::error("Failed to download {} ({})", m_levelName, response);
     delete this;
 };
 
-jumpscares::util::JumpscareSearchDelegate::JumpscareSearchDelegate(PlayLayer* pl, int levelId, std::string levelName, int songId, bool dontCreateObjects, bool useReplay) :
+jumpscares::util::SearchDelegate::SearchDelegate(PlayLayer* pl, int levelId, std::string levelName, int songId, bool dontCreateObjects, bool useReplay) :
     m_playLayer(pl), m_levelId(levelId), m_levelName(std::move(levelName)), m_songId(songId), m_dontCreateObjects(dontCreateObjects), m_useReplay(useReplay) {};
 
-void jumpscares::util::JumpscareSearchDelegate::loadLevelsFinished(CCArray* levels, char const* key) {
+void jumpscares::util::SearchDelegate::loadLevelsFinished(CCArray* levels, char const* key) {
     util::clearLevelManagerDelegate(this);
 
     if (!levels || levels->count() == 0) {
@@ -53,7 +53,7 @@ void jumpscares::util::JumpscareSearchDelegate::loadLevelsFinished(CCArray* leve
     };
 
     if (auto level = typeinfo_cast<GJGameLevel*>(levels->objectAtIndex(0))) {
-        auto delegate = new jumpscares::util::JumpscareDownloadDelegate(m_playLayer.lock(), m_levelId, m_levelName, m_dontCreateObjects, m_useReplay);
+        auto delegate = new jumpscares::util::DownloadDelegate(m_playLayer.lock().take(), m_levelId, m_levelName, m_dontCreateObjects, m_useReplay);
         util::downloadLevelWithDelegate(level->m_levelID.value(), m_songId, delegate);
     } else {
         log::error("Online search returned non-level object for {}", m_levelName);
@@ -61,7 +61,7 @@ void jumpscares::util::JumpscareSearchDelegate::loadLevelsFinished(CCArray* leve
     };
 };
 
-void jumpscares::util::JumpscareSearchDelegate::loadLevelsFailed(char const* key) {
+void jumpscares::util::SearchDelegate::loadLevelsFailed(char const* key) {
     util::clearLevelManagerDelegate(this);
     log::error("Failed to fetch online level info for {}", m_levelName);
     delete this;
@@ -88,7 +88,7 @@ void jumpscares::util::clearLevelManagerDelegate(LevelManagerDelegate* delegate)
     };
 };
 
-int jumpscares::util::getJumpscareSongId(int levelId) {
+constexpr int jumpscares::util::getJumpscareSongId(int levelId) noexcept {
     switch (levelId) {
         case 105001928: return 482872;  // Grief
         case 93437568: return 895761;   // Congregation
@@ -130,7 +130,7 @@ void jumpscares::util::switchToLevel(PlayLayer* pl, int levelID, std::string_vie
         pl->onExit();
 
         auto scene = PlayLayer::scene(targetLevel, useReplay, dontCreateObjects);
-        CCDirector::get()->replaceScene(scene);
+        CCDirector::sharedDirector()->replaceScene(scene);
 
         log::warn("Switching to {} level ({})", levelName, levelID);
         return;
@@ -147,13 +147,13 @@ void jumpscares::util::switchToLevel(PlayLayer* pl, int levelID, std::string_vie
 
         if (auto storedLevels = glm->getStoredOnlineLevels(search->getKey()); storedLevels && storedLevels->count() > 0) {
             if (auto level = typeinfo_cast<GJGameLevel*>(storedLevels->objectAtIndex(0))) {
-                auto delegate = new JumpscareDownloadDelegate(pl, levelID, std::string(levelName), dontCreateObjects, useReplay);
+                auto delegate = new DownloadDelegate(pl, levelID, std::string(levelName), dontCreateObjects, useReplay);
                 util::downloadLevelWithDelegate(level->m_levelID.value(), getJumpscareSongId(levelID), delegate);
                 return;
             };
         };
 
-        auto delegate = new JumpscareSearchDelegate(pl, levelID, std::string(levelName), getJumpscareSongId(levelID), dontCreateObjects, useReplay);
+        auto delegate = new SearchDelegate(pl, levelID, std::string(levelName), getJumpscareSongId(levelID), dontCreateObjects, useReplay);
         glm->m_levelManagerDelegate = delegate;
         glm->getOnlineLevels(search);
     };

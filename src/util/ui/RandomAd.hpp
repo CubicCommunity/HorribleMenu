@@ -6,7 +6,7 @@ using namespace geode::prelude;
 
 namespace horrible {
     namespace ui {
-        class RandomAd final : public Popup, public LevelDownloadDelegate {
+        class RandomAd final : public Popup {
         protected:
             bool init();
 

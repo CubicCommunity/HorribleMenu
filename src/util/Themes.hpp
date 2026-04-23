@@ -23,6 +23,7 @@ namespace horrible {
         // Get the current theme's sprites and colors
         namespace themes {
             inline constexpr auto square = "square02_001.png";
+            inline constexpr auto close = "geode.loader/close.png";
 
             // Theme options
             namespace enums {

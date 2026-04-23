@@ -35,7 +35,7 @@ bool SpamChallenge::init() {
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
 
-    auto const winSize = CCDirector::get()->getWinSize();
+    auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
     auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", "bigFont.fnt", getScaledContentWidth() - 1.25f);
     label->setID("label");

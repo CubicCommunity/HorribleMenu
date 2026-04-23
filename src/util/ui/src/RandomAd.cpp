@@ -14,9 +14,9 @@ bool RandomAd::init() {
 
     setID("ad"_spr);
     setTitle("Sponsored");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.875f, themes::getCircleBaseColor(theme)));
+    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
 
-    jumpscares::downloadCongregation(this);
+    jumpscares::downloadCongregation(new jumpscares::util::DownloadDelegate(PlayLayer::get(), 93437568, "Congregation", false, false));
 
     auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
     label->setID("message");
@@ -60,7 +60,7 @@ bool RandomAd::init() {
 
                 if (auto congregLevel = glm->getSavedLevel(93437568)) {
                     auto scene = PlayLayer::scene(congregLevel, false, false);
-                    CCDirector::get()->replaceScene(scene);
+                    CCDirector::sharedDirector()->replaceScene(scene);
 
                     log::info("Switching to Congregation level (93437568)");
                 } else {
