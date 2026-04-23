@@ -28,7 +28,7 @@ By default, this mod implements its own safe mode to prevent making accidental p
 ---
 
 ### Integrations
-Want to add your own insane stuff to this mod? You can register your very own horrible options by using this mod's API! You can see its [documentation here](./include). We're hyped to see how much more you can really mess up this game.
+Want to add your own insane stuff to this mod? You can register your very own horrible options by using this mod's API! You can find its [documentation the Wiki](../../wiki/). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
 using namespace horrible;
@@ -54,7 +54,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 ```
 
 > [!TIP]
-> *If you plan on publishing **a mod that acts as an add-on**, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](./include) to the best of your ability!*
+> *If you plan on publishing **a mod that acts as an add-on**, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](../../wiki/) to the best of your ability!*
 
 ---
 

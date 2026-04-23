@@ -19,7 +19,7 @@ By default, this mod implements its own safe mode to prevent making accidental p
 ---
 
 ### Integrations
-Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can see its [documentation here](https://github.com/CubicCommunity/HorribleMenu/tree/main/include). We're hyped to see how much more you can really mess up this game.
+Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can find its [documentation the Wiki](https://github.com/CubicCommunity/HorribleMenu/wiki). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
 using namespace horrible;
@@ -44,7 +44,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 };
 ```
 
-> ![✳️](frame:collaborationIcon_001.png) <cg>*If you plan on publishing **a mod that acts as an add-on**, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](https://github.com/CubicCommunity/HorribleMenu/tree/main/include) to the best of your ability!*</c>
+> ![✳️](frame:collaborationIcon_001.png) <cg>*If you plan on publishing **a mod that acts as an add-on**, all we ask is to please be sure to follow the safe code practices as instructed in the [documentation](https://github.com/CubicCommunity/HorribleMenu/wiki) to the best of your ability!*</c>
 
 ---
 
