@@ -243,5 +243,5 @@ jumpscares::DownloadDelegate* jumpscares::get::grief() {
 };
 
 jumpscares::DownloadDelegate* jumpscares::get::congregation() {
-    return new jumpscares::DownloadDelegate(PlayLayer::get(), 93437568, 0, "Congregation", false, false);
+    return new jumpscares::DownloadDelegate(PlayLayer::get(), 129066879, 0, "Congregation", false, false);
 };
