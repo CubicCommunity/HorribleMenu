@@ -6,58 +6,62 @@ namespace horrible {
     namespace util {
         // Jumpscare level manager
         namespace jumpscares {
-            namespace util {
-                struct SearchDelegate final : public LevelManagerDelegate {
-                private:
-                    geode::WeakRef<PlayLayer> m_playLayer;
+            class JumpscareDelegateBase {
+            protected:
+                geode::WeakRef<PlayLayer> m_playLayer = nullptr;
 
-                    int m_levelId;
-                    std::string m_levelName;
+                int m_levelID = 0;
+                int m_songID = 0;
+                std::string m_levelName = "";
 
-                    int m_songId;
-                    bool m_dontCreateObjects;
-                    bool m_useReplay;
+                bool m_dontCreateObjects = false;
+                bool m_useReplay = false;
 
-                public:
-                    SearchDelegate(PlayLayer* pl, int levelId, std::string levelName, int songId, bool dontCreateObjects, bool useReplay);
+            public:
+                JumpscareDelegateBase(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
+                virtual ~JumpscareDelegateBase() = default;
 
-                    void loadLevelsFinished(cocos2d::CCArray* levels, char const* key) override;
-                    void loadLevelsFailed(char const* key) override;
-                };
+                geode::WeakRef<PlayLayer> const& getPlayLayer() const noexcept;
 
-                struct DownloadDelegate final : public LevelDownloadDelegate {
-                private:
-                    geode::WeakRef<PlayLayer> m_playLayer;
+                int getLevelID() const noexcept;
+                int getSongID() const noexcept;
+                geode::ZStringView getLevelName() const noexcept;
 
-                    int m_levelId;
-                    std::string m_levelName;
-
-                    bool m_dontCreateObjects;
-                    bool m_useReplay;
-
-                public:
-                    DownloadDelegate(PlayLayer* pl, int levelId, std::string levelName, bool dontCreateObjects, bool useReplay);
-
-                    void levelDownloadFinished(GJGameLevel* level) override;
-                    void levelDownloadFailed(int response) override;
-                };
-
-                void switchToLevel(PlayLayer* pl, int levelID, std::string_view levelName, PlayerObject* player, GameObject* killer, bool dontCreateObjects, bool useReplay);
-
-                void download(int levelId, int songId, LevelDownloadDelegate* delegate);
-
-                GJGameLevel* getSavedDownloadedLevel(int levelId);
-                GJSearchObject* createLevelSearchObject(int levelId);
-
-                void downloadLevelWithDelegate(int levelId, int songId, LevelDownloadDelegate* delegate);
-                void clearDownloadDelegate(LevelDownloadDelegate* delegate);
-                void clearLevelManagerDelegate(LevelManagerDelegate* delegate);
-
-                constexpr int getJumpscareSongId(int levelId) noexcept;
+                bool getDontCreateObjects() const noexcept;
+                bool getUseReplay() const noexcept;
             };
 
-            void downloadGrief(LevelDownloadDelegate* delegate = nullptr);         // Download Grief
-            void downloadCongregation(LevelDownloadDelegate* delegate = nullptr);  // Download Congregation
+            struct SearchDelegate final : public LevelManagerDelegate, public JumpscareDelegateBase {
+            public:
+                SearchDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
+
+                void loadLevelsFinished(cocos2d::CCArray* levels, char const* key) override;
+                void loadLevelsFailed(char const* key) override;
+            };
+
+            struct DownloadDelegate final : public LevelDownloadDelegate, public JumpscareDelegateBase {
+            public:
+                DownloadDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
+
+                void levelDownloadFinished(GJGameLevel* level) override;
+                void levelDownloadFailed(int response) override;
+            };
+
+            namespace get {
+                DownloadDelegate* grief();
+                DownloadDelegate* congregation();
+            };
+
+            void switchToLevel(PlayLayer* pl, DownloadDelegate* delegate, PlayerObject* player, GameObject* killer, bool dontCreateObjects, bool useReplay);
+
+            void saveLevel(DownloadDelegate* delegate);
+            void downloadLevelAsync(DownloadDelegate* delegate);
+
+            GJGameLevel* getSavedDownloadedLevel(int levelID);
+            GJSearchObject* createLevelSearchObject(int levelID);
+
+            void clearDownloadDelegate(DownloadDelegate* delegate);
+            void clearLevelManagerDelegate(SearchDelegate* delegate);
         };
     };
 };

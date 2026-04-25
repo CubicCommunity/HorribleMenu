@@ -198,18 +198,26 @@ void Menu::setupImageBackground(fs::path path) {
             m_impl->themeBackground->setID("theme-bg");
             m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
-            m_impl->themeBackground->setLoadCallback([this](Result<> res) {
-                if (res.isOk()) {
-                    m_impl->themeBackground->setScaleX(m_bgSprite->getScaledContentWidth() / m_impl->themeBackground->getScaledContentWidth());
-                    m_impl->themeBackground->setScaleY(m_bgSprite->getScaledContentHeight() / m_impl->themeBackground->getScaledContentHeight());
+            m_impl->themeBackground->setLoadCallback([self = WeakRef(this), themeBg = WeakRef(m_impl->themeBackground)](Result<> res) {
+                if (auto s = self.lock()) {
+                    if (auto bg = themeBg.lock()) {
+                        if (res.isOk()) {
+                            bg->setScaleX(s->m_bgSprite->getScaledContentWidth() / bg->getScaledContentWidth());
+                            bg->setScaleY(s->m_bgSprite->getScaledContentHeight() / bg->getScaledContentHeight());
 
-                    m_impl->themeBackground->setOpacity(100);
+                            bg.take()->setOpacity(100);
 
-                    log::debug("Successfully loaded theme background");
-                } else if (res.isErr()) {
-                    log::error("Failed to load theme background: {}", res.unwrapErr());
+                            log::debug("Successfully loaded theme background");
+                        } else if (res.isErr()) {
+                            log::error("Failed to load theme background: {}", res.unwrapErr());
+                        } else {
+                            log::error("Failed to load theme background for an unknown reason");
+                        };
+                    } else {
+                        log::error("Theme background sprite was destroyed before load callback");
+                    };
                 } else {
-                    log::error("Failed to load theme background for an unknown reason");
+                    log::error("Menu was destroyed before theme background load callback");
                 };
             });
 

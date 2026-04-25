@@ -99,9 +99,11 @@ class $modify(MockMenuLayer, MenuLayer) {
                                     auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
 
                                     auto action = CCSpawn::createWithTwoActions(move, rotate);
-                                    ss->runAction(action);
+                                    ss.take()->runAction(action);
 
                                     log::info("Animated sprite successfully");
+                                } else {
+                                    log::error("Mocked sprite was destroyed before load callback");
                                 };
                             };
                         } else {

@@ -16,7 +16,7 @@ bool RandomAd::init() {
     setTitle("Sponsored");
     setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
 
-    jumpscares::downloadCongregation(new jumpscares::util::DownloadDelegate(PlayLayer::get(), 93437568, "Congregation", false, false));
+    jumpscares::saveLevel(jumpscares::get::congregation());
 
     auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
     label->setID("message");
@@ -36,17 +36,22 @@ bool RandomAd::init() {
         if (auto thumb = thumbnail.lock()) {
             if (res.isOk()) {
                 log::info("Sprite loaded successfully");
-
-                thumb->setScale(0.625);
+                thumb.take()->setScale(0.625);
             } else {
                 log::error("Sprite failed to load: {}", res.unwrapErr());
-                thumb->removeMeAndCleanup();
+                thumb.take()->removeMeAndCleanup();
             };
+        } else {
+            log::error("Thumbnail sprite was destroyed before load callback");
         };
     });
 
     projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
+
+    auto playBtnLoading = LoadingSpinner::create(37.5f);
+    playBtnLoading->setID("loading-circle");
+    playBtnLoading->setVisible(false);
 
     // takes u to congreg lol
     auto playBtn = Button::createWithNode(
@@ -54,18 +59,13 @@ bool RandomAd::init() {
             "Play!",
             "bigFont.fnt",
             themes::getButtonSquareSprite(theme)),
-        [](auto) {
-            if (auto playLayer = PlayLayer::get()) {
-                auto glm = GameLevelManager::sharedState();
+        [playBtnLoading](Button* sender) {
+            sender->setVisible(false);
+            playBtnLoading->setVisible(true);
 
-                if (auto congregLevel = glm->getSavedLevel(93437568)) {
-                    auto scene = PlayLayer::scene(congregLevel, false, false);
-                    CCDirector::sharedDirector()->replaceScene(scene);
-
-                    log::info("Switching to Congregation level (93437568)");
-                } else {
-                    log::error("Failed to fetch congregation :9");
-                };
+            if (auto pl = PlayLayer::get()) {
+                log::info("Switching from ad to Congregation jumpscare");
+                jumpscares::switchToLevel(pl, jumpscares::get::congregation(), nullptr, nullptr, false, false);
             } else {
                 log::error("Player not in a level");
             };
@@ -73,7 +73,10 @@ bool RandomAd::init() {
     playBtn->setID("play-btn");
     playBtn->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 2.5f});
 
+    playBtnLoading->setPosition(playBtn->getPosition());
+
     m_mainLayer->addChild(playBtn, 3);
+    m_mainLayer->addChild(playBtnLoading, 2);
 
     sfx::play(sfx::file::pop);
 

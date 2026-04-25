@@ -38,7 +38,7 @@ namespace horrible {
             };
 
             // Get the current theme's background sprite name
-            inline constexpr const char* getBackgroundSprite(std::string_view theme) noexcept {
+            inline constexpr auto getBackgroundSprite(std::string_view theme) noexcept {
                 if (theme == enums::Icy) return "GJ_square02.png";
                 if (theme == enums::Grass) return "GJ_square03.png";
                 if (theme == enums::Dark) return "geode.loader/GE_square02.png";
@@ -52,7 +52,7 @@ namespace horrible {
             };
 
             // Get the current theme's circle base color enum
-            inline constexpr geode::CircleBaseColor getCircleBaseColor(std::string_view theme) noexcept {
+            inline constexpr auto getCircleBaseColor(std::string_view theme) noexcept {
                 if (theme == enums::Icy) return geode::CircleBaseColor::Blue;
                 if (theme == enums::Grass) return geode::CircleBaseColor::Green;
                 if (theme == enums::Dark) return geode::CircleBaseColor::Gray;
@@ -66,7 +66,7 @@ namespace horrible {
             };
 
             // Get the current theme's square button sprite name
-            inline constexpr const char* getButtonSquareSprite(std::string_view theme) noexcept {
+            inline constexpr auto getButtonSquareSprite(std::string_view theme) noexcept {
                 if (theme == enums::Icy) return "GJ_button_02.png";
                 if (theme == enums::Grass) return "GJ_button_01.png";
                 if (theme == enums::Dark) return "GJ_button_05.png";
@@ -80,7 +80,7 @@ namespace horrible {
             };
 
             // Get the current theme's color
-            inline constexpr cocos2d::ccColor3B getColor(std::string_view theme) noexcept {
+            inline constexpr auto getColor(std::string_view theme) noexcept {
                 if (theme == enums::Icy) return colors::blue;
                 if (theme == enums::Grass) return colors::green;
                 if (theme == enums::Dark) return colors::white;
@@ -110,7 +110,7 @@ namespace horrible {
             };
 
             // Get the current icon's sprite name
-            inline constexpr const char* getIconSprite(std::string_view icon) noexcept {
+            inline constexpr auto getIconSprite(std::string_view icon) noexcept {
                 if (icon == icons::Default) return "icon.png"_spr;
                 if (icon == icons::Classic) return "icon_classic.png"_spr;
                 if (icon == icons::Pride) return "icon_pride.png"_spr;

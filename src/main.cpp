@@ -48,7 +48,7 @@ $on_game(Loaded) {
 
     listenForKeybindSettingPresses(
         "key-popup",
-        [](Keybind const&, bool down, bool repeat, double) {
+        [](auto, bool down, bool repeat, auto) {
             if (down && !repeat) menu::open();
         });
 
