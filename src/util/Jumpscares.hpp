@@ -7,7 +7,7 @@ namespace horrible {
         // Jumpscare level manager
         namespace jumpscares {
             class JumpscareDelegateBase {
-            protected:
+            private:
                 geode::WeakRef<PlayLayer> m_playLayer = nullptr;
 
                 int m_levelID = 0;
@@ -17,10 +17,11 @@ namespace horrible {
                 bool m_dontCreateObjects = false;
                 bool m_useReplay = false;
 
-            public:
-                JumpscareDelegateBase(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
+            protected:
+                explicit JumpscareDelegateBase(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
                 virtual ~JumpscareDelegateBase() = default;
 
+            public:
                 geode::WeakRef<PlayLayer> const& getPlayLayer() const noexcept;
 
                 int getLevelID() const noexcept;
