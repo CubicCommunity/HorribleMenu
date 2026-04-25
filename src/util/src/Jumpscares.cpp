@@ -239,9 +239,9 @@ void jumpscares::switchToLevel(PlayLayer* pl, DownloadDelegate* delegate, Player
 };
 
 jumpscares::DownloadDelegate* jumpscares::get::grief() {
-    return new jumpscares::DownloadDelegate(PlayLayer::get(), 129066933, 0, "Grief", false, false);
+    return new jumpscares::DownloadDelegate(PlayLayer::get(), 129066933, 482872, "Grief", false, false);
 };
 
 jumpscares::DownloadDelegate* jumpscares::get::congregation() {
-    return new jumpscares::DownloadDelegate(PlayLayer::get(), 129066879, 0, "Congregation", false, false);
+    return new jumpscares::DownloadDelegate(PlayLayer::get(), 129066879, 895761, "Congregation", false, false);
 };
