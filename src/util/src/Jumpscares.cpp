@@ -7,35 +7,35 @@
 using namespace geode::prelude;
 using namespace horrible::util;
 
-jumpscares::JumpscareDelegateBase::JumpscareDelegateBase(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay) :
+jumpscares::JumpscareDelegateData::JumpscareDelegateData(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay) :
     m_playLayer(pl), m_levelID(levelID), m_songID(songID), m_levelName(std::move(levelName)), m_dontCreateObjects(dontCreateObjects), m_useReplay(useReplay) {};
 
-WeakRef<PlayLayer> const& jumpscares::JumpscareDelegateBase::getPlayLayer() const noexcept {
+WeakRef<PlayLayer> const& jumpscares::JumpscareDelegateData::getPlayLayer() const noexcept {
     return m_playLayer;
 };
 
-int jumpscares::JumpscareDelegateBase::getLevelID() const noexcept {
+int jumpscares::JumpscareDelegateData::getLevelID() const noexcept {
     return m_levelID;
 };
 
-int jumpscares::JumpscareDelegateBase::getSongID() const noexcept {
+int jumpscares::JumpscareDelegateData::getSongID() const noexcept {
     return m_songID;
 };
 
-ZStringView jumpscares::JumpscareDelegateBase::getLevelName() const noexcept {
+ZStringView jumpscares::JumpscareDelegateData::getLevelName() const noexcept {
     return m_levelName;
 };
 
-bool jumpscares::JumpscareDelegateBase::getDontCreateObjects() const noexcept {
+bool jumpscares::JumpscareDelegateData::getDontCreateObjects() const noexcept {
     return m_dontCreateObjects;
 };
 
-bool jumpscares::JumpscareDelegateBase::getUseReplay() const noexcept {
+bool jumpscares::JumpscareDelegateData::getUseReplay() const noexcept {
     return m_useReplay;
 };
 
 jumpscares::DownloadDelegate::DownloadDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay) :
-    JumpscareDelegateBase(pl, levelID, songID, std::move(levelName), dontCreateObjects, useReplay) {};
+    JumpscareDelegateData(pl, levelID, songID, std::move(levelName), dontCreateObjects, useReplay) {};
 
 void jumpscares::DownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
     log::trace("Download finished for level {}", getLevelID());
@@ -74,7 +74,7 @@ void jumpscares::DownloadDelegate::levelDownloadFailed(int response) {
 };
 
 jumpscares::SearchDelegate::SearchDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay) :
-    JumpscareDelegateBase(pl, levelID, songID, std::move(levelName), dontCreateObjects, useReplay) {};
+    JumpscareDelegateData(pl, levelID, songID, std::move(levelName), dontCreateObjects, useReplay) {};
 
 void jumpscares::SearchDelegate::loadLevelsFinished(CCArray* levels, char const* key) {
     log::trace("Search finished for level {}", getLevelName());

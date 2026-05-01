@@ -24,18 +24,17 @@ bool MenuPlayer::init(ZStringView name, int account, int icon, ccColor3B const& 
 
     addChild(playerIcon);
 
-    auto label = CCLabelBMFont::create(name.c_str(), "goldFont.fnt");
-    label->setScale(0.375f);
-
-    if (label->getScaledContentWidth() > getScaledContentWidth()) setContentWidth(label->getScaledContentWidth());
-
-    auto labelBtn = Button::createWithNode(
-        label,
+    auto labelBtn = Button::createWithLabel(
+        name.c_str(),
+        "goldFont.fnt",
         [account](auto) {
             if (auto page = ProfilePage::create(account, false)) page->show();
         });
     labelBtn->setID("profile-btn");
-    labelBtn->setPosition({getScaledContentWidth() / 2.f, getScaledContentHeight() + (label->getScaledContentHeight() * 0.875f)});
+    labelBtn->setScale(0.375f);
+    labelBtn->setPosition({getScaledContentWidth() / 2.f, getScaledContentHeight() + (labelBtn->getScaledContentHeight() * 0.875f)});
+
+    if (labelBtn->getScaledContentWidth() > getScaledContentWidth()) setContentWidth(labelBtn->getScaledContentWidth());
 
     playerIcon->setPositionX(getScaledContentWidth() / 2.f);
 
@@ -118,17 +117,14 @@ bool MenuCredits::init(ZStringView theme) {
     m_mainLayer->addChild(leadDevContainer);
     leadDevContainer->updateLayout();
 
-    constexpr auto creditsMdTxt =
+    auto creditsMd = MDTextArea::create(
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
         "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
         "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
-        "**[dankmeme](user:9735891)**: helped with pretty important programming decisions :D\n\n";
-
-    auto creditsMd = MDTextArea::create(
-        creditsMdTxt,
+        "**[dankmeme](user:9735891)**: helped with pretty important programming decisions :D\n\n",
         {m_mainLayer->getScaledContentWidth() - 55.f,
             140.f});
     creditsMd->setID("credits");

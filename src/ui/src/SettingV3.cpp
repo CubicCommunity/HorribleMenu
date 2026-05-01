@@ -40,14 +40,6 @@ SettingNodeV3* HorribleSettingV3::createNode(float width) {
     return HorribleSettingNodeV3::create(std::static_pointer_cast<HorribleSettingV3>(shared_from_this()), width);
 };
 
-class HorribleSettingNodeV3::Impl final {
-public:
-    CCMenuItemSpriteExtra* button = nullptr;
-};
-
-HorribleSettingNodeV3::HorribleSettingNodeV3() : m_impl(std::make_unique<Impl>()) {};
-HorribleSettingNodeV3::~HorribleSettingNodeV3() {};
-
 bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, float width) {
     if (!SettingNodeV3::init(setting, width)) return false;
 
@@ -58,17 +50,19 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
         0.875f);
     buttonSprite->setScale(0.5f);
 
-    m_impl->button = CCMenuItemExt::createSpriteExtra(
+    m_button = CCMenuItemExt::createSpriteExtra(
         buttonSprite,
-        [](auto) { menu::open(); });
-    m_impl->button->setID("horrible-options-btn");
+        [](auto) {
+            menu::open();
+        });
+    m_button->setID("horrible-options-btn");
 
     if (auto menu = getButtonMenu()) {
         menu->setAnchorPoint({0.5, 0.5});
         menu->setPosition(getScaledContentSize() / 2.f);
         menu->setContentSize({getScaledContentWidth(), 0.f});
 
-        menu->addChildAtPosition(m_impl->button, Anchor::Center);
+        menu->addChildAtPosition(m_button, Anchor::Center);
         menu->updateLayout();
     } else {
         log::error("Couldn't find button menu in settings");
@@ -79,7 +73,7 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
         [this](std::shared_ptr<SettingV3> setting) {
             auto strSetting = std::static_pointer_cast<StringSettingV3>(setting);
 
-            if (m_impl->button) {
+            if (m_button) {
                 auto buttonSprite = ButtonSprite::create(
                     "Horrible Options Menu",
                     "bigFont.fnt",
@@ -87,8 +81,8 @@ bool HorribleSettingNodeV3::init(std::shared_ptr<HorribleSettingV3> setting, flo
                     0.875f);
                 buttonSprite->setScale(0.5f);
 
-                m_impl->button->setNormalImage(buttonSprite);
-                m_impl->button->updateSprite();
+                m_button->setNormalImage(buttonSprite);
+                m_button->updateSprite();
             } else {
                 log::error("Setting button not found");
             };

@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-bool TermsAndConditions::init(Callback cb) {
+bool TermsAndConditions::init(Callback&& cb) {
     auto const theme = thisMod->getSettingValue<std::string>("theme");
 
     if (!Popup::init(420.f, 240.f, themes::getBackgroundSprite(theme))) return false;
@@ -74,9 +74,9 @@ bool TermsAndConditions::init(Callback cb) {
     return true;
 };
 
-TermsAndConditions* TermsAndConditions::create(Callback cb) {
+TermsAndConditions* TermsAndConditions::create(Callback&& cb) {
     auto ret = new TermsAndConditions();
-    if (ret && ret->init(cb)) {
+    if (ret && ret->init(std::move(cb))) {
         ret->autorelease();
         return ret;
     };

@@ -23,7 +23,7 @@ class $modify(FreezeMenuLayer, MenuLayer) {
     bool init() {
         if (!MenuLayer::init()) return false;
 
-        if (auto gm = GameManager::get()) {
+        if (auto gm = GameManager::sharedState()) {
             // get and store user current fps
             float currentFPS = gm->m_customFPSTarget;
             (void)thisMod->setSavedValue<float>("fps", currentFPS);
@@ -60,7 +60,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
 
     void revertFPS() {
         // default to user old fps
-        auto gm = GameManager::get();
+        auto gm = GameManager::sharedState();
 
         float oldFPS = thisMod->getSavedValue<float>("fps");
 
@@ -75,7 +75,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
     };
 
     void capFPS(float value) {
-        auto gm = GameManager::get();
+        auto gm = GameManager::sharedState();
 
         gm->setGameVariable("0116", true);
         gm->setGameVariable("0116", true);
@@ -95,7 +95,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
     void updateProgressbar() {
         // check if current percentage is less than or equal to 90
         if (getCurrentPercentInt() >= 90) {
-            auto gm = GameManager::get();
+            auto gm = GameManager::sharedState();
 
             gm->setGameVariable("0116", true);
 
@@ -110,7 +110,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
             // log::debug("cap fps to {} (interval {})", rndFps, interval);
         } else {
             // default to user old fps
-            auto gm = GameManager::get();
+            auto gm = GameManager::sharedState();
 
             gm->setGameVariable("0116", true);
 

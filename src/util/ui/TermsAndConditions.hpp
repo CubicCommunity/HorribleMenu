@@ -8,13 +8,13 @@ namespace horrible {
     namespace ui {
         class TermsAndConditions final : public Popup {
         private:
-            using Callback = FunctionRef<void(bool)>;
+            using Callback = CopyableFunction<void(bool)>;
 
         protected:
-            bool init(Callback cb);
+            bool init(Callback&& cb);
 
         public:
-            static TermsAndConditions* create(Callback cb);
+            static TermsAndConditions* create(Callback&& cb);
         };
     };
 };

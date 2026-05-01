@@ -6,7 +6,7 @@ namespace horrible {
     namespace util {
         // Jumpscare level manager
         namespace jumpscares {
-            class JumpscareDelegateBase {
+            class JumpscareDelegateData {
             private:
                 geode::WeakRef<PlayLayer> m_playLayer = nullptr;
 
@@ -18,8 +18,8 @@ namespace horrible {
                 bool m_useReplay = false;
 
             protected:
-                explicit JumpscareDelegateBase(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
-                virtual ~JumpscareDelegateBase() = default;
+                explicit JumpscareDelegateData(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
+                virtual ~JumpscareDelegateData() = default;
 
             public:
                 geode::WeakRef<PlayLayer> const& getPlayLayer() const noexcept;
@@ -32,7 +32,7 @@ namespace horrible {
                 bool getUseReplay() const noexcept;
             };
 
-            struct SearchDelegate final : public LevelManagerDelegate, public JumpscareDelegateBase {
+            struct SearchDelegate final : public LevelManagerDelegate, public JumpscareDelegateData {
             public:
                 SearchDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
 
@@ -40,7 +40,7 @@ namespace horrible {
                 void loadLevelsFailed(char const* key) override;
             };
 
-            struct DownloadDelegate final : public LevelDownloadDelegate, public JumpscareDelegateBase {
+            struct DownloadDelegate final : public LevelDownloadDelegate, public JumpscareDelegateData {
             public:
                 DownloadDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
 

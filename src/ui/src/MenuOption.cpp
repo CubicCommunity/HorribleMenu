@@ -49,7 +49,7 @@ public:
         if (auto label = WeakRef(newContainer).lock()) label->setVisible(false);
     };
 
-    constexpr const char* getTierDescString(SillyTier silly, bool compat) noexcept {
+    constexpr auto getTierDescString(SillyTier silly, bool compat) noexcept {
         if (!compat) return "<cp>OPTION UNAVAILABLE</c>";
 
         switch (silly) {

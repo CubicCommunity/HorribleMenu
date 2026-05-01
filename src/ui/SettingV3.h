@@ -24,13 +24,9 @@ namespace horrible {
 
     class HorribleSettingNodeV3 final : public geode::SettingNodeV3 {
     private:
-        class Impl;
-        std::unique_ptr<Impl> m_impl;
+        CCMenuItemSpriteExtra* m_button = nullptr;
 
     protected:
-        HorribleSettingNodeV3();
-        ~HorribleSettingNodeV3();
-
         void updateState(cocos2d::CCNode* invoker) override;
         void onCommit() override;
         void onResetToDefault() override;
