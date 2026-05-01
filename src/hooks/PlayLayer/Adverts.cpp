@@ -43,8 +43,8 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         if (auto ad = WeakRef(f->ad).lock()) ad.take()->removeMeAndCleanup();
 
         if (auto popup = RandomAd::create()) {
+            popup->show();
             f->ad = popup;
-            f->ad->show();
         };
 
         queueInMainThread([self = WeakRef(this)]() {

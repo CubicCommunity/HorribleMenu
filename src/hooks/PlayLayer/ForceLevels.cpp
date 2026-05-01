@@ -26,7 +26,7 @@ static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setOnline(true)
                                  ->autoRegister();
 
-static bool trySwitchToLevel(PlayLayer* pl, PlayerObject* player, GameObject* killer, jumpscares::DownloadDelegate* delegate, int chance, int rng, bool dontCreateObjects, bool useReplay) {
+static bool trySwitchToLevel(PlayLayer* pl, PlayerObject* player, GameObject* killer, std::shared_ptr<jumpscares::DownloadDelegate> delegate, int chance, int rng, bool dontCreateObjects, bool useReplay) {
     if (rng > chance) {
         log::debug("{} jumpscare not triggered {}", delegate->getLevelName(), chance);
         return false;
@@ -46,20 +46,15 @@ class $modify(GriefPlayLayer, PlayLayer) {
         bool dontCreateObjects = false;
     };
 
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
-        jumpscares::saveLevel(jumpscares::get::grief());
-    };
-
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {
+        PlayLayer::destroyPlayer(p0, p1);
+
         auto f = m_fields.self();
 
         if (p1 == m_anticheatSpike && !p0->m_isDead) return;
 
         int rng = randng::fast();
         trySwitchToLevel(this, p0, p1, jumpscares::get::grief(), f->chance, rng, f->dontCreateObjects, m_useReplay);
-
-        PlayLayer::destroyPlayer(p0, p1);
     };
 };
 
@@ -72,19 +67,14 @@ class $modify(CongregationPlayLayer, PlayLayer) {
         bool dontCreateObjects = false;
     };
 
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
-        jumpscares::saveLevel(jumpscares::get::congregation());
-    };
-
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {
+        PlayLayer::destroyPlayer(p0, p1);
+
         auto f = m_fields.self();
 
         if (p1 == m_anticheatSpike && !p0->m_isDead) return;
 
         int rng = randng::fast();
         trySwitchToLevel(this, p0, p1, jumpscares::get::congregation(), f->chance, rng, f->dontCreateObjects, m_useReplay);
-
-        PlayLayer::destroyPlayer(p0, p1);
     };
 };

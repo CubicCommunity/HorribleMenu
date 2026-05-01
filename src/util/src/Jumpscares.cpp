@@ -40,19 +40,16 @@ jumpscares::DownloadDelegate::DownloadDelegate(PlayLayer* pl, int levelID, int s
 void jumpscares::DownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
     log::trace("Download finished for level {}", getLevelID());
 
+    JumpscareDelegateManager::get()->clearDownloadDelegate();
+    log::debug("Delegate cleared, checking level validity");
+
     if (!level || level->m_levelID.value() != getLevelID()) {
         log::error("Downloaded level mismatch or null: expected {}, got {}", getLevelID(), level ? level->m_levelID.value() : -1);
-        clearDownloadDelegate(this);
-        delete this;
         return;
     };
 
-    log::debug("Delegate cleared, checking level validity");
-    clearDownloadDelegate(this);
-
     if (level->m_levelNotDownloaded) {
         log::error("Downloaded level {} is still not ready", getLevelID());
-        delete this;
         return;
     };
 
@@ -63,14 +60,11 @@ void jumpscares::DownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
     } else {
         log::warn("PlayLayer weak pointer expired, cannot switch scene for level {}", getLevelName());
     };
-
-    delete this;
 };
 
 void jumpscares::DownloadDelegate::levelDownloadFailed(int response) {
-    clearDownloadDelegate(this);
+    JumpscareDelegateManager::get()->clearDownloadDelegate();
     log::error("Failed to download {} ({})", getLevelName(), response);
-    delete this;
 };
 
 jumpscares::SearchDelegate::SearchDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay) :
@@ -78,28 +72,29 @@ jumpscares::SearchDelegate::SearchDelegate(PlayLayer* pl, int levelID, int songI
 
 void jumpscares::SearchDelegate::loadLevelsFinished(CCArray* levels, char const* key) {
     log::trace("Search finished for level {}", getLevelName());
-    clearLevelManagerDelegate(this);
+    JumpscareDelegateManager::get()->clearSearchDelegate();
 
     if (!levels || levels->count() == 0) {
         log::error("No online level result returned for {}", getLevelName());
-        delete this;
         return;
     };
 
     if (auto level = typeinfo_cast<GJGameLevel*>(levels->objectAtIndex(0))) {
         log::debug("Level object retrieved from search, starting download for {}", getLevelName());
-        auto delegate = new DownloadDelegate(getPlayLayer().lock().take(), getLevelID(), getSongID(), getLevelName(), getDontCreateObjects(), getUseReplay());
-        downloadLevelAsync(delegate);
+        if (auto pl = getPlayLayer().lock()) {
+            auto delegate = std::make_shared<DownloadDelegate>(pl.take(), getLevelID(), getSongID(), getLevelName(), getDontCreateObjects(), getUseReplay());
+            downloadLevelAsync(delegate);
+        } else {
+            log::warn("Search finished but PlayLayer expired for {}", getLevelName());
+        };
     } else {
         log::error("Online search returned non-level object for {}", getLevelName());
-        delete this;
     };
 };
 
 void jumpscares::SearchDelegate::loadLevelsFailed(char const* key) {
-    clearLevelManagerDelegate(this);
+    JumpscareDelegateManager::get()->clearSearchDelegate();
     log::error("Failed to fetch online level info for {}", getLevelName());
-    delete this;
 };
 
 GJGameLevel* jumpscares::getSavedDownloadedLevel(int levelID) {
@@ -112,54 +107,10 @@ GJGameLevel* jumpscares::getSavedDownloadedLevel(int levelID) {
     return nullptr;
 };
 
-void jumpscares::clearDownloadDelegate(DownloadDelegate* delegate) {
-    if (auto glm = GameLevelManager::sharedState()) {
-        if (glm->m_levelDownloadDelegate == delegate) {
-            glm->m_levelDownloadDelegate = nullptr;
-            log::trace("Cleared download delegate for level");
-        } else {
-            log::warn("Download delegate for level {} was not set or already cleared", delegate->getLevelID());
-        };
-    };
-};
-
-void jumpscares::clearLevelManagerDelegate(SearchDelegate* delegate) {
-    if (auto glm = GameLevelManager::sharedState()) {
-        if (glm->m_levelManagerDelegate == delegate) {
-            glm->m_levelManagerDelegate = nullptr;
-            log::trace("Cleared level manager delegate for search");
-        } else {
-            log::warn("Level manager delegate for search {} was not set or already cleared", delegate->getLevelID());
-        };
-    };
-};
-
-void jumpscares::saveLevel(DownloadDelegate* delegate) {
-    log::debug("Download request for level {}", delegate->getLevelID());
-
-    if (auto glm = GameLevelManager::sharedState()) {
-        if (glm->hasDownloadedLevel(delegate->getLevelID())) {
-            log::info("Level {} already downloaded, skipping download", delegate->getLevelID());
-            if (auto savedLevel = getSavedDownloadedLevel(delegate->getLevelID())) glm->updateLevel(savedLevel);
-
-            delete delegate;
-        } else {
-            log::debug("Level {} not cached, starting download", delegate->getLevelID());
-            downloadLevelAsync(delegate);
-        };
-    } else {
-        log::error("Cannot download {}: GameLevelManager not available", delegate->getLevelID());
-        delete delegate;
-    };
-};
-
-void jumpscares::downloadLevelAsync(DownloadDelegate* delegate) {
+void jumpscares::downloadLevelAsync(std::shared_ptr<DownloadDelegate> delegate) {
     log::debug("Initiating download for level {} with song {}", delegate->getLevelID(), delegate->getSongID());
 
     if (auto glm = GameLevelManager::sharedState()) {
-        log::debug("Downloading {} in background", delegate->getLevelID());
-        glm->downloadLevel(delegate->getLevelID(), false, 0);
-
         if (delegate->getSongID() > 0) {
             if (auto mdm = MusicDownloadManager::sharedState()) {
                 mdm->downloadSong(delegate->getSongID());
@@ -169,8 +120,11 @@ void jumpscares::downloadLevelAsync(DownloadDelegate* delegate) {
             };
         };
 
+        log::debug("Downloading {} in background", delegate->getLevelID());
+        glm->downloadLevel(delegate->getLevelID(), false, 0);
+        JumpscareDelegateManager::get()->setDownloadDelegate(std::move(delegate));
+
         log::debug("Delegate set for level download");
-        glm->m_levelDownloadDelegate = delegate;
     } else {
         log::error("GameLevelManager not available for level {}", delegate->getLevelID());
     };
@@ -180,7 +134,16 @@ GJSearchObject* jumpscares::createLevelSearchObject(int levelID) {
     return GJSearchObject::create(SearchType::Type19, numToString(levelID));
 };
 
-void jumpscares::switchToLevel(PlayLayer* pl, DownloadDelegate* delegate, PlayerObject* player, GameObject* killer, bool dontCreateObjects, bool useReplay) {
+void jumpscares::switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> delegate, PlayerObject* player, GameObject* killer, bool dontCreateObjects, bool useReplay) {
+    if (!delegate) {
+        delegate = JumpscareDelegateManager::get()->getDownloadDelegate().lock();
+
+        if (!delegate) {
+            log::error("No active download delegate available to switch to level");
+            return;
+        };
+    };
+
     log::debug("Attempting to switch to level {} ({})", delegate->getLevelName(), delegate->getLevelID());
 
     if (auto targetLevel = getSavedDownloadedLevel(delegate->getLevelID())) {
@@ -230,18 +193,73 @@ void jumpscares::switchToLevel(PlayLayer* pl, DownloadDelegate* delegate, Player
 
         log::debug("No stored levels found, initiating online search for {}", delegate->getLevelName());
 
-        auto del = new SearchDelegate(pl, delegate->getLevelID(), 0, delegate->getLevelName(), dontCreateObjects, useReplay);
-        glm->m_levelManagerDelegate = del;
+        auto del = std::make_shared<SearchDelegate>(pl, delegate->getLevelID(), 0, delegate->getLevelName(), dontCreateObjects, useReplay);
         glm->getOnlineLevels(search);
+        JumpscareDelegateManager::get()->setSearchDelegate(std::move(del));
     } else {
         log::error("GameLevelManager not available for switching to level {}", delegate->getLevelName());
     };
 };
 
-jumpscares::DownloadDelegate* jumpscares::get::grief() {
-    return new jumpscares::DownloadDelegate(PlayLayer::get(), 129066933, 482872, "Grief", false, false);
+std::shared_ptr<jumpscares::DownloadDelegate> jumpscares::get::grief() {
+    return std::make_shared<jumpscares::DownloadDelegate>(PlayLayer::get(), 129066933, 482872, "Grief", false, false);
 };
 
-jumpscares::DownloadDelegate* jumpscares::get::congregation() {
-    return new jumpscares::DownloadDelegate(PlayLayer::get(), 129066879, 895761, "Congregation", false, false);
+std::shared_ptr<jumpscares::DownloadDelegate> jumpscares::get::congregation() {
+    return std::make_shared<jumpscares::DownloadDelegate>(PlayLayer::get(), 129066879, 895761, "Congregation", false, false);
+};
+
+std::weak_ptr<jumpscares::SearchDelegate> jumpscares::JumpscareDelegateManager::getSearchDelegate() const noexcept {
+    return m_searchDelegate;
+};
+
+std::weak_ptr<jumpscares::DownloadDelegate> jumpscares::JumpscareDelegateManager::getDownloadDelegate() const noexcept {
+    return m_downloadDelegate;
+};
+
+void jumpscares::JumpscareDelegateManager::setSearchDelegate(std::shared_ptr<SearchDelegate> delegate) {
+    if (auto glm = GameLevelManager::sharedState()) glm->m_levelManagerDelegate = delegate.get();
+    m_searchDelegate = std::move(delegate);
+};
+
+void jumpscares::JumpscareDelegateManager::setDownloadDelegate(std::shared_ptr<DownloadDelegate> delegate) {
+    if (auto glm = GameLevelManager::sharedState()) glm->m_levelDownloadDelegate = delegate.get();
+    m_downloadDelegate = std::move(delegate);
+};
+
+void jumpscares::JumpscareDelegateManager::clearSearchDelegate() {
+    if (auto glm = GameLevelManager::sharedState()) {
+        if (m_searchDelegate && glm->m_levelManagerDelegate == m_searchDelegate.get()) {
+            glm->m_levelManagerDelegate = nullptr;
+
+            log::trace("Cleared level manager delegate for search");
+        } else if (m_searchDelegate) {
+            log::warn("Level manager delegate for search {} was not set or already cleared", m_searchDelegate->getLevelID());
+        } else {
+            log::warn("No search delegate to clear");
+        };
+
+        m_searchDelegate.reset();
+    };
+};
+
+void jumpscares::JumpscareDelegateManager::clearDownloadDelegate() {
+    if (auto glm = GameLevelManager::sharedState()) {
+        if (m_downloadDelegate && glm->m_levelDownloadDelegate == m_downloadDelegate.get()) {
+            glm->m_levelDownloadDelegate = nullptr;
+
+            log::trace("Cleared download delegate for level");
+        } else if (m_downloadDelegate) {
+            log::warn("Download delegate for level {} was not set or already cleared", m_downloadDelegate->getLevelID());
+        } else {
+            log::warn("No download delegate to clear");
+        };
+
+        m_downloadDelegate.reset();
+    };
+};
+
+jumpscares::JumpscareDelegateManager* jumpscares::JumpscareDelegateManager::get() noexcept {
+    static auto inst = new (std::nothrow) JumpscareDelegateManager();
+    return inst;
 };

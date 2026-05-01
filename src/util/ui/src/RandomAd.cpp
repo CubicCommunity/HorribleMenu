@@ -16,8 +16,6 @@ bool RandomAd::init() {
     setTitle("Sponsored");
     setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
 
-    jumpscares::saveLevel(jumpscares::get::congregation());
-
     auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
     label->setID("message");
     label->setAlignment(kCCTextAlignmentCenter);
@@ -33,16 +31,11 @@ bool RandomAd::init() {
     projThumb->setPosition({m_mainLayer->getContentWidth() / 2.f, 110.f});
 
     projThumb->setLoadCallback([thumbnail = WeakRef(projThumb)](Result<> res) {
-        if (auto thumb = thumbnail.lock()) {
-            if (res.isOk()) {
-                log::info("Sprite loaded successfully");
-                thumb.take()->setScale(0.625);
-            } else {
-                log::error("Sprite failed to load: {}", res.unwrapErr());
-                thumb.take()->removeMeAndCleanup();
-            };
+        if (res.isOk()) {
+            log::info("Sprite loaded successfully");
+            if (auto thumb = thumbnail.lock()) thumb.take()->setScale(0.625);
         } else {
-            log::error("Thumbnail sprite was destroyed before load callback");
+            log::error("Sprite failed to load: {}", res.unwrapErr());
         };
     });
 
