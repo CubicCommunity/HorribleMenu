@@ -54,7 +54,7 @@ namespace horrible {
                 std::shared_ptr<DownloadDelegate> congregation();
             };
 
-            void switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> delegate, PlayerObject* player, GameObject* killer, bool dontCreateObjects, bool useReplay);
+            void switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> delegate, bool dontCreateObjects, bool useReplay);
 
             void downloadLevelAsync(std::shared_ptr<DownloadDelegate> delegate);
 

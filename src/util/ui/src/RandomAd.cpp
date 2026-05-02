@@ -52,13 +52,13 @@ bool RandomAd::init() {
             "Play!",
             "bigFont.fnt",
             themes::getButtonSquareSprite(theme)),
-        [playBtnLoading](Button* sender) {
+        [loading = WeakRef(playBtnLoading)](Button* sender) {
             sender->setVisible(false);
-            playBtnLoading->setVisible(true);
+            if (auto load = loading.lock()) load.take()->setVisible(true);
 
             if (auto pl = PlayLayer::get()) {
                 log::info("Switching from ad to Congregation jumpscare");
-                jumpscares::switchToLevel(pl, jumpscares::get::congregation(), nullptr, nullptr, false, false);
+                jumpscares::switchToLevel(pl, jumpscares::get::congregation(), false, false);
             } else {
                 log::error("Player not in a level");
             };

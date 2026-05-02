@@ -134,7 +134,7 @@ GJSearchObject* jumpscares::createLevelSearchObject(int levelID) {
     return GJSearchObject::create(SearchType::Type19, numToString(levelID));
 };
 
-void jumpscares::switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> delegate, PlayerObject* player, GameObject* killer, bool dontCreateObjects, bool useReplay) {
+void jumpscares::switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> delegate, bool dontCreateObjects, bool useReplay) {
     if (!delegate) {
         delegate = JumpscareDelegateManager::get()->getDownloadDelegate().lock();
 
@@ -153,9 +153,6 @@ void jumpscares::switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> 
         };
 
         log::debug("Destroying player and exiting current level for {}", delegate->getLevelName());
-
-        pl->destroyPlayer(player, killer);
-        pl->onExit();
 
         if (!targetLevel->m_levelNotDownloaded) {
             log::warn("Switching to {} level ({})", delegate->getLevelName(), delegate->getLevelID());
