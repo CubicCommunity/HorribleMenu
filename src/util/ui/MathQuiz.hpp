@@ -7,9 +7,7 @@ using namespace geode::prelude;
 namespace horrible {
     namespace ui {
         class MathQuiz final : public CCBlockLayer {
-        private:
-            class Impl;
-            std::unique_ptr<Impl> m_impl;
+            using Callback = Function<void(bool)>;
 
             enum class MathOperation : unsigned int {
                 Addition = 0,
@@ -18,7 +16,9 @@ namespace horrible {
                 Geometry = 3
             };
 
-            using Callback = Function<void(bool)>;
+        private:
+            class Impl;
+            std::unique_ptr<Impl> m_impl;
 
         protected:
             MathQuiz();

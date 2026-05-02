@@ -52,7 +52,7 @@ bool TermsAndConditions::init(Callback&& cb) {
             "bigFont.fnt",
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
-            cb(true);
+            if (cb) cb(true);
             removeFromParent();
         });
     acceptButton->setScale(0.75f);
@@ -63,7 +63,7 @@ bool TermsAndConditions::init(Callback&& cb) {
             "goldFont.fnt",
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
-            cb(false);
+            if (cb) cb(false);
             removeFromParent();
         });
     declineButton->setScale(0.75f);

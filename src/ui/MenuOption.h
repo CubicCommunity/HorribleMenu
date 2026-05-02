@@ -6,11 +6,11 @@
 
 namespace horrible {
     class MenuOption final : public cocos2d::CCMenu {
+        using Callback = Function<void()>;
+
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
-
-        using Callback = Function<void()>;
 
     protected:
         MenuOption();

@@ -27,14 +27,14 @@ namespace horrible {
     class BRKD_HORRIBLE_API_DLL OptionManager final {
         friend class Option;
 
+        // Type alias for `geode::Function<void(bool)>`, used in hook delegation
+        using Callback = geode::Function<void(bool)>;
+
     private:
         geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Map of registered options
         std::vector<std::string> m_categories;                       // Array of auto-registered categories
 
         geode::utils::StringMap<const geode::Mod* const> m_integrations;  // Map of auto-registered external mods using this API
-
-        // Type alias for `geode::Function<void(bool)>`, used in hook delegation
-        using Callback = geode::Function<void(bool)>;
 
         std::unordered_map<std::string_view, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
 

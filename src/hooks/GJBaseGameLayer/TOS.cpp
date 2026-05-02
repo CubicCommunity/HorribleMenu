@@ -20,7 +20,7 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        TermsAndConditions* currentTos = nullptr;
+        Ref<TermsAndConditions> currentTos = nullptr;
     };
 
     void handleButton(bool down, int button, bool isPlayer1) {
@@ -29,8 +29,8 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
         if (down) {
             auto f = m_fields.self();
 
-            if (auto popup = WeakRef(f->currentTos).lock()) {
-                popup.take()->removeFromParent();
+            if (f->currentTos) {
+                f->currentTos.take()->removeFromParent();
                 f->currentTos = nullptr;
             } else if (auto popup = TermsAndConditions::create(
                            [this](bool accepted) {

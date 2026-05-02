@@ -2,16 +2,14 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
     namespace ui {
         class SpamChallenge final : public CCBlockLayer {
+            using Callback = geode::Function<void(bool)>;
+
         private:
             class Impl;
             std::unique_ptr<Impl> m_impl;
-
-            using Callback = Function<void(bool)>;
 
         protected:
             SpamChallenge();
@@ -27,7 +25,7 @@ namespace horrible {
         public:
             static SpamChallenge* create();
 
-            bool ccTouchBegan(CCTouch* touch, CCEvent* event) override;
+            bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
 
             void setCallback(Callback&& cb) &;
         };

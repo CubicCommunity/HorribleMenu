@@ -4,11 +4,11 @@
 
 namespace horrible {
     class MenuOptionCategory final : public cocos2d::CCMenu {
+        using Callback = geode::Function<void(std::string_view, bool)>;
+
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
-
-        using Callback = geode::Function<void(std::string_view, bool)>;
 
     protected:
         MenuOptionCategory();

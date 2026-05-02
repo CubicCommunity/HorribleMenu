@@ -2,13 +2,10 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
     namespace ui {
-        class TermsAndConditions final : public Popup {
-        private:
-            using Callback = CopyableFunction<void(bool)>;
+        class TermsAndConditions final : public geode::Popup {
+            using Callback = geode::CopyableFunction<void(bool)>;
 
         protected:
             bool init(Callback&& cb);

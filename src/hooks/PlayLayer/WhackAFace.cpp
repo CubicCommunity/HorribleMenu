@@ -107,7 +107,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         for (auto& whackBtn : f->active) {
-            if (auto btn = whackBtn.lock()) btn->removeFromParent();
+            if (auto btn = whackBtn.lock()) btn.take()->removeFromParent();
         };
 
         f->active.clear();

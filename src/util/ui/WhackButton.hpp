@@ -7,11 +7,11 @@ using namespace geode::prelude;
 namespace horrible {
     namespace ui {
         class WhackButton final : public CCNode {
+            using Callback = Function<void(bool)>;
+
         private:
             class Impl;
             std::unique_ptr<Impl> m_impl;
-
-            using Callback = Function<void(bool)>;
 
             void reload();
 
