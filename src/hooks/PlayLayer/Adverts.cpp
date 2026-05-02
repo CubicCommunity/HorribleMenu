@@ -21,7 +21,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        RandomAd* ad = nullptr;
+        Ref<RandomAd> ad = nullptr;
     };
 
     void setupHasCompleted() {
@@ -40,7 +40,10 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     void showAd(float) {
         auto f = m_fields.self();
 
-        if (auto ad = WeakRef(f->ad).lock()) ad.take()->removeMeAndCleanup();
+        if (f->ad) {
+            f->ad.take()->removeFromParent();
+            f->ad = nullptr;
+        };
 
         if (auto popup = RandomAd::create()) {
             popup->show();
@@ -48,7 +51,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         };
 
         queueInMainThread([self = WeakRef(this)]() {
-            if (auto s = self.lock()) s->nextAd();
+            if (auto s = self.lock()) s.take()->nextAd();
         });
     };
 };

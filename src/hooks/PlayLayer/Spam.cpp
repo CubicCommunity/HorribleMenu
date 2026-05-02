@@ -32,7 +32,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
     void levelComplete() {
         PlayLayer::levelComplete();
-        if (auto spam = WeakRef(m_fields->m_currentSpam).lock()) spam.take()->removeMeAndCleanup();
+        if (auto spam = WeakRef(m_fields->m_currentSpam).lock()) spam.take()->removeFromParent();
     };
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
@@ -44,7 +44,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
             if (auto spam = WeakRef(f->m_currentSpam).lock()) {
                 log::trace("removing activate spam challenge after player death");
 
-                spam.take()->removeMeAndCleanup();
+                spam.take()->removeFromParent();
                 nextSpam();
             };
 
@@ -71,11 +71,11 @@ class $modify(SpamPlayLayer, PlayLayer) {
                             log::debug("spam {}", success ? "succeeded" : "failed");
 
                             if (!success) s->resetLevelFromStart();
-                            s->nextSpam();
+                            s.take()->nextSpam();
 
                             cursor::hide();
 
-                            if (auto spam = challenge.lock()) spam.take()->removeMeAndCleanup();
+                            if (auto spam = challenge.lock()) spam.take()->removeFromParent();
                         };
                     });
 
@@ -86,7 +86,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
                 };
             } else {
                 queueInMainThread([self = WeakRef(this)]() {
-                    if (auto s = self.lock()) s->nextSpam();
+                    if (auto s = self.lock()) s.take()->nextSpam();
                 });
             };
         };

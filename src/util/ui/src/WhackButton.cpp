@@ -49,7 +49,7 @@ WhackButton::WhackButton() : m_impl(std::make_unique<Impl>()) {};
 WhackButton::~WhackButton() {};
 
 void WhackButton::reload() {
-    if (auto btn = WeakRef(m_impl->button).lock()) btn.take()->removeMeAndCleanup();
+    if (auto btn = WeakRef(m_impl->button).lock()) btn.take()->removeFromParent();
 
     auto diff = m_impl->inputTarget - m_impl->inputCount;
 
@@ -65,9 +65,9 @@ void WhackButton::reload() {
 
                 if (s->m_impl->inputCount >= s->m_impl->inputTarget) {
                     s->unscheduleUpdate();
-                    s->setSuccess(true);
+                    s.take()->setSuccess(true);
                 } else {
-                    s->reload();
+                    s.take()->reload();
                 };
             };
         });
@@ -121,7 +121,7 @@ void WhackButton::callAfterFeedback(float) {
 void WhackButton::setSuccess(bool v) {
     m_impl->success = v;
 
-    if (m_impl->button) m_impl->button->removeMeAndCleanup();
+    if (m_impl->button) m_impl->button->removeFromParent();
 
     auto symbol = CCSprite::createWithSpriteFrameName(v ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");

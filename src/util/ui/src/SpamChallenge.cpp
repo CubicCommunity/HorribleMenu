@@ -111,7 +111,7 @@ void SpamChallenge::callAfterFeedback(float) {
 void SpamChallenge::setSuccess(bool v) {
     m_impl->success = v;
 
-    if (m_impl->counter) m_impl->counter->removeMeAndCleanup();
+    if (m_impl->counter) m_impl->counter->removeFromParent();
 
     auto symbol = CCSprite::createWithSpriteFrameName(m_impl->success ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");
@@ -139,7 +139,7 @@ void SpamChallenge::update(float dt) {
     };
 
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
-    float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
+    auto pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
     if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
 

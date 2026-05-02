@@ -147,7 +147,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
     };
 
     void scheduleNextMessage(CCNode* sender) {
-        if (sender) sender->removeMeAndCleanup();
+        if (sender) sender->removeFromParent();
 
         auto delay = randng::get(15.f, 5.f);
         log::debug("Motivational message will show again after {} seconds", delay);

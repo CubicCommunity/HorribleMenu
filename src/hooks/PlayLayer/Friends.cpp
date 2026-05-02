@@ -80,7 +80,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     };
 
     void cleanupFriend(CCNode* sender) {
-        if (sender) sender->removeMeAndCleanup();
+        if (sender) sender->removeFromParent();
     };
 
     void scheduleNextFriend() {

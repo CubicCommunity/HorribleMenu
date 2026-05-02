@@ -53,7 +53,7 @@ bool TermsAndConditions::init(Callback&& cb) {
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
             cb(true);
-            removeMeAndCleanup();
+            removeFromParent();
         });
     acceptButton->setScale(0.75f);
 
@@ -64,7 +64,7 @@ bool TermsAndConditions::init(Callback&& cb) {
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
             cb(false);
-            removeMeAndCleanup();
+            removeFromParent();
         });
     declineButton->setScale(0.75f);
 
@@ -76,7 +76,7 @@ bool TermsAndConditions::init(Callback&& cb) {
 
 TermsAndConditions* TermsAndConditions::create(Callback&& cb) {
     auto ret = new TermsAndConditions();
-    if (ret && ret->init(std::move(cb))) {
+    if (ret->init(std::move(cb))) {
         ret->autorelease();
         return ret;
     };

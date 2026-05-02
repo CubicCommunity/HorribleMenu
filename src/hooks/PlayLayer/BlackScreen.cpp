@@ -48,7 +48,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
     };
 
     void removeBlackScreen(CCNode* sender) {
-        if (sender) sender->removeMeAndCleanup();
+        if (sender) sender->removeFromParent();
 
         float delay = randng::get(3.f);  // random delay between 0 and 3 seconds
         log::debug("Black screen will appear again after {} seconds", delay);

@@ -82,6 +82,6 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     };
 
     void cleanConfetti(CCNode* sender) {
-        if (sender) sender->removeMeAndCleanup();
+        if (sender) sender->removeFromParent();
     };
 };

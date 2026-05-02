@@ -147,7 +147,7 @@ public:
                                 optionList->m_contentLayer->addChild(modOption);
                             } else {
                                 log::error("{} is incompatible with the current platform", o->getID());
-                                modOption->removeMeAndCleanup();
+                                modOption->removeFromParent();
                             };
                         };
                     };
@@ -190,7 +190,7 @@ void Menu::setupSafeModeNode(bool safeMode) {
 };
 
 void Menu::setupImageBackground(fs::path path) {
-    if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeMeAndCleanup();
+    if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeFromParent();
 
     if (m_impl->themeBgContainer) {
         if (fs::exists(path)) {
@@ -570,7 +570,7 @@ bool Menu::init() {
 };
 
 void Menu::onExit() {
-    if (auto credits = MenuCredits::get()) credits->removeMeAndCleanup();
+    if (auto credits = MenuCredits::get()) credits->removeFromParent();
     s_inst = nullptr;
 
     Popup::onExit();

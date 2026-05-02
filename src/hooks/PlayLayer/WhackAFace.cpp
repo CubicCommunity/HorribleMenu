@@ -44,7 +44,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
             queueInMainThread([self = WeakRef(this)]() {
                 if (auto s = self.lock()) {
                     s->unschedule(schedule_selector(WhackAFacePlayLayer::doWhack));
-                    s->nextWhack();
+                    s.take()->nextWhack();
                 };
             });
 
@@ -83,11 +83,11 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                     whack->setCallback([self = WeakRef(this), whackButton = WeakRef(whack)](bool success) {
                         if (auto whack = whackButton.lock()) {
                             if (!success) {
-                                if (auto s = self.lock()) s->resetLevelFromStart();
+                                if (auto s = self.lock()) s.take()->resetLevelFromStart();
                             };
 
                             cursor::show();
-                            whack->removeMeAndCleanup();
+                            whack.take()->removeFromParent();
                         };
                     });
                     whack->setPosition(CCPoint{winSize.width * randng::get(0.75f, 0.25f), winSize.height * randng::get(0.75f, 0.25f)} / 2.f);
@@ -97,7 +97,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                 };
 
                 queueInMainThread([self = WeakRef(this)]() {
-                    if (auto s = self.lock()) s->nextWhack();
+                    if (auto s = self.lock()) s.take()->nextWhack();
                 });
             };
         };
@@ -107,7 +107,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         for (auto& whackBtn : f->active) {
-            if (auto btn = whackBtn.lock()) btn->removeMeAndCleanup();
+            if (auto btn = whackBtn.lock()) btn->removeFromParent();
         };
 
         f->active.clear();

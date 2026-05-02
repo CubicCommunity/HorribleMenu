@@ -30,12 +30,12 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
             auto f = m_fields.self();
 
             if (auto popup = WeakRef(f->currentTos).lock()) {
-                popup.take()->removeMeAndCleanup();
+                popup.take()->removeFromParent();
                 f->currentTos = nullptr;
             } else if (auto popup = TermsAndConditions::create(
                            [this](bool accepted) {
                                if (!accepted) {
-                                   Notification::create("You declined the terms and conditions.", NotificationIcon::Error)->show();
+                                   Notification::create("You declined the terms and conditions!", NotificationIcon::Error)->show();
                                    if (auto pl = PlayLayer::get()) pl->resetLevelFromStart();
                                };
                            })) {

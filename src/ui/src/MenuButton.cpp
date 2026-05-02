@@ -54,7 +54,7 @@ MenuButton::MenuButton() : m_impl(std::make_unique<Impl>()) {};
 MenuButton::~MenuButton() {};
 
 void MenuButton::setupSprite() {
-    if (auto sprite = m_impl->sprite.take()) sprite->removeMeAndCleanup();
+    if (auto sprite = m_impl->sprite.take()) sprite->removeFromParent();
 
     m_impl->sprite = CircleButtonSprite::createWithSpriteFrameName(
         themes::getIconSprite(m_impl->btnIcon),
