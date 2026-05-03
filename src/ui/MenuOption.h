@@ -24,7 +24,7 @@ namespace horrible {
     public:
         static MenuOption* create(cocos2d::CCSize const& size, std::weak_ptr<Option> option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
 
-        void setPinCallback(Callback&& callback) &;
+        void setPinCallback(Callback&& callback);
 
         std::weak_ptr<Option> const& getOption() const noexcept;
         bool isCompatible() const noexcept;

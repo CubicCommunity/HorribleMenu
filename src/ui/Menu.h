@@ -14,12 +14,6 @@ namespace horrible {
     };
 
     class Menu final : public geode::Popup {
-    private:
-        class Impl;
-        std::unique_ptr<Impl> m_impl;
-
-        static Menu* s_inst;
-
         struct TierFilterBtnData final {
             SillyTier tier;
             const char* label;
@@ -33,6 +27,12 @@ namespace horrible {
             Button::ButtonCallback callback;
             float scale = 0.75f;
         };
+
+    private:
+        class Impl;
+        std::unique_ptr<Impl> m_impl;
+
+        static Menu* s_inst;
 
         void setupSafeModeNode(bool safeMode);
         void setupImageBackground(std::filesystem::path path);

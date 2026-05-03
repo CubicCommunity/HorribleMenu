@@ -27,11 +27,11 @@ bool TermsAndConditions::init(Callback&& cb) {
 
     auto tosArea = MDTextArea::create(
         "By using this mod, you agree to the following terms and conditions:\n\n"
-        "1. You will NOT make fun of the guy who's second in the credits.\n"
-        "2. You will love Breakeode and buy all their merch.\n"
+        "1. You will NOT make fun of the guy who's second in the *Thanks* list.\n"
+        "2. You will love and adore Breakeode and buy all of their merch.\n"
         "3. You will consent to using this mod forever and ever.\n"
         "4. You will respect the intellectual... Yeah, that's it.\n"
-        "5. You will not poop on the floor.\n"
+        "5. You will not hate Level Ads.\n"
         "6. You will NOT tell us Horrible Menu isn't perfect.\n"
         "7. You will NOT!!!\n"
         "8. You will love it when we release the next update. Just one update.\n"

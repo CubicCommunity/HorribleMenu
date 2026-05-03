@@ -22,7 +22,7 @@ class $modify(MathPlayLayer, PlayLayer) {
     struct Fields {
         unsigned int chance = options::getChance(THIS_ID);
 
-        MathQuiz* m_currentMath = nullptr;
+        Ref<MathQuiz> m_currentMath = nullptr;
     };
 
     void setupHasCompleted() {
@@ -32,7 +32,7 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     void levelComplete() {
         PlayLayer::levelComplete();
-        if (auto quiz = WeakRef(m_fields->m_currentMath).lock()) quiz.take()->removeFromParent();
+        cue::resetNode(m_fields->m_currentMath);
     };
 
     void nextQuiz() {

@@ -21,8 +21,8 @@ namespace horrible {
     public:
         static MenuOptionCategory* create(cocos2d::CCSize const& size, std::string category);
 
-        void setToggleCallback(Callback&& callback) &;
-        void setToggled(bool on) &;
+        void setToggleCallback(Callback&& callback);
+        void setToggled(bool on);
 
         geode::ZStringView getCategory() const noexcept;
     };

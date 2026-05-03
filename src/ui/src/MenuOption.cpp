@@ -86,14 +86,14 @@ bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 
-    auto bg = NineSlice::create(themes::square);
-    bg->setID("background");
-    bg->setAnchorPoint({0, 0});
-    bg->setContentSize(getScaledContentSize());
-    bg->setScaleMultiplier(0.5f);
-    bg->setOpacity(50);
+    auto bg = cue::createBackground(
+        getScaledContentSize(),
+        {
+            .cornerRoundness = -0.125f,
+        });
+    bg->setPosition(getScaledContentSize() / 2.f);
 
-    addChild(bg, -1);
+    addChild(bg);
 
     // Horizontal layout: [toggle] [name] [info]
     float yCenter = getScaledContentHeight() / 2.f;
@@ -319,7 +319,7 @@ void MenuOption::onPin(CCObject* sender) {
     };
 };
 
-void MenuOption::setPinCallback(Callback&& callback) & {
+void MenuOption::setPinCallback(Callback&& callback) {
     m_impl->pinCallback = std::move(callback);
 };
 

@@ -89,12 +89,12 @@ bool MenuButton::init() {
     return true;
 };
 
-void MenuButton::setOpacity(GLubyte opacity) & {
+void MenuButton::setOpacity(GLubyte opacity) {
     m_impl->opacity = opacity;
     if (m_impl->sprite) m_impl->sprite->setOpacity(isVisible() ? opacity : 0);
 };
 
-void MenuButton::setShowInLevel(bool show) & {
+void MenuButton::setShowInLevel(bool show) {
     m_impl->inLevel = show;
 };
 
@@ -109,12 +109,12 @@ void MenuButton::setScale(float scale) {
     };
 };
 
-void MenuButton::setTheme(std::string theme) & {
+void MenuButton::setTheme(std::string theme) {
     m_impl->theme = std::move(theme);
     setupSprite();
 };
 
-void MenuButton::setButtonIcon(std::string icon) & {
+void MenuButton::setButtonIcon(std::string icon) {
     m_impl->btnIcon = std::move(icon);
     setupSprite();
 };

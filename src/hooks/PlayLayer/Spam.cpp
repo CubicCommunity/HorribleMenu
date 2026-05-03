@@ -22,7 +22,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
     struct Fields {
         unsigned int chance = options::getChance(THIS_ID);
 
-        SpamChallenge* m_currentSpam = nullptr;
+        Ref<SpamChallenge> currentSpam = nullptr;
     };
 
     void setupHasCompleted() {
@@ -32,23 +32,15 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
     void levelComplete() {
         PlayLayer::levelComplete();
-        if (auto spam = WeakRef(m_fields->m_currentSpam).lock()) spam.take()->removeFromParent();
+        cue::resetNode(m_fields->currentSpam);
     };
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
 
-        auto f = m_fields.self();
-
         if (player->m_isDead) {
-            if (auto spam = WeakRef(f->m_currentSpam).lock()) {
-                log::trace("removing activate spam challenge after player death");
-
-                spam.take()->removeFromParent();
-                nextSpam();
-            };
-
-            f->m_currentSpam = nullptr;
+            cue::resetNode(m_fields->currentSpam);
+            nextSpam();
         };
     };
 
@@ -80,7 +72,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
                     });
 
                     m_uiLayer->addChild(spam, 99);
-                    f->m_currentSpam = spam;
+                    f->currentSpam = spam;
 
                     cursor::show();
                 };

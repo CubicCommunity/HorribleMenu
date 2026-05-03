@@ -20,25 +20,28 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
+        int chance = options::getChance(THIS_ID);
+
         Ref<TermsAndConditions> currentTos = nullptr;
     };
 
     void handleButton(bool down, int button, bool isPlayer1) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
 
-        if (down) {
-            auto f = m_fields.self();
+        if (!down || button != 1) return;
 
-            if (f->currentTos) {
-                f->currentTos.take()->removeFromParent();
-                f->currentTos = nullptr;
-            } else if (auto popup = TermsAndConditions::create(
-                           [this](bool accepted) {
-                               if (!accepted) {
-                                   Notification::create("You declined the terms and conditions!", NotificationIcon::Error)->show();
-                                   if (auto pl = PlayLayer::get()) pl->resetLevelFromStart();
-                               };
-                           })) {
+        auto f = m_fields.self();
+
+        if (randng::fast() <= f->chance) {
+            cue::resetNode(f->currentTos);
+
+            if (auto popup = TermsAndConditions::create(
+                    [this](bool accepted) {
+                        if (!accepted) {
+                            Notification::create("You declined the terms and conditions!", NotificationIcon::Error)->show();
+                            if (auto pl = PlayLayer::get()) pl->resetLevelFromStart();
+                        };
+                    })) {
                 popup->show();
                 f->currentTos = popup;
             };

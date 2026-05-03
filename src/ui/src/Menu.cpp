@@ -98,7 +98,7 @@ public:
         if (optionList) {
             optionList->m_contentLayer->removeAllChildren();
 
-            auto useCategory = !category.empty() && options::doesCategoryExist(category);
+            auto useCategory = !category.empty() & options::doesCategoryExist(category);
             auto searchLower = str::toLower(searchText);
 
             auto list = asp::iter::consume(optList)
@@ -252,27 +252,17 @@ bool Menu::init() {
 
     m_mainLayer->addChild(m_impl->themeBgContainer, -8);
 
-    auto border = NineSlice::create("GJ_square07.png");
-    border->setContentSize(m_bgSprite->getScaledContentSize());
+    auto border = cue::createBackground(m_bgSprite->getScaledContentSize());
     border->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
     m_mainLayer->addChild(border, -1);
 
-    auto categoryListBg = NineSlice::create(themes::square);
-    categoryListBg->setAnchorPoint({0.5, 0.5});
-    categoryListBg->setPosition({mainLayerSize.width - 82.5f, 75.f});
-    categoryListBg->setContentSize({(mainLayerSize.width / 3.f) - 10.f, 95.f});
-    categoryListBg->setScaleMultiplier(0.5f);
-    categoryListBg->setOpacity(50);
-
-    m_mainLayer->addChild(categoryListBg);
-
     // scroll layer
-    m_impl->categoryList = ScrollLayer::create(categoryListBg->getScaledContentSize() - 7.5f);
-    m_impl->categoryList->setID("categories-list");
+    m_impl->categoryList = ScrollLayer::create({(mainLayerSize.width / 3.f) - 20.f, 90.f});
+    m_impl->categoryList->setID("category-list");
     m_impl->categoryList->setAnchorPoint({0.5, 0.5});
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
-    m_impl->categoryList->setPosition(categoryListBg->getPosition());
+    m_impl->categoryList->setPosition({mainLayerSize.width - 82.5f, 75.f});
 
     m_impl->categoryList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout());
 
@@ -320,38 +310,49 @@ bool Menu::init() {
     m_impl->categoryList->m_contentLayer->updateLayout();
     m_impl->categoryList->scrollToTop();
 
-    m_mainLayer->addChild(m_impl->categoryList, 1);
+    m_mainLayer->addChild(m_impl->categoryList, 9);
 
-    // Add a background sprite to the popup
-    auto optionListBg = NineSlice::create(themes::square);
-    optionListBg->setAnchorPoint({0.5, 0.5});
-    optionListBg->setPosition({(mainLayerSize.width / 2.f) - 82.5f, (mainLayerSize.height / 2.f) - 31.25f});
-    optionListBg->setContentSize({(mainLayerSize.width / 1.5f) - 35.f, mainLayerSize.height - 83.25f});
-    optionListBg->setOpacity(50);
+    auto categoryListBg = cue::createBackground(
+        {m_impl->categoryList->getScaledContentWidth() + 7.5f, m_impl->categoryList->getScaledContentHeight() + 7.5f},
+        {
+            .cornerRoundness = -0.875f,
+            .zOrder = 1,
+            .id = "category-list-bg",
+        });
+    categoryListBg->setPosition(m_impl->categoryList->getPosition());
 
-    m_mainLayer->addChild(optionListBg);
+    m_mainLayer->addChild(categoryListBg);
 
-    // scroll layer
-    m_impl->optionList = ScrollLayer::create({optionListBg->getScaledContentWidth() - 8.75f, optionListBg->getScaledContentHeight() - 10.f});
+    m_impl->optionList = ScrollLayer::create({(mainLayerSize.width / 1.5f) - 43.75f, mainLayerSize.height - 93.25f});
     m_impl->optionList->setID("options-list");
     m_impl->optionList->setAnchorPoint({0.5, 0.5});
     m_impl->optionList->ignoreAnchorPointForPosition(false);
-    m_impl->optionList->setPosition(optionListBg->getPosition());
+    m_impl->optionList->setPosition({(mainLayerSize.width / 2.f) - 82.5f, (mainLayerSize.height / 2.f) - 31.25f});
 
     m_impl->optionList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout(3.75f));
 
     auto optionListScroll = Scrollbar::create(m_impl->optionList);
     optionListScroll->setID("option-list-scrollbar");
-    optionListScroll->setPosition({optionListBg->getPositionX() + (optionListBg->getScaledContentWidth() / 1.875f), optionListBg->getPositionY()});
+    optionListScroll->setPosition({m_impl->optionList->getPositionX() + (m_impl->optionList->getScaledContentWidth() / 1.825f), m_impl->optionList->getPositionY()});
 
     m_mainLayer->addChild(m_impl->optionList, 9);
     m_mainLayer->addChild(optionListScroll);
 
-    m_impl->nothingLabel = MenuNothingNode::create(optionListBg->getScaledContentSize(), optionListBg->getPosition());
+    auto optionListBg = cue::createBackground(
+        {m_impl->optionList->getScaledContentWidth() + 8.75f, m_impl->optionList->getScaledContentHeight() + 10.f},
+        {
+            .cornerRoundness = -0.75f,
+            .id = "option-list-bg",
+        });
+    optionListBg->setPosition(m_impl->optionList->getPosition());
+
+    m_mainLayer->addChild(optionListBg);
+
+    m_impl->nothingLabel = MenuNothingNode::create(m_impl->optionList->getScaledContentSize(), m_impl->optionList->getPosition());
     m_mainLayer->addChild(m_impl->nothingLabel, 9);
 
     // add search bar
-    m_impl->searchInput = TextInput::create(optionListBg->getScaledContentWidth() + 11.25f, "Search...", "bigFont.fnt");
+    m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", "bigFont.fnt");
     m_impl->searchInput->setID("search-input");
     m_impl->searchInput->setAnchorPoint({0, 0.5});
     m_impl->searchInput->setPosition({10.f, mainLayerSize.height - 51.25f});
@@ -367,11 +368,12 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->searchInput);
 
     // add a list button background
-    auto filterContainerBg = NineSlice::create(themes::square);
-    filterContainerBg->setAnchorPoint({0.5, 0.5});
+    auto filterContainerBg = cue::createBackground(
+        {(mainLayerSize.width / 3.f), mainLayerSize.height - 45.f},
+        {
+            .id = "filter-container-bg",
+        });
     filterContainerBg->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f});
-    filterContainerBg->setContentSize({(mainLayerSize.width / 3.f), mainLayerSize.height - 45.f});
-    filterContainerBg->setOpacity(50);
 
     m_mainLayer->addChild(filterContainerBg);
 

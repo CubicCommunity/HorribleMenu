@@ -9,41 +9,43 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-bool MenuPlayer::init(ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor) {
+bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int color2, int glowColor) {
     if (!CCNode::init()) return false;
 
+    auto layout = ColumnLayout::create()
+                      ->setGap(2.5f)
+                      ->setAutoGrowAxis(0.f)
+                      ->setAxisAlignment(AxisAlignment::Center)
+                      ->setCrossAxisAlignment(AxisAlignment::Start)
+                      ->setAutoScale(false);
+
+    setLayout(layout);
     setAnchorPoint({0.5, 0.5});
-    setContentSize({30.f, 30.f});
 
-    auto playerIcon = SimplePlayer::create(icon);
-    playerIcon->setColor(color1);
-    playerIcon->setSecondColor(color2);
-    playerIcon->setGlowOutline(glowColor);
-
-    playerIcon->setPosition(getScaledContentSize() / 2.f);
+    auto playerIcon = cue::PlayerIcon::create(IconType::Cube, icon, color1, color2, glowColor);
 
     addChild(playerIcon);
 
     auto labelBtn = Button::createWithLabel(
-        name.c_str(),
+        name,
         "goldFont.fnt",
         [account](auto) {
             if (auto page = ProfilePage::create(account, false)) page->show();
         });
     labelBtn->setID("profile-btn");
     labelBtn->setScale(0.375f);
+
+    playerIcon->setPosition(getScaledContentSize() / 2.f);
     labelBtn->setPosition({getScaledContentWidth() / 2.f, getScaledContentHeight() + (labelBtn->getScaledContentHeight() * 0.875f)});
 
-    if (labelBtn->getScaledContentWidth() > getScaledContentWidth()) setContentWidth(labelBtn->getScaledContentWidth());
-
-    playerIcon->setPositionX(getScaledContentWidth() / 2.f);
-
     addChild(labelBtn, 1);
+
+    updateLayout();
 
     return true;
 };
 
-MenuPlayer* MenuPlayer::create(ZStringView name, int account, int icon, ccColor3B const& color1, ccColor3B const& color2, ccColor3B const& glowColor) {
+MenuPlayer* MenuPlayer::create(ZStringView name, int account, int icon, int color1, int color2, int glowColor) {
     auto ret = new MenuPlayer();
     if (ret->init(name, account, icon, color1, color2, glowColor)) {
         ret->autorelease();
@@ -68,10 +70,10 @@ bool MenuCredits::init(ZStringView theme) {
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
     auto leadDevLabel = CCLabelBMFont::create("Lead Developers", "bigFont.fnt");
-    leadDevLabel->setID("lead-devs-label");
-    leadDevLabel->setScale(0.375f);
+    leadDevLabel->setID("lead-dev-label");
+    leadDevLabel->setScale(0.425f);
     leadDevLabel->setAnchorPoint({0.5, 0.5});
-    leadDevLabel->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 90.f});
+    leadDevLabel->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 91.25f});
 
     m_mainLayer->addChild(leadDevLabel);
 
@@ -81,9 +83,9 @@ bool MenuCredits::init(ZStringView theme) {
                                       ->setAutoGrowAxis(0.f);
 
     auto leadDevContainer = CCNode::create();
-    leadDevContainer->setID("lead-devs-container");
+    leadDevContainer->setID("lead-dev-container");
     leadDevContainer->setAnchorPoint({0.5, 0.5});
-    leadDevContainer->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, leadDevLabel->getPositionY() - 40.f});
+    leadDevContainer->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, leadDevLabel->getPositionY() - 35.f});
     leadDevContainer->setLayout(leadDevContainerLayout);
 
     constexpr LeadDevIcon devs[] = {
@@ -92,20 +94,22 @@ bool MenuCredits::init(ZStringView theme) {
             "Cheeseworks",
             6408873,
             28,
-            {64, 64, 64},
-            {252, 181, 255},
-            {255, 255, 255},
+            94,
+            98,
+            12,
         },
         {
             "arcticwoof",
             "ArcticWoof",
             7689052,
             290,
-            {160, 255, 255},
-            {255, 255, 255},
-            {0, 255, 255},
+            83,
+            12,
+            3,
         },
     };
+
+    m_mainLayer->addChild(leadDevContainer, 1);
 
     for (auto const& dev : devs) {
         if (auto player = MenuPlayer::create(dev.name, dev.account, dev.icon, dev.color1, dev.color2, dev.glowColor)) {
@@ -114,17 +118,26 @@ bool MenuCredits::init(ZStringView theme) {
         };
     };
 
-    m_mainLayer->addChild(leadDevContainer);
     leadDevContainer->updateLayout();
+
+    auto leadDevContainerBg = cue::createBackground(
+        {leadDevContainer->getScaledContentWidth() + 10.f, leadDevContainer->getScaledContentHeight() + 6.25f},
+        {
+            .zOrder = 0,
+            .id = "lead-dev-container-bg",
+        });
+    leadDevContainerBg->setPosition(leadDevContainer->getPosition());
+
+    m_mainLayer->addChild(leadDevContainerBg);
 
     auto creditsMd = MDTextArea::create(
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
         "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
+        "**[dankmeme](user:9735891)**: '[cue](https://github.com/dankmeme01/cue)' UI library\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
-        "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
-        "**[dankmeme](user:9735891)**: helped with pretty important programming decisions :D\n\n",
+        "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n",
         {m_mainLayer->getScaledContentWidth() - 55.f,
             140.f});
     creditsMd->setID("credits");

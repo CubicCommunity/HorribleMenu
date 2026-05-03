@@ -16,6 +16,9 @@
 #include <util/ui/TermsAndConditions.hpp>
 #include <util/ui/WhackButton.hpp>
 
+#include <cue/Util.hpp>
+#include <cue/PlayerIcon.hpp>
+
 #include <cocos2d.h>
 
 #include <Geode/ui/Button.hpp>

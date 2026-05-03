@@ -40,10 +40,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     void showAd(float) {
         auto f = m_fields.self();
 
-        if (f->ad) {
-            f->ad.take()->removeFromParent();
-            f->ad = nullptr;
-        };
+        cue::resetNode(f->ad);
 
         if (auto popup = RandomAd::create()) {
             popup->show();

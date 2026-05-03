@@ -35,13 +35,13 @@ namespace horrible {
     public:
         static MenuButton* get() noexcept;
 
-        void setOpacity(GLubyte opacity) &;
-        void setShowInLevel(bool show) &;
+        void setOpacity(GLubyte opacity);
+        void setShowInLevel(bool show);
 
         void setScale(float scale) override;
 
-        void setTheme(std::string theme) &;
-        void setButtonIcon(std::string icon) &;
+        void setTheme(std::string theme);
+        void setButtonIcon(std::string icon);
 
         int64_t getOpacitySetting() const noexcept;
         float getScaleSetting() const noexcept;

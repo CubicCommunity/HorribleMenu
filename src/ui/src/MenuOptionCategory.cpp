@@ -29,12 +29,12 @@ bool MenuOptionCategory::init(CCSize const& size, std::string category) {
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 
-    auto bg = NineSlice::create(themes::square);
-    bg->setID("background");
-    bg->setAnchorPoint({0, 0});
-    bg->setContentSize(getScaledContentSize());
-    bg->setScaleMultiplier(0.2f);
-    bg->setOpacity(40);
+    auto bg = cue::createBackground(
+        getScaledContentSize(),
+        {
+            .cornerRoundness = -0.25f,
+        });
+    bg->setPosition(getScaledContentSize() / 2.f);
 
     addChild(bg, -1);
 
@@ -79,11 +79,11 @@ void MenuOptionCategory::onToggle(CCObject* sender) {
     };
 };
 
-void MenuOptionCategory::setToggleCallback(Callback&& callback) & {
+void MenuOptionCategory::setToggleCallback(Callback&& callback) {
     m_impl->toggleCallback = std::move(callback);
 };
 
-void MenuOptionCategory::setToggled(bool on) & {
+void MenuOptionCategory::setToggled(bool on) {
     if (m_impl->toggler) m_impl->toggler->toggle(on);
 };
 
