@@ -38,11 +38,11 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
             if (auto popup = TermsAndConditions::create(
                     [this](bool accepted) {
                         cursor::hide();
+                        updateTimeWarp(1.f);
 
                         if (!accepted) {
                             Notification::create("You declined our terms and conditions!", NotificationIcon::Error)->show();
 
-                            updateTimeWarp(1.f);
                             sfx::play(sfx::file::bad);
                             if (auto pl = PlayLayer::get()) pl->resetLevelFromStart();
                         } else {

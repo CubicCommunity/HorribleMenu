@@ -24,7 +24,7 @@ class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {
             auto warpFactor = randng::get(2.f, 0.75f);
 
             log::debug("applying time warp factor {}", warpFactor);
-            GJBaseGameLayer::updateTimeWarp(warpFactor);
+            updateTimeWarp(warpFactor);
         };
 
         GJBaseGameLayer::handleButton(down, button, isPlayer1);

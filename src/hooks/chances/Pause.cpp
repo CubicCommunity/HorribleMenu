@@ -10,9 +10,9 @@ using namespace horrible::prelude;
 #define THIS_ID "pauses"
 
 static auto const o = Option::create(THIS_ID)
-                          ->setName("Random Pauses")
+                          ->setName("Random Pause Chance")
                           ->setDescription("While playing a level, it will randomly pause itself.\n<cl>suggested by DragonixGD</c>")
-                          ->setCategory(category::randoms)
+                          ->setCategory(category::chances)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 

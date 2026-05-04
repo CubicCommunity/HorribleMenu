@@ -10,7 +10,7 @@ using namespace horrible::prelude;
 #define THIS_ID "gambler"
 
 static auto const o = Option::create(THIS_ID)
-                          ->setName("Gambler")
+                          ->setName("Ending Gamble")
                           ->setDescription("When reaching 95% in a level, you have a chance at randomly being blasted way far back.\n<cl>suggested by Timered</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Medium)
@@ -39,15 +39,15 @@ class $modify(GamblerPlayLayer, PlayLayer) {
 
     // ensure that triggered is reset on level restart/full reset
     void fullReset() {
+        PlayLayer::fullReset();
         m_fields->triggered = false;
         log::debug("gambler full reset");
-        PlayLayer::fullReset();
     };
 
     void resetLevel() {
+        PlayLayer::resetLevel();
         m_fields->triggered = false;
         log::debug("gambler level reset");
-        PlayLayer::resetLevel();
     };
 
     void gamblerCheck(float) {
@@ -57,23 +57,30 @@ class $modify(GamblerPlayLayer, PlayLayer) {
         // detect the moment the player first reaches or crosses 95
         if (percentage == 95 && !f->triggered) {
             // roll a random number between 0 and 1
-            int roll = randng::fast() % 2;
+            int roll = randng::get(1);
 
             log::info("Gambler roll: {}", roll);
             if (roll == 0) {
                 log::info("Gambler lost the bet!");
+
+                sfx::play(sfx::file::pop);
+                Notification::create("Unlucky!", NotificationIcon::Error)->show();
 
                 // reverse the player
                 m_player1->reversePlayer(nullptr);
                 m_player1->m_gravity = 0.01f;  // reduce gravity to simulate a bounce
 
                 // force player to jump
-                GJBaseGameLayer::get()->handleButton(true, 1, true);
+                if (auto gjbgl = GJBaseGameLayer::get()) gjbgl->handleButton(true, 1, true);
 
                 f->triggered = true;
                 f->tricked = true;
             } else {
                 log::info("Gambler won the bet! instant win.");
+
+                sfx::play(sfx::file::good);
+                Notification::create("You got lucky this time...", NotificationIcon::Success)->show();
+
                 levelComplete();
                 f->triggered = true;
             };

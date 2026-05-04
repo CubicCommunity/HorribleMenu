@@ -10,9 +10,9 @@ using namespace horrible::prelude;
 #define THIS_ID "random_mirror"
 
 static auto const o = Option::create(THIS_ID)
-                          ->setName("Random Mirror Portal")
+                          ->setName("Random Mirror Chance")
                           ->setDescription("Randomly activates a mirror portal while playing.\n<cl>suggested by TimeRed</c>")
-                          ->setCategory(category::randoms)
+                          ->setCategory(category::chances)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 

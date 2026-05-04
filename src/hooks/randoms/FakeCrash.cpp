@@ -44,7 +44,7 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
             log::debug("Faking crash");
             f->lastTimeWarp = LevelTools::getLastTimewarp();
 
-            GJBaseGameLayer::updateTimeWarp(0.f);
+            updateTimeWarp(0.f);
 
             f->inFakeCrash = true;
             f->fakeCrashStartTime = m_gameState.m_currentProgress;
@@ -54,7 +54,7 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
             if ((m_gameState.m_currentProgress - f->fakeCrashStartTime) >= 5.f) {
                 log::debug("Reverting timewarp to: {}", f->lastTimeWarp);
 
-                GJBaseGameLayer::updateTimeWarp(f->lastTimeWarp);
+                updateTimeWarp(f->lastTimeWarp);
                 f->inFakeCrash = false;
             };
         };

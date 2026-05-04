@@ -23,14 +23,6 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
         int m_jumps = 0;
     };
 
-    bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
-        if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
-
-        auto f = m_fields.self();
-
-        return true;
-    };
-
     bool pushButton(PlayerButton p0) {
         auto f = m_fields.self();
 

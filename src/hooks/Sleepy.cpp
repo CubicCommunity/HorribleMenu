@@ -31,16 +31,13 @@ class $modify(SleepyPlayerObject, PlayerObject) {
     bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
-        auto f = m_fields.self();
-
-        if (playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), randng::get(30.f, 5.f) * chanceToDelayPct(f->chance));
+        if (playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), randng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
 
         return true;
     };
 
     void startSleepTimer(float) {
-        auto f = m_fields.self();
-        scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), randng::get(15.f, 3.f) * chanceToDelayPct(f->chance));
+        scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), randng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void wakeUpSchedule(float) {
