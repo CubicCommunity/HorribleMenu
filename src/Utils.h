@@ -17,7 +17,10 @@
 #include <util/ui/WhackButton.hpp>
 
 #include <cue/Util.hpp>
+#include <cue/DropdownNode.hpp>
 #include <cue/PlayerIcon.hpp>
+
+#include <asp/fs.hpp>
 
 #include <cocos2d.h>
 
@@ -60,7 +63,8 @@ namespace horrible {
         };
     };
 
-    namespace str = geode::utils::string;  // Shortcut for geode::utils::string
+    namespace fs = asp::fs;                // Shortcut for `asp::fs`
+    namespace str = geode::utils::string;  // Shortcut for `geode::utils::string`
 
     // For convenience
     namespace setting {

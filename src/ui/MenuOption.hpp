@@ -5,6 +5,14 @@
 #include <Geode/Geode.hpp>
 
 namespace horrible {
+    class MenuNothingNode final : public cocos2d::CCNode {
+    protected:
+        bool init(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);
+
+    public:
+        static MenuNothingNode* create(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);
+    };
+
     class MenuOption final : public cocos2d::CCMenu {
         using Callback = Function<void()>;
 

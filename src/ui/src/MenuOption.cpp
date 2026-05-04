@@ -1,4 +1,4 @@
-#include "../MenuOption.h"
+#include "../MenuOption.hpp"
 
 #include <Utils.h>
 
@@ -6,6 +6,49 @@
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
+
+bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
+    if (!CCNode::init()) return false;
+
+    setID("nothing-label");
+    setPosition(pos);
+    setContentSize(size);
+    setAnchorPoint({0.5, 0.5});
+    setVisible(false);
+
+    auto label = CCLabelBMFont::create("No options found :(", "bigFont.fnt");
+    label->setScale(0.5f);
+    label->setOpacity(250);
+    label->setAnchorPoint({0.5, 0});
+    label->setAlignment(kCCTextAlignmentCenter);
+    label->limitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale());
+    label->setPosition(getScaledContentSize() / 2.f);
+
+    addChild(label, 1);
+
+    auto labelHint = CCLabelBMFont::create("Try searching other keywords, or change some filters!", "chatFont.fnt");
+    labelHint->setScale(0.625f);
+    labelHint->setOpacity(200);
+    labelHint->setAnchorPoint({0.5, 1});
+    labelHint->setAlignment(kCCTextAlignmentCenter);
+    labelHint->limitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale());
+    labelHint->setPosition(getScaledContentSize() / 2.f);
+
+    addChild(labelHint);
+
+    return true;
+};
+
+MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos) {
+    auto ret = new MenuNothingNode();
+    if (ret->init(size, pos)) {
+        ret->autorelease();
+        return ret;
+    };
+
+    delete ret;
+    return nullptr;
+};
 
 class MenuOption::Impl final {
 public:

@@ -5,20 +5,12 @@
 #include <Geode/Geode.hpp>
 
 namespace horrible {
-    class MenuNothingNode final : public cocos2d::CCNode {
-    protected:
-        bool init(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);
-
-    public:
-        static MenuNothingNode* create(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);
-    };
-
     class Menu final : public geode::Popup {
         struct TierFilterBtnData final {
             SillyTier tier;
             const char* label;
             const char* id;
-            ccColor3B color;
+            cocos2d::ccColor3B const& color;
         };
 
         struct SocialBtnData final {
@@ -35,7 +27,7 @@ namespace horrible {
         static Menu* s_inst;
 
         void setupSafeModeNode(bool safeMode);
-        void setupImageBackground(std::filesystem::path path);
+        void setupImageBackground(fs::path const& path);
 
     protected:
         Menu();

@@ -41,7 +41,7 @@ class $modify(GriefPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID_GRIEF);
 
     struct Fields {
-        int chance = options::getChance(oGrief->getID());
+        unsigned int chance = options::getChance(oGrief->getID());
 
         bool dontCreateObjects = false;
     };
@@ -62,7 +62,7 @@ class $modify(CongregationPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID_CONGREG);
 
     struct Fields {
-        int chance = options::getChance(oCongreg->getID());
+        unsigned int chance = options::getChance(oCongreg->getID());
 
         bool dontCreateObjects = false;
     };

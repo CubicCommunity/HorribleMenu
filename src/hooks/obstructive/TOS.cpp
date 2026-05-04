@@ -20,7 +20,7 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        int chance = options::getChance(THIS_ID);
+        unsigned int chance = options::getChance(THIS_ID);
 
         Ref<TermsAndConditions> currentTos = nullptr;
     };

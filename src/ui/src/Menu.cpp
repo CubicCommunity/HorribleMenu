@@ -1,8 +1,9 @@
 #include "../Menu.h"
 
-#include "../MenuOption.h"
 #include "../MenuCredits.h"
-#include "../MenuOptionCategory.h"
+
+#include "../MenuOption.hpp"
+#include "../MenuFilterCells.hpp"
 
 #include <Utils.h>
 
@@ -16,51 +17,6 @@
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
-
-namespace fs = std::filesystem;
-
-bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
-    if (!CCNode::init()) return false;
-
-    setID("nothing-label");
-    setPosition(pos);
-    setContentSize(size);
-    setAnchorPoint({0.5, 0.5});
-    setVisible(false);
-
-    auto label = CCLabelBMFont::create("No options found :(", "bigFont.fnt");
-    label->setScale(0.5f);
-    label->setOpacity(250);
-    label->setAnchorPoint({0.5, 0});
-    label->setAlignment(kCCTextAlignmentCenter);
-    label->limitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale());
-    label->setPosition(getScaledContentSize() / 2.f);
-
-    addChild(label, 1);
-
-    auto labelHint = CCLabelBMFont::create("Try searching other keywords, or change some filters!", "chatFont.fnt");
-    labelHint->setScale(0.625f);
-    labelHint->setOpacity(200);
-    labelHint->setAnchorPoint({0.5, 1});
-    labelHint->setAlignment(kCCTextAlignmentCenter);
-    labelHint->limitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale());
-    labelHint->setPosition(getScaledContentSize() / 2.f);
-
-    addChild(labelHint);
-
-    return true;
-};
-
-MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos) {
-    auto ret = new MenuNothingNode();
-    if (ret->init(size, pos)) {
-        ret->autorelease();
-        return ret;
-    };
-
-    delete ret;
-    return nullptr;
-};
 
 Menu* Menu::s_inst = nullptr;
 
@@ -86,13 +42,12 @@ public:
 
     bool safeMode = thisMod->getSettingValue<bool>(setting::SafeMode);
     std::string const theme = thisMod->getSettingValue<std::string>("theme");
-    fs::path themeBgPath = thisMod->getSettingValue<fs::path>("theme-background");
 
     CCNode* safeModeContainer = nullptr;
     LazySprite* themeBackground = nullptr;
     CCClippingNode* themeBgContainer = nullptr;
 
-    std::vector<WeakRef<MenuOptionCategory>> categoryItems;
+    std::vector<WeakRef<MenuCategoryFilterCell>> categoryItems;
 
     void filterOptions(std::vector<std::weak_ptr<Option>>&& optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
         if (optionList) {
@@ -189,8 +144,8 @@ void Menu::setupSafeModeNode(bool safeMode) {
     if (m_impl->safeMode != safeMode) m_impl->safeMode = safeMode;
 };
 
-void Menu::setupImageBackground(fs::path path) {
-    if (auto themeBg = WeakRef(m_impl->themeBackground).lock()) themeBg.take()->removeFromParent();
+void Menu::setupImageBackground(fs::path const& path) {
+    cue::resetNode(m_impl->themeBackground);
 
     if (m_impl->themeBgContainer) {
         if (fs::exists(path)) {
@@ -225,8 +180,6 @@ void Menu::setupImageBackground(fs::path path) {
             m_impl->themeBackground->loadFromFile(path);
         };
     };
-
-    if (m_impl->themeBgPath != path) m_impl->themeBgPath = std::move(path);
 };
 
 bool Menu::init() {
@@ -244,25 +197,31 @@ bool Menu::init() {
 
     m_impl->themeBgContainer = CCClippingNode::create();
     m_impl->themeBgContainer->setID("bg-container");
-    m_impl->themeBgContainer->setAnchorPoint({0.5, 0.5});
+    m_impl->themeBgContainer->setAnchorPoint(m_bgSprite->getAnchorPoint());
     m_impl->themeBgContainer->setContentSize(m_bgSprite->getScaledContentSize());
-    m_impl->themeBgContainer->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+    m_impl->themeBgContainer->setPosition(m_bgSprite->getPosition());
     m_impl->themeBgContainer->setStencil(m_bgSprite);
     m_impl->themeBgContainer->setAlphaThreshold(0);
 
     m_mainLayer->addChild(m_impl->themeBgContainer, -8);
 
-    auto border = cue::createBackground(m_bgSprite->getScaledContentSize());
+    auto border = cue::createBackground(
+        m_bgSprite->getScaledContentSize(),
+        {
+            .opacity = 255,
+            .texture = "GJ_square07.png",
+            .id = "bg-container-border",
+        });
     border->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
     m_mainLayer->addChild(border, -1);
 
     // scroll layer
-    m_impl->categoryList = ScrollLayer::create({(mainLayerSize.width / 3.f) - 20.f, 90.f});
+    m_impl->categoryList = ScrollLayer::create({(mainLayerSize.width / 3.f) - 20.f, 125.f});
     m_impl->categoryList->setID("category-list");
     m_impl->categoryList->setAnchorPoint({0.5, 0.5});
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
-    m_impl->categoryList->setPosition({mainLayerSize.width - 82.5f, 75.f});
+    m_impl->categoryList->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height - 57.5f) - (m_impl->categoryList->getScaledContentHeight() / 2.f)});
 
     m_impl->categoryList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout());
 
@@ -285,7 +244,7 @@ bool Menu::init() {
     };
 
     for (auto const& category : sortedCats) {
-        if (auto categoryItem = MenuOptionCategory::create({m_impl->categoryList->getScaledContentWidth(), 20.f}, category)) {
+        if (auto categoryItem = MenuCategoryFilterCell::create({m_impl->categoryList->getScaledContentWidth(), 20.f}, category)) {
             categoryItem->setToggleCallback([this](std::string_view category, bool enabled) {
                 if (enabled) {
                     m_impl->selectedCategory = category;
@@ -386,52 +345,37 @@ bool Menu::init() {
 
     m_mainLayer->addChild(filterContainerLabel);
 
-    auto filterContainerLayout = ColumnLayout::create()
-                                     ->setGap(3.75f)
-                                     ->setAutoScale(false)
-                                     ->setAxisReverse(true)  // Top to bottom
-                                     ->setAxisAlignment(AxisAlignment::End)
-                                     ->setAutoGrowAxis(0.f);
+    // TODO: fix the nodes on this !!!
+    auto sillyDropdown = cue::DropdownNode::create(
+        to4B(categoryListBg->getColor(), categoryListBg->getOpacity()),
+        categoryListBg->getScaledContentWidth(),
+        15.f);
+    sillyDropdown->setID("silly-filter-dropdown");
+    sillyDropdown->setPosition({filterContainerLabel->getPositionX(), 75.f});
 
-    // filter buttons :o
-    auto filterContainer = CCNode::create();
-    filterContainer->setID("filter-container");
-    filterContainer->setAnchorPoint({0.5, 1});
-    filterContainer->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 53.75f});
-    filterContainer->setLayout(filterContainerLayout);
+    sillyDropdown->setCallback([this](auto, CCNode* node) {
+        if (auto cell = typeinfo_cast<MenuSillyFilterCell*>(node)) {
+            if (m_impl->selectedTier != cell->getSillyTier()) m_impl->filterOptions(options::getAll(), cell->getSillyTier(), m_impl->selectedCategory);
+            m_impl->selectedTier = cell->getSillyTier();
+        };
+    });
 
     constexpr TierFilterBtnData filterBtns[] = {
+        {SillyTier::None, "All", "filter-none-btn", colors::white},
         {SillyTier::Low, "Low", "filter-low-btn", colors::green},
         {SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow},
         {SillyTier::High, "High", "filter-high-btn", colors::red},
     };
 
     for (auto const& filterBtn : filterBtns) {
-        if (auto btnSprite = ButtonSprite::create(filterBtn.label, 115, true, "bigFont.fnt", themes::getButtonSquareSprite(m_impl->theme), 0.f, 0.8f)) {
-            btnSprite->m_label->setColor(filterBtn.color);
-
-            if (auto btn = Button::createWithNode(
-                    btnSprite,
-                    [this, filterBtn](auto) {
-                        // Toggle: clicking same button disables filter
-                        (m_impl->selectedTier == filterBtn.tier) ? m_impl->selectedTier = SillyTier::None : m_impl->selectedTier = filterBtn.tier;
-
-                        m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
-                    })) {
-                btn->setID(filterBtn.id);
-                btn->setScale(0.8f);
-
-                filterContainer->addChild(btn);
-            } else {
-                log::error("Failed to create filter button");
-            };
+        if (auto cell = MenuSillyFilterCell::create({sillyDropdown->getScaledContentWidth() * 0.75f, 15.f}, filterBtn.tier, filterBtn.id, filterBtn.label, filterBtn.color)) {
+            sillyDropdown->addCell(cell);
         } else {
-            log::error("Failed to create filter button sprite");
+            log::error("Failed to create filter button");
         };
     };
 
-    m_mainLayer->addChild(filterContainer);
-    filterContainer->updateLayout();
+    m_mainLayer->addChild(sillyDropdown);
 
     // get all the options data
     m_impl->filterOptions(options::getAll());
@@ -552,7 +496,7 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->safeModeContainer, 9);
 
     setupSafeModeNode(m_impl->safeMode);
-    setupImageBackground(m_impl->themeBgPath);
+    setupImageBackground(thisMod->getSettingValue<fs::path>("theme-background"));
 
     addEventListener(
         SettingChangedEvent(thisMod, setting::SafeMode),

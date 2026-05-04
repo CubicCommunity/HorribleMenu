@@ -19,9 +19,6 @@ static auto const o = Option::create(THIS_ID)
                           ->autoRegister();
 
 #if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms
-// Shortcut for `std::filesystem`
-namespace fs = std::filesystem;
-
 class $modify(MockMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
