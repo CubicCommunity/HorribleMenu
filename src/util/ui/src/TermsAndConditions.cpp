@@ -71,6 +71,8 @@ bool TermsAndConditions::init(Callback&& cb) {
     m_mainLayer->addChildAtPosition(acceptButton, Anchor::Bottom, {-60.f, 25.f});
     m_mainLayer->addChildAtPosition(declineButton, Anchor::Bottom, {60.f, 25.f});
 
+    sfx::play(sfx::file::pop);
+
     return true;
 };
 
