@@ -1,8 +1,7 @@
 #include "../Menu.h"
 
-#include "../MenuCredits.h"
-
 #include "../MenuOption.hpp"
+#include "../MenuCredits.hpp"
 #include "../MenuFilterCells.hpp"
 
 #include <Utils.h>
@@ -117,6 +116,16 @@ public:
             log::error("Option list layer not found");
         };
     };
+
+    CCLabelBMFont* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
+        auto label = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
+        label->setID(std::move(id));
+        label->setScale(0.375f);
+        label->setAnchorPoint({0.5, 0.5});
+        label->setPosition(pos);
+
+        return label;
+    };
 };
 
 Menu::Menu() : m_impl(std::make_unique<Impl>()) {};
@@ -147,8 +156,8 @@ void Menu::setupSafeModeNode(bool safeMode) {
 void Menu::setupImageBackground(fs::path const& path) {
     cue::resetNode(m_impl->themeBackground);
 
-    if (m_impl->themeBgContainer) {
-        if (fs::exists(path)) {
+    if (fs::exists(path)) {
+        if (m_impl->themeBgContainer) {
             m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
             m_impl->themeBackground->setID("theme-bg");
             m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
@@ -157,9 +166,7 @@ void Menu::setupImageBackground(fs::path const& path) {
                 if (auto s = self.lock()) {
                     if (auto bg = themeBg.lock()) {
                         if (res.isOk()) {
-                            bg->setScaleX(s->m_bgSprite->getScaledContentWidth() / bg->getScaledContentWidth());
-                            bg->setScaleY(s->m_bgSprite->getScaledContentHeight() / bg->getScaledContentHeight());
-
+                            cue::rescaleToMatch(bg, s->m_bgSprite, true);
                             bg.take()->setOpacity(100);
 
                             log::debug("Successfully loaded theme background");
@@ -217,11 +224,11 @@ bool Menu::init() {
     m_mainLayer->addChild(border, -1);
 
     // scroll layer
-    m_impl->categoryList = ScrollLayer::create({(mainLayerSize.width / 3.f) - 20.f, 125.f});
+    m_impl->categoryList = ScrollLayer::create({(mainLayerSize.width / 3.f) - 20.f, 100.f});
     m_impl->categoryList->setID("category-list");
     m_impl->categoryList->setAnchorPoint({0.5, 0.5});
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
-    m_impl->categoryList->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height - 57.5f) - (m_impl->categoryList->getScaledContentHeight() / 2.f)});
+    m_impl->categoryList->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height - 70.f) - (m_impl->categoryList->getScaledContentHeight() / 2.f)});
 
     m_impl->categoryList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout());
 
@@ -240,7 +247,7 @@ bool Menu::init() {
         auto miscCat = *misc;
 
         sortedCats.erase(misc);
-        sortedCats.push_back(miscCat);
+        sortedCats.push_back(std::move(miscCat));
     };
 
     for (auto const& category : sortedCats) {
@@ -281,6 +288,8 @@ bool Menu::init() {
     categoryListBg->setPosition(m_impl->categoryList->getPosition());
 
     m_mainLayer->addChild(categoryListBg);
+
+    m_mainLayer->addChild(m_impl->createFilterLabel("Categories", "category-list-label", {m_impl->categoryList->getPositionX(), mainLayerSize.height - 57.5f}), 1);
 
     m_impl->optionList = ScrollLayer::create({(mainLayerSize.width / 1.5f) - 43.75f, mainLayerSize.height - 93.25f});
     m_impl->optionList->setID("options-list");
@@ -338,20 +347,21 @@ bool Menu::init() {
 
     auto filterContainerLabel = CCLabelBMFont::create("Filters", "goldFont.fnt");
     filterContainerLabel->setID("filter-container-label");
+    filterContainerLabel->setScale(0.375f);
     filterContainerLabel->setAnchorPoint({0.5, 0});
     filterContainerLabel->setAlignment(kCCTextAlignmentCenter);
     filterContainerLabel->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 50.f});
-    filterContainerLabel->setScale(0.375f);
 
     m_mainLayer->addChild(filterContainerLabel);
 
-    // TODO: fix the nodes on this !!!
     auto sillyDropdown = cue::DropdownNode::create(
-        to4B(categoryListBg->getColor(), categoryListBg->getOpacity()),
-        categoryListBg->getScaledContentWidth(),
-        15.f);
+        to4B(colors::black, 0),
+        m_impl->categoryList->getScaledContentWidth(),
+        17.5f,
+        40.f);
     sillyDropdown->setID("silly-filter-dropdown");
-    sillyDropdown->setPosition({filterContainerLabel->getPositionX(), 75.f});
+    sillyDropdown->setAnchorPoint({0.5, 1});
+    sillyDropdown->setPosition({filterContainerLabel->getPositionX(), 87.5f});
 
     sillyDropdown->setCallback([this](auto, CCNode* node) {
         if (auto cell = typeinfo_cast<MenuSillyFilterCell*>(node)) {
@@ -368,14 +378,30 @@ bool Menu::init() {
     };
 
     for (auto const& filterBtn : filterBtns) {
-        if (auto cell = MenuSillyFilterCell::create({sillyDropdown->getScaledContentWidth() * 0.75f, 15.f}, filterBtn.tier, filterBtn.id, filterBtn.label, filterBtn.color)) {
+        if (auto cell = MenuSillyFilterCell::create(
+                {sillyDropdown->getScaledContentWidth(), 16.5f},
+                filterBtn.tier,
+                filterBtn.id,
+                filterBtn.label,
+                filterBtn.color)) {
             sillyDropdown->addCell(cell);
         } else {
             log::error("Failed to create filter button");
         };
     };
 
-    m_mainLayer->addChild(sillyDropdown);
+    m_mainLayer->addChild(sillyDropdown, 9);
+
+    m_mainLayer->addChild(m_impl->createFilterLabel("Silly Tier", "silly-filter-label", {m_impl->categoryList->getPositionX(), sillyDropdown->getPositionY() + 7.5f}), 1);
+
+    auto filterHint = CCLabelBMFont::create("Use different filters to search for options quicker. Press the pin icon on an option cell to pin it to the top.", "chatFont.fnt", m_impl->categoryList->getScaledContentWidth());
+    filterHint->setID("filter-hint");
+    filterHint->setScale(0.5f);
+    filterHint->setAnchorPoint({0.5, 0.5});
+    filterHint->setAlignment(kCCTextAlignmentCenter);
+    filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
+
+    m_mainLayer->addChild(filterHint, 1);
 
     // get all the options data
     m_impl->filterOptions(options::getAll());

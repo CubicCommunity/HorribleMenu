@@ -19,14 +19,16 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 
-    auto bg = cue::createBackground(
-        getScaledContentSize(),
+    m_bg = cue::attachBackground(
+        this,
         {
+            .opacity = 125,
+            .sidePadding = 0.f,
+            .verticalPadding = 0.f,
             .cornerRoundness = -0.25f,
+            .texture = themes::square,
         });
-    bg->setPosition(getScaledContentSize() / 2.f);
-
-    addChild(bg, -1);
+    m_bg->setColor(colors::gray);
 
     auto togglerOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
     togglerOff->setScale(0.5f);
@@ -64,8 +66,10 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
 };
 
 void MenuCategoryFilterCell::onToggle(CCObject* sender) {
-    if (m_toggler) {
-        if (m_toggleCallback) m_toggleCallback(m_category, !m_toggler->isOn());
+    if (auto toggler = typeinfo_cast<CCMenuItemToggler*>(sender)) {
+        auto on = !toggler->isOn();
+        if (m_toggleCallback) m_toggleCallback(m_category, on);
+        if (m_bg) m_bg->setColor(on ? colors::yellow : colors::gray);
     };
 };
 
@@ -75,6 +79,7 @@ void MenuCategoryFilterCell::setToggleCallback(Callback&& callback) {
 
 void MenuCategoryFilterCell::setToggled(bool on) {
     if (m_toggler) m_toggler->toggle(on);
+    if (m_bg) m_bg->setColor(on ? colors::yellow : colors::gray);
 };
 
 ZStringView MenuCategoryFilterCell::getCategory() const noexcept {
@@ -105,8 +110,10 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
     auto bg = cue::attachBackground(
         this,
         {
-            .opacity = 125,
-            .texture = "geode.loader/white-square.png",
+            .opacity = 175,
+            .sidePadding = 0.f,
+            .verticalPadding = 0.f,
+            .texture = themes::square,
         });
     bg->setColor(color);
 

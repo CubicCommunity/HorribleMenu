@@ -1,4 +1,4 @@
-#include "../MenuCredits.h"
+#include "../MenuCredits.hpp"
 
 #include <Utils.h>
 

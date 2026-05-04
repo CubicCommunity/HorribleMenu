@@ -222,7 +222,7 @@ MenuButton* MenuButton::create() {
     return nullptr;
 };
 
-MenuButton* MenuButton::get() noexcept {
+MenuButton* MenuButton::get() {
     static auto inst = MenuButton::create();
     return inst;
 };

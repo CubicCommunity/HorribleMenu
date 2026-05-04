@@ -33,7 +33,7 @@ namespace horrible {
         static MenuButton* create();
 
     public:
-        static MenuButton* get() noexcept;
+        static MenuButton* get();
 
         void setOpacity(GLubyte opacity);
         void setShowInLevel(bool show);

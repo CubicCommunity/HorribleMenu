@@ -22,6 +22,7 @@ namespace horrible {
     namespace util {
         // Get the current theme's sprites and colors
         namespace themes {
+            inline constexpr auto square = "geode.loader/white-square.png";
             inline constexpr auto close = "geode.loader/close.png";
 
             // Theme options

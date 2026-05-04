@@ -104,6 +104,26 @@ public:
             case SillyTier::None: return "Silly Tier - UNKNOWN";
         };
     };
+
+    constexpr auto getTierColor(SillyTier silly) noexcept {
+        switch (silly) {
+            default:
+                return colors::white;
+                break;
+
+            case SillyTier::Low:
+                return colors::green;
+                break;
+
+            case SillyTier::Medium:
+                return colors::yellow;
+                break;
+
+            case SillyTier::High:
+                return colors::red;
+                break;
+        };
+    };
 };
 
 MenuOption::MenuOption() : m_impl(std::make_unique<Impl>()) {};
@@ -129,14 +149,16 @@ bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 
-    auto bg = cue::createBackground(
-        getScaledContentSize(),
+    auto bg = cue::attachBackground(
+        this,
         {
+            .opacity = 125,
+            .sidePadding = 0.f,
+            .verticalPadding = 0.f,
             .cornerRoundness = -0.125f,
+            .texture = themes::square,
         });
-    bg->setPosition(getScaledContentSize() / 2.f);
-
-    addChild(bg);
+    bg->setColor(m_impl->getTierColor(o->getSillyTier()));
 
     // Horizontal layout: [toggle] [name] [info]
     float yCenter = getScaledContentHeight() / 2.f;
@@ -177,25 +199,6 @@ bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     categoryLabel->setPosition({x, yCenter + 10.f});
     categoryLabel->setOpacity(200);
     categoryLabel->setScale(0.25f);
-
-    // Set color based on tier
-    switch (o->getSillyTier()) {
-        default:  // white
-            nameLabel->setColor(colors::white);
-            break;
-
-        case SillyTier::Low:  // green
-            nameLabel->setColor(colors::green);
-            break;
-
-        case SillyTier::Medium:  // yellow
-            nameLabel->setColor(colors::yellow);
-            break;
-
-        case SillyTier::High:  // red
-            nameLabel->setColor(colors::red);
-            break;
-    };
 
     addChild(nameLabel);
     addChild(categoryLabel);

@@ -13,6 +13,8 @@ namespace horrible {
         CCMenuItemToggler* m_toggler = nullptr;  // The toggler for the option
         Callback m_toggleCallback = nullptr;     // Callback for when the category is toggled
 
+        geode::NineSlice* m_bg = nullptr;
+
     protected:
         void onToggle(CCObject* sender);
 
