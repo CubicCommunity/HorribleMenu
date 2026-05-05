@@ -263,7 +263,7 @@ bool MathQuiz::init() {
     return true;
 };
 
-void MathQuiz::setCallback(Callback&& cb) & {
+void MathQuiz::setCallback(Callback&& cb) {
     m_impl->callback = std::move(cb);
 };
 

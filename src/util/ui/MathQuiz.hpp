@@ -36,7 +36,7 @@ namespace horrible {
         public:
             static MathQuiz* create();
 
-            void setCallback(Callback&& cb) &;
+            void setCallback(Callback&& cb);
         };
 
         class Richard final : public CCNode {

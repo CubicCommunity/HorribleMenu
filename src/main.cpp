@@ -178,7 +178,7 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
     void toggleButton(bool toggle = false) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
         if (auto fb = MenuButton::get()) {
-            auto toggleTo = thisMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle);
+            auto toggleTo = thisMod->getSettingValue<bool>(setting::FloatingBtn) & (fb->showInLevel() || toggle);
 
             fb->setVisible(toggleTo);
             fb->setTouchEnabled(toggleTo);

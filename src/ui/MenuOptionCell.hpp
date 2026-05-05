@@ -13,16 +13,16 @@ namespace horrible {
         static MenuNothingNode* create(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);
     };
 
-    class MenuOption final : public cocos2d::CCMenu {
-        using Callback = Function<void()>;
+    class MenuOptionCell final : public cocos2d::CCMenu {
+        using Callback = geode::Function<void()>;
 
     private:
         class Impl;
         std::unique_ptr<Impl> m_impl;
 
     protected:
-        MenuOption();
-        ~MenuOption();
+        MenuOptionCell();
+        ~MenuOptionCell();
 
         void onToggle(cocos2d::CCObject*);
         void onPin(cocos2d::CCObject* sender);
@@ -30,7 +30,7 @@ namespace horrible {
         bool init(cocos2d::CCSize const& size, std::weak_ptr<Option> option, geode::ZStringView theme, bool devMode, bool hasInternet);
 
     public:
-        static MenuOption* create(cocos2d::CCSize const& size, std::weak_ptr<Option> option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
+        static MenuOptionCell* create(cocos2d::CCSize const& size, std::weak_ptr<Option> option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
 
         void setPinCallback(Callback&& callback);
 

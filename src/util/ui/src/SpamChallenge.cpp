@@ -86,7 +86,7 @@ bool SpamChallenge::init() {
     return true;
 };
 
-void SpamChallenge::setCallback(Callback&& cb) & {
+void SpamChallenge::setCallback(Callback&& cb) {
     m_impl->callback = std::move(cb);
 };
 

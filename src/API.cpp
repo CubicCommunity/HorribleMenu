@@ -30,42 +30,42 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
 
 Option::Option(std::string id, const Mod* integration) : m_id(std::move(id)), m_integration(integration) {};
 
-std::shared_ptr<Option> Option::setName(std::string name) & {
+std::shared_ptr<Option> Option::setName(std::string name) {
     m_name = std::move(name);
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setDescription(std::string description) & {
+std::shared_ptr<Option> Option::setDescription(std::string description) {
     m_description = std::move(description);
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setCategory(std::string category) & {
+std::shared_ptr<Option> Option::setCategory(std::string category) {
     m_category = std::move(category);
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setSillyTier(SillyTier tier) & {
+std::shared_ptr<Option> Option::setSillyTier(SillyTier tier) {
     m_silly = tier;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setDefaultToggleState(bool state) & {
+std::shared_ptr<Option> Option::setDefaultToggleState(bool state) {
     m_default = state;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setOnline(bool online) & {
+std::shared_ptr<Option> Option::setOnline(bool online) {
     m_online = online;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setRequiresRestart(bool required) & {
+std::shared_ptr<Option> Option::setRequiresRestart(bool required) {
     m_restart = required;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setSupportedPlatforms(std::vector<Platform> platforms) & {
+std::shared_ptr<Option> Option::setSupportedPlatforms(std::vector<Platform> platforms) {
     m_platforms = std::move(platforms);
     return shared_from_this();
 };
@@ -128,7 +128,7 @@ void Option::disable() {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
 };
 
-std::shared_ptr<Option> Option::autoRegister() & {
+std::shared_ptr<Option> Option::autoRegister() {
     if (auto om = OptionManager::get()) om->registerOption(shared_from_this());
     return shared_from_this();
 };
@@ -137,11 +137,11 @@ std::shared_ptr<Option> Option::create(std::string id, const Mod* integration) {
     return std::make_shared<Option>(std::move(id), integration);
 };
 
-void OptionManager::registerCategory(std::string category) & {
+void OptionManager::registerCategory(std::string category) {
     if (!utils::string::containsAny(category, getCategories())) m_categories.push_back(std::move(category));
 };
 
-void OptionManager::registerMod(const Mod* mod) & {
+void OptionManager::registerMod(const Mod* mod) {
     if (!isModRegistered(mod->getID())) {
         log::trace("Attempting to register integrated mod {}...", mod->getID());
         if (mod->getID() == GEODE_MOD_ID) return;
@@ -151,15 +151,15 @@ void OptionManager::registerMod(const Mod* mod) & {
     };
 };
 
-bool OptionManager::doesOptionExist(ZStringView id) const& noexcept {
+bool OptionManager::doesOptionExist(ZStringView id) const noexcept {
     return m_options.find(id) != m_options.end();
 };
 
-bool OptionManager::isModRegistered(ZStringView id) const& noexcept {
+bool OptionManager::isModRegistered(ZStringView id) const noexcept {
     return m_integrations.find(id) != m_integrations.end();
 };
 
-void OptionManager::registerOption(std::shared_ptr<Option> option) & {
+void OptionManager::registerOption(std::shared_ptr<Option> option) {
     if (doesOptionExist(option->getID())) {
         log::error("Could not register option '{}' ({}) because it already exists!", option->getName(), option->getID());
     } else {
@@ -173,12 +173,12 @@ void OptionManager::registerOption(std::shared_ptr<Option> option) & {
     };
 };
 
-void OptionManager::addDelegate(ZStringView id, Callback&& callback) & {
+void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
     auto& thisDelegate = m_delegates[id];
     thisDelegate.push_back(std::move(callback));
 };
 
-std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const& {
+std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const {
     std::vector<std::weak_ptr<Option>> out;
     out.reserve(m_options.size());
 
@@ -187,11 +187,11 @@ std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const& {
     return out;
 };
 
-std::span<const std::string> OptionManager::getCategories() const& noexcept {
+std::span<const std::string> OptionManager::getCategories() const noexcept {
     return m_categories;
 };
 
-std::vector<const Mod*> OptionManager::getMods() const& {
+std::vector<const Mod*> OptionManager::getMods() const {
     std::vector<const Mod*> out;
     out.reserve(m_integrations.size());
 
@@ -200,42 +200,42 @@ std::vector<const Mod*> OptionManager::getMods() const& {
     return out;
 };
 
-bool OptionManager::isEnabled(ZStringView id) const& {
+bool OptionManager::isEnabled(ZStringView id) const {
     return getOption(id).enabled;
 };
 
-bool OptionManager::isPinned(ZStringView id) const& {
+bool OptionManager::isPinned(ZStringView id) const {
     return getOption(id).pin;
 };
 
-bool OptionManager::isViewed(ZStringView id) const& {
+bool OptionManager::isViewed(ZStringView id) const {
     return getOption(id).viewed;
 };
 
-bool OptionManager::getDefaultToggleState(ZStringView id) const& noexcept {
+bool OptionManager::getDefaultToggleState(ZStringView id) const noexcept {
     if (auto o = getOptionInfo(id).lock()) return o->getDefaultToggleState();
     return false;
 };
 
-HorribleOptionSave OptionManager::getOption(ZStringView id) const& {
+HorribleOptionSave OptionManager::getOption(ZStringView id) const {
     return Mod::get()->getSavedValue<HorribleOptionSave>(id, HorribleOptionSave{getDefaultToggleState(id)});
 };
 
-std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const& noexcept {
+std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const noexcept {
     if (auto it = m_options.find(id); it != m_options.end()) return it->second;
     return std::weak_ptr<Option>();
 };
 
-size_t OptionManager::getDelegateCount(std::string_view id) const& noexcept {
+size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
     if (auto it = m_delegates.find(id); it != m_delegates.end()) return it->second.size();
     return 0;
 };
 
-void OptionManager::toggleOption(ZStringView id, bool enable) & {
+void OptionManager::toggleOption(ZStringView id, bool enable) {
     setOption(id, enable, isPinned(id));
 };
 
-void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed) & {
+void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed) {
     auto it = m_delegates.find(id);
     if (it != m_delegates.end()) {
         for (auto& cb : it->second) cb(enable);

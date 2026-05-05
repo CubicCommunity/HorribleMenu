@@ -46,16 +46,16 @@ namespace horrible {
 
         static std::shared_ptr<Option> create(std::string id, const geode::Mod* integration = geode::Mod::get());
 
-        std::shared_ptr<Option> setName(std::string name) &;
-        std::shared_ptr<Option> setDescription(std::string description) &;
-        std::shared_ptr<Option> setCategory(std::string category) &;
-        std::shared_ptr<Option> setSillyTier(SillyTier tier) &;
-        std::shared_ptr<Option> setDefaultToggleState(bool state) &;
-        std::shared_ptr<Option> setOnline(bool online) &;
-        std::shared_ptr<Option> setRequiresRestart(bool required) &;
-        std::shared_ptr<Option> setSupportedPlatforms(std::vector<Platform> platforms) &;
+        std::shared_ptr<Option> setName(std::string name);
+        std::shared_ptr<Option> setDescription(std::string description);
+        std::shared_ptr<Option> setCategory(std::string category);
+        std::shared_ptr<Option> setSillyTier(SillyTier tier);
+        std::shared_ptr<Option> setDefaultToggleState(bool state);
+        std::shared_ptr<Option> setOnline(bool online);
+        std::shared_ptr<Option> setRequiresRestart(bool required);
+        std::shared_ptr<Option> setSupportedPlatforms(std::vector<Platform> platforms);
 
-        std::shared_ptr<Option> autoRegister() &;
+        std::shared_ptr<Option> autoRegister();
 
         [[nodiscard]] geode::ZStringView getID() const noexcept;
         [[nodiscard]] geode::ZStringView getName() const noexcept;

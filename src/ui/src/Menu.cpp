@@ -1,6 +1,6 @@
 #include "../Menu.h"
 
-#include "../MenuOption.hpp"
+#include "../MenuOptionCell.hpp"
 #include "../MenuCredits.hpp"
 #include "../MenuFilterCells.hpp"
 
@@ -49,72 +49,68 @@ public:
     std::vector<WeakRef<MenuCategoryFilterCell>> categoryItems;
 
     void filterOptions(std::vector<std::weak_ptr<Option>>&& optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
-        if (optionList) {
-            optionList->m_contentLayer->removeAllChildren();
+        optionList->m_contentLayer->removeAllChildren();
 
-            auto useCategory = !category.empty() & options::doesCategoryExist(category);
-            auto searchLower = str::toLower(searchText);
+        auto useCategory = !category.empty() && options::doesCategoryExist(category);
+        auto searchLower = str::toLower(searchText);
 
-            auto list = asp::iter::consume(optList)
-                            .filter([this, tier, category, useCategory, search = std::move(searchLower)](std::weak_ptr<Option> const& opt) {
-                                if (auto o = opt.lock()) {
-                                    auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
-                                    auto categoryMatches = !useCategory || (o->getCategory() == category);
+        auto list = asp::iter::consume(optList)
+                        .filter([this, tier, category, useCategory, search = std::move(searchLower)](std::weak_ptr<Option> const& opt) {
+                            if (auto o = opt.lock()) {
+                                auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
+                                auto categoryMatches = !useCategory || (o->getCategory() == category);
 
-                                    auto searchMatches = true;
-                                    if (!search.empty()) searchMatches = str::contains(str::toLower(o->getName()), search) || str::contains(str::toLower(o->getID()), search) || str::contains(str::toLower(o->getCategory()), search);
+                                auto searchMatches = true;
+                                if (!search.empty()) searchMatches = str::contains(str::toLower(o->getName()), search) || str::contains(str::toLower(o->getID()), search) || str::contains(str::toLower(o->getCategory()), search);
 
-                                    auto onlineCompat = o->isOnline() ? hasInternet || !hideIfOffline : true;
+                                auto onlineCompat = o->isOnline() ? hasInternet || !hideIfOffline : true;
 
-                                    return tierMatches && categoryMatches && searchMatches && onlineCompat;
-                                };
-
-                                return false;
-                            })
-                            .collect();
-
-            std::sort(list.begin(), list.end(), [](auto const& a, auto const& b) -> bool {
-                if (auto optA = a.lock(), optB = b.lock(); optA && optB) return options::isPinned(optA->getID()) > options::isPinned(optB->getID());
-                return false;
-            });
-
-            if (list.empty()) {
-                nothingLabel->setVisible(true);
-                optionList->setVisible(false);
-            } else {
-                nothingLabel->setVisible(false);
-                optionList->setVisible(true);
-
-                for (auto& oRef : list) {
-                    if (auto o = oRef.lock()) {
-                        if (auto modOption = MenuOption::create(
-                                {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
-                                std::move(oRef),
-                                theme,
-                                devMode,
-                                hasInternet)) {
-                            if (modOption->isCompatible() || showIncompatible) {
-                                modOption->setPinCallback([this]() {
-                                    filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
-                                });
-
-                                optionList->m_contentLayer->addChild(modOption);
-                            } else {
-                                log::error("{} is incompatible with the current platform", o->getID());
-                                modOption->removeFromParent();
+                                return tierMatches && categoryMatches && searchMatches && onlineCompat;
                             };
+
+                            return false;
+                        })
+                        .collect();
+
+        std::sort(list.begin(), list.end(), [](auto const& a, auto const& b) -> bool {
+            if (auto optA = a.lock(), optB = b.lock(); optA && optB) return options::isPinned(optA->getID()) > options::isPinned(optB->getID());
+            return false;
+        });
+
+        if (list.empty()) {
+            nothingLabel->setVisible(true);
+            optionList->setVisible(false);
+        } else {
+            nothingLabel->setVisible(false);
+            optionList->setVisible(true);
+
+            for (auto& oRef : list) {
+                if (auto o = oRef.lock()) {
+                    if (auto modOption = MenuOptionCell::create(
+                            {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
+                            std::move(oRef),
+                            theme,
+                            devMode,
+                            hasInternet)) {
+                        if (modOption->isCompatible() || showIncompatible) {
+                            modOption->setPinCallback([this]() {
+                                filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
+                            });
+
+                            optionList->m_contentLayer->addChild(modOption);
+                        } else {
+                            log::error("{} is incompatible with the current platform", o->getID());
+                            modOption->removeFromParent();
                         };
                     };
                 };
             };
-
-            log::trace("Finished sorting {} options", list.size());
-
-            optionList->m_contentLayer->updateLayout();
-            optionList->scrollToTop();
-        } else {
-            log::error("Option list layer not found");
         };
+
+        log::trace("Finished sorting {} options", list.size());
+
+        optionList->m_contentLayer->updateLayout();
+        optionList->scrollToTop();
     };
 
     CCLabelBMFont* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
@@ -392,7 +388,7 @@ bool Menu::init() {
 
     m_mainLayer->addChild(sillyDropdown, 9);
 
-    m_mainLayer->addChild(m_impl->createFilterLabel("Silly Tier", "silly-filter-label", {m_impl->categoryList->getPositionX(), sillyDropdown->getPositionY() + 7.5f}), 1);
+    m_mainLayer->addChild(m_impl->createFilterLabel("Silly Tier", "silly-filter-label", {m_impl->categoryList->getPositionX(), sillyDropdown->getPositionY() + 8.75f}), 1);
 
     auto filterHint = CCLabelBMFont::create("Use different filters to search for options quicker. Press the pin icon on an option cell to pin it to the top.", "chatFont.fnt", m_impl->categoryList->getScaledContentWidth());
     filterHint->setID("filter-hint");

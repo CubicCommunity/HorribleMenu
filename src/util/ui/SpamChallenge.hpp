@@ -27,7 +27,7 @@ namespace horrible {
 
             bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
 
-            void setCallback(Callback&& cb) &;
+            void setCallback(Callback&& cb);
         };
     };
 };

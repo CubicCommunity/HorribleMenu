@@ -1,4 +1,4 @@
-#include "../MenuOption.hpp"
+#include "../MenuOptionCell.hpp"
 
 #include <Utils.h>
 
@@ -50,7 +50,7 @@ MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos)
     return nullptr;
 };
 
-class MenuOption::Impl final {
+class MenuOptionCell::Impl final {
 public:
     bool compatible = false;  // If this option is compatible with the current platform
 
@@ -126,10 +126,10 @@ public:
     };
 };
 
-MenuOption::MenuOption() : m_impl(std::make_unique<Impl>()) {};
-MenuOption::~MenuOption() {};
+MenuOptionCell::MenuOptionCell() : m_impl(std::make_unique<Impl>()) {};
+MenuOptionCell::~MenuOptionCell() {};
 
-bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
     m_impl->option = std::move(option);
     m_impl->hasInternet = hasInternet;
 
@@ -152,7 +152,7 @@ bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     auto bg = cue::attachBackground(
         this,
         {
-            .opacity = 125,
+            .opacity = 175,
             .sidePadding = 0.f,
             .verticalPadding = 0.f,
             .cornerRoundness = -0.125f,
@@ -171,7 +171,7 @@ bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     togglerOn->setScale(0.875f);
 
     // toggler for the option
-    m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(MenuOption::onToggle));
+    m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(MenuOptionCell::onToggle));
     m_impl->toggler->setID("toggler");
     m_impl->toggler->setAnchorPoint({0.5f, 0.5f});
     m_impl->toggler->setPosition({x + 12.f, yCenter});
@@ -259,7 +259,7 @@ bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     pinOff->setBlendFunc({GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA});
     pinOn->setColor(themes::getColor(theme));
 
-    auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(MenuOption::onPin));
+    auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(MenuOptionCell::onPin));
     pinBtn->setID("pin-btn");
 
     pinBtn->toggle(options::isPinned(o->getID()));
@@ -332,7 +332,7 @@ bool MenuOption::init(CCSize const& size, std::weak_ptr<Option> option, ZStringV
     return true;
 };
 
-void MenuOption::onToggle(CCObject*) {
+void MenuOptionCell::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
         auto now = !m_impl->toggler->isToggled();
 
@@ -356,7 +356,7 @@ void MenuOption::onToggle(CCObject*) {
     m_impl->notifyIncompats();
 };
 
-void MenuOption::onPin(CCObject* sender) {
+void MenuOptionCell::onPin(CCObject* sender) {
     if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
         if (auto o = m_impl->option.lock()) options::set(o->getID(), options::isEnabled(o->getID()), !pinBtn->isToggled(), true);
 
@@ -365,20 +365,20 @@ void MenuOption::onPin(CCObject* sender) {
     };
 };
 
-void MenuOption::setPinCallback(Callback&& callback) {
+void MenuOptionCell::setPinCallback(Callback&& callback) {
     m_impl->pinCallback = std::move(callback);
 };
 
-std::weak_ptr<Option> const& MenuOption::getOption() const noexcept {
+std::weak_ptr<Option> const& MenuOptionCell::getOption() const noexcept {
     return m_impl->option;
 };
 
-bool MenuOption::isCompatible() const noexcept {
+bool MenuOptionCell::isCompatible() const noexcept {
     return m_impl->compatible;
 };
 
-MenuOption* MenuOption::create(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
-    auto ret = new MenuOption();
+MenuOptionCell* MenuOptionCell::create(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+    auto ret = new MenuOptionCell();
     if (ret->init(size, std::move(option), theme, devMode, hasInternet)) {
         ret->autorelease();
         return ret;

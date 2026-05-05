@@ -22,7 +22,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     m_bg = cue::attachBackground(
         this,
         {
-            .opacity = 125,
+            .opacity = 175,
             .sidePadding = 0.f,
             .verticalPadding = 0.f,
             .cornerRoundness = -0.25f,
@@ -69,7 +69,7 @@ void MenuCategoryFilterCell::onToggle(CCObject* sender) {
     if (auto toggler = typeinfo_cast<CCMenuItemToggler*>(sender)) {
         auto on = !toggler->isOn();
         if (m_toggleCallback) m_toggleCallback(m_category, on);
-        if (m_bg) m_bg->setColor(on ? colors::yellow : colors::gray);
+        if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
     };
 };
 
@@ -79,7 +79,7 @@ void MenuCategoryFilterCell::setToggleCallback(Callback&& callback) {
 
 void MenuCategoryFilterCell::setToggled(bool on) {
     if (m_toggler) m_toggler->toggle(on);
-    if (m_bg) m_bg->setColor(on ? colors::yellow : colors::gray);
+    if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
 };
 
 ZStringView MenuCategoryFilterCell::getCategory() const noexcept {

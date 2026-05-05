@@ -18,7 +18,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSupportedPlatforms({Platform::Windows, Platform::Android})
                           ->autoRegister();
 
-#if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)  // not compat with these platforms
+#if !defined(GEODE_IS_MACOS) & !defined(GEODE_IS_IOS)  // not compat with these platforms
 class $modify(MockMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
