@@ -66,6 +66,12 @@ namespace horrible {
     namespace fs = asp::fs;                // Shortcut for `asp::fs`
     namespace str = geode::utils::string;  // Shortcut for `geode::utils::string`
 
+    namespace popup {
+        inline void closeBtnID(CCMenuItemSpriteExtra* btn) {
+            if (btn) btn->setID("close-btn");
+        };
+    };
+
     // For convenience
     namespace setting {
         inline constexpr auto SafeMode = "safe-mode";

@@ -194,6 +194,8 @@ bool Menu::init() {
     setTitle("Horrible Options");
     setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, CircleBaseSize::Small));
 
+    popup::closeBtnID(m_closeBtn);
+
     m_bgSprite->setZOrder(-9);
 
     auto const mainLayerSize = m_mainLayer->getScaledContentSize();

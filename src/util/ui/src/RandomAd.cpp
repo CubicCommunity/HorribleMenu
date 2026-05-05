@@ -16,6 +16,8 @@ bool RandomAd::init() {
     setTitle("Sponsored");
     setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
 
+    popup::closeBtnID(m_closeBtn);
+
     auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
     label->setID("message");
     label->setAlignment(kCCTextAlignmentCenter);

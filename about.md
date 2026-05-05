@@ -19,7 +19,7 @@ By default, this mod implements its own safe mode to prevent making accidental p
 ---
 
 ### Integrations
-Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can find its [documentation the Wiki](https://github.com/CubicCommunity/HorribleMenu/wiki). We're hyped to see how much more you can really mess up this game.
+Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can find its [documentation in the Wiki](https://github.com/CubicCommunity/HorribleMenu/wiki). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
 using namespace horrible;

@@ -69,6 +69,8 @@ bool MenuCredits::init(ZStringView theme) {
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
+    popup::closeBtnID(m_closeBtn);
+
     auto leadDevLabel = CCLabelBMFont::create("Lead Developers", "bigFont.fnt");
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);

@@ -28,7 +28,7 @@ By default, this mod implements its own safe mode to prevent making accidental p
 ---
 
 ### Integrations
-Want to add your own insane stuff to this mod? You can register your very own horrible options by using this mod's API! You can find its [documentation the Wiki](../../wiki/). We're hyped to see how much more you can really mess up this game.
+Want to add your own insane stuff to this mod? You can register your very own horrible options by using this mod's API! You can find its [documentation in the Wiki](../../wiki/). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
 using namespace horrible;

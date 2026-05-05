@@ -18,6 +18,8 @@ bool TermsAndConditions::init(Callback&& cb) {
     setKeyboardEnabled(false);
     setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
 
+    popup::closeBtnID(m_closeBtn);
+
     m_closeBtn->setVisible(false);
     m_closeBtn->setEnabled(false);
 
