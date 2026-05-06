@@ -24,7 +24,7 @@ namespace horrible {
              * @note Recommended to balance chances when calling every frame
              */
             template <
-                typename T = int,
+                typename T = uint16_t,
                 typename = std::enable_if_t<std::is_integral_v<T>>>
             inline T tiny() {
                 return get<T>(static_cast<T>(3000), static_cast<T>(0));
@@ -32,7 +32,7 @@ namespace horrible {
 
             // Get any number between 0 and 100
             template <
-                typename T = int,
+                typename T = uint8_t,
                 typename = std::enable_if_t<std::is_integral_v<T>>>
             inline T fast() {
                 return get<T>(static_cast<T>(100), static_cast<T>(0));

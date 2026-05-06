@@ -49,7 +49,7 @@ namespace horrible {
              *
              * @returns Integer of the chance value
              */
-            unsigned int getChance(std::string_view id);
+            uint8_t getChance(std::string_view id);
 
             /**
              * Get the saved data of an option

@@ -20,7 +20,7 @@ class $modify(PausePlayerObject, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(THIS_ID);
+        uint8_t chance = options::getChance(THIS_ID);
     };
 
     void setupHasCompleted() {

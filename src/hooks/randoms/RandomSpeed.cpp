@@ -20,7 +20,7 @@ class $modify(RandomSpeedPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(THIS_ID);
+        uint8_t chance = options::getChance(THIS_ID);
     };
 
     bool pushButton(PlayerButton button) {
@@ -28,7 +28,7 @@ class $modify(RandomSpeedPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        int rnd = randng::tiny();
+        auto rnd = randng::tiny();
 
         if (rnd <= f->chance) {
             // randomly choose a new speed between 10% and 200%

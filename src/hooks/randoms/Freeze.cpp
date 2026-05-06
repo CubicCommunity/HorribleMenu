@@ -39,7 +39,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(THIS_ID);
+        uint8_t chance = options::getChance(THIS_ID);
     };
 
     void setupHasCompleted() {
@@ -48,7 +48,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (auto gm = GameManager::sharedState()) {
-            int rnd = randng::fast();
+            auto rnd = randng::fast();
             if (rnd % 100 < f->chance) capFPS(1.f);
         };
     };

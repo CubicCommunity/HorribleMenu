@@ -44,7 +44,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     };
 
     void showAFriend(float) {
-        int rnd = randng::fast();
+        auto rnd = randng::fast();
 
         float xA = -125.f;                           // starting x pos
         float xB = getScaledContentWidth() + 125.f;  // ending x pos

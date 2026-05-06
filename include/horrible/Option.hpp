@@ -20,7 +20,7 @@ namespace horrible {
     using Platform = geode::PlatformID;
 
     // How silly an option is
-    enum class SillyTier : unsigned int {
+    enum class SillyTier : uint8_t {
         None = 0,    // Null, act as placeholder
         Low = 1,     // Not so silly
         Medium = 2,  // Somewhat silly

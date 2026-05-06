@@ -18,7 +18,7 @@ static auto const o = Option::create(THIS_ID)
                           ->autoRegister();
 
 void placeboEffect() {
-    int rnd = randng::fast();
+    auto rnd = randng::fast();
     log::debug("placebo effect roll: {}", rnd);
 
     if (rnd <= 1) {  // 1% chance :trol:

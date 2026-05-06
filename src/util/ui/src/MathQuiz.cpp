@@ -1,5 +1,7 @@
 #include "../MathQuiz.hpp"
 
+#include <numbers>
+
 #include <Utils.h>
 
 #include <Geode/Geode.hpp>
@@ -11,13 +13,13 @@ class MathQuiz::Impl final {
 public:
     Richard* richard = nullptr;
 
-    int numFirst = 0;
-    int numSecond = 0;
+    int8_t numFirst = 0;
+    int8_t numSecond = 0;
 
     MathOperation operation = MathOperation::Addition;
 
-    int correctAnswer = 0;
-    std::vector<int> answers;  // 4 answer options
+    int8_t correctAnswer = 0;
+    std::vector<int8_t> answers;  // 4 answer options
 
     ProgressBar* countdown = nullptr;
     CCMenu* answerMenu = nullptr;
@@ -43,8 +45,8 @@ bool MathQuiz::init() {
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
 
-    m_impl->numFirst = randng::get(10);
-    m_impl->numSecond = randng::get(10);
+    m_impl->numFirst = randng::get(11, -11);   // trol
+    m_impl->numSecond = randng::get(11, -11);  // trol
 
     m_impl->operation = static_cast<MathOperation>(randng::get(3));
 
@@ -71,7 +73,7 @@ bool MathQuiz::init() {
         std::vector<CCPoint> polyPoints;
         polyPoints.reserve(sides);
 
-        constexpr float PI = 3.14159265358979323846f;
+        constexpr auto PI = std::numbers::pi;
         float theta = (2.f * PI) / sides;
 
         for (int i = 0; i < sides; ++i) {

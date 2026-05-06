@@ -80,9 +80,9 @@ $on_game(Loaded) {
             if (auto fb = MenuButton::get()) fb->setScale(value);
         });
 
-    listenForSettingChanges<int64_t>(
+    listenForSettingChanges<uint8_t>(
         "floating-btn-opacity",
-        [](int64_t value) {
+        [](uint8_t value) {
             if (auto fb = MenuButton::get()) fb->setOpacity(value);
         });
 

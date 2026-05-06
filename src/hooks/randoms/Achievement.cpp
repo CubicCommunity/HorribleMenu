@@ -21,7 +21,7 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(THIS_ID);
+        uint8_t chance = options::getChance(THIS_ID);
     };
 
     void activate() {
@@ -29,7 +29,7 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
 
         auto f = m_fields.self();
 
-        int rnd = randng::fast();
+        auto rnd = randng::fast();
         log::trace("button menu chance {}", rnd);
 
         // @geode-ignore(unknown-resource)

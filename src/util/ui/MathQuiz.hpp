@@ -9,7 +9,7 @@ namespace horrible {
         class MathQuiz final : public CCBlockLayer {
             using Callback = Function<void(bool)>;
 
-            enum class MathOperation : unsigned int {
+            enum class MathOperation : uint8_t {
                 Addition = 0,
                 Subtraction = 1,
                 Multiplication = 2,

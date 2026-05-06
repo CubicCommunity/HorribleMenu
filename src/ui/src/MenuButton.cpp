@@ -29,7 +29,7 @@ public:
     bool inLevel = thisMod->getSettingValue<bool>("floating-btn-level");
 
     float scale = thisMod->getSettingValue<float>("floating-btn-scale");
-    int64_t opacity = thisMod->getSettingValue<int64_t>("floating-btn-opacity");
+    uint8_t opacity = thisMod->getSettingValue<uint8_t>("floating-btn-opacity");
 
     bool isDragging = false;
     bool isMoving = false;
@@ -199,7 +199,7 @@ void MenuButton::onScaleEnd() {
     m_impl->isAnimating = false;
 };
 
-int64_t MenuButton::getOpacitySetting() const noexcept {
+uint8_t MenuButton::getOpacitySetting() const noexcept {
     return m_impl->opacity;
 };
 

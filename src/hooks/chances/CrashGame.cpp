@@ -20,7 +20,7 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(THIS_ID);
+        uint8_t chance = options::getChance(THIS_ID);
     };
 
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {
@@ -29,7 +29,7 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
         // ignore the anti-cheat spike lmao
         if (p1 == m_anticheatSpike && p0 && !p0->m_isDead) return;
 
-        int rnd = randng::fast();
+        auto rnd = randng::fast();
         log::trace("crash destroy chance {}", rnd);
 
         if (rnd <= f->chance) {

@@ -20,7 +20,7 @@ class $modify(SleepyPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        unsigned int chance = options::getChance(THIS_ID);
+        uint8_t chance = options::getChance(THIS_ID);
 
         bool m_sleepy = false;  // decelerating-to-zero stage
         bool m_waking = false;  // 5s buffer stage (cannot be re-slept)

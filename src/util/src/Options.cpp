@@ -25,8 +25,8 @@ bool options::isViewed(ZStringView id) {
     return false;
 };
 
-unsigned int options::getChance(std::string_view id) {
-    return thisMod->getSettingValue<unsigned int>(fmt::format("{}-chance", id));
+uint8_t options::getChance(std::string_view id) {
+    return thisMod->getSettingValue<uint8_t>(fmt::format("{}-chance", id));
 };
 
 HorribleOptionSave options::get(ZStringView id) {

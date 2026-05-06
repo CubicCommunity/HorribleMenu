@@ -84,7 +84,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
         // ignore the anti-cheat spike lmao
         if (game == m_anticheatSpike && player && !player->m_isDead) return;
 
-        int rnd = randng::fast();
+        auto rnd = randng::fast();
         if (f->m_health > 0) {
             f->m_health -= 0.1f;
 

@@ -49,6 +49,9 @@ using namespace horrible::prelude;
 // Then get to writing!
 ```
 
+#### AI Usage
+View our stance on AI and how to use it for this project **[here](AGENTS.md)**.
+
 ## Reporting Issues
 If you found a bug or want to make a suggestion, you're welcome to [open an issue](../../issues/) describing your case. Please be sure to provide as many details as possible. If you're having issues with crashing, please always provide a crashlog.
 

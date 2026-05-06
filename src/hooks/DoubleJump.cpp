@@ -20,18 +20,18 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        int m_jumps = 0;
+        uint8_t jumps = 0;
     };
 
     bool pushButton(PlayerButton p0) {
         auto f = m_fields.self();
 
         if (p0 == PlayerButton::Jump) {
-            if (m_isOnGround) f->m_jumps = 0;
-            if (!m_isOnGround) f->m_jumps++;
+            if (m_isOnGround) f->jumps = 0;
+            if (!m_isOnGround) f->jumps++;
         };
 
-        m_isOnGround = f->m_jumps < 2;
+        m_isOnGround = f->jumps < 2;
 
         return PlayerObject::pushButton(p0);
     };

@@ -43,7 +43,7 @@ namespace horrible {
         void setTheme(std::string theme);
         void setButtonIcon(std::string icon);
 
-        int64_t getOpacitySetting() const noexcept;
+        uint8_t getOpacitySetting() const noexcept;
         float getScaleSetting() const noexcept;
         bool showInLevel() const noexcept;
     };
