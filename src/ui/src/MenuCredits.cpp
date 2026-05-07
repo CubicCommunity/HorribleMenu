@@ -67,9 +67,9 @@ bool MenuCredits::init(ZStringView theme) {
     setTitle("Credits");
     setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, CircleBaseSize::Small));
 
-    addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
-
     popup::closeBtnID(m_closeBtn);
+
+    addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
     auto leadDevLabel = CCLabelBMFont::create("Lead Developers", "bigFont.fnt");
     leadDevLabel->setID("lead-dev-label");
