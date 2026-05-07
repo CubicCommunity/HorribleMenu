@@ -369,19 +369,19 @@ bool Menu::init() {
     });
 
     constexpr TierFilterBtnData filterBtns[] = {
-        {SillyTier::None, "All", "filter-none-btn", colors::white},
+        {SillyTier::None, "Any", "filter-none-btn", colors::white},
         {SillyTier::Low, "Low", "filter-low-btn", colors::green},
         {SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow},
         {SillyTier::High, "High", "filter-high-btn", colors::red},
     };
 
-    for (auto const& filterBtn : filterBtns) {
+    for (auto const& fBtn : filterBtns) {
         if (auto cell = MenuSillyFilterCell::create(
                 {sillyDropdown->getScaledContentWidth(), 16.5f},
-                filterBtn.tier,
-                filterBtn.id,
-                filterBtn.label,
-                filterBtn.color)) {
+                fBtn.tier,
+                fBtn.id,
+                fBtn.label,
+                fBtn.color)) {
             sillyDropdown->addCell(cell);
         } else {
             log::error("Failed to create filter button");
