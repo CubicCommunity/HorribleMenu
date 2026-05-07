@@ -45,9 +45,6 @@ bool MathQuiz::init() {
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
 
-    m_impl->numFirst = randng::get(11, -11);   // trol
-    m_impl->numSecond = randng::get(11, -11);  // trol
-
     m_impl->operation = static_cast<MathOperation>(randng::get(3));
 
     auto const winSize = CCDirector::sharedDirector()->getWinSize();
@@ -59,7 +56,7 @@ bool MathQuiz::init() {
     if (m_impl->operation == MathOperation::Geometry) {
         problemText = "How many sides does this shape have?";
 
-        int sides = randng::get(10, 3);
+        auto sides = randng::get<uint8_t>(10, 3);
         m_impl->correctAnswer = sides;
 
         // draw node and polygon points
@@ -73,8 +70,8 @@ bool MathQuiz::init() {
         std::vector<CCPoint> polyPoints;
         polyPoints.reserve(sides);
 
-        constexpr auto PI = std::numbers::pi;
-        float theta = (2.f * PI) / sides;
+        constexpr auto PI = std::numbers::pi * 2.0;
+        auto theta = PI / sides;
 
         for (int i = 0; i < sides; ++i) {
             auto angle = theta * i - PI / 2.f;  // start at top
@@ -94,6 +91,9 @@ bool MathQuiz::init() {
 
         if (m_impl->drawNode->drawPolygon(polyPoints.data(), static_cast<unsigned int>(polyPoints.size()), fillColor, 2.f, borderColor)) addChild(m_impl->drawNode, 99);
     } else {
+        m_impl->numFirst = randng::get(11);
+        m_impl->numSecond = randng::get(11);
+
         std::string operation;
         switch (m_impl->operation) {
             default: [[fallthrough]];
@@ -176,7 +176,6 @@ bool MathQuiz::init() {
         };
     };
 
-    // Shuffle the answers
     utils::random::shuffle(m_impl->answers);
 
     // richard floating lol
@@ -208,17 +207,15 @@ bool MathQuiz::init() {
     m_impl->answerMenu->setLayout(answerMenuLayout);
 
     for (int i = 0; i < m_impl->answers.size(); i++) {
-        auto btnSprite = ButtonSprite::create(
-            fmt::format("{}", m_impl->answers[i]).c_str(),
-            80.f,
-            true,
-            "bigFont.fnt",
-            themes::getButtonSquareSprite(theme),
-            0,
-            0.825f);
-
         auto answerBtn = Button::createWithNode(
-            btnSprite,
+            ButtonSprite::create(
+                fmt::format("{}", m_impl->answers[i]).c_str(),
+                80.f,
+                true,
+                "bigFont.fnt",
+                themes::getButtonSquareSprite(theme),
+                0,
+                0.825f),
             [this, selectedAnswer = m_impl->answers[i]](auto) {
                 unscheduleUpdate();
 
@@ -247,7 +244,6 @@ bool MathQuiz::init() {
                     CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)),
                     nullptr));
 
-                setKeypadEnabled(false);
                 setCorrect(correct);
             });
         answerBtn->setID("submit-answer-btn");
@@ -305,8 +301,6 @@ void MathQuiz::update(float dt) {
     if (m_impl->timeRemaining <= 0.f) {
         // automatic incorrect
         setCorrect(false);
-
-        // Notification::create("Time's Up!", NotificationIcon::Error, 1.5f)->show();
 
         auto const winSize = CCDirector::sharedDirector()->getWinSize();
 

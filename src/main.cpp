@@ -2,6 +2,7 @@
 
 #include <ranges>
 
+#include <ui/Menu.h>
 #include <ui/MenuButton.h>
 #include <ui/SettingV3.h>
 
@@ -33,7 +34,10 @@ static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
 
 $on_game(Loaded) {
     (void)thisMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
-    if (auto fb = MenuButton::get()) OverlayManager::get()->addChild(fb);
+
+    if (auto om = OverlayManager::get()) {
+        if (auto fb = MenuButton::get()) om->addChild(fb);
+    };
 
     listenForSettingChanges<bool>(
         setting::SafeMode,
@@ -111,7 +115,7 @@ class $modify(HISafeGJGameLevel, GJGameLevel) {
     HORRIBLE_HOOK_INTERNAL(s_safeModeHooks);
 
     void savePercentage(int, bool, int, int, bool) {
-        log::warn("Safe mode is enabled, progress will not be saved!");
+        log::warn("Safe mode is enabled, so progress will not be saved!");
     };
 };
 
@@ -121,7 +125,7 @@ class $modify(HISafePlayLayer, PlayLayer) {
 
     // safe mode prevents level completion
     void levelComplete() {
-        log::warn("Safe mode is enabled, progress will not be saved");
+        log::warn("Safe mode is enabled, so progress will not be saved");
 
         bool testMode = m_isTestMode;
 
@@ -177,8 +181,9 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
 
     void toggleButton(bool toggle = false) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
+
         if (auto fb = MenuButton::get()) {
-            auto toggleTo = thisMod->getSettingValue<bool>(setting::FloatingBtn) & (fb->showInLevel() || toggle);
+            auto toggleTo = thisMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle);
 
             fb->setVisible(toggleTo);
             fb->setTouchEnabled(toggleTo);

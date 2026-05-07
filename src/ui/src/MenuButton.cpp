@@ -2,6 +2,8 @@
 
 #include <Utils.h>
 
+#include <ui/Menu.h>
+
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;

@@ -42,4 +42,16 @@ namespace horrible {
 
         static Menu* get() noexcept;
     };
+
+    // Menu-related utilities
+    namespace menu {
+        // Open the Horrible Menu mod option menu
+        inline void open() {
+            if (auto old = Menu::get()) {
+                old->removeFromParent();
+            } else if (auto popup = Menu::create()) {
+                popup->show();
+            };
+        };
+    };
 };

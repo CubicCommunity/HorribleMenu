@@ -27,7 +27,7 @@ class $modify(GravityPlayerObject, PlayerObject) {
     void updateJump(float p0) {
         auto f = m_fields.self();
 
-        float newGrav = std::round(randng::pc() * (2.5f) * 100.f) / 100.f;
+        auto newGrav = std::round(randng::pc() * (2.5f) * 100.f) / 100.f;
         auto onGrnd = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
 
         // Only set gravity if on flat ground (not on a slope) and not rotating

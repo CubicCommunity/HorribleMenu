@@ -5,7 +5,6 @@
 
 #include <util/Cursor.hpp>
 #include <util/Jumpscares.hpp>
-#include <util/Menu.hpp>
 #include <util/Options.hpp>
 #include <util/Randng.hpp>
 #include <util/Themes.hpp>

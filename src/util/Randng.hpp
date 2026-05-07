@@ -20,30 +20,27 @@ namespace horrible {
             };
 
             /**
-             * Get any number between 0 and 3000
+             * Get any number between 0 and 2048
              * @note Recommended to balance chances when calling every frame
              */
-            template <
-                typename T = uint16_t,
-                typename = std::enable_if_t<std::is_integral_v<T>>>
-            inline T tiny() {
-                return get<T>(static_cast<T>(3000), static_cast<T>(0));
+            inline uint16_t tiny() {
+                return get<uint16_t>(2048, 0);
             };
 
             // Get any number between 0 and 100
-            template <
-                typename T = uint8_t,
-                typename = std::enable_if_t<std::is_integral_v<T>>>
-            inline T fast() {
-                return get<T>(static_cast<T>(100), static_cast<T>(0));
+            inline uint8_t fast() {
+                return get<uint8_t>(100, 0);
             };
 
-            // Get any percent decimal between 0 and 1
-            template <
-                typename F = float,
-                typename = std::enable_if_t<std::is_floating_point_v<F>>>
-            inline F pc() {
-                return static_cast<F>(fast<int>()) / static_cast<F>(100);
+            /**
+             * Get any percent decimal between 0 and 1
+             *
+             * @param max The maximum number to get
+             * @param min The minimum number to get
+             */
+            inline float pc(uint8_t precision = 2) {
+                auto factor = static_cast<float>(std::pow(10, precision));
+                return std::round(get(1.f) * factor) / factor;
             };
         };
     };
