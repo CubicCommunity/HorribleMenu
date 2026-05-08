@@ -13,7 +13,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     setID("nothing-label");
     setPosition(pos);
     setContentSize(size);
-    setAnchorPoint({0.5, 0.5});
+    setAnchorPoint(anchor::center);
     setVisible(false);
 
     auto label = CCLabelBMFont::create("No options found :(", "bigFont.fnt");
@@ -173,7 +173,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     // toggler for the option
     m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(MenuOptionCell::onToggle));
     m_impl->toggler->setID("toggler");
-    m_impl->toggler->setAnchorPoint({0.5f, 0.5f});
+    m_impl->toggler->setAnchorPoint(anchor::center);
     m_impl->toggler->setPosition({x + 12.f, yCenter});
     m_impl->toggler->setScale(0.875f);
 

@@ -37,7 +37,7 @@ MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {};
 MathQuiz::~MathQuiz() {};
 
 bool MathQuiz::init() {
-    auto const theme = thisMod->getSettingValue<std::string>("theme");
+    auto const theme = mod->getSettingValue<std::string>("theme");
 
     if (!CCBlockLayer::init()) return false;
 
@@ -151,7 +151,7 @@ bool MathQuiz::init() {
     m_impl->countdown->setID("countdown");
     m_impl->countdown->setFillColor(colors::yellow);
     m_impl->countdown->setStyle(ProgressBarStyle::Solid);
-    m_impl->countdown->setAnchorPoint({0.5, 0.5});
+    m_impl->countdown->setAnchorPoint(anchor::center);
     m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});
 
     m_impl->countdown->updateProgress(100.f);
@@ -229,10 +229,10 @@ bool MathQuiz::init() {
                 auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", "goldFont.fnt");
                 feedbackLabel->setID("feedback-label");
                 feedbackLabel->setScale(0.125f);
-                feedbackLabel->setAnchorPoint({0.5, 0.5});
+                feedbackLabel->setColor(correct ? colors::green : colors::red);
+                feedbackLabel->setAnchorPoint(anchor::center);
                 feedbackLabel->setAlignment(kCCTextAlignmentCenter);
                 feedbackLabel->setPosition(winSize / 2.f);
-                feedbackLabel->setColor(correct ? colors::green : colors::red);
 
                 addChild(feedbackLabel, 9);
 
@@ -308,11 +308,11 @@ void MathQuiz::update(float dt) {
 
         auto feedbackLabel = CCLabelBMFont::create("Time's Up!", "goldFont.fnt");
         feedbackLabel->setID("feedback-label");
-        feedbackLabel->setAnchorPoint({0.5, 0.5});
+        feedbackLabel->setColor(colors::red);
+        feedbackLabel->setAnchorPoint(anchor::center);
         feedbackLabel->setAlignment(kCCTextAlignmentCenter);
         feedbackLabel->setPosition(winSize / 2.f);
         feedbackLabel->setScale(0.1f);
-        feedbackLabel->setColor(colors::red);
 
         addChild(feedbackLabel, 999);
 
@@ -344,7 +344,7 @@ bool Richard::init() {
 
     auto sprite = CCSprite::createWithSpriteFrameName("diffIcon_02_btn_001.png");
     sprite->setID("richard");
-    sprite->setAnchorPoint({0.5f, 0.5f});
+    sprite->setAnchorPoint(anchor::center);
     sprite->setScale(5.f);
 
     setContentSize(sprite->getScaledContentSize());

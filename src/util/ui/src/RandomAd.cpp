@@ -8,7 +8,7 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 bool RandomAd::init() {
-    auto const theme = thisMod->getSettingValue<std::string>("theme");
+    auto const theme = mod->getSettingValue<std::string>("theme");
 
     if (!Popup::init(375.f, 250.f, themes::getBackgroundSprite(theme))) return false;
 
@@ -22,14 +22,14 @@ bool RandomAd::init() {
     label->setID("message");
     label->setAlignment(kCCTextAlignmentCenter);
     label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
-    label->setAnchorPoint({0.5, 0.5});
+    label->setAnchorPoint(anchor::center);
 
     m_mainLayer->addChild(label);
 
     // featured project thumbnail
     auto projThumb = LazySprite::create({192.f, 108.f}, true);
     projThumb->setID("thumbnail");
-    projThumb->setAnchorPoint({0.5, 0.5});
+    projThumb->setAnchorPoint(anchor::center);
     projThumb->setPosition({m_mainLayer->getContentWidth() / 2.f, 110.f});
 
     projThumb->setLoadCallback([thumbnail = WeakRef(projThumb)](Result<> res) {

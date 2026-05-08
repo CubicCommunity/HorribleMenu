@@ -21,26 +21,26 @@ Menu* Menu::s_inst = nullptr;
 
 class Menu::Impl final {
 public:
-    bool devMode = thisMod->getSettingValue<bool>("dev-mode");
+    bool devMode = mod->getSettingValue<bool>("dev-mode");
 
     SillyTier selectedTier = SillyTier::None;
     std::string selectedCategory = "";
 
     std::string searchText = "";
 
-    bool showIncompatible = thisMod->getSettingValue<bool>("show-incompatible");
+    bool showIncompatible = mod->getSettingValue<bool>("show-incompatible");
 
     ScrollLayer* optionList = nullptr;
     ScrollLayer* categoryList = nullptr;
     TextInput* searchInput = nullptr;
 
     bool hasInternet = GameToolbox::doWeHaveInternet();
-    bool hideIfOffline = thisMod->getSettingValue<bool>("hide-if-offline");
+    bool hideIfOffline = mod->getSettingValue<bool>("hide-if-offline");
 
     MenuNothingNode* nothingLabel = nullptr;
 
-    bool safeMode = thisMod->getSettingValue<bool>(setting::SafeMode);
-    std::string const theme = thisMod->getSettingValue<std::string>("theme");
+    bool safeMode = mod->getSettingValue<bool>(setting::SafeMode);
+    std::string const theme = mod->getSettingValue<std::string>("theme");
 
     CCNode* safeModeContainer = nullptr;
     LazySprite* themeBackground = nullptr;
@@ -117,7 +117,7 @@ public:
         auto label = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
         label->setID(std::move(id));
         label->setScale(0.375f);
-        label->setAnchorPoint({0.5, 0.5});
+        label->setAnchorPoint(anchor::center);
         label->setPosition(pos);
 
         return label;
@@ -224,7 +224,7 @@ bool Menu::init() {
     // scroll layer
     m_impl->categoryList = ScrollLayer::create({(mainLayerSize.width / 3.f) - 20.f, 100.f});
     m_impl->categoryList->setID("category-list");
-    m_impl->categoryList->setAnchorPoint({0.5, 0.5});
+    m_impl->categoryList->setAnchorPoint(anchor::center);
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
     m_impl->categoryList->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height - 70.f) - (m_impl->categoryList->getScaledContentHeight() / 2.f)});
 
@@ -291,7 +291,7 @@ bool Menu::init() {
 
     m_impl->optionList = ScrollLayer::create({(mainLayerSize.width / 1.5f) - 43.75f, mainLayerSize.height - 93.25f});
     m_impl->optionList->setID("options-list");
-    m_impl->optionList->setAnchorPoint({0.5, 0.5});
+    m_impl->optionList->setAnchorPoint(anchor::center);
     m_impl->optionList->ignoreAnchorPointForPosition(false);
     m_impl->optionList->setPosition({(mainLayerSize.width / 2.f) - 82.5f, (mainLayerSize.height / 2.f) - 31.25f});
 
@@ -395,7 +395,7 @@ bool Menu::init() {
     auto filterHint = CCLabelBMFont::create("Use different filters to search for options quicker. Press the pin icon on an option cell to pin it to the top.", "chatFont.fnt", m_impl->categoryList->getScaledContentWidth());
     filterHint->setID("filter-hint");
     filterHint->setScale(0.5f);
-    filterHint->setAnchorPoint({0.5, 0.5});
+    filterHint->setAnchorPoint(anchor::center);
     filterHint->setAlignment(kCCTextAlignmentCenter);
     filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
 
@@ -411,7 +411,7 @@ bool Menu::init() {
             1.f,
             btns),
         [](auto) {
-            openSettingsPopup(thisMod);
+            openSettingsPopup(mod);
         });
     settingsBtn->setID("settings-btn");
     settingsBtn->setScale(0.625f);
@@ -487,7 +487,7 @@ bool Menu::init() {
             {"geode.loader/gift.png",
                 "support-btn",
                 [](auto) {
-                    openSupportPopup(thisMod);
+                    openSupportPopup(mod);
                 }}});
 
     for (auto& socialBtn : socialBtns) {
@@ -520,17 +520,17 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->safeModeContainer, 9);
 
     setupSafeModeNode(m_impl->safeMode);
-    setupImageBackground(thisMod->getSettingValue<fs::path>("theme-background"));
+    setupImageBackground(mod->getSettingValue<fs::path>("theme-background"));
 
     addEventListener(
-        SettingChangedEvent(thisMod, setting::SafeMode),
+        SettingChangedEvent(mod, setting::SafeMode),
         [this](std::shared_ptr<SettingV3> setting) {
             auto settingBool = std::static_pointer_cast<BoolSettingV3>(setting);
             setupSafeModeNode(settingBool->getValue());
         });
 
     addEventListener(
-        SettingChangedEvent(thisMod, "theme-background"),
+        SettingChangedEvent(mod, "theme-background"),
         [this](std::shared_ptr<SettingV3> setting) {
             auto settingPath = std::static_pointer_cast<FileSettingV3>(setting);
             setupImageBackground(settingPath->getValue());

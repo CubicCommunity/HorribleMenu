@@ -20,7 +20,7 @@ bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int c
                       ->setAutoScale(false);
 
     setLayout(layout);
-    setAnchorPoint({0.5, 0.5});
+    setAnchorPoint(anchor::center);
 
     auto playerIcon = cue::PlayerIcon::create(IconType::Cube, icon, color1, color2, glowColor);
 
@@ -74,7 +74,7 @@ bool MenuCredits::init(ZStringView theme) {
     auto leadDevLabel = CCLabelBMFont::create("Lead Developers", "bigFont.fnt");
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);
-    leadDevLabel->setAnchorPoint({0.5, 0.5});
+    leadDevLabel->setAnchorPoint(anchor::center);
     leadDevLabel->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 91.25f});
 
     m_mainLayer->addChild(leadDevLabel);
@@ -86,7 +86,7 @@ bool MenuCredits::init(ZStringView theme) {
 
     auto leadDevContainer = CCNode::create();
     leadDevContainer->setID("lead-dev-container");
-    leadDevContainer->setAnchorPoint({0.5, 0.5});
+    leadDevContainer->setAnchorPoint(anchor::center);
     leadDevContainer->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, leadDevLabel->getPositionY() - 35.f});
     leadDevContainer->setLayout(leadDevContainerLayout);
 
@@ -174,7 +174,7 @@ bool MenuCredits::init(ZStringView theme) {
             1.f,
             btns),
         [](auto) {
-            openInfoPopup(thisMod);
+            openInfoPopup(mod);
         });
     modBtn->setID("mod-information-btn");
     modBtn->setScale(0.5f);

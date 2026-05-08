@@ -37,7 +37,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
             f->m_healthBar = ProgressBar::create();
             f->m_healthBar->setID("health-bar"_spr);
             f->m_healthBar->setFillColor(colors::red);
-            f->m_healthBar->setAnchorPoint({0.5f, 0.5f});
+            f->m_healthBar->setAnchorPoint(anchor::center);
             f->m_healthBar->setPosition({10.f, getScaledContentHeight() / 2.f});
             f->m_healthBar->setRotation(-90.f);
 

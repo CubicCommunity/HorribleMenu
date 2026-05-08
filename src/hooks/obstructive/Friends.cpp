@@ -57,8 +57,6 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto rA = randng::pc();
         auto rB = randng::pc();
 
-        log::trace("friend starts at height percent {} and ends at {}", rA, rB);
-
         auto yA = uiSize.height * rA;  // starting height pos
         auto yB = uiSize.height * rB;  // ending height pos
 

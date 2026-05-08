@@ -42,7 +42,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
         this,
         menu_selector(MenuCategoryFilterCell::onToggle));
     m_toggler->setID("toggler");
-    m_toggler->setAnchorPoint({0.5f, 0.5f});
+    m_toggler->setAnchorPoint(anchor::center);
     m_toggler->setPosition({10.f, getScaledContentHeight() / 2.f});
     m_toggler->setScale(0.875f);
 
@@ -120,7 +120,7 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
     auto tierLabel = CCLabelBMFont::create(label.c_str(), "bigFont.fnt");
     tierLabel->setID("label");
     tierLabel->setScale(0.5f);
-    tierLabel->setAnchorPoint({0.5, 0.5});
+    tierLabel->setAnchorPoint(anchor::center);
     tierLabel->setPosition(getScaledContentSize() / 2.f);
 
     addChild(tierLabel, 1);

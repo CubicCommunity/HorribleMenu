@@ -20,7 +20,7 @@ static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
 #define HORRIBLE_HOOK_INTERNAL(hookVector, settingId)                                  \
     static void onModify(auto& self) {                                                 \
         utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;                 \
-        auto enable = thisMod->getSettingValue<bool>(settingId);                       \
+        auto enable = mod->getSettingValue<bool>(settingId);                           \
                                                                                        \
         for (auto& hook : hooks | std::views::values) {                                \
             hook->setAutoEnable(enable);                                               \
@@ -33,7 +33,7 @@ static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
     }
 
 $on_game(Loaded) {
-    (void)thisMod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
+    (void)mod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
 
     if (auto om = OverlayManager::get()) {
         if (auto fb = MenuButton::get()) om->addChild(fb);
@@ -139,7 +139,7 @@ class $modify(HIFloatBtnPauseLayer, PauseLayer) {
     HORRIBLE_HOOK_INTERNAL(s_floatingBtnHooks, setting::FloatingBtn);
 
     void customSetup() {
-        auto toggle = thisMod->getSettingValue<bool>(setting::FloatingBtn);
+        auto toggle = mod->getSettingValue<bool>(setting::FloatingBtn);
 
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
         if (auto fb = MenuButton::get()) {
@@ -183,7 +183,7 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
 
         if (auto fb = MenuButton::get()) {
-            auto toggleTo = thisMod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle);
+            auto toggleTo = mod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle);
 
             fb->setVisible(toggleTo);
             fb->setTouchEnabled(toggleTo);

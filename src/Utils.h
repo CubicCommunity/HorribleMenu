@@ -30,7 +30,7 @@
 // Additional utility methods for Horrible Menu
 namespace horrible {
     // Pointer to this Geode mod
-    inline static Mod* thisMod = geode::Mod::get();
+    inline static Mod* mod = geode::Mod::get();
 
     /**
      * Convert a chance setting number to a cooldown percentage decimal
@@ -85,6 +85,11 @@ namespace horrible {
         inline constexpr auto chances = "Chances";
         inline constexpr auto obstructive = "Obstructive";
         inline constexpr auto misc = "Misc";
+    };
+
+    // got tired of typing {0.5, 0.5} a billion times
+    namespace anchor {
+        inline constexpr cocos2d::CCPoint center = {0.5f, 0.5f};
     };
 
     // All namespace includes

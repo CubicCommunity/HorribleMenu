@@ -70,7 +70,7 @@ bool SpamChallenge::init() {
 
     m_impl->countdown = ProgressBar::create();
     m_impl->countdown->setID("countdown");
-    m_impl->countdown->setAnchorPoint({0.5, 0.5});
+    m_impl->countdown->setAnchorPoint(anchor::center);
     m_impl->countdown->setFillColor(colors::yellow);
     m_impl->countdown->setStyle(ProgressBarStyle::Solid);
     m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});

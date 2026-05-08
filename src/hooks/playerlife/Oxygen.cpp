@@ -43,7 +43,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
             f->m_oxygenBar = ProgressBar::create();
             f->m_oxygenBar->setID("oxygen-bar"_spr);
             f->m_oxygenBar->setFillColor(colors::cyan);
-            f->m_oxygenBar->setAnchorPoint({0.5f, 0.5f});
+            f->m_oxygenBar->setAnchorPoint(anchor::center);
             f->m_oxygenBar->setPosition({10.f, getScaledContentHeight() / 2.f});
             f->m_oxygenBar->setRotation(-90.f);
 

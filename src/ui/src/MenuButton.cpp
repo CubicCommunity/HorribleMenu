@@ -28,10 +28,10 @@ matjson::Value matjson::Serialize<CCPoint>::toJson(CCPoint const& value) {
 
 class MenuButton::Impl final {
 public:
-    bool inLevel = thisMod->getSettingValue<bool>("floating-btn-level");
+    bool inLevel = mod->getSettingValue<bool>("floating-btn-level");
 
-    float scale = thisMod->getSettingValue<float>("floating-btn-scale");
-    uint8_t opacity = thisMod->getSettingValue<uint8_t>("floating-btn-opacity");
+    float scale = mod->getSettingValue<float>("floating-btn-scale");
+    uint8_t opacity = mod->getSettingValue<uint8_t>("floating-btn-opacity");
 
     bool isDragging = false;
     bool isMoving = false;
@@ -44,8 +44,8 @@ public:
 
     bool isAnimating = false;
 
-    std::string theme = thisMod->getSettingValue<std::string>("theme");
-    std::string btnIcon = thisMod->getSettingValue<std::string>("floating-btn-icon");
+    std::string theme = mod->getSettingValue<std::string>("theme");
+    std::string btnIcon = mod->getSettingValue<std::string>("floating-btn-icon");
 
     bool isDistant(CCPoint const& ccp1, CCPoint const& ccp2, float max) const {
         return ccpDistance(ccp1, ccp2) <= max;
@@ -70,7 +70,7 @@ void MenuButton::setupSprite() {
     setScale(m_impl->scale);      // set initial scale
     setOpacity(m_impl->opacity);  // set initial opacity
 
-    setVisible(thisMod->getSettingValue<bool>(setting::FloatingBtn));  // set initial visibility
+    setVisible(mod->getSettingValue<bool>(setting::FloatingBtn));  // set initial visibility
 
     addChild(m_impl->sprite);
 };
@@ -79,8 +79,8 @@ bool MenuButton::init() {
     if (!CCLayer::init()) return false;
 
     setID("menu-btn"_spr);
-    setAnchorPoint({0.5, 0.5});
-    setPosition(thisMod->getSavedValue<CCPoint>("menu-pos", m_impl->screenSize - 75.f));
+    setAnchorPoint(anchor::center);
+    setPosition(mod->getSavedValue<CCPoint>("menu-pos", m_impl->screenSize - 75.f));
     setTouchMode(kCCTouchesOneByOne);
     setTouchEnabled(true);
     setTouchPriority(-512);  // ewww touch priority
@@ -169,7 +169,7 @@ void MenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
 
         m_impl->isDragging = false;
 
-        thisMod->setSavedValue<CCPoint>("menu-pos", getPosition());
+        mod->setSavedValue<CCPoint>("menu-pos", getPosition());
 
         if (m_impl->sprite) {
             m_impl->isAnimating = true;

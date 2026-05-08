@@ -34,23 +34,25 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
 
         auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-        auto blackScreen = NineSlice::create("square02_001.png");
+        auto blackScreen = CCLayerColor::create();
         blackScreen->setID("blink"_spr);
-        blackScreen->setContentSize({winSize.width + 10.f, winSize.height + 10.f});
+        blackScreen->setColor(colors::black);
+        blackScreen->setAnchorPoint(anchor::center);
+        blackScreen->setContentSize(winSize);
         blackScreen->setPosition(winSize / 2.f);
 
         m_uiLayer->addChild(blackScreen, 99);
 
         // Schedule removal after 0.5 seconds, then schedule to show again after a random delay
         blackScreen->runAction(CCSequence::createWithTwoActions(
-            CCDelayTime::create(0.25f),
+            CCDelayTime::create(randng::get(0.25f, 0.125f)),
             CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))));
     };
 
     void removeBlackScreen(CCNode* sender) {
         cue::resetNode(sender);
 
-        float delay = randng::get(3.f);  // random delay between 0 and 3 seconds
+        auto delay = randng::get(3.75f);
         log::debug("Black screen will appear again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);
