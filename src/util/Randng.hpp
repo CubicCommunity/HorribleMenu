@@ -16,7 +16,11 @@ namespace horrible {
                 typename T = int,
                 typename = std::enable_if_t<std::is_arithmetic_v<T>>>
             inline T get(T max, T min = static_cast<T>(0)) {
-                return geode::utils::random::generate<T>(min, max + static_cast<T>(1));
+                if constexpr (std::is_integral_v<T>) {
+                    return geode::utils::random::generate<T>(min, max + static_cast<T>(1));
+                } else {
+                    return geode::utils::random::generate<T>(min, max);
+                };
             };
 
             /**

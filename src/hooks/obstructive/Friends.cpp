@@ -37,19 +37,19 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        auto delay = randng::get(3.f);
+        auto delay = randng::get(1.25f);
         log::trace("Friend will visit after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);
     };
 
     void showAFriend(float) {
-        auto rnd = randng::fast();
+        auto const uiSize = m_uiLayer->getScaledContentSize();
 
-        float xA = -125.f;                           // starting x pos
-        float xB = getScaledContentWidth() + 125.f;  // ending x pos
+        auto xA = -125.f;                // starting x pos
+        auto xB = uiSize.width + 125.f;  // ending x pos
 
-        if ((static_cast<float>(rnd) / 2) <= 50.0) {
+        if ((static_cast<float>(randng::fast()) / 2.f) <= 50.f) {
             xA = xB;
             xB = -125.f;
         };  // swap sides
@@ -57,12 +57,14 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto rA = randng::pc();
         auto rB = randng::pc();
 
-        float yA = getScaledContentHeight() * rA;  // starting height pos
-        float yB = getScaledContentHeight() * rB;  // ending height pos
+        log::trace("friend starts at height percent {} and ends at {}", rA, rB);
+
+        auto yA = uiSize.height * rA;  // starting height pos
+        auto yB = uiSize.height * rB;  // ending height pos
 
         auto friendSpr = CCSprite::createWithSpriteFrameName(s_friends[randng::get(s_friends.size() - 1)]);
         friendSpr->setPosition({xA, yA});
-        friendSpr->setScale(1.25 * (rB + rA));
+        friendSpr->setScale(0.875f * (rB + rA));
         friendSpr->setRotation(180.f * (yA * yB));  // random rotation
 
         auto dur = 12.5f * rA;
@@ -80,11 +82,11 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     };
 
     void cleanupFriend(CCNode* sender) {
-        if (sender) sender->removeFromParent();
+        cue::resetNode(sender);
     };
 
     void scheduleNextFriend() {
-        auto delay = randng::get(5.f);
+        auto delay = randng::get(2.5f);
         log::trace("Friend will visit again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);

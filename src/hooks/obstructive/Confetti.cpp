@@ -10,7 +10,7 @@ using namespace horrible::prelude;
 #define THIS_ID "confetti"
 
 static auto const o = Option::create(THIS_ID)
-                          ->setName("Confetti Explosion")
+                          ->setName("Confetti Explosions")
                           ->setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
                           ->setSillyTier(SillyTier::Medium)
@@ -56,14 +56,14 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         sfx::play(sfx::file::bad);
         shakeCamera(1.25f, 2.5f, 0.00875f);
 
-        for (int i = 0; i < randng::get(125, 75); i++) createConfetti();
+        for (int i = 0; i < randng::get(150, 75); i++) createConfetti();
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
     };
 
     void createConfetti() {
         auto conf = CCSprite::createWithSpriteFrameName(s_confettis[randng::get(s_confettis.size() - 1)]);
-        conf->setScale(0.875f * randng::pc());
+        conf->setScale(0.5f * randng::pc());
 
         auto useY = randng::get(1) > 0;
         auto const endPos = ccp(
@@ -82,6 +82,6 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     };
 
     void cleanConfetti(CCNode* sender) {
-        if (sender) sender->removeFromParent();
+        cue::resetNode(sender);
     };
 };

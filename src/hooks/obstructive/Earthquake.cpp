@@ -25,7 +25,7 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
     };
 
     void nextQuake(float) {
-        auto delay = randng::get(3.f, 1.f);
+        auto delay = randng::get(5.f, 1.f);
         log::trace("scheduling quake in {}s", delay);
 
         scheduleOnce(schedule_selector(EarthquakePlayLayer::quake), delay);
@@ -35,7 +35,7 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
         // shake the camera randomly based on intensity
         auto rnd = randng::fast();
 
-        shakeCamera(randng::get(5.f, 1.f), randng::get(10.f, 1.f), 0.00875F);
+        shakeCamera(randng::get(5.f, 1.f), randng::get(10.f, 1.f), 0.00125f);
 
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
     };

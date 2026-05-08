@@ -54,6 +54,7 @@ bool TermsAndConditions::init(Callback&& cb) {
             "bigFont.fnt",
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
+            sfx::play(sfx::file::good);
             if (cb) cb(true);
             removeFromParent();
         });
@@ -65,6 +66,7 @@ bool TermsAndConditions::init(Callback&& cb) {
             "goldFont.fnt",
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
+            sfx::play(sfx::file::bad);
             if (cb) cb(false);
             removeFromParent();
         });

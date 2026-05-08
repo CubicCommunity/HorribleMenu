@@ -13,8 +13,8 @@ class MathQuiz::Impl final {
 public:
     Richard* richard = nullptr;
 
-    int8_t numFirst = 0;
-    int8_t numSecond = 0;
+    uint8_t numFirst = 0;
+    uint8_t numSecond = 0;
 
     MathOperation operation = MathOperation::Addition;
 

@@ -30,7 +30,7 @@
 // Additional utility methods for Horrible Menu
 namespace horrible {
     // Pointer to this Geode mod
-    inline Mod* thisMod = geode::Mod::get();
+    inline static Mod* thisMod = geode::Mod::get();
 
     /**
      * Convert a chance setting number to a cooldown percentage decimal
