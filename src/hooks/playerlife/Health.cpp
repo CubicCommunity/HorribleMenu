@@ -78,17 +78,14 @@ class $modify(HealthPlayLayer, PlayLayer) {
         PlayLayer::resetLevel();
     };
 
-    void destroyPlayer(PlayerObject* player, GameObject* game) {
+    void destroyPlayer(PlayerObject* player, GameObject* obj) {
         auto f = m_fields.self();
 
-        // ignore the anti-cheat spike lmao
-        if (game == m_anticheatSpike && player && !player->m_isDead) return;
+        if (obj == m_anticheatSpike && !player->m_isDead) return PlayLayer::destroyPlayer(player, obj);
 
         auto rnd = randng::fast();
         if (f->m_health > 0) {
-            f->m_health -= 0.1f;
-
-            // log::debug("Player health is {}", f->m_health);
+            f->m_health -= 0.125f;
 
             m_player1->playSpawnEffect();
             m_player2->playSpawnEffect();
@@ -104,7 +101,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
             if (f->m_health <= 0.f) {
                 log::warn("Player health is dead: {}", f->m_health);
-                PlayLayer::destroyPlayer(player, game);
+                PlayLayer::destroyPlayer(player, obj);
             };
         };
     };

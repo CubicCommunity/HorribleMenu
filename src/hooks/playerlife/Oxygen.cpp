@@ -22,7 +22,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
     struct Fields {
         bool withHealth = options::isEnabled("health");
 
-        float m_oxygenLevel = 100.f;
+        float m_oxygenLevel = 50.f;
         bool m_oxygenActive = false;
 
         ProgressBar* m_oxygenBar = nullptr;
@@ -35,7 +35,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         f->m_oxygenActive = true;
-        f->m_oxygenLevel = 100.f;
+        f->m_oxygenLevel = 50.f;
 
         schedule(schedule_selector(OxygenPlayLayer::decreaseOxygen), 0.1f);
 
@@ -78,11 +78,9 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
         // regen o2
         if (m_player1->m_isBird || m_player1->m_isShip || m_player1->m_isSwing || m_player1->m_isDart) {
-            f->m_oxygenLevel += 5.f * dt;
-            // log::debug("Oxygen level increased: {}", f->m_oxygenLevel);
+            f->m_oxygenLevel += 3.75f * dt;
         } else {
-            f->m_oxygenLevel -= 2.f * dt;
-            // log::debug("Oxygen level decreased: {}", f->m_oxygenLevel);
+            f->m_oxygenLevel -= 2.5f * dt;
         };
 
         if (f->m_oxygenLevel > 100.f) f->m_oxygenLevel = 100.f;
@@ -100,7 +98,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
     void resetOxygenLevel() {
         auto f = m_fields.self();
 
-        f->m_oxygenLevel = 100.f;
+        f->m_oxygenLevel = 50.f;
 
         if (f->m_oxygenLabel) {
             auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->m_oxygenLevel));
