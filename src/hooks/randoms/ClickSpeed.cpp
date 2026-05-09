@@ -11,9 +11,9 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Click Player Speed")
-                          ->setDescription("Randomly increases or decreases the player speed everytime you jump.\n<cl>suggested by KGplayerA</c>")
+                          ->setDescription("Randomly increases or decreases the player velocity everytime you jump.\n<cl>suggested by KGplayerA</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Medium)
+                          ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
 class $modify(ClickSpeedPlayerObject, PlayerObject) {

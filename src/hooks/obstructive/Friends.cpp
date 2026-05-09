@@ -13,7 +13,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Friends")
                           ->setDescription("Random friends fly across your screen while you play a level!\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium)
+                          ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
 static constexpr auto s_friends = std::to_array<const char*>({
@@ -84,7 +84,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     };
 
     void scheduleNextFriend() {
-        auto delay = rng::get(2.5f);
+        auto delay = rng::get(0.875f);
         log::trace("Friend will visit again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);

@@ -20,7 +20,7 @@ static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
 #define HORRIBLE_HOOK_INTERNAL(hookVector, settingId)                                  \
     static void onModify(auto& self) {                                                 \
         utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;                 \
-        auto enable = mod->getSettingValue<bool>(settingId);                           \
+        auto enable = Mod::get()->getSettingValue<bool>(settingId);                    \
                                                                                        \
         for (auto& hook : hooks | std::views::values) {                                \
             hook->setAutoEnable(enable);                                               \
