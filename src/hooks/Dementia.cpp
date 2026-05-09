@@ -30,36 +30,36 @@ class $modify(DementiaPlayerObject, PlayerObject) {
     };
 
     bool pushButton(PlayerButton p0) {
-        if (m_gameLayer) {
-            auto f = m_fields.self();
+        if (!m_gameLayer) return PlayerObject::pushButton(p0);
 
-            auto rnd = rng::fast();
-            log::trace("player teleport chance {}", rnd);
+        auto f = m_fields.self();
 
-            if (auto fmod = FMODAudioEngine::sharedEngine()) {
-                FMOD::Channel* musicChannel = nullptr;
+        auto rnd = rng::fast();
+        log::trace("player teleport chance {}", rnd);
 
-                auto bgchannel = fmod->m_backgroundMusicChannel;
-                auto channel = bgchannel->getChannel(0, &musicChannel);
+        if (auto fmod = FMODAudioEngine::sharedEngine()) {
+            FMOD::Channel* musicChannel = nullptr;
 
-                auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
-                // dementia
-                if (rnd <= f->chance) {
-                    setPosition({f->lastX, f->lastY});
-                    log::trace("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
+            auto bgchannel = fmod->m_backgroundMusicChannel;
+            auto channel = bgchannel->getChannel(0, &musicChannel);
 
-                    // set the music time back to the last recorded time
-                    if (musicChannel) musicChannel->setPosition(f->lastMusicTime, FMOD_TIMEUNIT_MS);
+            auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
+            // dementia
+            if (rnd <= f->chance) {
+                setPosition({f->lastX, f->lastY});
+                log::trace("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
 
-                    return PlayerObject::pushButton(p0);
-                } else if (onGround) {  // save the position only if on ground
-                    f->lastX = getPositionX();
-                    f->lastY = getPositionY();
+                // set the music time back to the last recorded time
+                if (musicChannel) musicChannel->setPosition(f->lastMusicTime, FMOD_TIMEUNIT_MS);
 
-                    f->lastMusicTime = fmod->getMusicTimeMS(1);
+                return PlayerObject::pushButton(p0);
+            } else if (onGround) {  // save the position only if on ground
+                f->lastX = getPositionX();
+                f->lastY = getPositionY();
 
-                    log::trace("position recorded to ({}, {}) and music time {}", f->lastX, f->lastY, f->lastMusicTime);
-                };
+                f->lastMusicTime = fmod->getMusicTimeMS(1);
+
+                log::trace("position recorded to ({}, {}) and music time {}", f->lastX, f->lastY, f->lastMusicTime);
             };
         };
 

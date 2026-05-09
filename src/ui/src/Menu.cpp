@@ -466,13 +466,17 @@ bool Menu::init() {
     socialContainer->setLayout(socialContainerLayout);
 
     auto socialBtns = std::to_array<SocialBtnData>(
-        {{"accountBtn_myLists_001.png",
-             "credits-btn",
-             [this](auto) {
-                 if (auto popup = MenuCredits::create(m_impl->theme)) popup->show();
-             },
-             0.55f},
-            {"gj_discordIcon_001.png",
+        {
+            {
+                "accountBtn_myLists_001.png",
+                "credits-btn",
+                [this](auto) {
+                    if (auto popup = MenuCredits::create(m_impl->theme)) popup->show();
+                },
+                0.55f,
+            },
+            {
+                "gj_discordIcon_001.png",
                 "discord-btn",
                 [](auto) {
                     createQuickPopup(
@@ -483,12 +487,16 @@ bool Menu::init() {
                         [](auto, bool ok) {
                             if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
                         });
-                }},
-            {"geode.loader/gift.png",
+                },
+            },
+            {
+                "geode.loader/gift.png",
                 "support-btn",
                 [](auto) {
                     openSupportPopup(mod);
-                }}});
+                },
+            },
+        });
 
     for (auto& socialBtn : socialBtns) {
         if (auto btn = Button::createWithSpriteFrameName(

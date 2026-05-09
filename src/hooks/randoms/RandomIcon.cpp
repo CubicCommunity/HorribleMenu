@@ -11,7 +11,7 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Random Icon Change")
-                          ->setDescription("Randomly change your icon every time you jump.\n<cl>suggested by JompyDoJump</c>")
+                          ->setDescription("Chance to randomly change your icon whenever you jump.\n<cl>suggested by JompyDoJump</c>")
                           ->setCategory(category::randoms)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
@@ -20,35 +20,29 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     bool pushButton(PlayerButton p0) {
+        if (p0 != PlayerButton::Jump || !m_gameLayer) return PlayerObject::pushButton(p0);
+
         // jump pls
-        if (m_gameLayer && p0 == PlayerButton::Jump) {
-            auto gm = GameManager::sharedState();
-            auto rnd = rng::tiny();
+        if (auto gm = GameManager::sharedState()) {
+            if (rng::fast() <= 50) {
+                // count the icons i guess
+                auto maxIcons = 0;
+                maxIcons = gm->countForType(IconType::Cube);
+                if (maxIcons <= 0) maxIcons = 38;
 
-            // count the icons i guess
-            auto maxIcons = 0;
-            if (gm) maxIcons = gm->countForType(IconType::Cube);
-            if (maxIcons <= 0) maxIcons = 38;
+                auto newIcon = rng::get(maxIcons);
 
-            // pick random icons that is unlocked
-            auto tries = 0;
-            auto newIcon = rnd % maxIcons + 1;
+#define RANDOM_COLOR {rng::get<uint8_t>(255), rng::get<uint8_t>(255), rng::get<uint8_t>(255)}
 
-            while (tries < 20 && gm && !gm->isIconUnlocked(newIcon, IconType::Cube)) {
-                newIcon = rnd % maxIcons + 1;
-                tries++;
+                setColor(RANDOM_COLOR);
+                setSecondColor(RANDOM_COLOR);
+                setGlowColor(RANDOM_COLOR);
+
+                updatePlayerGlow();
+                updatePlayerFrame(newIcon);
+
+                log::debug("Changed player icon to {}", newIcon);
             };
-
-            // randomize the colors of the icon
-            auto r = rng::get(256);
-            auto g = rng::get(256);
-            auto b = rng::get(256);
-
-            setColor(ccc3(r, g, b));
-            updatePlayerGlow();
-
-            updatePlayerFrame(newIcon);
-            log::debug("Changed player icon to {}", newIcon);
         };
 
         return PlayerObject::pushButton(p0);

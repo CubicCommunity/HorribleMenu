@@ -25,25 +25,25 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
         bool scaled = false;
     };
 
-    bool pushButton(PlayerButton button) {
-        if (m_gameLayer) {
-            auto f = m_fields.self();
+    bool pushButton(PlayerButton p0) {
+        if (!m_gameLayer) return PlayerObject::pushButton(p0);
 
-            // log::debug("size changer jump detected");
+        auto f = m_fields.self();
 
-            if (rng::fast() <= f->chance) {
-                if (f->scaled) {
-                    log::debug("change scale big");
-                    togglePlayerScale(f->scaled, false);
-                    f->scaled = false;
-                } else {
-                    log::debug("change scale small");
-                    togglePlayerScale(f->scaled, false);
-                    f->scaled = true;
-                };
+        // log::debug("size changer jump detected");
+
+        if (rng::fast() <= f->chance) {
+            if (f->scaled) {
+                log::debug("change scale big");
+                togglePlayerScale(f->scaled, false);
+                f->scaled = false;
+            } else {
+                log::debug("change scale small");
+                togglePlayerScale(f->scaled, false);
+                f->scaled = true;
             };
         };
 
-        return PlayerObject::pushButton(button);
+        return PlayerObject::pushButton(p0);
     };
 };

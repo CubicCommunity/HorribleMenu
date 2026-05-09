@@ -53,7 +53,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         log::info("unleashing confetti!");
 
         sfx::play(sfx::file::bad);
-        shakeCamera(1.25f, 2.5f, 0.00875f);
+        shakeCamera(0.875f, 2.5f, 0.00875f);
 
         for (int i = 0; i < rng::get(150, 75); i++) createConfetti();
 
@@ -69,8 +69,10 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
             useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * rng::pc(),
             useY ? getScaledContentHeight() * rng::pc() : getScaledContentHeight() + conf->getScaledContentHeight());
 
-        auto move = CCEaseSineOut::create(CCMoveTo::create(0.875f + rng::pc() * 2.5f, endPos));
-        auto rotate = CCEaseSineOut::create(CCRotateBy::create(0.875f + rng::pc() * 2.5f, 360.f * (rng::get(1) > 0 ? 1.f : -1.f)));
+        auto dur = 0.875f + rng::pc() * 2.5f;
+
+        auto move = CCEaseSineOut::create(CCMoveTo::create(dur, endPos));
+        auto rotate = CCEaseSineOut::create(CCRotateBy::create(dur * rng::get(2.5f, 1.f), (360.f * (rng::get(1) > 0 ? 1.f : -1.f)) * rng::get(3.75f, 0.875f)));
 
         auto seq = CCSequence::createWithTwoActions(
             CCSpawn::createWithTwoActions(move, rotate),
