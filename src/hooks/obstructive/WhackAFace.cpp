@@ -69,7 +69,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
 
     void nextWhack() {
         log::trace("scheduling new whack btn");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), randng::get(12.5f, 1.25f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), rng::get(12.5f, 1.25f) * chanceToDelayPct(m_fields->chance));
     };
 
     void doWhack(float) {
@@ -90,7 +90,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                             whack.take()->removeFromParent();
                         };
                     });
-                    whack->setPosition(CCPoint{winSize.width * randng::get(0.75f, 0.25f), winSize.height * randng::get(0.75f, 0.25f)} / 2.f);
+                    whack->setPosition(CCPoint{winSize.width * rng::get(0.75f, 0.25f), winSize.height * rng::get(0.75f, 0.25f)} / 2.f);
 
                     m_uiLayer->addChild(whack, 9);
                     m_fields->active.push_back(whack);

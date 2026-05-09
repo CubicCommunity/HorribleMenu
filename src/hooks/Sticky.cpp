@@ -85,7 +85,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
         if (m_hasEverJumped) {
             if (!wasOnGround && nowOnGround) {
-                if (randng::fast() < f->chance) {
+                if (rng::fast() < f->chance) {
                     f->m_defSpeed = m_playerSpeed;
                     m_playerSpeed = 0.f;
                     if (f->m_clickLabel) f->m_clickLabel->setVisible(true);

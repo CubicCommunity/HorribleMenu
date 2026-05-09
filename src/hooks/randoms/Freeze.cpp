@@ -48,7 +48,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (auto gm = GameManager::sharedState()) {
-            auto rnd = randng::fast();
+            auto rnd = rng::fast();
             if (rnd % 100 < f->chance) capFPS(1.f);
         };
     };
@@ -100,7 +100,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
             gm->setGameVariable("0116", true);
 
             // Randomize FPS between 1 and 45
-            int rndFps = randng::get(45, 1);  // 1 to 45 inclusive
+            int rndFps = rng::get(45, 1);  // 1 to 45 inclusive
 
             auto interval = 1.f / static_cast<float>(rndFps);
             if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;  // fallback to 60 FPS if invalid

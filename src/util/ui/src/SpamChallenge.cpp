@@ -9,8 +9,8 @@ using namespace horrible::prelude;
 
 class SpamChallenge::Impl final {
 public:
-    int inputCount = 0;
-    int inputTarget = 45;
+    uint8_t inputCount = 0;
+    uint8_t inputTarget = 45;
 
     CCLabelBMFont* counter = nullptr;
     ProgressBar* countdown = nullptr;
@@ -27,7 +27,7 @@ SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {};
 SpamChallenge::~SpamChallenge() {};
 
 bool SpamChallenge::init() {
-    m_impl->inputTarget = randng::get(m_impl->inputTarget, 20);
+    m_impl->inputTarget = rng::get<uint8_t>(m_impl->inputTarget, 20);
 
     if (!CCBlockLayer::init()) return false;
 

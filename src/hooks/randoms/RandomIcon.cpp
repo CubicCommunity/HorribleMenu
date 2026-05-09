@@ -23,7 +23,7 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
         // jump pls
         if (m_gameLayer && p0 == PlayerButton::Jump) {
             auto gm = GameManager::sharedState();
-            auto rnd = randng::tiny();
+            auto rnd = rng::tiny();
 
             // count the icons i guess
             auto maxIcons = 0;
@@ -40,9 +40,9 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
             };
 
             // randomize the colors of the icon
-            auto r = randng::get(256);
-            auto g = randng::get(256);
-            auto b = randng::get(256);
+            auto r = rng::get(256);
+            auto g = rng::get(256);
+            auto b = rng::get(256);
 
             setColor(ccc3(r, g, b));
             updatePlayerGlow();

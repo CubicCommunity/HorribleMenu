@@ -119,7 +119,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
         log::trace("Preparing {} motivational messages", s_msgs.size());
 
-        auto delay = randng::get(10.f, 3.f);
+        auto delay = rng::get(10.f, 3.f);
         log::debug("Motivational message will show after {} seconds", delay);
 
         scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), delay);
@@ -127,7 +127,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
     void showMessage(float) {
         if (!m_hasCompletedLevel) {
-            auto label = CCLabelBMFont::create(s_msgs[randng::get(s_msgs.size())], "bigFont.fnt", getScaledContentWidth() - 12.5f);
+            auto label = CCLabelBMFont::create(s_msgs[rng::get(s_msgs.size())], "bigFont.fnt", getScaledContentWidth() - 12.5f);
             label->setAnchorPoint({0.5, 0});
             label->setAlignment(kCCTextAlignmentCenter);
             label->setPosition({getScaledContentWidth() / 2.f, -label->getScaledContentHeight()});
@@ -149,7 +149,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
     void scheduleNextMessage(CCNode* sender) {
         cue::resetNode(sender);
 
-        auto delay = randng::get(15.f, 5.f);
+        auto delay = rng::get(15.f, 5.f);
         log::debug("Motivational message will show again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), delay);

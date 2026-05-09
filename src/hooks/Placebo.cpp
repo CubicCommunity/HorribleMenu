@@ -18,8 +18,8 @@ static auto const o = Option::create(THIS_ID)
                           ->autoRegister();
 
 void placeboEffect() {
-    auto rnd = randng::fast();
-    log::debug("placebo effect roll: {}", rnd);
+    auto rnd = rng::fast();
+    log::trace("placebo effect roll: {}", rnd);
 
     if (rnd <= 1) {  // 1% chance :trol:
         log::warn("Placebo effect activated! Toggling all options...");

@@ -23,7 +23,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         // random delay between 0 and 5 seconds
-        auto delay = randng::get(5.f);
+        auto delay = rng::get(5.f);
         log::debug("Black screen will appear after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);
@@ -45,14 +45,14 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
 
         // Schedule removal after 0.5 seconds, then schedule to show again after a random delay
         blackScreen->runAction(CCSequence::createWithTwoActions(
-            CCDelayTime::create(randng::get(0.25f, 0.125f)),
+            CCDelayTime::create(rng::get(0.25f, 0.125f)),
             CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))));
     };
 
     void removeBlackScreen(CCNode* sender) {
         cue::resetNode(sender);
 
-        auto delay = randng::get(3.75f);
+        auto delay = rng::get(3.75f);
         log::debug("Black screen will appear again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);

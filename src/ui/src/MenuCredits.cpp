@@ -168,10 +168,13 @@ bool MenuCredits::init(ZStringView theme) {
 
     m_mainLayer->addChild(websiteBtn, 1);
 
+    // 1% chance to show sapphire logo over geode
+    auto isModBtnSecret = rng::fast() <= 1;
+
     auto modBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
-            "geode.loader/geode-logo-outline-gold.png",
-            1.f,
+            isModBtnSecret ? themes::getIconSprite(themes::icons::SapphireSDK) : "geode.loader/geode-logo-outline-gold.png",
+            isModBtnSecret ? 1.125f : 1.f,
             btns),
         [](auto) {
             openInfoPopup(mod);

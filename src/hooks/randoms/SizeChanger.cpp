@@ -31,7 +31,7 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
 
             // log::debug("size changer jump detected");
 
-            if (randng::fast() <= f->chance) {
+            if (rng::fast() <= f->chance) {
                 if (f->scaled) {
                     log::debug("change scale big");
                     togglePlayerScale(f->scaled, false);

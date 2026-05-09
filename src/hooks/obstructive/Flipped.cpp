@@ -39,7 +39,7 @@ class $modify(FlippedPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (!f->flipping) {
-            if (randng::tiny() > f->chance) return;
+            if (rng::tiny() > f->chance) return;
 
             f->flipping = true;
             log::debug("flipping the playlayer");

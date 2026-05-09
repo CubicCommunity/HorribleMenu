@@ -29,7 +29,7 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
 
         auto f = m_fields.self();
 
-        auto rnd = randng::fast();
+        auto rnd = rng::fast();
         log::trace("button menu chance {}", rnd);
 
         // @geode-ignore(unknown-resource)

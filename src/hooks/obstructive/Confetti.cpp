@@ -39,11 +39,11 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
+        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
     };
 
     void nextConfetti(float) {
-        auto delay = randng::get(8.75f, 1.25f);
+        auto delay = rng::get(8.75f, 1.25f);
         log::trace("scheduling confetti in {}s", delay);
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::confetti), delay);
@@ -55,22 +55,22 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         sfx::play(sfx::file::bad);
         shakeCamera(1.25f, 2.5f, 0.00875f);
 
-        for (int i = 0; i < randng::get(150, 75); i++) createConfetti();
+        for (int i = 0; i < rng::get(150, 75); i++) createConfetti();
 
-        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), randng::get(0.125f));
+        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
     };
 
     void createConfetti() {
-        auto conf = CCSprite::createWithSpriteFrameName(s_confettis[randng::get(s_confettis.size() - 1)]);
-        conf->setScale(0.5f * randng::pc());
+        auto conf = CCSprite::createWithSpriteFrameName(s_confettis[rng::get(s_confettis.size() - 1)]);
+        conf->setScale(1.25f * rng::pc());
 
-        auto useY = randng::get(1) > 0;
+        auto useY = rng::get(1) > 0;
         auto const endPos = ccp(
-            useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * randng::pc(),
-            useY ? getScaledContentHeight() * randng::pc() : getScaledContentHeight() + conf->getScaledContentHeight());
+            useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * rng::pc(),
+            useY ? getScaledContentHeight() * rng::pc() : getScaledContentHeight() + conf->getScaledContentHeight());
 
-        auto move = CCEaseSineOut::create(CCMoveTo::create(0.875f + randng::pc() * 2.5f, endPos));
-        auto rotate = CCEaseSineOut::create(CCRotateBy::create(0.875f + randng::pc() * 2.5f, 360.f * (randng::get(1) > 0 ? 1.f : -1.f)));
+        auto move = CCEaseSineOut::create(CCMoveTo::create(0.875f + rng::pc() * 2.5f, endPos));
+        auto rotate = CCEaseSineOut::create(CCRotateBy::create(0.875f + rng::pc() * 2.5f, 360.f * (rng::get(1) > 0 ? 1.f : -1.f)));
 
         auto seq = CCSequence::createWithTwoActions(
             CCSpawn::createWithTwoActions(move, rotate),

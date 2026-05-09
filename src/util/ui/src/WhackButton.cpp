@@ -22,22 +22,22 @@ static std::unordered_map<int, const char*> const s_severities = {
 
 class WhackButton::Impl final {
 public:
-    int inputCount = 0;
-    int inputTarget = s_severities.size();
+    uint8_t inputCount = 0;
+    uint8_t inputTarget = s_severities.size();
 
-    float scale = randng::get(0.875f, 0.625f);
+    float scale = rng::get(0.875f, 0.625f);
 
     Button* button = nullptr;
     ProgressBar* countdown = nullptr;
 
-    float totalTime = 5.f * randng::get(1.25f, 0.5f);
+    float totalTime = 5.f * rng::get(1.25f, 0.5f);
     float timeRemaining = totalTime;
     float timeDt = 0.f;
 
     bool success = false;
     Callback callback = nullptr;
 
-    constexpr CircleBaseColor getButtonColor(int diff) const noexcept {
+    constexpr auto getButtonColor(int diff) const noexcept {
         if (diff <= 3) return CircleBaseColor::Green;
         if (diff <= 7) return CircleBaseColor::Blue;
 
@@ -85,7 +85,7 @@ void WhackButton::reload() {
 };
 
 bool WhackButton::init() {
-    m_impl->inputTarget = randng::get<int>(s_severities.size(), 3);
+    m_impl->inputTarget = rng::get<int>(s_severities.size(), 3);
 
     if (!CCNode::init()) return false;
 

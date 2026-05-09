@@ -22,11 +22,11 @@ class $modify(OxygenPlayLayer, PlayLayer) {
     struct Fields {
         bool withHealth = options::isEnabled("health");
 
-        float m_oxygenLevel = 50.f;
-        bool m_oxygenActive = false;
+        float oxygenLevel = 50.f;
+        bool oxygenActive = false;
 
-        ProgressBar* m_oxygenBar = nullptr;
-        CCLabelBMFont* m_oxygenLabel = nullptr;
+        ProgressBar* oxygenBar = nullptr;
+        CCLabelBMFont* oxygenLabel = nullptr;
     };
 
     void setupHasCompleted() {
@@ -34,75 +34,77 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        f->m_oxygenActive = true;
-        f->m_oxygenLevel = 50.f;
+        f->oxygenActive = true;
+        f->oxygenLevel = 50.f;
 
         schedule(schedule_selector(OxygenPlayLayer::decreaseOxygen), 0.1f);
 
-        if (!f->m_oxygenBar) {
-            f->m_oxygenBar = ProgressBar::create();
-            f->m_oxygenBar->setID("oxygen-bar"_spr);
-            f->m_oxygenBar->setFillColor(colors::cyan);
-            f->m_oxygenBar->setAnchorPoint(anchor::center);
-            f->m_oxygenBar->setPosition({10.f, getScaledContentHeight() / 2.f});
-            f->m_oxygenBar->setRotation(-90.f);
+        if (!f->oxygenBar) {
+            f->oxygenBar = ProgressBar::create();
+            f->oxygenBar->setID("oxygen-bar"_spr);
+            f->oxygenBar->setFillColor(colors::cyan);
+            f->oxygenBar->setAnchorPoint(anchor::center);
+            f->oxygenBar->setPosition({10.f, getScaledContentHeight() / 2.f});
+            f->oxygenBar->setRotation(-90.f);
 
-            m_uiLayer->addChild(f->m_oxygenBar, 99);
+            m_uiLayer->addChild(f->oxygenBar, 99);
         };
 
-        f->m_oxygenBar->updateProgress(f->m_oxygenLevel);
+        f->oxygenBar->updateProgress(f->oxygenLevel);
 
-        if (f->withHealth) f->m_oxygenBar->setPositionX(f->m_oxygenBar->getPositionX() + 25.f);
+        if (f->withHealth) f->oxygenBar->setPositionX(f->oxygenBar->getPositionX() + 25.f);
 
-        auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->m_oxygenLevel));
-        if (!f->m_oxygenLabel) {
-            f->m_oxygenLabel = CCLabelBMFont::create(o2.c_str(), "bigFont.fnt");
-            f->m_oxygenLabel->setColor(colors::cyan);
-            f->m_oxygenLabel->setAnchorPoint({0.f, 1.f});
-            f->m_oxygenLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
-            f->m_oxygenLabel->setScale(0.25f);
+        auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->oxygenLevel));
+        if (!f->oxygenLabel) {
+            f->oxygenLabel = CCLabelBMFont::create(o2.c_str(), "bigFont.fnt");
+            f->oxygenLabel->setColor(colors::cyan);
+            f->oxygenLabel->setAnchorPoint({0.f, 1.f});
+            f->oxygenLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
+            f->oxygenLabel->setScale(0.25f);
 
-            m_uiLayer->addChild(f->m_oxygenLabel, 100);
+            m_uiLayer->addChild(f->oxygenLabel, 100);
         } else {
-            f->m_oxygenLabel->setString(o2.c_str());
+            f->oxygenLabel->setString(o2.c_str());
         };
 
-        f->m_oxygenLabel->setPosition({f->m_oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->m_oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
+        f->oxygenLabel->setPosition({f->oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
     };
 
     void decreaseOxygen(float dt) {
+        if (m_player1->m_isDead) return;
+
         auto f = m_fields.self();
 
-        if (!f->m_oxygenActive || !f->m_oxygenLabel) return;
-        if (!m_player1) return;
+        if (m_player1->m_jumpBuffered) f->oxygenLevel -= 0.125f;
 
         // regen o2
         if (m_player1->m_isBird || m_player1->m_isShip || m_player1->m_isSwing || m_player1->m_isDart) {
-            f->m_oxygenLevel += 3.75f * dt;
+            f->oxygenLevel += 3.75f * dt;
         } else {
-            f->m_oxygenLevel -= 2.5f * dt;
+            f->oxygenLevel -= 2.5f * dt;
+            if (!m_player1->m_isOnGround) f->oxygenLevel -= 0.875f * dt;
         };
 
-        if (f->m_oxygenLevel > 100.f) f->m_oxygenLevel = 100.f;
-        if (f->m_oxygenLevel < 0.f) f->m_oxygenLevel = 0.f;
+        if (f->oxygenLevel > 100.f) f->oxygenLevel = 100.f;
+        if (f->oxygenLevel < 0.f) f->oxygenLevel = 0.f;
 
-        auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->m_oxygenLevel));
-        f->m_oxygenLabel->setString(o2.c_str());
+        auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->oxygenLevel));
+        f->oxygenLabel->setString(o2.c_str());
 
-        f->m_oxygenBar->updateProgress(f->m_oxygenLevel);
+        f->oxygenBar->updateProgress(f->oxygenLevel);
 
         // Destroy player if oxygen is 0
-        if (f->m_oxygenLevel <= 0.f && !m_playerDied) destroyPlayer(m_player1, nullptr);
+        if (f->oxygenLevel <= 0.f && !m_playerDied) destroyPlayer(m_player1, nullptr);
     };
 
     void resetOxygenLevel() {
         auto f = m_fields.self();
 
-        f->m_oxygenLevel = 50.f;
+        f->oxygenLevel = 50.f;
 
-        if (f->m_oxygenLabel) {
-            auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->m_oxygenLevel));
-            f->m_oxygenLabel->setString(o2.c_str());
+        if (f->oxygenLabel) {
+            auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->oxygenLevel));
+            f->oxygenLabel->setString(o2.c_str());
         };
     };
 

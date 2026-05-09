@@ -37,7 +37,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        auto delay = randng::get(1.25f);
+        auto delay = rng::get(1.25f);
         log::trace("Friend will visit after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);
@@ -49,18 +49,18 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto xA = -125.f;                // starting x pos
         auto xB = uiSize.width + 125.f;  // ending x pos
 
-        if ((static_cast<float>(randng::fast()) / 2.f) <= 50.f) {
+        if ((static_cast<float>(rng::fast()) / 2.f) <= 50.f) {
             xA = xB;
             xB = -125.f;
         };  // swap sides
 
-        auto rA = randng::pc();
-        auto rB = randng::pc();
+        auto rA = rng::pc();
+        auto rB = rng::pc();
 
         auto yA = uiSize.height * rA;  // starting height pos
         auto yB = uiSize.height * rB;  // ending height pos
 
-        auto friendSpr = CCSprite::createWithSpriteFrameName(s_friends[randng::get(s_friends.size() - 1)]);
+        auto friendSpr = CCSprite::createWithSpriteFrameName(s_friends[rng::get(s_friends.size() - 1)]);
         friendSpr->setPosition({xA, yA});
         friendSpr->setScale(0.875f * (rB + rA));
         friendSpr->setRotation(180.f * (yA * yB));  // random rotation
@@ -84,7 +84,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     };
 
     void scheduleNextFriend() {
-        auto delay = randng::get(2.5f);
+        auto delay = rng::get(2.5f);
         log::trace("Friend will visit again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);

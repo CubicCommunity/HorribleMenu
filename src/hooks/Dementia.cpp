@@ -33,7 +33,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
         if (m_gameLayer) {
             auto f = m_fields.self();
 
-            auto rnd = randng::fast();
+            auto rnd = rng::fast();
             log::trace("player teleport chance {}", rnd);
 
             if (auto fmod = FMODAudioEngine::sharedEngine()) {

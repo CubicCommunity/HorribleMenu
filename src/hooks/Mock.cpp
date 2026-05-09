@@ -32,7 +32,7 @@ class $modify(MockMenuLayer, MenuLayer) {
         auto f = m_fields.self();
 
         // show a lazysprite for the first png found in the save dir
-        auto rnd = randng::fast();
+        auto rnd = rng::fast();
         log::trace("mock chance {}", rnd);
 
         if (rnd <= f->chance) {
@@ -83,8 +83,8 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                                     ss->addChild(percLabel);
 
-                                    auto rA = randng::pc();
-                                    auto rB = randng::pc();
+                                    auto rA = rng::pc();
+                                    auto rB = rng::pc();
 
                                     float yA = s->getScaledContentHeight() * rB;  // starting height pos
                                     float yB = s->getScaledContentHeight() * rA;  // ending height pos

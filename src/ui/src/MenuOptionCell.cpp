@@ -225,7 +225,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
         (m_impl->compatible) ? (onlineCompat ? "GJ_infoIcon_001.png" : "geode.loader/info-warning.png") : "geode.loader/info-alert.png",
         [this](auto) {
             if (auto o = m_impl->option.lock()) {
-                auto formatDesc = fmt::format("{}\n\n{}{}", (o->getDescription().size() > 0) ? o->getDescription() : "<cc>No description provided.</c>", o->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(o->getSillyTier(), m_impl->compatible));
+                auto formatDesc = fmt::format("{}\n\n{}\n{}", (o->getDescription().size() > 0) ? o->getDescription() : "<cc>No description provided.</c>", o->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(o->getSillyTier(), m_impl->compatible));
 
                 createQuickPopup(
                     o->getName().c_str(),

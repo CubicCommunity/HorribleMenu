@@ -20,10 +20,10 @@ class $modify(HealthPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields {
-        float m_health = 100.f;
+        float health = 100.f;
 
-        ProgressBar* m_healthBar = nullptr;
-        CCLabelBMFont* m_healthLabel = nullptr;
+        ProgressBar* healthBar = nullptr;
+        CCLabelBMFont* healthLabel = nullptr;
     };
 
     void setupHasCompleted() {
@@ -31,46 +31,46 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        f->m_health = 100.f;
+        f->health = 100.f;
 
-        if (!f->m_healthBar) {
-            f->m_healthBar = ProgressBar::create();
-            f->m_healthBar->setID("health-bar"_spr);
-            f->m_healthBar->setFillColor(colors::red);
-            f->m_healthBar->setAnchorPoint(anchor::center);
-            f->m_healthBar->setPosition({10.f, getScaledContentHeight() / 2.f});
-            f->m_healthBar->setRotation(-90.f);
+        if (!f->healthBar) {
+            f->healthBar = ProgressBar::create();
+            f->healthBar->setID("health-bar"_spr);
+            f->healthBar->setFillColor(colors::red);
+            f->healthBar->setAnchorPoint(anchor::center);
+            f->healthBar->setPosition({10.f, getScaledContentHeight() / 2.f});
+            f->healthBar->setRotation(-90.f);
 
-            m_uiLayer->addChild(f->m_healthBar, 99);
+            m_uiLayer->addChild(f->healthBar, 99);
         };
 
-        f->m_healthBar->updateProgress(f->m_health);
+        f->healthBar->updateProgress(f->health);
 
-        auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->m_health));
-        if (!f->m_healthLabel) {
-            f->m_healthLabel = CCLabelBMFont::create(hp.c_str(), "bigFont.fnt");
-            f->m_healthLabel->setColor(colors::red);
-            f->m_healthLabel->setAnchorPoint({0.f, 1.f});
-            f->m_healthLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->m_healthBar->getScaledContentWidth() / 2.f) - 1.25f});
-            f->m_healthLabel->setScale(0.25f);
+        auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->health));
+        if (!f->healthLabel) {
+            f->healthLabel = CCLabelBMFont::create(hp.c_str(), "bigFont.fnt");
+            f->healthLabel->setColor(colors::red);
+            f->healthLabel->setAnchorPoint({0.f, 1.f});
+            f->healthLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->healthBar->getScaledContentWidth() / 2.f) - 1.25f});
+            f->healthLabel->setScale(0.25f);
 
-            m_uiLayer->addChild(f->m_healthLabel, 100);
+            m_uiLayer->addChild(f->healthLabel, 100);
         } else {
-            f->m_healthLabel->setString(hp.c_str());
+            f->healthLabel->setString(hp.c_str());
         };
     };
 
     void resetHealth() {
         auto f = m_fields.self();
 
-        f->m_health = 100.f;
+        f->health = 100.f;
 
-        if (f->m_healthLabel) {
-            auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->m_health));
-            f->m_healthLabel->setString(hp.c_str());
+        if (f->healthLabel) {
+            auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->health));
+            f->healthLabel->setString(hp.c_str());
         };
 
-        if (f->m_healthBar) f->m_healthBar->updateProgress(f->m_health);
+        if (f->healthBar) f->healthBar->updateProgress(f->health);
     };
 
     void resetLevel() {
@@ -83,24 +83,24 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
         if (obj == m_anticheatSpike && !player->m_isDead) return PlayLayer::destroyPlayer(player, obj);
 
-        auto rnd = randng::fast();
-        if (f->m_health > 0) {
-            f->m_health -= 0.125f;
+        auto rnd = rng::fast();
+        if (f->health > 0) {
+            f->health -= 0.125f;
 
             m_player1->playSpawnEffect();
             m_player2->playSpawnEffect();
 
             shakeCamera(1.25f, 2.5f, 0.00875F);
 
-            if (f->m_healthLabel) {
-                auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->m_health));
-                f->m_healthLabel->setString(hp.c_str());
+            if (f->healthLabel) {
+                auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->health));
+                f->healthLabel->setString(hp.c_str());
 
-                f->m_healthBar->updateProgress(f->m_health);
+                f->healthBar->updateProgress(f->health);
             };
 
-            if (f->m_health <= 0.f) {
-                log::warn("Player health is dead: {}", f->m_health);
+            if (f->health <= 0.f) {
+                log::warn("Player health is dead: {}", f->health);
                 PlayLayer::destroyPlayer(player, obj);
             };
         };

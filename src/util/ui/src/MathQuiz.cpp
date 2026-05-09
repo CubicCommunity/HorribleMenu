@@ -45,7 +45,7 @@ bool MathQuiz::init() {
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
 
-    m_impl->operation = static_cast<MathOperation>(randng::get(3));
+    m_impl->operation = static_cast<MathOperation>(rng::get(3));
 
     auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -56,7 +56,7 @@ bool MathQuiz::init() {
     if (m_impl->operation == MathOperation::Geometry) {
         problemText = "How many sides does this shape have?";
 
-        auto sides = randng::get<uint8_t>(10, 3);
+        auto sides = rng::get<uint8_t>(10, 3);
         m_impl->correctAnswer = sides;
 
         // draw node and polygon points
@@ -91,8 +91,8 @@ bool MathQuiz::init() {
 
         if (m_impl->drawNode->drawPolygon(polyPoints.data(), static_cast<unsigned int>(polyPoints.size()), fillColor, 2.f, borderColor)) addChild(m_impl->drawNode, 99);
     } else {
-        m_impl->numFirst = randng::get(11);
-        m_impl->numSecond = randng::get(11);
+        m_impl->numFirst = rng::get(11);
+        m_impl->numSecond = rng::get(11);
 
         std::string operation;
         switch (m_impl->operation) {
@@ -166,12 +166,12 @@ bool MathQuiz::init() {
     // Add 3 wrong answers
     if (m_impl->operation == MathOperation::Geometry) {
         while (m_impl->answers.size() < 4) {
-            int wrongAnswer = randng::get(10, 3);
+            int wrongAnswer = rng::get(10, 3);
             if (wrongAnswer != m_impl->correctAnswer && !hasAnswer(wrongAnswer)) m_impl->answers.push_back(wrongAnswer);
         };
     } else {
         while (m_impl->answers.size() < 4) {
-            int wrongAnswer = m_impl->correctAnswer + randng::get(10, -5);
+            int wrongAnswer = m_impl->correctAnswer + rng::get(10, -5);
             if (wrongAnswer != m_impl->correctAnswer && !hasAnswer(wrongAnswer)) m_impl->answers.push_back(wrongAnswer);
         };
     };
@@ -342,10 +342,13 @@ MathQuiz* MathQuiz::create() {
 bool Richard::init() {
     if (!CCNode::init()) return false;
 
-    auto sprite = CCSprite::createWithSpriteFrameName("diffIcon_02_btn_001.png");
+    // 2% chance it becomes the yellow one
+    auto isSpriteSecret = rng::fast() <= 2;
+
+    auto sprite = CCSprite::createWithSpriteFrameName(isSpriteSecret ? themes::getIconSprite(themes::icons::TheYellowOne) : "diffIcon_02_btn_001.png");
     sprite->setID("richard");
+    sprite->setScale(isSpriteSecret ? 7.5f : 5.f);
     sprite->setAnchorPoint(anchor::center);
-    sprite->setScale(5.f);
 
     setContentSize(sprite->getScaledContentSize());
 

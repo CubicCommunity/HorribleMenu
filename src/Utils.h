@@ -37,11 +37,11 @@ namespace horrible {
      *
      * @param chance The chance setting number
      */
-    inline constexpr float chanceToDelayPct(int chance = 50) noexcept {
-        if (chance <= 0) chance = 1;
+    inline constexpr float chanceToDelayPct(uint8_t chance = 50) noexcept {
+        if (chance <= 0) chance = 0;
         if (chance > 100) chance = 100;
 
-        return ((100.f - static_cast<float>(chance)) + 1.f) / 100.f;
+        return 1.f - (static_cast<float>(chance) / 100.f);
     };
 
     // For convenience

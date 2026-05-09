@@ -27,7 +27,7 @@ class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {
         auto f = m_fields.self();
 
         if (button == 1) {
-            auto rnd = randng::fast();
+            auto rnd = rng::fast();
             if (rnd <= f->chance) return GJBaseGameLayer::handleButton(false, button, isPlayer1);
         };
 

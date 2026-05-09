@@ -20,7 +20,7 @@ class $modify(ClickSpeedPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     bool pushButton(PlayerButton p0) {
-        int rng = randng::fast() % 100;
+        int rng = rng::fast() % 100;
         int currentSpeed = m_playerSpeed;
 
         log::trace("current speed: {}", currentSpeed);

@@ -41,7 +41,7 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
 
     void nextFlipPortal(float) {
         log::trace("scheduling flip");
-        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::flipPortal), randng::get(10.f, 1.f) * chanceToDelayPct(m_fields->chance));
+        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::flipPortal), rng::get(10.f, 1.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void flipPortal(float) {

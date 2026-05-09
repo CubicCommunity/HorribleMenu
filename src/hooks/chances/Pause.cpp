@@ -30,7 +30,7 @@ class $modify(PausePlayerObject, PlayLayer) {
 
     void nextPause() {
         log::trace("scheduling pause");
-        scheduleOnce(schedule_selector(PausePlayerObject::pause), randng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
+        scheduleOnce(schedule_selector(PausePlayerObject::pause), rng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void pause(float) {

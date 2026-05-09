@@ -28,11 +28,11 @@ class $modify(RandomSpeedPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        auto rnd = randng::tiny();
+        auto rnd = rng::tiny();
 
         if (rnd <= f->chance) {
             // randomly choose a new speed between 10% and 200%
-            m_playerSpeed = randng::get(200.f, 10.f) / 100.f;
+            m_playerSpeed = rng::get(200.f, 10.f) / 100.f;
             log::debug("Changed player speed to {}", m_playerSpeed);
         };
 

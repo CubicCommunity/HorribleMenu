@@ -53,7 +53,7 @@ class $modify(GriefPlayLayer, PlayLayer) {
 
         if (p1 == m_anticheatSpike && !p0->m_isDead) return;
 
-        int rng = randng::fast();
+        int rng = rng::fast();
         trySwitchToLevel(this, jumpscares::get::grief(), f->chance, rng, f->dontCreateObjects, m_useReplay);
     };
 };
@@ -74,7 +74,7 @@ class $modify(CongregationPlayLayer, PlayLayer) {
 
         if (p1 == m_anticheatSpike && !p0->m_isDead) return;
 
-        int rng = randng::fast();
+        int rng = rng::fast();
         trySwitchToLevel(this, jumpscares::get::congregation(), f->chance, rng, f->dontCreateObjects, m_useReplay);
     };
 };

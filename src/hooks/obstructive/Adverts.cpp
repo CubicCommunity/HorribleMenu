@@ -31,7 +31,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     };
 
     void nextAd() {
-        auto delay = randng::get(15.f, 5.f);
+        auto delay = rng::get(15.f, 5.f);
         log::trace("scheduling ad in {}s", delay);
 
         scheduleOnce(schedule_selector(AdvertsPlayLayer::showAd), delay);
