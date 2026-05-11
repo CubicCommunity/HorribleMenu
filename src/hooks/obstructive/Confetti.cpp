@@ -64,7 +64,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         auto conf = CCSprite::createWithSpriteFrameName(s_confettis[rng::get(s_confettis.size() - 1)]);
         conf->setScale(1.25f * rng::pc());
 
-        auto useY = rng::get(1) > 0;
+        auto useY = rng::flip();
         auto const endPos = ccp(
             useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * rng::pc(),
             useY ? getScaledContentHeight() * rng::pc() : getScaledContentHeight() + conf->getScaledContentHeight());
@@ -72,7 +72,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         auto dur = 0.875f + rng::pc() * 2.5f;
 
         auto move = CCEaseSineOut::create(CCMoveTo::create(dur, endPos));
-        auto rotate = CCEaseSineOut::create(CCRotateBy::create(dur * rng::get(2.5f, 1.f), (360.f * (rng::get(1) > 0 ? 1.f : -1.f)) * rng::get(3.75f, 0.875f)));
+        auto rotate = CCEaseSineOut::create(CCRotateBy::create(dur * rng::get(2.5f, 1.f), (360.f * (rng::flip() ? 1.f : -1.f)) * rng::get(3.75f, 0.875f)));
 
         auto seq = CCSequence::createWithTwoActions(
             CCSpawn::createWithTwoActions(move, rotate),

@@ -8,6 +8,8 @@ namespace horrible {
             using Callback = geode::CopyableFunction<void(bool)>;
 
         protected:
+            void finishBtnFade(cocos2d::CCNode* sender);
+
             bool init(Callback&& cb);
 
         public:

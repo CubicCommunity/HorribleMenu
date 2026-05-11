@@ -6,7 +6,7 @@
 #include <util/Cursor.hpp>
 #include <util/Jumpscares.hpp>
 #include <util/Options.hpp>
-#include <util/Randng.hpp>
+#include <util/Random.hpp>
 #include <util/Themes.hpp>
 
 #include <util/ui/MathQuiz.hpp>

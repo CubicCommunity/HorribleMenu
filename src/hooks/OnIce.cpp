@@ -11,7 +11,7 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Ice Level")
-                          ->setDescription("Makes every surface icy. Slip n' slide!\n<cl>suggested by TimeRed</c>")
+                          ->setDescription("Makes every surface icy in platformer mode. Slip n' slide!\n<cl>suggested by TimeRed</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();

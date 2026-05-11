@@ -42,13 +42,13 @@ bool TermsAndConditions::init(Callback&& cb) {
         "**By clicking 'Accept', you acknowledge that you have read and agree to these terms and conditions.**\n\n"
         "---\n\n"
         "For legal reasons, this is all a joke..!",
-        {380.f, 140.f},
+        {380.f, 145.f},
         false);
-    tosArea->setPosition({m_mainLayer->getContentSize().width / 2.f, m_mainLayer->getContentSize().height / 2.f + 10.f});
+    tosArea->setPosition({m_mainLayer->getContentSize().width / 2.f, (m_mainLayer->getContentSize().height / 2.f) + 5.f});
 
     m_mainLayer->addChild(tosArea);
 
-    auto acceptButton = Button::createWithNode(
+    auto acceptBtn = Button::createWithNode(
         ButtonSprite::create(
             "Accept",
             "bigFont.fnt",
@@ -58,9 +58,9 @@ bool TermsAndConditions::init(Callback&& cb) {
             if (cb) cb(true);
             removeFromParent();
         });
-    acceptButton->setScale(0.75f);
+    acceptBtn->setScale(0.75f);
 
-    auto declineButton = Button::createWithNode(
+    auto declineBtn = Button::createWithNode(
         ButtonSprite::create(
             "Decline",
             "goldFont.fnt",
@@ -70,14 +70,28 @@ bool TermsAndConditions::init(Callback&& cb) {
             if (cb) cb(false);
             removeFromParent();
         });
-    declineButton->setScale(0.75f);
+    declineBtn->setScale(0.75f);
 
-    m_mainLayer->addChildAtPosition(acceptButton, Anchor::Bottom, {-60.f, 25.f});
-    m_mainLayer->addChildAtPosition(declineButton, Anchor::Bottom, {60.f, 25.f});
+    m_mainLayer->addChildAtPosition(acceptBtn, Anchor::Bottom, {-60.f, 25.f});
+    m_mainLayer->addChildAtPosition(declineBtn, Anchor::Bottom, {60.f, 25.f});
+
+    if (auto acceptBtnSpr = typeinfo_cast<ButtonSprite*>(acceptBtn->getDisplayNode())) {
+        acceptBtn->setEnabled(false);
+        acceptBtnSpr->setOpacity(0);
+
+        acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(
+            CCEaseBounceIn::create(
+                CCFadeTo::create(rng::get(10.f, 1.25f), 255)),
+            CCCallFuncN::create(this, callfuncN_selector(TermsAndConditions::finishBtnFade))));
+    };
 
     sfx::play(sfx::file::pop);
 
     return true;
+};
+
+void TermsAndConditions::finishBtnFade(CCNode* sender) {
+    if (auto btn = typeinfo_cast<Button*>(sender->getParent())) btn->setEnabled(true);
 };
 
 TermsAndConditions* TermsAndConditions::create(Callback&& cb) {

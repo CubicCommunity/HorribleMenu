@@ -53,10 +53,10 @@ class $modify(GamblerPlayLayer, PlayLayer) {
         // detect the moment the player first reaches or crosses 95
         if (getCurrentPercentInt() >= 95 && !f->triggered) {
             // roll a random number between 0 and 1
-            auto roll = rng::get(1);
+            auto roll = rng::flip();
 
             log::info("Gambler roll: {}", roll);
-            if (roll <= 0) {
+            if (roll) {
                 log::info("Gambler lost the bet!");
 
                 sfx::play(sfx::file::pop);

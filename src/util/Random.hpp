@@ -20,12 +20,9 @@ namespace horrible {
                 return geode::utils::random::generate<T>(min, max);
             };
 
-            /**
-             * Get any integer between 0 and 2048
-             * @note Recommended to balance chances when calling every frame
-             */
-            inline uint16_t tiny() {
-                return get<uint16_t>(2048, 0);
+            // Get a random bool
+            inline bool flip() {
+                return geode::utils::random::generate<bool>();
             };
 
             // Get any integer between 0 and 100
@@ -39,7 +36,7 @@ namespace horrible {
              * @param precision The amount of decimal places to account for
              */
             inline float pc(uint8_t precision = 2) {
-                auto factor = static_cast<float>(std::pow(10, precision));
+                auto factor = std::powf(10.f, precision);
                 return std::round(get(1.f) * factor) / factor;
             };
         };

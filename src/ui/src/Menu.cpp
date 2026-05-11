@@ -393,9 +393,9 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), sillyDropdown->getPositionY() + 8.75f}), 1);
 
     auto filterHint = CCLabelBMFont::create(
-        "Use different filters to search for certain options faster. Press the pin on an option to pin it to the top of the list.",
+        "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
         "chatFont.fnt",
-        m_impl->categoryList->getScaledContentWidth());
+        categoryListBg->getScaledContentWidth());
     filterHint->setID("filter-hint");
     filterHint->setScale(0.5f);
     filterHint->setAnchorPoint(anchor::center);

@@ -11,7 +11,7 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Oxygen Level")
-                          ->setDescription("Limited oxygen level. You gain oxygen as a flying gamemode. If your oxygen runs out, the player dies.\n<cl>created by ArcticWoof</c>")
+                          ->setDescription("Limited oxygen level for the player. If oxygen runs out, the player dies. Oxygen usage increases while you hold down jump. You re-gain oxygen as a flying gamemode.\n<cl>suggested by ArcticWoof</c>")
                           ->setCategory(category::playerlife)
                           ->setSillyTier(SillyTier::High)
                           ->autoRegister();

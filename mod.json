@@ -8,7 +8,7 @@
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
-    "version": "1.0.0-prerelease.1",
+    "version": "1.0.0",
     "developers": [
         "Team Breakeode",
         "Cheeseworks",
@@ -251,7 +251,7 @@
             "type": "int",
             "name": "Terms and Conditions Chance",
             "description": "<cc>Agree To Our Terms!</c> - Chance of the TOS pop-up appearing in a level.",
-            "default": 65,
+            "default": 40,
             "min": 0,
             "max": 100,
             "control": {

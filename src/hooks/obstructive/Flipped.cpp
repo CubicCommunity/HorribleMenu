@@ -27,7 +27,7 @@ class $modify(FlippedPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        schedule(schedule_selector(FlippedPlayLayer::flip), 0.125f);
+        nextFlip();
     };
 
     void flippingEnded() {
@@ -35,20 +35,16 @@ class $modify(FlippedPlayLayer, PlayLayer) {
         log::info("playlayer flipped");
     };
 
+    void nextFlip() {
+        log::trace("scheduling spam challenge");
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+    };
+
     void flip(float) {
-        auto f = m_fields.self();
+        if (rng::fast() > m_fields->chance) runAction(CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.f)));
 
-        if (!f->flipping) {
-            if (rng::tiny() > f->chance) return;
-
-            f->flipping = true;
-            log::debug("flipping the playlayer");
-
-            auto action = CCSequence::createWithTwoActions(
-                CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.f)),
-                CCCallFunc::create(this, callfunc_selector(FlippedPlayLayer::flippingEnded)));
-
-            runAction(action);
-        };
+        queueInMainThread([self = WeakRef(this)]() {
+            if (auto s = self.lock()) s.take()->nextFlip();
+        });
     };
 };
