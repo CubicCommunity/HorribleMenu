@@ -294,14 +294,15 @@ void OptionManagerV2::registerOption(OptionV2 const& option) {
                        ->setSupportedPlatforms(option.platforms);
 
         om->registerOption(opt);
+        (void)OptionEvent(opt->getID()).send(om->getOption(opt->getID()));
     };
+};
+
+void OptionManagerV2::toggleOption(ZStringView id, bool enable) {
+    if (auto om = OptionManager::get()) om->toggleOption(id, enable);
 };
 
 Result<bool> OptionManagerV2::isEnabled(ZStringView id) {
     if (auto om = OptionManager::get()) return Ok(om->isEnabled(id));
     return Err("Failed to get OptionManager");
-};
-
-void OptionManagerV2::toggleOption(ZStringView id, bool enable) {
-    if (auto om = OptionManager::get()) om->toggleOption(id, enable);
 };

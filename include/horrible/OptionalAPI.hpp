@@ -70,6 +70,15 @@ namespace horrible {
             GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::registerOption, (option));
 
         /**
+         * Set the toggle state of an option
+         *
+         * @param id The ID of the option to toggle
+         * @param enable Boolean to toggle to
+         */
+        static void toggleOption(geode::ZStringView id, bool enable)
+            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::toggleOption, (id, enable));
+
+        /**
          * Quickly check the toggle state of an option
          *
          * @param id The ID of the option to check
@@ -78,14 +87,5 @@ namespace horrible {
          */
         static geode::Result<bool> isEnabled(geode::ZStringView id)
             GEODE_EVENT_EXPORT(&OptionManagerV2::isEnabled, (id));
-
-        /**
-         * Set the toggle state of an option
-         *
-         * @param id The ID of the option to toggle
-         * @param enable Boolean to toggle to
-         */
-        static void toggleOption(geode::ZStringView id, bool enable)
-            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::toggleOption, (id, enable));
     };
 };

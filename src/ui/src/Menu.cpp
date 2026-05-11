@@ -356,10 +356,10 @@ bool Menu::init() {
         to4B(colors::black, 0),
         m_impl->categoryList->getScaledContentWidth(),
         17.5f,
-        40.f);
+        43.75f);
     sillyDropdown->setID("silly-filter-dropdown");
     sillyDropdown->setAnchorPoint({0.5, 1});
-    sillyDropdown->setPosition({filterContainerLabel->getPositionX(), 87.5f});
+    sillyDropdown->setPosition({filterContainerLabel->getPositionX(), 88.75f});
 
     sillyDropdown->setCallback([this](auto, CCNode* node) {
         if (auto cell = typeinfo_cast<MenuSillyFilterCell*>(node)) {
@@ -392,7 +392,10 @@ bool Menu::init() {
 
     m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), sillyDropdown->getPositionY() + 8.75f}), 1);
 
-    auto filterHint = CCLabelBMFont::create("Use different filters to search for options quicker. Press the pin icon on an option cell to pin it to the top.", "chatFont.fnt", m_impl->categoryList->getScaledContentWidth());
+    auto filterHint = CCLabelBMFont::create(
+        "Use different filters to search for certain options faster. Press the pin on an option to pin it to the top of the list.",
+        "chatFont.fnt",
+        m_impl->categoryList->getScaledContentWidth());
     filterHint->setID("filter-hint");
     filterHint->setScale(0.5f);
     filterHint->setAnchorPoint(anchor::center);
