@@ -20,8 +20,7 @@ class $modify(OnIcePlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     void update(float p0) {
-        // make the player always on ice. yea this is it xD
-        m_isOnIce = true;
         PlayerObject::update(p0);
+        m_isOnIce = true;  // make the player always on ice. yea this is it xD
     };
 };

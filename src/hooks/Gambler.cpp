@@ -26,10 +26,8 @@ class $modify(GamblerPlayLayer, PlayLayer) {
     bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 
-        auto f = m_fields.self();
-
         // check every frame so we can detect each percentage change
-        if (!f->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.f);
+        if (!m_fields->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.f);
 
         return true;
     };

@@ -61,13 +61,11 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
     void stickyCol1() {
         auto f = m_fields.self();
-
         if (f->m_clickLabel) f->m_clickLabel->setColor(colors::yellow);
     };
 
     void stickyCol2() {
         auto f = m_fields.self();
-
         if (f->m_clickLabel) f->m_clickLabel->setColor(colors::white);
     };
 
