@@ -247,6 +247,23 @@
                 "big-arrow-step": 20
             }
         },
+        "super_jump-chance": {
+            "type": "int",
+            "name": "Super Jump Chance",
+            "description": "<cc>Super Jump</c> - Chance your jump height increasing.",
+            "default": 25,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
         "terms_and_conditions-chance": {
             "type": "int",
             "name": "Terms and Conditions Chance",

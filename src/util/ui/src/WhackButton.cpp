@@ -85,7 +85,7 @@ void WhackButton::reload() {
 };
 
 bool WhackButton::init() {
-    m_impl->inputTarget = rng::get<int>(s_severities.size(), 3);
+    m_impl->inputTarget = rng::get<uint8_t>(s_severities.size(), 3);
 
     if (!CCNode::init()) return false;
 

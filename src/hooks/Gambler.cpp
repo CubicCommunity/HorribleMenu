@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(GamblerPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         bool triggered = false;
     };
 

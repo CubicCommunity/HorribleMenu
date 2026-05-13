@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(OxygenPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         bool withHealth = options::isEnabled("health");
 
         float oxygenLevel = 50.f;

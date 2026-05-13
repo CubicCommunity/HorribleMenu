@@ -20,7 +20,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(AdvertsPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         Ref<RandomAd> ad = nullptr;
     };
 

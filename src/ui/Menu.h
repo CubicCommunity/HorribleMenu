@@ -43,7 +43,7 @@ namespace horrible {
         static Menu* get() noexcept;
     };
 
-    // Menu-related utilities
+    // For convenience
     namespace menu {
         // Open the Horrible Menu mod option menu
         inline void open() {

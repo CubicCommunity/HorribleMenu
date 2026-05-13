@@ -39,7 +39,7 @@ static auto const o = Option::create(THIS_ID)
 // constexpr float kParryWindow = 0.5f;  // seconds
 
 // class $modify(ParryPlayerObject, PlayerObject) {
-//     struct Fields {
+//     struct Fields final {
 //         bool enabled = options::isEnabled(THIS_ID);
 //     };
 
@@ -93,7 +93,7 @@ static auto const o = Option::create(THIS_ID)
 // };
 
 // class $modify(ParryPlayLayer, PlayLayer) {
-//     struct Fields {
+//     struct Fields final {
 //         bool enabled = options::isEnabled(THIS_ID);
 
 //         ProgressBar* m_parryBar = nullptr;

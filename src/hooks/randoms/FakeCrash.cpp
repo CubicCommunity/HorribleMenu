@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
         float lastTimeWarp = LevelTools::getLastTimewarp();
@@ -39,7 +39,7 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     void scheduler(float) {
         auto f = m_fields.self();
 
-        if (!f->inFakeCrash && rng::fast() % f->chance == 0) {
+        if (rng::flip() && !f->inFakeCrash) {
             log::debug("Faking crash");
             f->lastTimeWarp = LevelTools::getLastTimewarp();
 

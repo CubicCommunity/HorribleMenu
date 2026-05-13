@@ -43,7 +43,7 @@ $on_game(Loaded) {
         setting::SafeMode,
         [](bool value) {
             for (auto const& hook : s_safeModeHooks) {
-                if (auto const h = hook.lock()) {
+                if (auto h = hook.lock()) {
                     log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
                     (void)h->toggle(value);
                 };
@@ -65,7 +65,7 @@ $on_game(Loaded) {
             };
 
             for (auto const& hook : s_floatingBtnHooks) {
-                if (auto const h = hook.lock()) {
+                if (auto h = hook.lock()) {
                     log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
                     (void)h->toggle(value);
                 };

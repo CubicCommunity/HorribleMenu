@@ -38,7 +38,7 @@ class $modify(FreezeMenuLayer, MenuLayer) {
 class $modify(FreezePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
     };
 
@@ -48,8 +48,7 @@ class $modify(FreezePlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (auto gm = GameManager::sharedState()) {
-            auto rnd = rng::fast();
-            if (rnd % 100 < f->chance) capFPS(1.f);
+            if (rng::fast() < f->chance) capFPS(1.f);
         };
     };
 

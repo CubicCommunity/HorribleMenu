@@ -38,10 +38,10 @@ namespace horrible {
         void setOpacity(GLubyte opacity);
         void setShowInLevel(bool show);
 
-        void setScale(float scale) override;
-
         void setTheme(std::string theme);
         void setButtonIcon(std::string icon);
+
+        void setScale(float scale) override;
 
         uint8_t getOpacitySetting() const noexcept;
         float getScaleSetting() const noexcept;

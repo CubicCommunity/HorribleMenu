@@ -32,7 +32,7 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
 
                 auto newIcon = rng::get(maxIcons);
 
-#define RANDOM_COLOR {rng::get<uint8_t>(255), rng::get<uint8_t>(255), rng::get<uint8_t>(255)}
+#define RANDOM_COLOR {rng::get<GLubyte>(255), rng::get<GLubyte>(255), rng::get<GLubyte>(255)}
 
                 setColor(RANDOM_COLOR);
                 setSecondColor(RANDOM_COLOR);

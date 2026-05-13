@@ -19,19 +19,8 @@ static auto const o = Option::create(THIS_ID)
 class $modify(FakeDeathPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
-        bool m_dontCreateObjects = false;
-        GameObject* m_destroyingObject;
-    };
-
     void destroyPlayer(PlayerObject* player, GameObject* game) {
-        auto f = m_fields.self();
-
-        // Show explosion visual effect but do not kill the player
-
-        // ignore the anti-cheat spike lmao
         if (game == m_anticheatSpike && player && !player->m_isDead) return PlayLayer::destroyPlayer(player, game);
-        if (!f->m_destroyingObject) f->m_destroyingObject = game;
 
         sfx::play(sfx::file::bad);
         GJBaseGameLayer::shakeCamera(1.f, 2.f, 1.f);

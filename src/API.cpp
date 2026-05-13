@@ -110,21 +110,21 @@ const Mod* Option::getIntegration() const noexcept {
     return m_integration;
 };
 
-bool Option::isEnabled() const {
+bool Option::isEnabled() const& {
     if (auto om = OptionManager::get()) return om->isEnabled(getID());
     return false;
 };
 
-bool Option::isPinned() const {
+bool Option::isPinned() const& {
     if (auto om = OptionManager::get()) return om->isPinned(getID());
     return false;
 };
 
-void Option::enable() {
+void Option::enable() & {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), true);
 };
 
-void Option::disable() {
+void Option::disable() & {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
 };
 

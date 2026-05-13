@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(HealthPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         float health = 100.f;
 
         ProgressBar* healthBar = nullptr;

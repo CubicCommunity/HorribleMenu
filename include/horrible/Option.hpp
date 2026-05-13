@@ -44,6 +44,12 @@ namespace horrible {
     public:
         Option(std::string id, const geode::Mod* integration = geode::Mod::get());
 
+        /**
+         * Create a new option metadata object
+         *
+         * @param id Unique ID for this option
+         * @param integration Pointer to the mod this option is being registered from, do NOT change!
+         */
         static std::shared_ptr<Option> create(std::string id, const geode::Mod* integration = geode::Mod::get());
 
         std::shared_ptr<Option> setName(std::string name);
@@ -68,10 +74,10 @@ namespace horrible {
         [[nodiscard]] std::span<const Platform> getSupportedPlatforms() const noexcept;
         [[nodiscard]] const geode::Mod* getIntegration() const noexcept;
 
-        void enable();
-        void disable();
+        void enable() &;
+        void disable() &;
 
-        [[nodiscard]] bool isEnabled() const;
-        [[nodiscard]] bool isPinned() const;
+        [[nodiscard]] bool isEnabled() const&;
+        [[nodiscard]] bool isPinned() const&;
     };
 };

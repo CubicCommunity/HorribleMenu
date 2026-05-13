@@ -26,13 +26,13 @@ static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setOnline(true)
                                  ->autoRegister();
 
-static bool trySwitchToLevel(PlayLayer* pl, std::shared_ptr<jumpscares::DownloadDelegate> delegate, int chance, int rng, bool dontCreateObjects, bool useReplay) {
+static bool trySwitchToLevel(PlayLayer* pl, std::shared_ptr<jumpscares::DownloadDelegate> delegate, int chance, int rng, bool useReplay) {
     if (rng > chance) {
         log::debug("{} jumpscare not triggered {}", delegate->getLevelName(), chance);
         return false;
     };
 
-    jumpscares::switchToLevel(pl, delegate, dontCreateObjects, useReplay);
+    jumpscares::switchToLevel(pl, delegate, false, useReplay);
 
     return true;
 };
@@ -40,41 +40,33 @@ static bool trySwitchToLevel(PlayLayer* pl, std::shared_ptr<jumpscares::Download
 class $modify(GriefPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID_GRIEF);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(oGrief->getID());
-
-        bool dontCreateObjects = false;
     };
 
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {
         PlayLayer::destroyPlayer(p0, p1);
 
-        auto f = m_fields.self();
-
         if (p1 == m_anticheatSpike && !p0->m_isDead) return;
 
         int rng = rng::fast();
-        trySwitchToLevel(this, jumpscares::get::grief(), f->chance, rng, f->dontCreateObjects, m_useReplay);
+        trySwitchToLevel(this, jumpscares::get::grief(), m_fields->chance, rng, m_useReplay);
     };
 };
 
 class $modify(CongregationPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID_CONGREG);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(oCongreg->getID());
-
-        bool dontCreateObjects = false;
     };
 
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {
         PlayLayer::destroyPlayer(p0, p1);
 
-        auto f = m_fields.self();
-
         if (p1 == m_anticheatSpike && !p0->m_isDead) return;
 
         int rng = rng::fast();
-        trySwitchToLevel(this, jumpscares::get::congregation(), f->chance, rng, f->dontCreateObjects, m_useReplay);
+        trySwitchToLevel(this, jumpscares::get::congregation(), m_fields->chance, rng, m_useReplay);
     };
 };

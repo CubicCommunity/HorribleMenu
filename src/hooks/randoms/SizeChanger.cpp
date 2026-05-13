@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(SizeChangerPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
         bool scaled = false;
@@ -30,18 +30,9 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        // log::debug("size changer jump detected");
-
         if (rng::fast() <= f->chance) {
-            if (f->scaled) {
-                log::debug("change scale big");
-                togglePlayerScale(f->scaled, false);
-                f->scaled = false;
-            } else {
-                log::debug("change scale small");
-                togglePlayerScale(f->scaled, false);
-                f->scaled = true;
-            };
+            togglePlayerScale(!f->scaled, false);
+            f->scaled = !f->scaled;
         };
 
         return PlayerObject::pushButton(p0);

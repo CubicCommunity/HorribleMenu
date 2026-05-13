@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(MathPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
         Ref<MathQuiz> m_currentMath = nullptr;

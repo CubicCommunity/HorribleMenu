@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::isEnabled(THIS_ID);
     };
 

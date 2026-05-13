@@ -20,19 +20,14 @@ static auto const o = Option::create(THIS_ID)
 class $modify(AchievementCCMenuItem, CCMenuItem) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
     };
 
     void activate() {
         CCMenuItem::activate();
 
-        auto f = m_fields.self();
-
-        auto rnd = rng::fast();
-        log::trace("button menu chance {}", rnd);
-
         // @geode-ignore(unknown-resource)
-        if (rnd <= f->chance) sfx::play("achievement_01.ogg");
+        if (rng::fast() <= m_fields->chance) sfx::play("achievement_01.ogg");
     };
 };

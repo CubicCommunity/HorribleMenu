@@ -19,7 +19,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(GravityPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         bool m_isOnSlope = false;
         bool m_wasOnSlope = false;
     };

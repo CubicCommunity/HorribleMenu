@@ -12,7 +12,7 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Mock your 90%+ Fail")
-                          ->setDescription("Taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<cl>suggested by Wuffin</c>")
+                          ->setDescription("Occasionally taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<cl>suggested by Wuffin</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Medium)
                           ->setSupportedPlatforms({Platform::Windows, Platform::Android})
@@ -22,7 +22,7 @@ static auto const o = Option::create(THIS_ID)
 class $modify(MockMenuLayer, MenuLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    struct Fields {
+    struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
     };
 
@@ -30,10 +30,7 @@ class $modify(MockMenuLayer, MenuLayer) {
         if (!MenuLayer::init()) return false;
 
         // show a lazysprite for the first png found in the save dir
-        auto rnd = rng::fast();
-        log::trace("mock chance {}", rnd);
-
-        if (rnd <= m_fields->chance) {
+        if (rng::fast() <= m_fields->chance) {
             auto const mockConfigPath = fmt::format("{}\\mock.json", mod->getSaveDir());
             auto const mockConfig = file::readJson(fs::path(mockConfigPath));
 
@@ -44,11 +41,11 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                 auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
-                auto lvlUnwr = mockConfigUnwr.begin();
-                std::advance(lvlUnwr, rnd % mockConfigUnwr.size());
+                auto const lvlUnwr = mockConfigUnwr.begin();
+                auto const lvl = lvlUnwr->get(rng::get(lvlUnwr->size())).unwrapOr(matjson::Value());
 
-                auto const id = lvlUnwr->getKey().value_or("");
-                auto percent = lvlUnwr->asInt().unwrapOr(99);
+                auto const id = lvl.getKey().value_or("");
+                auto percent = lvl.asInt().unwrapOr(99);
 
                 if (!id.empty()) {
                     log::trace("ID {} with percentage {} is valid", id, percent);
@@ -63,7 +60,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                     ss->setAnchorPoint(anchor::center);
                     ss->setPosition({-192.f, getScaledContentHeight() / 2.f});
 
-                    ss->setLoadCallback([self = WeakRef(this), screenshot = WeakRef(ss), percent, rnd](Result<> res) {
+                    ss->setLoadCallback([self = WeakRef(this), screenshot = WeakRef(ss), percent](Result<> res) {
                         if (res.isOk()) {
                             if (auto s = self.lock()) {
                                 log::info("Sprite loaded successfully from save dir PNG");
@@ -74,7 +71,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                                     auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
                                     percLabel->setID("percentage");
                                     percLabel->setPosition(ss->getScaledContentSize() / 2.f);
-                                    percLabel->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
+                                    percLabel->setAlignment(kCCTextAlignmentLeft);
                                     percLabel->ignoreAnchorPointForPosition(false);
                                     percLabel->setAnchorPoint({0, 0});
                                     percLabel->setScale(2.5);
