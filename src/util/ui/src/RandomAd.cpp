@@ -35,7 +35,7 @@ bool RandomAd::init() {
     projThumb->setLoadCallback([thumbnail = WeakRef(projThumb)](Result<> res) {
         if (res.isOk()) {
             log::info("Sprite loaded successfully");
-            if (auto thumb = thumbnail.lock()) thumb.take()->setScale(0.625);
+            if (auto thumb = thumbnail.lock()) thumb->setScale(0.625);
         } else {
             log::error("Sprite failed to load: {}", res.unwrapErr());
         };
@@ -56,7 +56,7 @@ bool RandomAd::init() {
             themes::getButtonSquareSprite(theme)),
         [loading = WeakRef(playBtnLoading)](Button* sender) {
             sender->setVisible(false);
-            if (auto load = loading.lock()) load.take()->setVisible(true);
+            if (auto load = loading.lock()) load->setVisible(true);
 
             if (auto pl = PlayLayer::get()) {
                 log::info("Switching from ad to Congregation jumpscare");

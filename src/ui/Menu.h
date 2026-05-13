@@ -48,7 +48,7 @@ namespace horrible {
         // Open the Horrible Menu mod option menu
         inline void open() {
             if (auto old = Menu::get()) {
-                old->removeFromParent();
+                cue::resetNode(old);
             } else if (auto popup = Menu::create()) {
                 popup->show();
             };

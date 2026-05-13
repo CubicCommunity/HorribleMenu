@@ -44,7 +44,7 @@ class $modify(FlippedPlayLayer, PlayLayer) {
         if (rng::fast() > m_fields->chance) runAction(CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.f)));
 
         queueInMainThread([self = WeakRef(this)]() {
-            if (auto s = self.lock()) s.take()->nextFlip();
+            if (auto s = self.lock()) s->nextFlip();
         });
     };
 };

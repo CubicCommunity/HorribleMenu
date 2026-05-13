@@ -111,7 +111,7 @@ void SpamChallenge::callAfterFeedback(float) {
 void SpamChallenge::setSuccess(bool v) {
     m_impl->success = v;
 
-    if (m_impl->counter) m_impl->counter->removeFromParent();
+    cue::resetNode(m_impl->counter);
 
     auto symbol = CCSprite::createWithSpriteFrameName(m_impl->success ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");

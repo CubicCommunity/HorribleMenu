@@ -63,11 +63,11 @@ class $modify(SpamPlayLayer, PlayLayer) {
                             log::debug("spam {}", success ? "succeeded" : "failed");
 
                             if (!success) s->resetLevelFromStart();
-                            s.take()->nextSpam();
+                            s->nextSpam();
 
                             cursor::hide();
 
-                            if (auto spam = challenge.lock()) spam.take()->removeFromParent();
+                            if (auto spam = challenge.lock()) spam->removeFromParent();
                         };
                     });
 
@@ -78,7 +78,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
                 };
             } else {
                 queueInMainThread([self = WeakRef(this)]() {
-                    if (auto s = self.lock()) s.take()->nextSpam();
+                    if (auto s = self.lock()) s->nextSpam();
                 });
             };
         };

@@ -87,11 +87,11 @@ class $modify(MockMenuLayer, MenuLayer) {
                                     ss->setPositionY(s->getScaledContentHeight() * yA);
                                     ss->setRotation(360.f * (yA * yB));  // random rotation
 
-                                    auto move = CCEaseIn::create(CCMoveTo::create(10.f, {s->getScaledContentWidth() + 192.f, s.take()->getScaledContentHeight() * yB}), 1.f);
+                                    auto move = CCEaseIn::create(CCMoveTo::create(10.f, {s->getScaledContentWidth() + 192.f, s->getScaledContentHeight() * yB}), 1.f);
                                     auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
 
                                     auto action = CCSpawn::createWithTwoActions(move, rotate);
-                                    ss.take()->runAction(action);
+                                    ss->runAction(action);
 
                                     log::info("Animated sprite successfully");
                                 } else {

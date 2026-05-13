@@ -40,7 +40,7 @@ public:
     CCPoint dragStartPos = {0, 0};
     CCPoint comparePos = {0, 0};
 
-    Ref<CircleButtonSprite> sprite = nullptr;
+    CircleButtonSprite* sprite = nullptr;
 
     bool isAnimating = false;
 
@@ -56,7 +56,7 @@ MenuButton::MenuButton() : m_impl(std::make_unique<Impl>()) {};
 MenuButton::~MenuButton() {};
 
 void MenuButton::setupSprite() {
-    if (auto sprite = m_impl->sprite.take()) sprite->removeFromParent();
+    cue::resetNode(m_impl->sprite);
 
     m_impl->sprite = CircleButtonSprite::createWithSpriteFrameName(
         themes::getIconSprite(m_impl->btnIcon),

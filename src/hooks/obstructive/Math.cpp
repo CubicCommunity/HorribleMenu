@@ -52,11 +52,11 @@ class $modify(MathPlayLayer, PlayLayer) {
                             log::debug("math {}", correct ? "succeeded" : "failed");
 
                             if (!correct) s->resetLevelFromStart();
-                            s.take()->nextQuiz();
+                            s->nextQuiz();
 
                             cursor::hide();
 
-                            if (auto quiz = math.lock()) quiz.take()->removeFromParent();
+                            if (auto quiz = math.lock()) quiz->removeFromParent();
                         };
                     });
 
@@ -67,7 +67,7 @@ class $modify(MathPlayLayer, PlayLayer) {
                 };
             } else {
                 queueInMainThread([self = WeakRef(this)]() {
-                    if (auto s = self.lock()) s.take()->nextQuiz();
+                    if (auto s = self.lock()) s->nextQuiz();
                 });
             };
         };

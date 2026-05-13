@@ -48,7 +48,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         };
 
         queueInMainThread([self = WeakRef(this)]() {
-            if (auto s = self.lock()) s.take()->nextAd();
+            if (auto s = self.lock()) s->nextAd();
         });
     };
 };

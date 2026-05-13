@@ -100,7 +100,7 @@ public:
                             optionList->m_contentLayer->addChild(modOption);
                         } else {
                             log::error("{} is incompatible with the current platform", o->getID());
-                            modOption->removeFromParent();
+                            cue::resetNode(modOption);
                         };
                     };
                 };
@@ -163,7 +163,7 @@ void Menu::setupImageBackground(fs::path const& path) {
                     if (auto bg = themeBg.lock()) {
                         if (res.isOk()) {
                             cue::rescaleToMatch(bg, s->m_bgSprite, true);
-                            bg.take()->setOpacity(100);
+                            bg->setOpacity(100);
 
                             log::debug("Successfully loaded theme background");
                         } else if (res.isErr()) {
@@ -551,7 +551,7 @@ bool Menu::init() {
 };
 
 void Menu::onExit() {
-    if (auto credits = MenuCredits::get()) credits->removeFromParent();
+    if (auto credits = MenuCredits::get()) cue::resetNode(credits);
     s_inst = nullptr;
 
     Popup::onExit();
