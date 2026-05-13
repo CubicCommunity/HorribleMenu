@@ -63,8 +63,8 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
     };
 
     void onQuit() {
-        PlayLayer::onQuit();
         m_fields->clearWhackBtns();
+        PlayLayer::onQuit();
     };
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {

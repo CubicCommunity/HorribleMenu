@@ -33,7 +33,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
         cue::resetNode(m_fields->currentSpam);
-    }
+    };
 
     void levelComplete() {
         PlayLayer::levelComplete();
@@ -48,8 +48,8 @@ class $modify(SpamPlayLayer, PlayLayer) {
     };
 
     void onQuit() {
-        PlayLayer::onQuit();
         cue::resetNode(m_fields->currentSpam);
+        PlayLayer::onQuit();
     };
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
