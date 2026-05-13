@@ -23,6 +23,17 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         uint8_t chance = options::getChance(THIS_ID);
 
         std::vector<WeakRef<WhackButton>> active;
+
+        void clearWhackBtns() {
+            log::trace("Clearing {} whackable button references", active.size());
+
+            for (auto& whackBtn : active) {
+                if (auto btn = whackBtn.lock()) btn->removeFromParent();
+            };
+
+            active.clear();
+            active.shrink_to_fit();
+        };
     };
 
     void setupHasCompleted() {
@@ -34,7 +45,26 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
 
     void levelComplete() {
         PlayLayer::levelComplete();
-        clearWhackBtns();
+        m_fields->clearWhackBtns();
+    };
+
+    void resetLevel() {
+        PlayLayer::resetLevel();
+
+        m_fields->clearWhackBtns();
+        cursor::show();
+    };
+
+    void resetLevelFromStart() {
+        PlayLayer::resetLevelFromStart();
+
+        m_fields->clearWhackBtns();
+        cursor::show();
+    };
+
+    void onQuit() {
+        PlayLayer::onQuit();
+        m_fields->clearWhackBtns();
     };
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
@@ -48,23 +78,9 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                 };
             });
 
-            clearWhackBtns();
+            m_fields->clearWhackBtns();
             cursor::show();
         };
-    };
-
-    void resetLevel() {
-        PlayLayer::resetLevel();
-
-        clearWhackBtns();
-        cursor::show();
-    };
-
-    void resetLevelFromStart() {
-        PlayLayer::resetLevelFromStart();
-
-        clearWhackBtns();
-        cursor::show();
     };
 
     void nextWhack() {
@@ -87,7 +103,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                             };
 
                             cursor::show();
-                            cue::resetNode(whack);
+                            whack->removeFromParent();
                         };
                     });
                     whack->setPosition(CCPoint{winSize.width * rng::get(0.75f, 0.25f), winSize.height * rng::get(0.75f, 0.25f)} / 2.f);
@@ -101,16 +117,5 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                 });
             };
         };
-    };
-
-    void clearWhackBtns() {
-        auto f = m_fields.self();
-
-        for (auto& whackBtn : f->active) {
-            if (auto btn = whackBtn.lock()) btn->removeFromParent();
-        };
-
-        f->active.clear();
-        f->active.shrink_to_fit();
     };
 };

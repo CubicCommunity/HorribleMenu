@@ -30,8 +30,25 @@ class $modify(SpamPlayLayer, PlayLayer) {
         nextSpam();
     };
 
+    void resetLevelFromStart() {
+        PlayLayer::resetLevelFromStart();
+        cue::resetNode(m_fields->currentSpam);
+    }
+
     void levelComplete() {
         PlayLayer::levelComplete();
+        cue::resetNode(m_fields->currentSpam);
+    };
+
+    void togglePracticeMode(bool practiceMode) {
+        PlayLayer::togglePracticeMode(practiceMode);
+
+        cue::resetNode(m_fields->currentSpam);
+        nextSpam();
+    };
+
+    void onQuit() {
+        PlayLayer::onQuit();
         cue::resetNode(m_fields->currentSpam);
     };
 
@@ -46,41 +63,41 @@ class $modify(SpamPlayLayer, PlayLayer) {
 
     void nextSpam() {
         log::trace("scheduling spam challenge");
+
+        unschedule(schedule_selector(SpamPlayLayer::doSpam));
         if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), rng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void doSpam(float) {
-        if (!m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
+        auto f = m_fields.self();
+
+        if (options::isEnabled(THIS_ID) && !f->currentSpam && !m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
             log::debug("Showing spam challenge");
 
-            if (options::isEnabled(THIS_ID)) {
-                if (auto spam = SpamChallenge::create()) {
-                    auto f = m_fields.self();
+            if (auto spam = SpamChallenge::create()) {
+                auto f = m_fields.self();
 
-                    // handle correct/wrong answer
-                    spam->setCallback([self = WeakRef(this), challenge = WeakRef(spam)](bool success) {
-                        if (auto s = self.lock()) {
-                            log::debug("spam {}", success ? "succeeded" : "failed");
+                // handle correct/wrong answer
+                spam->setCallback([self = WeakRef(this), challenge = WeakRef(spam)](bool success) {
+                    if (auto s = self.lock()) {
+                        if (!success) s->resetLevelFromStart();
+                        s->nextSpam();
 
-                            if (!success) s->resetLevelFromStart();
-                            s->nextSpam();
+                        cursor::hide();
 
-                            cursor::hide();
-
-                            if (auto spam = challenge.lock()) spam->removeFromParent();
-                        };
-                    });
-
-                    m_uiLayer->addChild(spam, 99);
-                    f->currentSpam = spam;
-
-                    cursor::show();
-                };
-            } else {
-                queueInMainThread([self = WeakRef(this)]() {
-                    if (auto s = self.lock()) s->nextSpam();
+                        if (auto spam = challenge.lock()) spam->removeFromParent();
+                    };
                 });
+
+                m_uiLayer->addChild(spam, 99);
+                f->currentSpam = spam;
+
+                cursor::show();
             };
         };
+
+        queueInMainThread([self = WeakRef(this)]() {
+            if (auto s = self.lock()) s->nextSpam();
+        });
     };
 };

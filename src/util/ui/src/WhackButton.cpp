@@ -64,8 +64,8 @@ void WhackButton::reload() {
                 sfx::play("chestClick.ogg");
 
                 if (s->m_impl->inputCount >= s->m_impl->inputTarget) {
-                    s->unscheduleUpdate();
                     s->setSuccess(true);
+                    s->unscheduleUpdate();
                 } else {
                     s->reload();
                 };

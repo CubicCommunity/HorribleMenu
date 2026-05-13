@@ -22,7 +22,7 @@ class $modify(MathPlayLayer, PlayLayer) {
     struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
-        Ref<MathQuiz> m_currentMath = nullptr;
+        Ref<MathQuiz> currentMath = nullptr;
     };
 
     void setupHasCompleted() {
@@ -30,46 +30,63 @@ class $modify(MathPlayLayer, PlayLayer) {
         nextQuiz();
     };
 
+    void resetLevelFromStart() {
+        PlayLayer::resetLevelFromStart();
+        cue::resetNode(m_fields->currentMath);
+    }
+
     void levelComplete() {
         PlayLayer::levelComplete();
-        cue::resetNode(m_fields->m_currentMath);
+        cue::resetNode(m_fields->currentMath);
+    };
+
+    void togglePracticeMode(bool practiceMode) {
+        PlayLayer::togglePracticeMode(practiceMode);
+
+        cue::resetNode(m_fields->currentMath);
+        nextQuiz();
+    };
+
+    void onQuit() {
+        PlayLayer::onQuit();
+        cue::resetNode(m_fields->currentMath);
     };
 
     void nextQuiz() {
         log::trace("scheduling math quiz");
+
+        unschedule(schedule_selector(MathPlayLayer::doQuiz));
         if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), rng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void doQuiz(float) {
-        if (m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
+        auto f = m_fields.self();
+
+        if (options::isEnabled(THIS_ID) && !f->currentMath && m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
             log::debug("Showing math quiz");
 
-            if (options::isEnabled(THIS_ID)) {
-                if (auto quiz = MathQuiz::create()) {
-                    // handle correct/wrong answer
-                    quiz->setCallback([self = WeakRef(this), math = WeakRef(quiz)](bool correct) {
-                        if (auto s = self.lock()) {
-                            log::debug("math {}", correct ? "succeeded" : "failed");
+            if (auto quiz = MathQuiz::create()) {
+                // handle correct/wrong answer
+                quiz->setCallback([self = WeakRef(this), math = WeakRef(quiz)](bool correct) {
+                    if (auto s = self.lock()) {
+                        if (!correct) s->resetLevelFromStart();
+                        s->nextQuiz();
 
-                            if (!correct) s->resetLevelFromStart();
-                            s->nextQuiz();
+                        cursor::hide();
 
-                            cursor::hide();
-
-                            if (auto quiz = math.lock()) quiz->removeFromParent();
-                        };
-                    });
-
-                    m_uiLayer->addChild(quiz, 99);
-                    m_fields->m_currentMath = quiz;
-
-                    cursor::show();
-                };
-            } else {
-                queueInMainThread([self = WeakRef(this)]() {
-                    if (auto s = self.lock()) s->nextQuiz();
+                        if (auto quiz = math.lock()) quiz->removeFromParent();
+                    };
                 });
+
+                m_uiLayer->addChild(quiz, 99);
+                f->currentMath = quiz;
+
+                cursor::show();
             };
         };
+
+        queueInMainThread([self = WeakRef(this)]() {
+            if (auto s = self.lock()) s->nextQuiz();
+        });
     };
 };

@@ -106,6 +106,7 @@ bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
 
 void SpamChallenge::callAfterFeedback(float) {
     if (m_impl->callback) m_impl->callback(m_impl->success);
+    unscheduleAllSelectors();
 };
 
 void SpamChallenge::setSuccess(bool v) {

@@ -280,6 +280,7 @@ bool MathQuiz::hasAnswer(int answer) const noexcept {
 
 void MathQuiz::callAfterFeedback(CCNode*) {
     if (m_impl->callback) m_impl->callback(m_impl->correct);
+    unscheduleAllSelectors();
 };
 
 void MathQuiz::update(float dt) {
