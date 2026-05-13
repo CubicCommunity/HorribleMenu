@@ -67,7 +67,7 @@ namespace horrible {
 
     namespace popup {
         inline void closeBtnID(CCMenuItemSpriteExtra* btn) {
-            if (btn) btn->setID("close-btn");
+            if (btn) btn->setID("close-btn");  // xd
         };
     };
 

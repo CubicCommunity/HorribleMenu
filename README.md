@@ -59,7 +59,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 #### Thanks
-- **[Cheeseworks](https://www.github.com/BlueWitherer/)**: Internals, API/DX, UI/UX, options' features
+- **[Cheeseworks](https://www.github.com/BlueWitherer/)**: Internals, API/DX, UI/UX, options' features, mod icon
 - **[ArcticWoof](https://www.github.com/DumbCaveSpider/)**: UI, options' features
 
 *as well as...*

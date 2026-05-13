@@ -169,14 +169,14 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
         PlayLayer::resumeAndRestart(fromStart);
     };
 
-    void onQuit() {
-        toggleButton(true);
-        PlayLayer::onQuit();
-    };
-
     void showEndLayer() {
         toggleButton(true);
         PlayLayer::showEndLayer();
+    };
+
+    void onQuit() {
+        toggleButton(true);
+        PlayLayer::onQuit();
     };
 
     void toggleButton(bool toggle = false) {

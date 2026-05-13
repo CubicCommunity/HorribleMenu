@@ -31,8 +31,8 @@ class $modify(MockMenuLayer, MenuLayer) {
 
         // show a lazysprite for the first png found in the save dir
         if (rng::fast() <= m_fields->chance) {
-            auto const mockConfigPath = fmt::format("{}\\mock.json", mod->getSaveDir());
-            auto const mockConfig = file::readJson(fs::path(mockConfigPath));
+            auto const mockConfigPath = mod->getSaveDir() / "mock.json";
+            auto const mockConfig = file::readJson(mockConfigPath);
 
             log::trace("Reading path {}...", mockConfigPath);
 
@@ -50,7 +50,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                 if (!id.empty()) {
                     log::trace("ID {} with percentage {} is valid", id, percent);
 
-                    auto const pngPath = fmt::format("{}\\{}.png", mod->getSaveDir(), id);
+                    auto const pngPath = mod->getSaveDir() / fmt::format("{}.png", id);
 
                     log::info("Displaying {}", pngPath);
 
@@ -104,7 +104,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                         };
                     });
 
-                    ss->loadFromFile(fs::path(pngPath));
+                    ss->loadFromFile(pngPath);
                     addChild(ss, 999);
                 } else {
                     log::error("ID is invalid");
@@ -145,11 +145,11 @@ class $modify(MockPlayLayer, PlayLayer) {
             renderTexture->end();
 
             if (auto image = renderTexture->newCCImage()) {
-                auto const path = fmt::format("{}\\{}.png", mod->getSaveDir(), id);
+                auto const path = mod->getSaveDir() / fmt::format("{}.png", id);
 
-                if (image->saveToFile(path.c_str(), false)) {
-                    auto const mockConfigPath = fmt::format("{}\\mock.json", mod->getSaveDir());
-                    auto const mockConfig = file::readJson(fs::path(mockConfigPath));  // get the saved fails to mock the player with :)
+                if (image->saveToFile(str::pathToString(path).c_str(), false)) {
+                    auto const mockConfigPath = mod->getSaveDir() / "mock.json";
+                    auto const mockConfig = file::readJson(mockConfigPath);  // get the saved fails to mock the player with :)
 
                     auto toWrite = matjson::Value();  // what we're gonna write in the mock.json file
 
@@ -193,8 +193,8 @@ class $modify(MockPlayLayer, PlayLayer) {
         int id = m_level->m_levelID;
         int percentage = m_level->m_normalPercent;
 
-        auto const mockConfigPath = fmt::format("{}\\mock.json", mod->getSaveDir());
-        auto const mockConfig = file::readJson(fs::path(mockConfigPath));  // get the saved levels to mock the player :)
+        auto const mockConfigPath = mod->getSaveDir() / "mock.json";
+        auto const mockConfig = file::readJson(mockConfigPath);  // get the saved levels to mock the player :)
 
         if (mockConfig.isOk()) {
             log::trace("Clearing mock record for {}", id);
