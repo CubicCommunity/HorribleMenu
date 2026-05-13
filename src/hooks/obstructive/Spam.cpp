@@ -47,11 +47,6 @@ class $modify(SpamPlayLayer, PlayLayer) {
         nextSpam();
     };
 
-    void onQuit() {
-        cue::resetNode(m_fields->currentSpam);
-        PlayLayer::onQuit();
-    };
-
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
 
@@ -78,15 +73,13 @@ class $modify(SpamPlayLayer, PlayLayer) {
                 auto f = m_fields.self();
 
                 // handle correct/wrong answer
-                spam->setCallback([self = WeakRef(this), challenge = WeakRef(spam)](bool success) {
-                    if (auto s = self.lock()) {
-                        if (!success) s->resetLevelFromStart();
-                        s->nextSpam();
+                spam->setCallback([this, spam](bool success) {
+                    if (!success) resetLevelFromStart();
+                    nextSpam();
 
-                        cursor::hide();
+                    cursor::hide();
 
-                        if (auto spam = challenge.lock()) spam->removeFromParent();
-                    };
+                    if (spam) spam->removeFromParent();
                 });
 
                 m_uiLayer->addChild(spam, 99);

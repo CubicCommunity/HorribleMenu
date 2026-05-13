@@ -47,11 +47,6 @@ class $modify(MathPlayLayer, PlayLayer) {
         nextQuiz();
     };
 
-    void onQuit() {
-        cue::resetNode(m_fields->currentMath);
-        PlayLayer::onQuit();
-    };
-
     void nextQuiz() {
         log::trace("scheduling math quiz");
 
@@ -67,15 +62,13 @@ class $modify(MathPlayLayer, PlayLayer) {
 
             if (auto quiz = MathQuiz::create()) {
                 // handle correct/wrong answer
-                quiz->setCallback([self = WeakRef(this), math = WeakRef(quiz)](bool correct) {
-                    if (auto s = self.lock()) {
-                        if (!correct) s->resetLevelFromStart();
-                        s->nextQuiz();
+                quiz->setCallback([this, quiz](bool correct) {
+                    if (!correct) resetLevelFromStart();
+                    nextQuiz();
 
-                        cursor::hide();
+                    cursor::hide();
 
-                        if (auto quiz = math.lock()) quiz->removeFromParent();
-                    };
+                    if (quiz) quiz->removeFromParent();
                 });
 
                 m_uiLayer->addChild(quiz, 99);

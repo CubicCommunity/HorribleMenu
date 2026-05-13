@@ -58,17 +58,15 @@ void WhackButton::reload() {
             s_severities.at(diff),
             1.f,
             m_impl->getButtonColor(diff)),
-        [self = WeakRef(this)](auto) {
-            if (auto s = self.lock()) {
-                s->m_impl->inputCount += 1;
-                sfx::play("chestClick.ogg");
+        [this](auto) {
+            m_impl->inputCount += 1;
+            sfx::play("chestClick.ogg");
 
-                if (s->m_impl->inputCount >= s->m_impl->inputTarget) {
-                    s->setSuccess(true);
-                    s->unscheduleUpdate();
-                } else {
-                    s->reload();
-                };
+            if (m_impl->inputCount >= m_impl->inputTarget) {
+                setSuccess(true);
+                unscheduleUpdate();
+            } else {
+                reload();
             };
         });
     m_impl->button->setID("whackable-btn");

@@ -96,15 +96,11 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                 if (auto whack = WhackButton::create()) {
                     auto const winSize = m_uiLayer->getScaledContentSize();
 
-                    whack->setCallback([self = WeakRef(this), whackButton = WeakRef(whack)](bool success) {
-                        if (auto whack = whackButton.lock()) {
-                            if (!success) {
-                                if (auto s = self.lock()) s->resetLevelFromStart();
-                            };
+                    whack->setCallback([this, whack](bool success) {
+                        if (!success) resetLevelFromStart();
 
-                            cursor::show();
-                            whack->removeFromParent();
-                        };
+                        cursor::show();
+                        whack->removeFromParent();
                     });
                     whack->setPosition(CCPoint{winSize.width * rng::get(0.75f, 0.25f), winSize.height * rng::get(0.75f, 0.25f)} / 2.f);
 
