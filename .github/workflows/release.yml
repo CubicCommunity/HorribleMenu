@@ -43,18 +43,18 @@ jobs:
               uses: BlueWitherer/mod-discord-webhooks/geode@main
               with:
                   webhook-url: ${{ steps.check-discord.outputs.webhook-url }}
-                  content: "-# @everyone"
+                  content: "> -# @everyone"
                   changelog: ${{ steps.publish-release.outputs.changelog }}
 
-    publish:
-        name: Publish to Geode
-        runs-on: ubuntu-latest
-        needs: ["release"]
+    # publish:
+    #     name: Publish to Geode
+    #     runs-on: ubuntu-latest
+    #     needs: ["release"]
 
-        steps:
-            - uses: actions/checkout@v6
+    #     steps:
+    #         - uses: actions/checkout@v6
 
-            - name: Publish to Geode
-              uses: hiimjasmine00/release-geode-mod/publish@main
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
+    #         - name: Publish to Geode
+    #           uses: hiimjasmine00/release-geode-mod/publish@main
+    #           with:
+    #               token: ${{ secrets.GITHUB_TOKEN }}

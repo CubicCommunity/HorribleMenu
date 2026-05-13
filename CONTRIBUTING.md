@@ -7,7 +7,7 @@ You're free to fork our repository and [open a pull request](../../pulls/) if yo
 Before opening or marking your pull request as ready for review, please be sure to test your build and make sure it is stable and not conflicting with the upstream repository. Try not to diverge from our current code styling and practices in your fork.
 
 ### Guidelines
-This section mainly covers contributions for new options to Horrible Menu. For other pull requests, we simply ask that you justify your changes in detail when opening your request.
+This section mainly covers contributions for new features to Horrible Menu. For other pull requests, we simply ask that you justify your changes in detail when opening your request.
 
 Every whole word in an option ID must be separated specifically by underscores (`_`), to keep things consistent!
 ```txt
@@ -50,7 +50,7 @@ using namespace horrible::prelude;
 ```
 
 #### AI Usage
-View our stance on AI and how to use it for this project **[here](AGENTS.md)**.
+View our stance on the use of AI in Cubic's work and how to use it for this project **[here](AGENTS.md)**.
 
 ## Reporting Issues
 If you found a bug or want to make a suggestion, you're welcome to [open an issue](../../issues/) describing your case. Please be sure to provide as many details as possible. If you're having issues with crashing, please always provide a crashlog.
