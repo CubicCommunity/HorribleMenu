@@ -2,7 +2,7 @@
 ###### A plethora of ways to ruin your experience...
 
 ## About
-This silly lil' mod adds a funny mod menu filled to the brim with **over 30 crazy troll options** to mess around with! Spice up your gameplay by adding some truly insane features to absolutely wreck your entire game.
+This silly lil' mod adds a funny mod menu filled to the brim with **over 40 crazy troll options** to mess around with! Spice up your gameplay by adding some truly insane features to absolutely wreck your entire game.
 
 ---
 
@@ -71,7 +71,7 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 
 *and...*
 
-- **You!**: For being there and keeping us motivated to continue this big ole' project.
+- **[You](https://www.github.com/CubicCommunity/HorribleMenu/stargazers/)!**: For being there and keeping us motivated to continue this big ole' project.
 
 ---
 
