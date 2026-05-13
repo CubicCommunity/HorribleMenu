@@ -129,16 +129,12 @@ class $modify(MockPlayLayer, PlayLayer) {
         log::info("Level percentage: {}", percentage);
 
         if (percentage >= 90) {
-            CCDirector* director = CCDirector::sharedDirector();
-            CCScene* scene = CCScene::get();
+            auto director = CCDirector::sharedDirector();
+            auto scene = CCScene::get();
 
             // Get the window size in points and scale to pixels
             auto const winSize = director->getWinSize();
-
-            int width = static_cast<int>(winSize.width);
-            int height = static_cast<int>(winSize.height);
-
-            CCRenderTexture* renderTexture = CCRenderTexture::create(width, height);
+            auto renderTexture = CCRenderTexture::create(static_cast<int>(winSize.width), static_cast<int>(winSize.height));
 
             renderTexture->begin();
             scene->visit();
@@ -180,7 +176,7 @@ class $modify(MockPlayLayer, PlayLayer) {
                     log::error("Failed to save screenshot to {}", path);
                 };
 
-                CC_SAFE_DELETE(image);
+                delete image;
             } else {
                 log::error("Failed to create image from render texture");
             };
