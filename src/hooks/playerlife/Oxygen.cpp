@@ -47,7 +47,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
             f->oxygenBar->setPosition({10.f, getScaledContentHeight() / 2.f});
             f->oxygenBar->setRotation(-90.f);
 
-            m_uiLayer->addChild(f->oxygenBar, 99);
+            m_uiLayer->addChild(f->oxygenBar, HIGHEST_Z);
         };
 
         f->oxygenBar->updateProgress(f->oxygenLevel);
@@ -62,7 +62,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
             f->oxygenLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
             f->oxygenLabel->setScale(0.25f);
 
-            m_uiLayer->addChild(f->oxygenLabel, 100);
+            m_uiLayer->addChild(f->oxygenLabel, HIGHEST_Z);
         } else {
             f->oxygenLabel->setString(o2.c_str());
         };

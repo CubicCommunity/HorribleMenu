@@ -82,7 +82,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
                     if (spam) spam->removeFromParent();
                 });
 
-                m_uiLayer->addChild(spam, 99);
+                m_uiLayer->addChild(spam, HIGHEST_Z);
                 f->currentSpam = spam;
 
                 cursor::show();

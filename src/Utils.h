@@ -27,6 +27,8 @@
 
 #include <Geode/binding/FMODAudioEngine.hpp>
 
+#define HIGHEST_Z cocos2d::CCScene::get()->getHighestChildZ() + 1
+
 // Additional utility methods for Horrible Menu
 namespace horrible {
     // Pointer to this Geode mod

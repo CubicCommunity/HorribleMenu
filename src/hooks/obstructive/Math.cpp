@@ -71,7 +71,7 @@ class $modify(MathPlayLayer, PlayLayer) {
                     if (quiz) quiz->removeFromParent();
                 });
 
-                m_uiLayer->addChild(quiz, 99);
+                m_uiLayer->addChild(quiz, HIGHEST_Z);
                 f->currentMath = quiz;
 
                 cursor::show();

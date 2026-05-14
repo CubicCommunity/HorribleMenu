@@ -139,7 +139,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
                 CCCallFuncN::create(this, callfuncN_selector(MotivationPlayLayer::scheduleNextMessage)),
                 nullptr);
 
-            m_uiLayer->addChild(label, 9);
+            m_uiLayer->addChild(label, HIGHEST_Z);
 
             sfx::play(sfx::file::good);
             label->runAction(action);

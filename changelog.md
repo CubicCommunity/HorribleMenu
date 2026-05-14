@@ -1,3 +1,6 @@
+# v1.0.2 
+- Fix UI ordering issues
+
 # v1.0.1 
 - Fix file path issues with *Mock your 90%+ Fail* option on Android
 

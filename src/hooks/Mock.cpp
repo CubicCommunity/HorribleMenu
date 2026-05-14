@@ -105,7 +105,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                     });
 
                     ss->loadFromFile(pngPath);
-                    addChild(ss, 999);
+                    addChild(ss, HIGHEST_Z);
                 } else {
                     log::error("ID is invalid");
                 };

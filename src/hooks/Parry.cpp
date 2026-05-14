@@ -112,7 +112,7 @@ static auto const o = Option::create(THIS_ID)
 //             m_fields->m_parryBar->setAnchorPoint({ 0.5f, 0.5f });
 //             m_fields->m_parryBar->setVisible(false);
 
-//             addChild(m_fields->m_parryBar, 9999);
+//             m_uiLayer->addChild(m_fields->m_parryBar);
 //         };
 
 //         if (!m_fields->m_parryLabel) {
@@ -123,7 +123,7 @@ static auto const o = Option::create(THIS_ID)
 //             m_fields->m_parryLabel->setVisible(false);
 //             m_fields->m_parryLabel->setID("parry_label"_spr);
 
-//             addChild(m_fields->m_parryLabel, 10000);
+//             m_uiLayer->addChild(m_fields->m_parryLabel);
 //         };
 
 //         scheduleUpdate();

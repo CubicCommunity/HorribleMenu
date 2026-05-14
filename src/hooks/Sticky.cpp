@@ -50,7 +50,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
                 CCDelayTime::create(0.125f),
                 nullptr);
 
-            pl->m_uiLayer->addChild(f->m_clickLabel, 9);
+            pl->m_uiLayer->addChild(f->m_clickLabel, HIGHEST_Z);
             f->m_clickLabel->runAction(CCRepeatForever::create(seq));
         };
 

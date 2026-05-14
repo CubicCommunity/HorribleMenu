@@ -78,7 +78,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
             CCSpawn::createWithTwoActions(move, rotate),
             CCCallFuncN::create(this, callfuncN_selector(ConfettiPlayLayer::cleanConfetti)));
 
-        m_uiLayer->addChild(conf, 9);
+        m_uiLayer->addChild(conf, HIGHEST_Z);
         conf->runAction(seq);
     };
 

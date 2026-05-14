@@ -104,7 +104,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                     });
                     whack->setPosition(CCPoint{winSize.width * rng::get(0.75f, 0.25f), winSize.height * rng::get(0.75f, 0.25f)} / 2.f);
 
-                    m_uiLayer->addChild(whack, 9);
+                    m_uiLayer->addChild(whack, HIGHEST_Z);
                     m_fields->active.push_back(whack);
                 };
 

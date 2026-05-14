@@ -284,7 +284,7 @@ void MathQuiz::callAfterFeedback(CCNode*) {
 };
 
 void MathQuiz::update(float dt) {
-    if (m_impl->timeRemaining <= 0.f) return;
+    if (m_impl->timeRemaining <= 0.f) return unscheduleUpdate();
     m_impl->timeRemaining -= dt;
 
     m_impl->timeDt += dt;

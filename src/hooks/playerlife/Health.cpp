@@ -41,7 +41,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
             f->healthBar->setPosition({10.f, getScaledContentHeight() / 2.f});
             f->healthBar->setRotation(-90.f);
 
-            m_uiLayer->addChild(f->healthBar, 99);
+            m_uiLayer->addChild(f->healthBar, HIGHEST_Z);
         };
 
         f->healthBar->updateProgress(f->health);
@@ -54,7 +54,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
             f->healthLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->healthBar->getScaledContentWidth() / 2.f) - 1.25f});
             f->healthLabel->setScale(0.25f);
 
-            m_uiLayer->addChild(f->healthLabel, 100);
+            m_uiLayer->addChild(f->healthLabel, HIGHEST_Z);
         } else {
             f->healthLabel->setString(hp.c_str());
         };
