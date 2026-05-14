@@ -42,10 +42,10 @@ class $modify(MockMenuLayer, MenuLayer) {
                 auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
                 auto const lvlUnwr = mockConfigUnwr.begin();
-                auto const lvl = lvlUnwr->get(rng::get(lvlUnwr->size())).unwrapOr(matjson::Value());
+                auto const lvl = lvlUnwr->get(rng::get(lvlUnwr->size() - 1)).unwrapOr(matjson::Value());
 
                 auto const id = lvl.getKey().value_or("");
-                auto percent = lvl.asInt().unwrapOr(99);
+                auto percent = lvl.asInt().unwrapOr(90);
 
                 if (!id.empty()) {
                     log::trace("ID {} with percentage {} is valid", id, percent);
