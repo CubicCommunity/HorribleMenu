@@ -24,7 +24,7 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
 
         // jump pls
         if (auto gm = GameManager::sharedState()) {
-            if (rng::fast() <= 50) {
+            if (rng::flip()) {
                 // count the icons i guess
                 auto maxIcons = 0;
                 maxIcons = gm->countForType(IconType::Cube);

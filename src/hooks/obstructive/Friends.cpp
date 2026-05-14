@@ -49,7 +49,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto xA = -125.f;                // starting x pos
         auto xB = uiSize.width + 125.f;  // ending x pos
 
-        if ((static_cast<float>(rng::fast()) / 2.f) <= 50.f) {
+        if (rng::flip()) {
             xA = xB;
             xB = -125.f;
         };  // swap sides
