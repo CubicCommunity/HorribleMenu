@@ -129,19 +129,34 @@ Menu::~Menu() {};
 
 void Menu::setupSafeModeNode(bool safeMode) {
     if (m_impl->safeModeContainer) {
-        m_impl->safeModeContainer->removeAllChildrenWithCleanup(true);
+        m_impl->safeModeContainer->removeAllChildren();
 
-        auto safeModeIcon = CCSprite::createWithSpriteFrameName(safeMode ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
-        safeModeIcon->setScale(0.375f);
+        auto icon = CCSprite::createWithSpriteFrameName(safeMode ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
+        icon->setScale(0.425f);
 
-        m_impl->safeModeContainer->addChild(safeModeIcon);
+        m_impl->safeModeContainer->addChild(icon);
 
-        auto safeModeLabel = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
-        safeModeLabel->setColor(safeMode ? colors::green : colors::red);
-        safeModeLabel->setAlignment(kCCTextAlignmentCenter);
-        safeModeLabel->setScale(0.25f);
+        auto label = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
+        label->setColor(safeMode ? colors::green : colors::red);
+        label->setAlignment(kCCTextAlignmentCenter);
+        label->setScale(0.325f);
 
-        m_impl->safeModeContainer->addChild(safeModeLabel);
+        m_impl->safeModeContainer->addChild(label);
+
+        auto infoBtn = Button::createWithSpriteFrameName(
+            "GJ_infoIcon_001.png",
+            [this](auto) {
+                createQuickPopup(
+                    "Safe Mode",
+                    fmt::format("{}\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in levels</c>.", m_impl->safeMode ? "Currently <cy>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cc>progress on levels WILL save</c>!"),
+                    "OK",
+                    nullptr,
+                    nullptr);
+            });
+        infoBtn->setID("info-btn");
+        infoBtn->setScale(0.375f);
+
+        m_impl->safeModeContainer->addChild(infoBtn);
 
         m_impl->safeModeContainer->updateLayout();
     };
@@ -392,15 +407,14 @@ bool Menu::init() {
 
     m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), sillyDropdown->getPositionY() + 8.75f}), 1);
 
-    auto filterHint = CCLabelBMFont::create(
+    auto filterHint = SimpleTextArea::create(
         "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
         "chatFont.fnt",
-        categoryListBg->getScaledContentWidth());
+        0.5f);
     filterHint->setID("filter-hint");
-    filterHint->setScale(0.5f);
-    filterHint->setAnchorPoint(anchor::center);
-    filterHint->setAlignment(kCCTextAlignmentCenter);
     filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
+    filterHint->setWidth(categoryListBg->getScaledContentWidth());
+    filterHint->setAlignment(kCCTextAlignmentCenter);
 
     m_mainLayer->addChild(filterHint, 1);
 

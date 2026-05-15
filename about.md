@@ -61,8 +61,8 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 ---
 
 #### Thanks
-- **[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod icon
-- **[ArcticWoof](user:7689052)**: UI, options' features
+- **[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding
+- **[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo
 
 *as well as...*
 
