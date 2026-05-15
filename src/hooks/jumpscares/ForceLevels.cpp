@@ -12,7 +12,7 @@ using namespace horrible::prelude;
 
 static auto const oGrief = Option::create(THIS_ID_GRIEF)
                                ->setName("Get Back on Grief")
-                               ->setDescription("A chance at death of forcing you to play Grief.\n<cl>suggested by Sweep</c>")
+                               ->setDescription("A chance of forcing you to play Grief when you die in a level.\n<cl>suggested by Sweep</c>")
                                ->setCategory(category::jumpscares)
                                ->setSillyTier(SillyTier::High)
                                ->setOnline(true)
@@ -20,7 +20,7 @@ static auto const oGrief = Option::create(THIS_ID_GRIEF)
 
 static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setName("Congregation Jumpscare")
-                                 ->setDescription("A chance at death of forcing you to play Congregation.\n<cl>suggested by StaticGD</c>")
+                                 ->setDescription("A chance of forcing you to play Congregation when you die in a level.\n<cl>suggested by StaticGD</c>")
                                  ->setCategory(category::jumpscares)
                                  ->setSillyTier(SillyTier::High)
                                  ->setOnline(true)
