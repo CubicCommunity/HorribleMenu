@@ -145,10 +145,10 @@ void Menu::setupSafeModeNode(bool safeMode) {
 
         auto infoBtn = Button::createWithSpriteFrameName(
             "GJ_infoIcon_001.png",
-            [this](auto) {
+            [safeMode](auto) {
                 createQuickPopup(
                     "Safe Mode",
-                    fmt::format("{}\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in levels</c>.", m_impl->safeMode ? "Currently <cy>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cc>progress on levels WILL save</c>!"),
+                    fmt::format("{}\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in levels</c>.", safeMode ? "Currently <cy>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cc>progress on levels WILL save</c>!"),
                     "OK",
                     nullptr,
                     nullptr);
