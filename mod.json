@@ -76,7 +76,7 @@
         "dyn-safe-mode": {
             "type": "bool",
             "name": "Automatic",
-            "description": "Automatically enable Safe Mode when playing a level, and disable it when in the menu. <co>Requires reloading the mod to take effect.</c>",
+            "description": "Automatically toggle Safe Mode whenever you toggle any options that are marked as cheats.",
             "default": true
         },
         "ui": {
