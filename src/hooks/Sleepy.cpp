@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Your character will occasionally fall asleep while playing.\n<cl>suggested by this_guy_yt</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Medium)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(SleepyPlayerObject, PlayerObject) {

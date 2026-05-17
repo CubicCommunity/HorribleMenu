@@ -13,6 +13,10 @@ namespace horrible {
         using ThreadSafeGlobalEvent::ThreadSafeGlobalEvent;
     };
 
+    struct OptionCheatingEvent final : public geode::Event<OptionEvent, bool(bool)> {
+        using Event::Event;
+    };
+
     inline geode::ListenerHandle* listenForHorribleOptionChanges(std::string id, geode::CopyableFunction<void(HorribleOptionSave)>&& callback) {
         return OptionEvent(std::move(id)).listen(std::move(callback)).leak();
     };

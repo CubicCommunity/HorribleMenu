@@ -15,6 +15,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Your visual framerate starts randomly dropping during 90-99% in a level.\n<cl>suggested by Hexfire</c>")
                           ->setCategory(category::randoms)
                           ->setSillyTier(SillyTier::Medium)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(FreezeMenuLayer, MenuLayer) {

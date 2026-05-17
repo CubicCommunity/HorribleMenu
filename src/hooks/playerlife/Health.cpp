@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>suggested by Cheeseworks</c>")
                           ->setCategory(category::playerlife)
                           ->setSillyTier(SillyTier::Medium)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(HealthPlayLayer, PlayLayer) {

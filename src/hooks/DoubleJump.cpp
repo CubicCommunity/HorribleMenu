@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Allows your character to double-jump in a level.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(DoubleJumpPlayerObject, PlayerObject) {

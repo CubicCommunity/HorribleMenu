@@ -34,6 +34,8 @@ namespace horrible {
         geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Map of registered options
         std::vector<std::string> m_categories;                       // Array of auto-registered categories
 
+        std::unordered_map<std::string_view, std::weak_ptr<Option>> m_enabledCheats;  // Map of currently enabled cheat options, used for dynamic safe mode
+
         geode::utils::StringMap<const geode::Mod* const> m_integrations;  // Map of auto-registered external mods using this API
 
         std::unordered_map<std::string_view, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
@@ -92,6 +94,13 @@ namespace horrible {
         void registerOption(std::shared_ptr<Option> option);
 
         /**
+         * Check if a cheat option is currently enabled
+         *
+         * @returns Whether cheating is on
+         */
+        bool isCheatEnabled() const noexcept;
+
+        /**
          * Returns a reference to the array of all registered options
          *
          * @returns An array of every registered option, main and external
@@ -124,6 +133,15 @@ namespace horrible {
          * @returns Boolean of the current value
          */
         [[nodiscard]] bool isViewed(geode::ZStringView id) const;
+
+        /**
+         * Quickly check if an option is a cheat option
+         *
+         * @param id The ID of the option to check
+         *
+         * @returns Boolean of whether this option is a cheat or not
+         */
+        [[nodiscard]] bool isCheating(geode::ZStringView id) const;
 
         /**
          * Quickly check the default toggle state of an option
@@ -160,6 +178,13 @@ namespace horrible {
          * @returns The amount of callbacks registered for this option
          */
         [[nodiscard]] size_t getDelegateCount(std::string_view id) const noexcept;
+
+        /**
+         * Check if Safe Mode should be enabled based on the current state of options and settings
+         *
+         * @returns Whether Safe Mode should be enabled or not
+         */
+        [[nodiscard]] bool shouldBeSafeMode() const noexcept;
 
         /**
          * Set the toggle state of an option

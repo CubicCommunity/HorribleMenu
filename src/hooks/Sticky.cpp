@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("When your character lands on an object, it may stay stuck on its surface until you jump again.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Medium)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(StickyPlayerObject, PlayerObject) {

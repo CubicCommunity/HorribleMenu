@@ -47,12 +47,6 @@
         }
     },
     "settings": {
-        "safe-mode": {
-            "type": "bool",
-            "name": "Safe Mode",
-            "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active!</cr>",
-            "default": true
-        },
         "button": {
             "type": "custom:menu",
             "name": " "
@@ -65,6 +59,25 @@
                 "\\"
             ],
             "category": "universal"
+        },
+        "safe-mode-section": {
+            "type": "title",
+            "name": "Safe Mode",
+            "description": "Settings for Safe Mode."
+        },
+        "safe-mode": {
+            "type": "bool",
+            "name": "Enable",
+            "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active!</cr>",
+            "default": true,
+            "enable-if": "!dyn-safe-mode",
+            "enable-if-description": "Disable Automatic Safe Mode to manually change this setting."
+        },
+        "dyn-safe-mode": {
+            "type": "bool",
+            "name": "Automatic",
+            "description": "Automatically enable Safe Mode when playing a level, and disable it when in the menu. <co>Requires reloading the mod to take effect.</c>",
+            "default": true
         },
         "ui": {
             "type": "title",

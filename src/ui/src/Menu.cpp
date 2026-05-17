@@ -39,7 +39,7 @@ public:
 
     MenuNothingNode* nothingLabel = nullptr;
 
-    bool safeMode = mod->getSettingValue<bool>(setting::SafeMode);
+    bool safeMode = OptionManager::get()->shouldBeSafeMode();
     std::string const theme = mod->getSettingValue<std::string>("theme");
 
     CCNode* safeModeContainer = nullptr;
@@ -550,8 +550,16 @@ bool Menu::init() {
     addEventListener(
         SettingChangedEvent(mod, setting::SafeMode),
         [this](std::shared_ptr<SettingV3> setting) {
-            auto settingBool = std::static_pointer_cast<BoolSettingV3>(setting);
-            setupSafeModeNode(settingBool->getValue());
+            if (!mod->getSettingValue<bool>(setting::DynamicSafeMode)) {
+                auto settingBool = std::static_pointer_cast<BoolSettingV3>(setting);
+                setupSafeModeNode(settingBool->getValue());
+            };
+        });
+
+    addEventListener(
+        SettingChangedEvent(mod, setting::DynamicSafeMode),
+        [this](std::shared_ptr<SettingV3>) {
+            if (auto om = OptionManager::get()) setupSafeModeNode(om->shouldBeSafeMode());
         });
 
     addEventListener(
@@ -559,6 +567,12 @@ bool Menu::init() {
         [this](std::shared_ptr<SettingV3> setting) {
             auto settingPath = std::static_pointer_cast<FileSettingV3>(setting);
             setupImageBackground(settingPath->getValue());
+        });
+
+    addEventListener(
+        OptionCheatingEvent(),
+        [this](bool cheating) {
+            if (mod->getSettingValue<bool>(setting::DynamicSafeMode)) setupSafeModeNode(cheating);
         });
 
     return true;

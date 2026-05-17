@@ -16,6 +16,7 @@ static auto const oGrief = Option::create(THIS_ID_GRIEF)
                                ->setCategory(category::jumpscares)
                                ->setSillyTier(SillyTier::High)
                                ->setOnline(true)
+                               ->setCheating(true)
                                ->autoRegister();
 
 static auto const oCongreg = Option::create(THIS_ID_CONGREG)
@@ -24,6 +25,7 @@ static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setCategory(category::jumpscares)
                                  ->setSillyTier(SillyTier::High)
                                  ->setOnline(true)
+                                 ->setCheating(true)
                                  ->autoRegister();
 
 static bool trySwitchToLevel(PlayLayer* pl, std::shared_ptr<jumpscares::DownloadDelegate> delegate, int chance, int rng, bool useReplay) {
