@@ -54,6 +54,12 @@ $on_game(Loaded) {
             if (!mod->getSettingValue<bool>(setting::DynamicSafeMode)) toggleSafeModeHooks(value);
         });
 
+    listenForSettingChanges<bool>(
+        setting::DynamicSafeMode,
+        [](bool) {
+            if (auto om = OptionManager::get()) toggleSafeModeHooks(om->shouldBeSafeMode());
+        });
+
     listenForKeybindSettingPresses(
         "key-popup",
         [](auto, bool down, bool repeat, auto) {
