@@ -70,11 +70,13 @@ class $modify(StickyPlayerObject, PlayerObject) {
     };
 
     bool onGround() {
-        // log::trace("1: {} 2: {} 3: {} 4: {}", m_isOnGround ? "y" : "n", m_isOnGround2 ? "y" : "n", m_isOnGround3 ? "y" : "n", m_isOnGround4 ? "y" : "n");
-        return m_isOnGround && m_isOnGround2 && m_isOnGround3 & m_isOnGround4;
+        log::trace("1: {} 2: {} 3: {} 4: {}", m_isOnGround ? "y" : "n", m_isOnGround2 ? "y" : "n", m_isOnGround3 ? "y" : "n", m_isOnGround4 ? "y" : "n");
+        return m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
     };
 
     void hitGround(GameObject* object, bool notFlipped) {
+        if (!m_gameLayer) return PlayerObject::hitGround(object, notFlipped);
+
         auto f = m_fields.self();
 
         auto wasOnGround = f->m_onGround;
@@ -82,10 +84,11 @@ class $modify(StickyPlayerObject, PlayerObject) {
         auto nowOnGround = onGround();
 
         if (m_hasEverJumped) {
-            if (!wasOnGround && nowOnGround) {
+            if (nowOnGround && !wasOnGround) {
                 if (rng::fast() < f->chance) {
                     f->m_defSpeed = m_playerSpeed;
                     m_playerSpeed = 0.f;
+
                     if (f->m_clickLabel) f->m_clickLabel->setVisible(true);
                 };
             };

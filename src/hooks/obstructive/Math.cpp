@@ -62,13 +62,13 @@ class $modify(MathPlayLayer, PlayLayer) {
 
             if (auto quiz = MathQuiz::create()) {
                 // handle correct/wrong answer
-                quiz->setCallback([this, quiz](bool correct) {
+                quiz->setCallback([this](bool correct) {
                     if (!correct) resetLevelFromStart();
                     nextQuiz();
 
                     cursor::hide();
 
-                    if (quiz) quiz->removeFromParent();
+                    cue::resetNode(m_fields->currentMath);
                 });
 
                 m_uiLayer->addChild(quiz, HIGHEST_Z);

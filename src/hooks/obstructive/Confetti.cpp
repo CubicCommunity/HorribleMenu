@@ -50,7 +50,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     };
 
     void confetti(float) {
-        log::info("unleashing confetti!");
+        log::debug("unleashing confetti!");
 
         sfx::play(sfx::file::bad);
         shakeCamera(0.875f, 2.5f, 0.00875f);

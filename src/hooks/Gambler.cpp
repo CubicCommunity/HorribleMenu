@@ -11,9 +11,9 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Ending Gamble")
-                          ->setDescription("When reaching 95% in a level, you have a chance at randomly being blasted way far back.\n<cl>suggested by Timered</c>")
+                          ->setDescription("When reaching 95% in a level, you have a 50/50 chance at randomly being blasted way far back.\n<cl>suggested by Timered</c>")
                           ->setCategory(category::misc)
-                          ->setSillyTier(SillyTier::Medium)
+                          ->setSillyTier(SillyTier::High)
                           ->autoRegister();
 
 class $modify(GamblerPlayLayer, PlayLayer) {
@@ -50,11 +50,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
 
         // detect the moment the player first reaches or crosses 95
         if (getCurrentPercentInt() >= 95 && !f->triggered) {
-            // roll a random number between 0 and 1
-            auto roll = rng::flip();
-
-            log::info("Gambler roll: {}", roll);
-            if (roll) {
+            if (rng::flip()) {
                 log::info("Gambler lost the bet!");
 
                 sfx::play(sfx::file::pop);

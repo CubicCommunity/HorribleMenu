@@ -12,14 +12,14 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Placebo")
-                          ->setDescription("A random chance that when you start a level, all the options you have enabled are disabled, or all the options you have disabled are enabled.\n<cl>suggested by tmdXD</c>")
+                          ->setDescription("A <cc>1%</c> chance that when you start a level, all of your options get toggled to the opposite of their current state.\n<cl>suggested by tmdXD</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::High)
                           ->autoRegister();
 
 void placeboEffect() {
     auto rnd = rng::fast();
-    log::trace("placebo effect roll: {}", rnd);
+    log::trace("placebo effect roll: {} / 1", rnd);
 
     if (rnd <= 1) {  // 1% chance :trol:
         log::warn("Placebo effect activated! Toggling all options...");

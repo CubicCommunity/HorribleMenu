@@ -36,8 +36,8 @@ class $modify(FlippedPlayLayer, PlayLayer) {
     };
 
     void nextFlip() {
-        log::trace("scheduling spam challenge");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+        log::trace("scheduling flip");
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(10.f, 2.5f) * chanceToDelayPct(m_fields->chance));
     };
 
     void flip(float) {

@@ -73,13 +73,13 @@ class $modify(SpamPlayLayer, PlayLayer) {
                 auto f = m_fields.self();
 
                 // handle correct/wrong answer
-                spam->setCallback([this, spam](bool success) {
+                spam->setCallback([this](bool success) {
                     if (!success) resetLevelFromStart();
                     nextSpam();
 
                     cursor::hide();
 
-                    if (spam) spam->removeFromParent();
+                    cue::resetNode(m_fields->currentSpam);
                 });
 
                 m_uiLayer->addChild(spam, HIGHEST_Z);

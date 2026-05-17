@@ -12,7 +12,7 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Mock your 90%+ Fail")
-                          ->setDescription("Occasionally taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<cl>suggested by Wuffin</c>")
+                          ->setDescription("Occasionally taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<co>Must be enabled with Safe Mode disabled to save new best records.</c>\n<cl>suggested by Wuffin</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Medium)
                           ->setSupportedPlatforms({Platform::Windows, Platform::Android})
@@ -125,8 +125,8 @@ class $modify(MockPlayLayer, PlayLayer) {
         int id = m_level->m_levelID;
         int percentage = m_level->m_normalPercent;
 
-        log::info("Showing new best for level ID: {}", id);
-        log::info("Level percentage: {}", percentage);
+        log::debug("Showing new best for level ID: {}", id);
+        log::debug("Level percentage: {}", percentage);
 
         if (percentage >= 90) {
             auto director = CCDirector::sharedDirector();
