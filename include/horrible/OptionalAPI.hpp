@@ -28,6 +28,7 @@ namespace horrible {
         bool online;                      // If the option requires an active internet connection to work properly
         bool restart;                     // If the option requires a game restart to take effect
         std::vector<Platform> platforms;  // Platforms that the option supports
+        bool cheating;                    // If the option counts as cheating and will trigger dynamic safe mode
 
         OptionV2() = default;  // Default constructor
 
@@ -41,7 +42,8 @@ namespace horrible {
             bool state = false,
             bool online = false,
             bool restart = false,
-            std::vector<Platform> platforms = {Platform::All}) :
+            std::vector<Platform> platforms = {Platform::All},
+            bool cheating = false) :
             id(std::move(id)),
             name(std::move(name)),
             description(std::move(description)),
@@ -51,6 +53,7 @@ namespace horrible {
             online(online),
             restart(restart),
             platforms(std::move(platforms)),
+            cheating(cheating),
             integration(geode::Mod::get()) {};
 
         inline const geode::Mod* getIntegration() const noexcept {
