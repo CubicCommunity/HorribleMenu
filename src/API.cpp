@@ -342,7 +342,8 @@ void OptionManagerV2::registerOption(OptionV2 const& option) {
                        ->setDefaultToggleState(option.state)
                        ->setOnline(option.online)
                        ->setRequiresRestart(option.restart)
-                       ->setSupportedPlatforms(option.platforms);
+                       ->setSupportedPlatforms(option.platforms)
+                       ->setCheating(option.cheating);
 
         om->registerOption(opt);
         (void)OptionEvent(opt->getID()).send(om->getOption(opt->getID()));
