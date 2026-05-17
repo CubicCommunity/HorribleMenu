@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Makes every surface icy in platformer mode. Slip n' slide!\n<cl>suggested by TimeRed</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(OnIcePlayerObject, PlayerObject) {

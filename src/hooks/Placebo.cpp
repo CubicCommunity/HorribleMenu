@@ -15,6 +15,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("A <cc>1%</c> chance that when you start a level, all of your options get toggled to the opposite of their current state.\n<cl>suggested by tmdXD</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::High)
+                          ->setCheating(true)
                           ->autoRegister();
 
 void placeboEffect() {

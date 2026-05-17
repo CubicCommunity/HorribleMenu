@@ -20,6 +20,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSillyTier(SillyTier::None)
                           ->setRequiresRestart(true)
                           ->setSupportedPlatforms({})
+                          ->setCheating(true)
                           ->autoRegister();
 
 // static GameObject* s_pendingKiller1 = nullptr;

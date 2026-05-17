@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("When making an input in a level, there's a chance the player does not respond to it.\n<cl>suggested by GilanyKing12</c>")
                           ->setCategory(category::randoms)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {

@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("While playing a level, there's a chance your game will fake a crash.\n<cl>suggested by Timered</c>")
                           ->setCategory(category::randoms)
                           ->setSillyTier(SillyTier::Medium)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {

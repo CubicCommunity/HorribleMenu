@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Randomly increases or decreases the player velocity everytime you jump.\n<cl>suggested by KGplayerA</c>")
                           ->setCategory(category::randoms)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(ClickSpeedPlayerObject, PlayerObject) {

@@ -32,6 +32,15 @@ static std::vector<std::weak_ptr<Hook>> s_floatingBtnHooks;
         };                                                                             \
     }
 
+static void toggleSafeModeHooks(bool value) {
+    for (auto const& hook : s_safeModeHooks) {
+        if (auto h = hook.lock()) {
+            log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
+            (void)h->toggle(value);
+        };
+    };
+};
+
 $on_game(Loaded) {
     (void)mod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
 
@@ -42,12 +51,7 @@ $on_game(Loaded) {
     listenForSettingChanges<bool>(
         setting::SafeMode,
         [](bool value) {
-            for (auto const& hook : s_safeModeHooks) {
-                if (auto h = hook.lock()) {
-                    log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
-                    (void)h->toggle(value);
-                };
-            };
+            if (!mod->getSettingValue<bool>(setting::DynamicSafeMode)) toggleSafeModeHooks(value);
         });
 
     listenForKeybindSettingPresses(
@@ -106,6 +110,15 @@ $on_game(Loaded) {
         [](std::string_view id, HorribleOptionSave data) {
             log::trace("Global options listener detected {} being {}, {}, {}", id, data.enabled ? "enabled" : "disabled", data.pin ? "pinned" : "unpinned", data.viewed ? "viewed" : "not viewed yet");
         });
+
+    OptionCheatingEvent()
+        .listen([](bool cheating) {
+            if (mod->getSettingValue<bool>(setting::DynamicSafeMode)) {
+                log::warn("Dynamic safe mode is now {}", cheating ? "ON" : "OFF");
+                toggleSafeModeHooks(cheating);
+            };
+        })
+        .leak();
 
     (void)branding::registerBrand(GEODE_MOD_ID, "https://moddev.cheeseworks.gay/cdn/cubic_horriblemenu.webp", branding::Type::URL);
 };

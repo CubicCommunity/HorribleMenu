@@ -76,6 +76,7 @@ namespace horrible {
     // For convenience
     namespace setting {
         inline constexpr auto SafeMode = "safe-mode";
+        inline constexpr auto DynamicSafeMode = "dyn-safe-mode";
         inline constexpr auto FloatingBtn = "floating-btn";
     };
 
