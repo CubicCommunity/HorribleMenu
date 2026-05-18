@@ -1,5 +1,5 @@
 {
-    "geode": "5.0.0",
+    "geode": "5.4.0",
     "gd": {
         "win": "2.2081",
         "android": "2.2081",
@@ -47,9 +47,13 @@
         }
     },
     "settings": {
-        "button": {
-            "type": "custom:menu",
-            "name": " "
+        "btn-popup": {
+            "type": "button",
+            "name": "Menu Button",
+            "buttons": {
+                "menu": "Horrible Options Menu"
+            },
+            "description": "Open the <cg>Horrible Options</c> menu."
         },
         "key-popup": {
             "type": "keybind",
@@ -64,6 +68,11 @@
             "type": "title",
             "name": "Safe Mode",
             "description": "Settings for Safe Mode."
+        },
+        "safe-mode-info": {
+            "type": "info",
+            "description": "Safe Mode prevents you from accidentally saving progress in levels while using this mod's features.",
+            "color": "#00FF00"
         },
         "safe-mode": {
             "type": "bool",

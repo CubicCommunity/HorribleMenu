@@ -4,7 +4,6 @@
 
 #include <ui/Menu.h>
 #include <ui/MenuButton.h>
-#include <ui/SettingV3.h>
 
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
@@ -42,8 +41,6 @@ static void toggleSafeModeHooks(bool value) {
 };
 
 $on_game(Loaded) {
-    (void)mod->registerCustomSettingType("menu", &HorribleSettingV3::parse);
-
     if (auto om = OverlayManager::get()) {
         if (auto fb = MenuButton::get()) om->addChild(fb);
     };
@@ -116,6 +113,12 @@ $on_game(Loaded) {
         [](std::string_view id, HorribleOptionSave data) {
             log::trace("Global options listener detected {} being {}, {}, {}", id, data.enabled ? "enabled" : "disabled", data.pin ? "pinned" : "unpinned", data.viewed ? "viewed" : "not viewed yet");
         });
+
+    ButtonSettingPressedEventV3(mod, "btn-popup")
+        .listen([](std::string_view buttonKey) {
+            if (buttonKey == "menu") menu::open();
+        })
+        .leak();
 
     OptionCheatingEvent()
         .listen([](bool cheating) {

@@ -28,6 +28,7 @@ namespace horrible {
 
         void setupSafeModeNode(bool safeMode);
         void setupImageBackground(fs::path const& path);
+        void setupSillyFilterDropdown(cocos2d::CCPoint const& pos);
 
     protected:
         Menu();

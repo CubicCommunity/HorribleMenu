@@ -43,8 +43,11 @@ public:
     std::string const theme = mod->getSettingValue<std::string>("theme");
 
     CCNode* safeModeContainer = nullptr;
+
     LazySprite* themeBackground = nullptr;
     CCClippingNode* themeBgContainer = nullptr;
+
+    cue::DropdownNode* sillyFilterDropdown = nullptr;
 
     std::vector<WeakRef<MenuCategoryFilterCell>> categoryItems;
 
@@ -200,6 +203,48 @@ void Menu::setupImageBackground(fs::path const& path) {
     };
 };
 
+void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
+    cue::resetNode(m_impl->sillyFilterDropdown);
+
+    m_impl->sillyFilterDropdown = cue::DropdownNode::create(
+        to4B(colors::black, 0),
+        m_impl->categoryList->getScaledContentWidth(),
+        17.5f,
+        43.75f);
+    m_impl->sillyFilterDropdown->setID("silly-filter-dropdown");
+    m_impl->sillyFilterDropdown->setAnchorPoint({0.5, 1});
+    m_impl->sillyFilterDropdown->setPosition(pos);
+
+    m_impl->sillyFilterDropdown->setCallback([this](auto, CCNode* node) {
+        if (auto cell = typeinfo_cast<MenuSillyFilterCell*>(node)) {
+            if (m_impl->selectedTier != cell->getSillyTier()) m_impl->filterOptions(options::getAll(), cell->getSillyTier(), m_impl->selectedCategory);
+            m_impl->selectedTier = cell->getSillyTier();
+        };
+    });
+
+    constexpr TierFilterBtnData filterBtns[] = {
+        {SillyTier::None, "Any", "filter-none-btn", colors::white},
+        {SillyTier::Low, "Low", "filter-low-btn", colors::green},
+        {SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow},
+        {SillyTier::High, "High", "filter-high-btn", colors::red},
+    };
+
+    for (auto const& fBtn : filterBtns) {
+        if (auto cell = MenuSillyFilterCell::create(
+                {m_impl->sillyFilterDropdown->getScaledContentWidth(), 16.5f},
+                fBtn.tier,
+                fBtn.id,
+                fBtn.label,
+                fBtn.color)) {
+            m_impl->sillyFilterDropdown->addCell(cell);
+        } else {
+            log::error("Failed to create filter button");
+        };
+    };
+
+    m_mainLayer->addChild(m_impl->sillyFilterDropdown, 9);
+};
+
 bool Menu::init() {
     auto btns = themes::getCircleBaseColor(m_impl->theme);
 
@@ -289,8 +334,6 @@ bool Menu::init() {
     m_impl->categoryList->m_contentLayer->updateLayout();
     m_impl->categoryList->scrollToTop();
 
-    m_mainLayer->addChild(m_impl->categoryList, 9);
-
     auto categoryListBg = cue::createBackground(
         {m_impl->categoryList->getScaledContentWidth() + 7.5f, m_impl->categoryList->getScaledContentHeight() + 7.5f},
         {
@@ -367,45 +410,13 @@ bool Menu::init() {
 
     m_mainLayer->addChild(filterContainerLabel);
 
-    auto sillyDropdown = cue::DropdownNode::create(
-        to4B(colors::black, 0),
-        m_impl->categoryList->getScaledContentWidth(),
-        17.5f,
-        43.75f);
-    sillyDropdown->setID("silly-filter-dropdown");
-    sillyDropdown->setAnchorPoint({0.5, 1});
-    sillyDropdown->setPosition({filterContainerLabel->getPositionX(), 88.75f});
+    CCPoint const dropdownPos = {filterContainerLabel->getPositionX(), 88.75f};
+    setupSillyFilterDropdown(dropdownPos);
 
-    sillyDropdown->setCallback([this](auto, CCNode* node) {
-        if (auto cell = typeinfo_cast<MenuSillyFilterCell*>(node)) {
-            if (m_impl->selectedTier != cell->getSillyTier()) m_impl->filterOptions(options::getAll(), cell->getSillyTier(), m_impl->selectedCategory);
-            m_impl->selectedTier = cell->getSillyTier();
-        };
-    });
+    // adding now to fix touch issue with cue dropdown
+    m_mainLayer->addChild(m_impl->categoryList, 9);
 
-    constexpr TierFilterBtnData filterBtns[] = {
-        {SillyTier::None, "Any", "filter-none-btn", colors::white},
-        {SillyTier::Low, "Low", "filter-low-btn", colors::green},
-        {SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow},
-        {SillyTier::High, "High", "filter-high-btn", colors::red},
-    };
-
-    for (auto const& fBtn : filterBtns) {
-        if (auto cell = MenuSillyFilterCell::create(
-                {sillyDropdown->getScaledContentWidth(), 16.5f},
-                fBtn.tier,
-                fBtn.id,
-                fBtn.label,
-                fBtn.color)) {
-            sillyDropdown->addCell(cell);
-        } else {
-            log::error("Failed to create filter button");
-        };
-    };
-
-    m_mainLayer->addChild(sillyDropdown, 9);
-
-    m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), sillyDropdown->getPositionY() + 8.75f}), 1);
+    m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), m_impl->sillyFilterDropdown->getPositionY() + 8.75f}), 1);
 
     auto filterHint = SimpleTextArea::create(
         "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
@@ -444,13 +455,13 @@ bool Menu::init() {
 
     auto resetFiltersBtn = Button::createWithNode(
         resetFiltersBtnSpr,
-        [this](auto) {
+        [this, dropdownPos](auto) {
             createQuickPopup(
                 "Reset Filters",
                 "Would you like to <cr>reset all search filters</c>?\n<cy>This will not clear your pins.</c>",
                 "Cancel",
                 "OK",
-                [this](auto, bool ok) {
+                [this, &dropdownPos](auto, bool ok) {
                     if (ok) {
                         m_impl->selectedTier = SillyTier::None;
                         m_impl->selectedCategory = "";
@@ -460,6 +471,7 @@ bool Menu::init() {
                         };
 
                         m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
+                        setupSillyFilterDropdown(dropdownPos);
                     };
                 });
         });

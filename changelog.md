@@ -1,5 +1,11 @@
 # v1.1.0 
-- probably a feature update
+- Raise minimum Geode version support to `v5.4.0`
+- Added Automatic safe mode setting ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
+  - Added cheat marker to several options ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
+- Added information label to Safe Mode section in mod settings
+- Fix touch issues with category list and dropdown in options menu
+- Silliness filter dropdown in options menu now resets when clearing filters
+- Reworked *Horrible Options Menu* button section in mod settings
 
 # v1.0.3 
 - Added additional info button to *Safe Mode* label in options menu
