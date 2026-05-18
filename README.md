@@ -20,7 +20,7 @@ When pressing `\` or by pressing the floating *<img src="resources/icon.png" wid
 > *You can customize any keybinds in this mod through its settings.*
 
 ### Safe Mode
-By default, this mod implements its own safe mode to prevent making accidental progression in levels while this mod is active. Remember, **using this mod counts as cheating**! You can also disable this in the mod's settings while you're not actively using any horrible options.
+By default, this mod implements its own safe mode system to prevent making accidental progression in levels while this mod is active. Remember, **using this mod counts as cheating**! You can also disable this in the mod's settings while you're not actively using any horrible options.
 
 > [!WARNING]
 > *Please keep in mind that certain game settings and hacks from mod menus may interfere with some parts of this mod's functionality.*

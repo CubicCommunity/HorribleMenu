@@ -63,8 +63,8 @@ void jumpscares::DownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
 };
 
 void jumpscares::DownloadDelegate::levelDownloadFailed(int response) {
+    log::error("Failed to download {} with response {}", getLevelName(), response);
     JumpscareDelegateManager::get()->clearDownloadDelegate();
-    log::error("Failed to download {} ({})", getLevelName(), response);
 };
 
 jumpscares::SearchDelegate::SearchDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay) :
@@ -93,8 +93,8 @@ void jumpscares::SearchDelegate::loadLevelsFinished(CCArray* levels, char const*
 };
 
 void jumpscares::SearchDelegate::loadLevelsFailed(char const* key) {
+    log::error("Failed to fetch online level info for {} with key {}", getLevelName(), key);
     JumpscareDelegateManager::get()->clearSearchDelegate();
-    log::error("Failed to fetch online level info for {}", getLevelName());
 };
 
 GJGameLevel* jumpscares::getSavedDownloadedLevel(int levelID) {
