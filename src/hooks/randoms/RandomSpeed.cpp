@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Randomly changes your speed while playing a level.\n<cl>suggested by imdissapearinghelp</c>")
                           ->setCategory(category::randoms)
                           ->setSillyTier(SillyTier::Medium)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(RandomSpeedPlayerObject, PlayerObject) {

@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("While playing a level, it will randomly pause itself.\n<cl>suggested by DragonixGD</c>")
                           ->setCategory(category::chances)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(PausePlayerObject, PlayLayer) {

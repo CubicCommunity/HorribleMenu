@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Every time you jump in a level, gravity force will increase or decrease randomly.\n<cl>suggested by NJAgain</c>")
                           ->setCategory(category::randoms)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(GravityPlayerObject, PlayerObject) {

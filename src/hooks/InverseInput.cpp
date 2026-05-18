@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("You jump while you're not holding the button, and don't jump while you hold the button. In platformer, horizontal movement inputs are switched with each other.\n<cl>suggested by ItsZentry</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(InverseInputGJBaseGameLayer, GJBaseGameLayer) {

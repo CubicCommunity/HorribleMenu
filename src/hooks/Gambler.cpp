@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("When reaching 95% in a level, you have a 50/50 chance at randomly being blasted way far back.\n<cl>suggested by Timered</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::High)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(GamblerPlayLayer, PlayLayer) {

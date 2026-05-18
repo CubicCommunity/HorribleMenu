@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("A chance for your jump input to make your player jump much higher than expected if jumping from the ground. Affects every game mode.\n<cl>created by Cheeseworks</c>")
                           ->setSillyTier(SillyTier::Medium)
                           ->setCategory(category::randoms)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(SuperJumpPlayerObject, PlayerObject) {

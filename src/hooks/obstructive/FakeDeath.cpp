@@ -14,6 +14,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("The player's death effect will show without dying.\n<cl>suggested by DragonixGD</c>")
                           ->setCategory(category::obstructive)
                           ->setSillyTier(SillyTier::Low)
+                          ->setCheating(true)
                           ->autoRegister();
 
 class $modify(FakeDeathPlayLayer, PlayLayer) {

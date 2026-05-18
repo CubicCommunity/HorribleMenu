@@ -70,6 +70,11 @@ std::shared_ptr<Option> Option::setSupportedPlatforms(std::vector<Platform> plat
     return shared_from_this();
 };
 
+std::shared_ptr<Option> Option::setCheating(bool isCheat) {
+    m_isCheating = isCheat;
+    return shared_from_this();
+};
+
 ZStringView Option::getID() const noexcept {
     return m_id;
 };
@@ -104,6 +109,10 @@ bool Option::isRestartRequired() const noexcept {
 
 std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
     return m_platforms;
+};
+
+bool Option::isCheating() const noexcept {
+    return m_isCheating;
 };
 
 const Mod* Option::getIntegration() const noexcept {
@@ -168,14 +177,26 @@ void OptionManager::registerOption(std::shared_ptr<Option> option) {
 
         std::string id = option->getID();
 
+        auto cheats = m_enabledCheats.size();
+
+        if (option->isCheating()) {
+            if (isEnabled(id)) m_enabledCheats.emplace(option->getID(), option);
+        };
+
         m_options.emplace(std::move(id), option);
         log::debug("Registered option {} of category {}", option->getID(), option->getCategory());
+
+        if (cheats == 0 && m_enabledCheats.size() > cheats) (void)OptionCheatingEvent().send(true);
     };
 };
 
 void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
     auto& thisDelegate = m_delegates[id];
     thisDelegate.push_back(std::move(callback));
+};
+
+bool OptionManager::isCheatEnabled() const noexcept {
+    return m_enabledCheats.size() > 0;
 };
 
 std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const {
@@ -212,6 +233,11 @@ bool OptionManager::isViewed(ZStringView id) const {
     return getOption(id).viewed;
 };
 
+bool OptionManager::isCheating(ZStringView id) const {
+    if (auto o = getOptionInfo(id).lock()) return o->isCheating();
+    return false;
+};
+
 bool OptionManager::getDefaultToggleState(ZStringView id) const noexcept {
     if (auto o = getOptionInfo(id).lock()) return o->getDefaultToggleState();
     return false;
@@ -231,6 +257,11 @@ size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
     return 0;
 };
 
+bool OptionManager::shouldBeSafeMode() const noexcept {
+    if (Mod::get()->getSettingValue<bool>("dyn-safe-mode")) return isCheatEnabled();
+    return Mod::get()->getSettingValue<bool>("safe-mode");
+};
+
 void OptionManager::toggleOption(ZStringView id, bool enable) {
     setOption(id, enable, isPinned(id));
 };
@@ -243,10 +274,30 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed
 
     log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
 
-    auto save = HorribleOptionSave{enable, pin, viewed};
+    auto cheats = m_enabledCheats.size();
+
+    auto const save = HorribleOptionSave{enable, pin, viewed};
 
     (void)Mod::get()->setSavedValue(id, save);
     (void)OptionEvent(id).send(save);
+
+    if (auto it = m_enabledCheats.find(id); it != m_enabledCheats.end()) {
+        if (!enable) m_enabledCheats.erase(it);
+    } else if (enable) {
+        if (auto o = getOptionInfo(id).lock()) {
+            if (o->isCheating()) {
+                log::debug("Enabled cheat option {}, adding to enabled cheats map", id);
+                m_enabledCheats.emplace(id, o);
+            };
+        };
+    };
+
+    auto cheatsNow = m_enabledCheats.size();
+
+    if (isCheating(id) && cheats != cheatsNow) {
+        if (cheats == 0 && cheatsNow > 0) (void)OptionCheatingEvent().send(true);
+        if (cheats > 0 && cheatsNow == 0) (void)OptionCheatingEvent().send(false);
+    };
 };
 
 OptionManager* OptionManager::get() noexcept {
@@ -291,7 +342,8 @@ void OptionManagerV2::registerOption(OptionV2 const& option) {
                        ->setDefaultToggleState(option.state)
                        ->setOnline(option.online)
                        ->setRequiresRestart(option.restart)
-                       ->setSupportedPlatforms(option.platforms);
+                       ->setSupportedPlatforms(option.platforms)
+                       ->setCheating(option.cheating);
 
         om->registerOption(opt);
         (void)OptionEvent(opt->getID()).send(om->getOption(opt->getID()));
