@@ -73,7 +73,7 @@
         },
         "hide-if-offline": {
             "type": "bool",
-            "name": "Hide Online Options While Offline",
+            "name": "Conditionally Show Online Options",
             "description": "Hide options from the list that require an internet connection to work, while you're offline.",
             "default": true
         },

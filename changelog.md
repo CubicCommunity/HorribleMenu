@@ -1,3 +1,6 @@
+# v1.1.0 
+- probably a feature update
+
 # v1.0.3 
 - Added additional info button to *Safe Mode* label in options menu
 - Raised *Ending Gamble* option Silly Tier to **High**

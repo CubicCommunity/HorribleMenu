@@ -139,9 +139,12 @@ bool MenuCredits::init(ZStringView theme) {
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "**[dankmeme](user:9735891)**: '*[cue](https://github.com/dankmeme01/cue)*' user interface library\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
-        "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n",
-        {m_mainLayer->getScaledContentWidth() - 55.f,
-            140.f});
+        "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
+        "**[ArcticWoof](user:7689052)**: Original idea for this mod\n\n",
+        {
+            m_mainLayer->getScaledContentWidth() - 55.f,
+            140.f,
+        });
     creditsMd->setID("credits");
     creditsMd->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 90.f});
 
