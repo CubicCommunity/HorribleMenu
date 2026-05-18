@@ -28,15 +28,14 @@ static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setCheating(true)
                                  ->autoRegister();
 
-static bool trySwitchToLevel(PlayLayer* pl, std::shared_ptr<jumpscares::DownloadDelegate> delegate, int chance, int rng, bool useReplay) {
+static void trySwitchToLevel(PlayLayer* pl, std::shared_ptr<jumpscares::DownloadDelegate> delegate, uint8_t chance, uint8_t rng, bool useReplay) {
     if (rng > chance) {
-        log::debug("{} jumpscare not triggered {}", delegate->getLevelName(), chance);
-        return false;
+        log::trace("{} jumpscare not triggered with {}/100 chance", delegate->getLevelName(), chance);
+        return;
     };
 
+    log::debug("{} jumpscare triggered!", delegate->getLevelName());
     jumpscares::switchToLevel(pl, delegate, false, useReplay);
-
-    return true;
 };
 
 class $modify(GriefPlayLayer, PlayLayer) {
@@ -46,13 +45,12 @@ class $modify(GriefPlayLayer, PlayLayer) {
         uint8_t chance = options::getChance(oGrief->getID());
     };
 
-    void destroyPlayer(PlayerObject* p0, GameObject* p1) {
-        PlayLayer::destroyPlayer(p0, p1);
+    void destroyPlayer(PlayerObject* player, GameObject* object) {
+        PlayLayer::destroyPlayer(player, object);
 
-        if (p1 == m_anticheatSpike && !p0->m_isDead) return;
+        if (object == m_anticheatSpike && !player->m_isDead) return;
 
-        int rng = rng::fast();
-        trySwitchToLevel(this, jumpscares::get::grief(), m_fields->chance, rng, m_useReplay);
+        trySwitchToLevel(this, jumpscares::get::grief(), m_fields->chance, rng::fast(), m_useReplay);
     };
 };
 
@@ -63,12 +61,11 @@ class $modify(CongregationPlayLayer, PlayLayer) {
         uint8_t chance = options::getChance(oCongreg->getID());
     };
 
-    void destroyPlayer(PlayerObject* p0, GameObject* p1) {
-        PlayLayer::destroyPlayer(p0, p1);
+    void destroyPlayer(PlayerObject* player, GameObject* object) {
+        PlayLayer::destroyPlayer(player, object);
 
-        if (p1 == m_anticheatSpike && !p0->m_isDead) return;
+        if (object == m_anticheatSpike && !player->m_isDead) return;
 
-        int rng = rng::fast();
-        trySwitchToLevel(this, jumpscares::get::congregation(), m_fields->chance, rng, m_useReplay);
+        trySwitchToLevel(this, jumpscares::get::congregation(), m_fields->chance, rng::fast(), m_useReplay);
     };
 };
