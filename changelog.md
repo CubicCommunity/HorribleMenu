@@ -1,10 +1,15 @@
 # v1.1.0 
-- Raise minimum Geode version support to `v5.4.0`
+- Raised minimum Geode version support to `v5.4.0`
 - Added Automatic safe mode setting ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
   - Added cheat marker to several options ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
 - Added information label to Safe Mode section in mod settings
-- Fix touch issues with category list and dropdown in options menu
+- Added new option **Random Reverses**
+- Moved *Random Achievements* option category to Misc
+- *Ending Gamble* option no longer tries to force the player to jump when failing
+  - It will now just make the player bounce at a random height! :D
 - Silliness filter dropdown in options menu now resets when clearing filters
+- Fix touch issues with category list and Silliness filter dropdown in options menu
+- Fix input detection issue with *Randomly Don't Jump* option
 - Reworked *Horrible Options Menu* button section in mod settings
 
 # v1.0.3 

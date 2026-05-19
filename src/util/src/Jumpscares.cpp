@@ -215,47 +215,35 @@ std::weak_ptr<jumpscares::DownloadDelegate> jumpscares::JumpscareDelegateManager
 };
 
 void jumpscares::JumpscareDelegateManager::setSearchDelegate(std::shared_ptr<SearchDelegate> delegate) {
+    clearSearchDelegate();
+
     if (auto glm = GameLevelManager::sharedState()) glm->m_levelManagerDelegate = delegate.get();
     m_searchDelegate = std::move(delegate);
 };
 
 void jumpscares::JumpscareDelegateManager::setDownloadDelegate(std::shared_ptr<DownloadDelegate> delegate) {
+    clearDownloadDelegate();
+
     if (auto glm = GameLevelManager::sharedState()) glm->m_levelDownloadDelegate = delegate.get();
     m_downloadDelegate = std::move(delegate);
 };
 
 void jumpscares::JumpscareDelegateManager::clearSearchDelegate() {
     if (auto glm = GameLevelManager::sharedState()) {
-        if (m_searchDelegate && glm->m_levelManagerDelegate == m_searchDelegate.get()) {
-            glm->m_levelManagerDelegate = nullptr;
-
-            log::trace("Cleared level manager delegate for search");
-        } else if (m_searchDelegate) {
-            log::warn("Level manager delegate for search {} was not set or already cleared", m_searchDelegate->getLevelID());
-        } else {
-            log::warn("No search delegate to clear");
-        };
-
-        m_searchDelegate.reset();
-        m_searchDelegate = nullptr;
+        if (glm->m_levelManagerDelegate) glm->m_levelManagerDelegate = nullptr;
     };
+
+    m_searchDelegate.reset();
+    m_searchDelegate = nullptr;
 };
 
 void jumpscares::JumpscareDelegateManager::clearDownloadDelegate() {
     if (auto glm = GameLevelManager::sharedState()) {
-        if (m_downloadDelegate && glm->m_levelDownloadDelegate == m_downloadDelegate.get()) {
-            glm->m_levelDownloadDelegate = nullptr;
-
-            log::trace("Cleared download delegate for level");
-        } else if (m_downloadDelegate) {
-            log::warn("Download delegate for level {} was not set or already cleared", m_downloadDelegate->getLevelID());
-        } else {
-            log::warn("No download delegate to clear");
-        };
-
-        m_downloadDelegate.reset();
-        m_downloadDelegate = nullptr;
+        if (glm->m_levelDownloadDelegate) glm->m_levelDownloadDelegate = nullptr;
     };
+
+    m_downloadDelegate.reset();
+    m_downloadDelegate = nullptr;
 };
 
 jumpscares::JumpscareDelegateManager* jumpscares::JumpscareDelegateManager::get() noexcept {

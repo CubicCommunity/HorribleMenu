@@ -8,7 +8,7 @@
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "developers": [
         "Team Breakeode",
         "Cheeseworks",
@@ -375,6 +375,23 @@
             "type": "int",
             "name": "Achievement Sound Chance",
             "description": "<cc>Random Achievements</c> - Chance of the achievement sound playing.",
+            "default": 25,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
+        "random_reverse-chance": {
+            "type": "int",
+            "name": "Reverse Chance",
+            "description": "<cc>Random Reverses</c> - Chance of the player moving in reverse.",
             "default": 25,
             "min": 0,
             "max": 100,

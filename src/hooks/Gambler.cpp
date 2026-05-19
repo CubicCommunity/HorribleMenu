@@ -28,7 +28,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
         if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 
         // check every frame so we can detect each percentage change
-        if (!m_fields->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.f);
+        if (!m_fields->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.125f);
 
         return true;
     };
@@ -46,6 +46,12 @@ class $modify(GamblerPlayLayer, PlayLayer) {
         log::trace("gambler level reset");
     };
 
+    void resetLevelFromStart() {
+        PlayLayer::resetLevelFromStart();
+        m_fields->triggered = false;
+        log::trace("gambler level reset");
+    };
+
     void gamblerCheck(float) {
         auto f = m_fields.self();
 
@@ -57,11 +63,11 @@ class $modify(GamblerPlayLayer, PlayLayer) {
                 sfx::play(sfx::file::pop);
                 Notification::create("Unlucky!", NotificationIcon::Error)->show();
 
-                // reverse the player
                 m_player1->reversePlayer(nullptr);
+                m_player2->reversePlayer(nullptr);
 
-                // force player to jump
-                if (auto gjbgl = GJBaseGameLayer::get()) gjbgl->handleButton(true, 1, true);
+                m_player1->boostPlayer(rng::get(12.5f, 8.75f));
+                m_player2->boostPlayer(rng::get(12.5f, 8.75f));
 
                 f->triggered = true;
             } else {

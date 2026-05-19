@@ -13,7 +13,7 @@ using namespace horrible::prelude;
 static auto const o = Option::create(THIS_ID)
                           ->setName("Random Achievements")
                           ->setDescription("Randomly play the achievement sound when clicking buttons.\n<cl>suggested by Cheeseworks</c>")
-                          ->setCategory(category::randoms)
+                          ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
