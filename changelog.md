@@ -3,8 +3,8 @@
 - Added Automatic safe mode setting ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
   - Added cheat marker to several options ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
 - Added information label to Safe Mode section in mod settings
-- Added new option **Random Reverses**
-- Moved *Random Achievements* option category to Misc
+- Added new *Randoms* option **Random Reverses**
+- Moved *Random Achievements* option to Misc category
 - *Ending Gamble* option no longer tries to force the player to jump when failing
   - It will now just make the player bounce at a random height! :D
 - Silliness filter dropdown in options menu now resets when clearing filters

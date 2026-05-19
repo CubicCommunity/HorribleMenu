@@ -12,14 +12,14 @@ When <cf>pressing `\` on your keyboard</c> or by <cl>pressing the floating *![Ho
 > ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*You can customize any keybinds in this mod through its settings.*</c>
 
 ### Safe Mode
-By default, this mod implements its own safe mode system to prevent making accidental progression in levels while this mod is active. Remember, <cr>**using this mod may count as cheating**</c>! You can also disable this in the mod's settings while you're not actively using any horrible options.
+By default, this mod implements its own safe mode system to prevent making accidental progression in levels while this mod is active. Remember, <cr>**using this mod may count as cheating**</c>! You can also disable this in the mod's settings while you're not actively using any troll options.
 
 > ![⚠️](frame:geode.loader/info-warning.png?scale=0.375) <cy>*Please keep in mind that certain game settings and hacks from mod menus may interfere with some parts of this mod's functionality.*</c>
 
 ---
 
 ### Integrations
-Want to add your own insane stuff to this mod? You can <cy>register your very own horrible options</c> by using <cg>this mod's API</c>! You can find its [documentation in the Wiki](https://github.com/CubicCommunity/HorribleMenu/wiki). We're hyped to see how much more you can really mess up this game.
+Want to add your own insane stuff to this mod? You can <cy>register your very own troll options</c> by using <cg>this mod's API</c>! You can find its [documentation in the Wiki](https://github.com/CubicCommunity/HorribleMenu/wiki). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
 using namespace horrible;
