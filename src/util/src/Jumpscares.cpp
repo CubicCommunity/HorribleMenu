@@ -121,8 +121,8 @@ void jumpscares::downloadLevelAsync(std::shared_ptr<DownloadDelegate> delegate) 
         };
 
         log::debug("Downloading {} in background", delegate->getLevelID());
+        JumpscareDelegateManager::get()->setDownloadDelegate(delegate);
         glm->downloadLevel(delegate->getLevelID(), false, 0);
-        JumpscareDelegateManager::get()->setDownloadDelegate(std::move(delegate));
 
         log::debug("Delegate set for level download");
     } else {
@@ -191,8 +191,8 @@ void jumpscares::switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> 
         log::debug("No stored levels found, initiating online search for {}", delegate->getLevelName());
 
         auto del = std::make_shared<SearchDelegate>(pl, delegate->getLevelID(), 0, delegate->getLevelName(), dontCreateObjects, useReplay);
+        JumpscareDelegateManager::get()->setSearchDelegate(del);
         glm->getOnlineLevels(search);
-        JumpscareDelegateManager::get()->setSearchDelegate(std::move(del));
     } else {
         log::error("GameLevelManager not available for switching to level {}", delegate->getLevelName());
     };
@@ -237,6 +237,7 @@ void jumpscares::JumpscareDelegateManager::clearSearchDelegate() {
         };
 
         m_searchDelegate.reset();
+        m_searchDelegate = nullptr;
     };
 };
 
@@ -253,6 +254,7 @@ void jumpscares::JumpscareDelegateManager::clearDownloadDelegate() {
         };
 
         m_downloadDelegate.reset();
+        m_downloadDelegate = nullptr;
     };
 };
 
