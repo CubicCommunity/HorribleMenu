@@ -1,6 +1,6 @@
 # v1.1.0 
-- Raised minimum Geode version support to `v5.4.0`
-- Added Automatic safe mode setting ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
+- Raised minimum Geode loader support to `v5.4.0`
+- Added dynamic safe mode setting ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
   - Added cheat marker to several options ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))
 - Added information label to Safe Mode section in mod settings
 - Added new *Randoms* option **Random Reverses**
