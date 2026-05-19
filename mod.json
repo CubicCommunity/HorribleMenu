@@ -76,7 +76,7 @@
         },
         "safe-mode": {
             "type": "bool",
-            "name": "Enable",
+            "name": "Enable Safe Mode",
             "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active!</cr>",
             "default": true,
             "enable-if": "!dyn-safe-mode",
@@ -84,7 +84,7 @@
         },
         "dyn-safe-mode": {
             "type": "bool",
-            "name": "Automatic",
+            "name": "Dynamic Safe Mode",
             "description": "Automatically toggle Safe Mode whenever you toggle any options that are marked as cheats.",
             "default": true
         },
