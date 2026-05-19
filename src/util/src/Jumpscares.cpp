@@ -40,9 +40,6 @@ jumpscares::DownloadDelegate::DownloadDelegate(PlayLayer* pl, int levelID, int s
 void jumpscares::DownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
     log::trace("Download finished for level {}", getLevelID());
 
-    JumpscareDelegateManager::get()->clearDownloadDelegate();
-    log::debug("Delegate cleared, checking level validity");
-
     if (!level || level->m_levelID.value() != getLevelID()) {
         log::error("Downloaded level mismatch or null: expected {}, got {}", getLevelID(), level ? level->m_levelID.value() : -1);
         return;
@@ -60,6 +57,8 @@ void jumpscares::DownloadDelegate::levelDownloadFinished(GJGameLevel* level) {
     } else {
         log::warn("PlayLayer weak pointer expired, cannot switch scene for level {}", getLevelName());
     };
+
+    JumpscareDelegateManager::get()->clearDownloadDelegate();
 };
 
 void jumpscares::DownloadDelegate::levelDownloadFailed(int response) {
@@ -72,7 +71,6 @@ jumpscares::SearchDelegate::SearchDelegate(PlayLayer* pl, int levelID, int songI
 
 void jumpscares::SearchDelegate::loadLevelsFinished(CCArray* levels, char const* key) {
     log::trace("Search finished for level {}", getLevelName());
-    JumpscareDelegateManager::get()->clearSearchDelegate();
 
     if (!levels || levels->count() == 0) {
         log::error("No online level result returned for {}", getLevelName());
@@ -90,6 +88,8 @@ void jumpscares::SearchDelegate::loadLevelsFinished(CCArray* levels, char const*
     } else {
         log::error("Online search returned non-level object for {}", getLevelName());
     };
+
+    JumpscareDelegateManager::get()->clearSearchDelegate();
 };
 
 void jumpscares::SearchDelegate::loadLevelsFailed(char const* key) {
@@ -121,8 +121,8 @@ void jumpscares::downloadLevelAsync(std::shared_ptr<DownloadDelegate> delegate) 
         };
 
         log::debug("Downloading {} in background", delegate->getLevelID());
-        JumpscareDelegateManager::get()->setDownloadDelegate(delegate);
         glm->downloadLevel(delegate->getLevelID(), false, 0);
+        JumpscareDelegateManager::get()->setDownloadDelegate(std::move(delegate));
 
         log::debug("Delegate set for level download");
     } else {
