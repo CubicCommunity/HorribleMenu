@@ -9,6 +9,7 @@
 #include <util/Random.hpp>
 #include <util/Themes.hpp>
 
+#include <util/ui/Captcha.hpp>
 #include <util/ui/MathQuiz.hpp>
 #include <util/ui/RandomAd.hpp>
 #include <util/ui/SpamChallenge.hpp>
