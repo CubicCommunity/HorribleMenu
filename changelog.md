@@ -1,3 +1,7 @@
+# v1.1.1 
+- Added *Disable Cheats* button in mod settings
+- micro-optimzations :)
+
 # v1.1.0 
 - Raised minimum Geode loader support to `v5.4.0`
 - Added dynamic safe mode setting ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))

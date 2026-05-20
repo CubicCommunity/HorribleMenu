@@ -151,7 +151,7 @@ void Menu::setupSafeModeNode(bool safeMode) {
             [safeMode](auto) {
                 createQuickPopup(
                     "Safe Mode",
-                    fmt::format("{}\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in levels</c>.", safeMode ? "Currently <cc>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cf>progress on levels WILL save</c>!"),
+                    fmt::format("{}\n\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in gameplay</c>.\n\n<cy>You can toggle Safe Mode in settings.</c>", safeMode ? "Currently <cc>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cf>progress on levels WILL save</c>!"),
                     "OK",
                     nullptr,
                     nullptr);
@@ -359,9 +359,6 @@ bool Menu::init() {
     optionListScroll->setID("option-list-scrollbar");
     optionListScroll->setPosition({m_impl->optionList->getPositionX() + (m_impl->optionList->getScaledContentWidth() / 1.825f), m_impl->optionList->getPositionY()});
 
-    m_mainLayer->addChild(m_impl->optionList, 9);
-    m_mainLayer->addChild(optionListScroll);
-
     auto optionListBg = cue::createBackground(
         {m_impl->optionList->getScaledContentWidth() + 8.75f, m_impl->optionList->getScaledContentHeight() + 10.f},
         {
@@ -415,6 +412,10 @@ bool Menu::init() {
 
     // adding now to fix touch issue with cue dropdown
     m_mainLayer->addChild(m_impl->categoryList, 9);
+
+    // same here lol
+    m_mainLayer->addChild(m_impl->optionList, 9);
+    m_mainLayer->addChild(optionListScroll);
 
     m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), m_impl->sillyFilterDropdown->getPositionY() + 8.75f}), 1);
 
