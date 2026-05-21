@@ -50,8 +50,7 @@ MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos)
     return nullptr;
 };
 
-class MenuOptionCell::Impl final {
-public:
+struct MenuOptionCell::Impl final {
     bool compatible = false;  // If this option is compatible with the current platform
 
     std::weak_ptr<Option> option;  // A view into the option value :)

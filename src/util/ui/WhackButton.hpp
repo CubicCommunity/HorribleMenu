@@ -10,7 +10,7 @@ namespace horrible {
             using Callback = Function<void(bool)>;
 
         private:
-            class Impl;
+            struct Impl;
             std::unique_ptr<Impl> m_impl;
 
             void reload();

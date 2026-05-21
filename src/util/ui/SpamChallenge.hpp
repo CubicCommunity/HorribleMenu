@@ -8,7 +8,7 @@ namespace horrible {
             using Callback = geode::Function<void(bool)>;
 
         private:
-            class Impl;
+            struct Impl;
             std::unique_ptr<Impl> m_impl;
 
         protected:

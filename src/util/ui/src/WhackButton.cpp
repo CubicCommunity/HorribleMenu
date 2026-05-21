@@ -20,8 +20,7 @@ static std::unordered_map<int, const char*> const s_severities = {
     {10, "diffIcon_10_btn_001.png"},
 };
 
-class WhackButton::Impl final {
-public:
+struct WhackButton::Impl final {
     uint8_t inputCount = 0;
     uint8_t inputTarget = s_severities.size();
 

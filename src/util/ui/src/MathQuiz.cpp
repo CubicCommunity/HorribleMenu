@@ -9,8 +9,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class MathQuiz::Impl final {
-public:
+struct MathQuiz::Impl final {
     Richard* richard = nullptr;
 
     uint8_t numFirst = 0;

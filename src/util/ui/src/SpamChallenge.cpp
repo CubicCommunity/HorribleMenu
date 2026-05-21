@@ -7,8 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class SpamChallenge::Impl final {
-public:
+struct SpamChallenge::Impl final {
     uint8_t inputCount = 0;
     uint8_t inputTarget = 45;
 

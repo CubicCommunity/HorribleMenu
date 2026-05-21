@@ -19,8 +19,7 @@ using namespace horrible::prelude;
 
 Menu* Menu::s_inst = nullptr;
 
-class Menu::Impl final {
-public:
+struct Menu::Impl final {
     bool devMode = mod->getSettingValue<bool>("dev-mode");
 
     SillyTier selectedTier = SillyTier::None;
