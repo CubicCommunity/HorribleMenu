@@ -8,14 +8,18 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 // id, sprite name
-static constexpr auto s_buttons = std::to_array<std::pair<const char*, const char*>>({
-    {"", ""},
+static constexpr auto g_buttons = std::to_array<std::pair<const char*, const char*>>({
+    {"The Yellow One", "icon_yellow.png"_spr},
+    {"Furry", "icon_colonthree.png"_spr},
+    {"Extreme David", "diffIcon_10_btn_001.png"},
+    {"Money", "currencyOrbIcon_001.png"},
+    {"Scary Demon", "GJ_rateDiffBtnMod_001.png"},
+    {"Compact Lists", "GJ_smallModeIcon_001.png"},
+    {"Subscribe to Breakeode", "gj_ytIcon_001.png"},
+    {"Globed Death Effect", "explosionIcon_20_001.png"},
 });
 
-class Captcha::Impl final {
-public:
-    std::string correctID = "";
-
+struct Captcha::Impl final {
     RobotVerifier* verifier = nullptr;
 
     ProgressBar* countdown = nullptr;
@@ -67,6 +71,29 @@ bool Captcha::init() {
 
     m_mainLayer->addChild(m_impl->countdown);
 
+    auto const& btnID = g_buttons[rng::get(g_buttons.size() - 1)].first;
+
+    m_impl->verifier = RobotVerifier::create(btnID, [this](bool success) {
+        setSuccess(success);
+    });
+    m_impl->verifier->setPosition(m_mainLayer->getScaledContentSize() / 2.f);
+
+    m_mainLayer->addChild(m_impl->verifier, 9);
+
+    auto hint = SimpleTextArea::create("Press all the buttons with", "chatFont.fnt", 0.375f, m_mainLayer->getScaledContentWidth() - 25.f);
+    hint->setID("hint");
+    hint->setAlignment(kCCTextAlignmentCenter);
+    hint->setPosition({m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() - (m_impl->verifier->getScaledContentHeight() / 2.f) - 10.f});
+
+    m_mainLayer->addChild(hint);
+
+    auto hintID = SimpleTextArea::create(btnID, "bigFont.fnt", 0.5f, m_mainLayer->getScaledContentWidth() - 25.f);
+    hintID->setID("hint-id");
+    hintID->setAlignment(kCCTextAlignmentCenter);
+    hintID->setPosition({m_impl->verifier->getPositionX(), hint->getPositionY() - 12.5f});
+
+    m_mainLayer->addChild(hintID, 1);
+
     scheduleUpdate();
 
     sfx::play(sfx::file::pop);
@@ -85,6 +112,8 @@ void Captcha::callAfterFeedback(float) {
 
 void Captcha::setSuccess(bool v) {
     m_impl->success = v;
+
+    cue::resetNode(m_impl->verifier);
 
     auto symbol = CCSprite::createWithSpriteFrameName(m_impl->success ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");
@@ -134,36 +163,64 @@ Captcha* Captcha::create() {
     return nullptr;
 };
 
+void RobotVerifier::addNewBtn() {
+    auto const& btnData = g_buttons[rng::get(g_buttons.size() - 1)];
+
+    auto btn = Button::createWithSpriteFrameName(
+        btnData.second,
+        [this, &id = btnData.first](auto sender) {
+            sfx::play("chestClick.ogg");
+
+            if (id == m_correct) {
+                validateBtns(sender);
+            } else {
+                m_callback(false);
+            };
+        });
+    btn->setID(btnData.first);
+
+    addChild(btn);
+
+    cue::rescaleToMatch(btn, 32.5f);
+};
+
+void RobotVerifier::validateBtns(Button* called) {
+    cue::resetNode(called);
+    updateLayout();
+
+    for (auto const& btn : getChildrenExt<Button>()) {
+        if (btn->getID() == m_correct) {
+            addNewBtn();
+            updateLayout();
+
+            return;
+        };
+    };
+
+    m_callback(true);
+};
+
 bool RobotVerifier::init(std::string id, Callback&& cb) {
-    m_correctID = std::move(id);
+    m_correct = std::move(id);
     m_callback = std::move(cb);
 
     if (!CCNode::init()) return false;
 
     auto layout = RowLayout::create()
                       ->setGap(2.5f)
-                      ->setGrowCrossAxis(true);
+                      ->setGrowCrossAxis(true)
+                      ->setAutoScale(false);
 
     setID("captcha-verifier");
     setAnchorPoint(anchor::center);
+    setContentWidth(150.f);
     setLayout(layout);
 
-    for (int i = 0; i < 9; ++i) {
-        auto btnData = s_buttons[rng::get(s_buttons.size() - 1)];
-
-        auto btn = Button::createWithSpriteFrameName(
-            btnData.second,
-            [this, id = btnData.first](auto) {
-                if (id == m_correctID) {
-                    m_callback(true);
-                } else {
-                    m_callback(false);
-                };
-            });
-        btn->setID(btnData.first);
-
-        cue::rescaleToMatch(btn, 25.f);
+    for (int i = 0; i < 16; ++i) {
+        addNewBtn();
     };
+
+    updateLayout();
 
     return true;
 };

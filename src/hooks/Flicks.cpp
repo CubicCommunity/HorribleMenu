@@ -18,6 +18,8 @@ static auto const o = Option::create(THIS_ID)
                           ->autoRegister();
 
 class $modify(FlicksPlayLayer, PlayLayer) {
+    HORRIBLE_DELEGATE_HOOKS(THIS_ID);
+
     struct Fields final {
         std::vector<std::weak_ptr<Option>> options = OptionManager::get()->getOptions();
 

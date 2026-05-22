@@ -26,6 +26,8 @@
 
 #include <Geode/ui/Button.hpp>
 
+#include <Geode/utils/cocos.hpp>
+
 #include <Geode/binding/FMODAudioEngine.hpp>
 
 #define HIGHEST_Z cocos2d::CCScene::get()->getHighestChildZ() + 1

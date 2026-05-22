@@ -2,6 +2,8 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/ui/Button.hpp>
+
 using namespace geode::prelude;
 
 namespace horrible {
@@ -10,7 +12,7 @@ namespace horrible {
             using Callback = Function<void(bool)>;
 
         private:
-            class Impl;
+            struct Impl;
             std::unique_ptr<Impl> m_impl;
 
         protected:
@@ -34,14 +36,13 @@ namespace horrible {
             using Callback = Function<void(bool)>;
 
         private:
-            std::string m_correctID = "";
+            std::string m_correct = "";
             Callback m_callback = nullptr;
 
             void addNewBtn();
+            void validateBtns(geode::Button* called);
 
         protected:
-            void validateBtns();
-
             bool init(std::string id, Callback&& cb);
 
         public:
