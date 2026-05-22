@@ -21,7 +21,7 @@ namespace horrible {
         };
 
     private:
-        class Impl;
+        struct Impl;
         std::unique_ptr<Impl> m_impl;
 
         static Menu* s_inst;
@@ -47,12 +47,13 @@ namespace horrible {
     // For convenience
     namespace menu {
         // Open the Horrible Menu mod option menu
-        inline void open() {
+        inline void open(bool force = false) {
             if (auto old = Menu::get()) {
                 cue::resetNode(old);
-            } else if (auto popup = Menu::create()) {
-                popup->show();
+                if (!force) return;
             };
+
+            if (auto popup = Menu::create()) popup->show();
         };
     };
 };

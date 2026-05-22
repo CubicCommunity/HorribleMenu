@@ -9,8 +9,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class MathQuiz::Impl final {
-public:
+struct MathQuiz::Impl final {
     Richard* richard = nullptr;
 
     uint8_t numFirst = 0;
@@ -290,7 +289,7 @@ void MathQuiz::update(float dt) {
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         // @geode-ignore(unknown-resource)
-        sfx::play("counter003.ogg");
+        sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };
 

@@ -26,8 +26,7 @@ matjson::Value matjson::Serialize<CCPoint>::toJson(CCPoint const& value) {
     return obj;
 };
 
-class MenuButton::Impl final {
-public:
+struct MenuButton::Impl final {
     bool inLevel = mod->getSettingValue<bool>("floating-btn-level");
 
     float scale = mod->getSettingValue<float>("floating-btn-scale");

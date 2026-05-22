@@ -116,7 +116,20 @@ $on_game(Loaded) {
 
     ButtonSettingPressedEventV3(mod, "btn-popup")
         .listen([](std::string_view buttonKey) {
-            if (buttonKey == "menu") menu::open();
+            menu::open();
+        })
+        .leak();
+
+    ButtonSettingPressedEventV3(mod, "cheats")
+        .listen([](std::string_view buttonKey) {
+            for (auto const& option : OptionManager::get()->getOptions()) {
+                if (auto o = option.lock()) {
+                    if (o->isCheating() && o->isEnabled()) o->disable();
+                };
+            };
+
+            Notification::create("Disabled all cheats", NotificationIcon::Success)->show();
+            if (Menu::get()) menu::open(true);
         })
         .leak();
 

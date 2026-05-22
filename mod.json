@@ -8,7 +8,7 @@
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "developers": [
         "Team Breakeode",
         "Cheeseworks",
@@ -87,6 +87,14 @@
             "name": "Automatic",
             "description": "Automatically toggle Safe Mode whenever you toggle any options that are marked as cheats.",
             "default": true
+        },
+        "cheats": {
+            "type": "button",
+            "name": "Disable All Cheats",
+            "buttons": {
+                "disable": "Disable Cheats"
+            },
+            "description": "Disable all features for this mod marked as cheats."
         },
         "ui": {
             "type": "title",

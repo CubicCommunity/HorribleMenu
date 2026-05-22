@@ -50,8 +50,7 @@ MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos)
     return nullptr;
 };
 
-class MenuOptionCell::Impl final {
-public:
+struct MenuOptionCell::Impl final {
     bool compatible = false;  // If this option is compatible with the current platform
 
     std::weak_ptr<Option> option;  // A view into the option value :)
@@ -79,11 +78,11 @@ public:
             if (compatible) {
                 if (!(o->isOnline() ? hasInternet : true)) {  // woah evil gay ternaries !!!
                     log::warn("Option {} requires a working internet connection to function", o->getID());
-                    if (auto notif = Notification::create(fmt::format("{} needs internet to work properly", o->getName()), NotificationIcon::Warning, 2.5f)) notif->show();
+                    Notification::create(fmt::format("{} needs internet to work properly", o->getName()), NotificationIcon::Warning, 2.5f)->show();
                 };
             } else {
                 log::warn("Option {} is unavailable for platform {}", o->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
-                if (auto notif = Notification::create(fmt::format("{} is not available for {}", o->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)) notif->show();
+                Notification::create(fmt::format("{} is not available for {}", o->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
             };
         };
     };

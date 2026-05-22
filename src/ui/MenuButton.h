@@ -11,7 +11,7 @@ struct matjson::Serialize<cocos2d::CCPoint> final {
 namespace horrible {
     class MenuButton final : public cocos2d::CCLayer {
     private:
-        class Impl;
+        struct Impl;
         std::unique_ptr<Impl> m_impl;
 
         void setupSprite();

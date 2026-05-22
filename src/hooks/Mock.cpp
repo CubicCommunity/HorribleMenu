@@ -129,15 +129,12 @@ class $modify(MockPlayLayer, PlayLayer) {
         log::debug("Level percentage: {}", percentage);
 
         if (percentage >= 90) {
-            auto director = CCDirector::sharedDirector();
-            auto scene = CCScene::get();
-
             // Get the window size in points and scale to pixels
-            auto const winSize = director->getWinSize();
+            auto const winSize = CCDirector::sharedDirector()->getWinSize();
             auto renderTexture = CCRenderTexture::create(static_cast<int>(winSize.width), static_cast<int>(winSize.height));
 
             renderTexture->begin();
-            scene->visit();
+            CCScene::get()->visit();
             renderTexture->end();
 
             if (auto image = renderTexture->newCCImage()) {

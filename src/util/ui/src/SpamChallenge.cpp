@@ -7,8 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class SpamChallenge::Impl final {
-public:
+struct SpamChallenge::Impl final {
     uint8_t inputCount = 0;
     uint8_t inputTarget = 45;
 
@@ -135,7 +134,7 @@ void SpamChallenge::update(float dt) {
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         // @geode-ignore(unknown-resource)
-        sfx::play("counter003.ogg");
+        sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };
 

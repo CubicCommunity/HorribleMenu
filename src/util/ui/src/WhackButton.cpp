@@ -20,8 +20,7 @@ static std::unordered_map<int, const char*> const s_severities = {
     {10, "diffIcon_10_btn_001.png"},
 };
 
-class WhackButton::Impl final {
-public:
+struct WhackButton::Impl final {
     uint8_t inputCount = 0;
     uint8_t inputTarget = s_severities.size();
 
@@ -142,7 +141,7 @@ void WhackButton::update(float dt) {
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         // @geode-ignore(unknown-resource)
-        sfx::play("counter003.ogg");
+        sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };
 
