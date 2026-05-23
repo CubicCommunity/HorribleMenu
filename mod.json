@@ -94,7 +94,7 @@
             "buttons": {
                 "disable": "Disable Cheats"
             },
-            "description": "Quickly disable all options that are <cr>marked as cheats</c>. <cg>Feel free to do this if *Automatic Safe Mode* is enabled and you're not sure what's triggering it.</c>"
+            "description": "Quickly disable every option that is <cr>marked as a cheat</c>. <cg>Feel free to do this if *Automatic Safe Mode* is enabled and you're not sure what's triggering it.</c>"
         },
         "ui": {
             "type": "title",
