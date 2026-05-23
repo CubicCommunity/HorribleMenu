@@ -15,6 +15,8 @@ namespace horrible {
             struct Impl;
             std::unique_ptr<Impl> m_impl;
 
+            void setupVerifier(std::string btnID);
+
         protected:
             Captcha();
             ~Captcha();
@@ -36,13 +38,14 @@ namespace horrible {
             using Callback = Function<void(bool)>;
 
         private:
-            std::string m_correct = "";
+            std::string m_expected = "";
             Callback m_callback = nullptr;
 
             void addNewBtn();
-            void validateBtns(geode::Button* called);
 
         protected:
+            void validateBtns(geode::Button* called);
+
             bool init(std::string id, Callback&& cb);
 
         public:

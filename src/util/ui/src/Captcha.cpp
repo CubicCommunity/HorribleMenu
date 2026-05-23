@@ -13,13 +13,15 @@ static constexpr auto g_buttons = std::to_array<std::pair<const char*, const cha
     {"Furry", "icon_colonthree.png"_spr},
     {"Extreme David", "diffIcon_10_btn_001.png"},
     {"Money", "currencyOrbIcon_001.png"},
-    {"Scary Demon", "GJ_rateDiffBtnMod_001.png"},
+    {"Cooler Vaultkeeper", "GJ_rateDiffBtnMod_001.png"},
     {"Compact Lists", "GJ_smallModeIcon_001.png"},
     {"Subscribe to Breakeode", "gj_ytIcon_001.png"},
     {"Globed Death Effect", "explosionIcon_20_001.png"},
 });
 
 struct Captcha::Impl final {
+    std::string expected = "";
+
     RobotVerifier* verifier = nullptr;
 
     ProgressBar* countdown = nullptr;
@@ -35,10 +37,23 @@ struct Captcha::Impl final {
 Captcha::Captcha() : m_impl(std::make_unique<Impl>()) {};
 Captcha::~Captcha() {};
 
+void Captcha::setupVerifier(std::string btnID) {
+    cue::resetNode(m_impl->verifier);
+
+    m_impl->verifier = RobotVerifier::create(std::move(btnID), [this](bool success) {
+        setSuccess(success);
+    });
+    m_impl->verifier->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, (m_mainLayer->getScaledContentHeight() / 2.f) - 8.75f});
+
+    m_mainLayer->addChild(m_impl->verifier, 9);
+};
+
 bool Captcha::init() {
+    m_impl->expected = g_buttons[rng::get(g_buttons.size() - 1)].first;
+
     auto const theme = mod->getSettingValue<std::string>("theme");
 
-    if (!Popup::init({375.f, 250.f}, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init({400.f, 275.f}, themes::getBackgroundSprite(theme))) return false;
 
     setID("captcha"_spr);
     setTitle("Woah there!");
@@ -51,9 +66,11 @@ bool Captcha::init() {
     m_closeBtn->setVisible(false);
     m_closeBtn->setEnabled(false);
 
+    m_bgSprite->setZOrder(-9);
+
     auto label = CCLabelBMFont::create("You're playing almost too well... Are you sure you're not a robot?", "chatFont.fnt");
     label->setID("message");
-    label->setScale(0.875f);
+    label->setScale(0.75f);
     label->setAlignment(kCCTextAlignmentCenter);
     label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
     label->setAnchorPoint(anchor::center);
@@ -65,34 +82,76 @@ bool Captcha::init() {
     m_impl->countdown->setScale(0.625f);
     m_impl->countdown->setFillColor(colors::yellow);
     m_impl->countdown->setAnchorPoint(anchor::center);
-    m_impl->countdown->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 12.5f});
+    m_impl->countdown->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 17.5f});
 
     m_impl->countdown->updateProgress(100.f);
 
     m_mainLayer->addChild(m_impl->countdown);
 
-    auto const& btnID = g_buttons[rng::get(g_buttons.size() - 1)].first;
+    setupVerifier(m_impl->expected);
 
-    m_impl->verifier = RobotVerifier::create(btnID, [this](bool success) {
-        setSuccess(success);
-    });
-    m_impl->verifier->setPosition(m_mainLayer->getScaledContentSize() / 2.f);
+    auto bg = cue::createBackground(
+        {
+            m_impl->verifier->getScaledContentWidth() * 1.25f,
+            192.5f,
+        },
+        {
+            .zOrder = -1,
+        });
+    bg->setPosition(m_impl->verifier->getPosition());
 
-    m_mainLayer->addChild(m_impl->verifier, 9);
+    m_mainLayer->addChild(bg);
 
-    auto hint = SimpleTextArea::create("Press all the buttons with", "chatFont.fnt", 0.375f, m_mainLayer->getScaledContentWidth() - 25.f);
+    auto hintID = CCLabelBMFont::create(m_impl->expected.c_str(), "bigFont.fnt");
+    hintID->setID("hint-id");
+    hintID->setScale(0.5f);
+    hintID->setAnchorPoint(anchor::center);
+    hintID->setAlignment(kCCTextAlignmentCenter);
+    hintID->limitLabelWidth(bg->getScaledContentWidth() * 0.875f, 0.5f, 0.125f);
+    hintID->setPosition({m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() + (m_impl->verifier->getScaledContentHeight() / 2.f) + 12.5f});
+
+    m_mainLayer->addChild(hintID, 1);
+
+    auto hint = SimpleTextArea::create("Press all the buttons with", "chatFont.fnt", 0.5f, bg->getScaledContentWidth() * 0.875f);
     hint->setID("hint");
+    hint->setColor(to4B(colors::yellow));
     hint->setAlignment(kCCTextAlignmentCenter);
-    hint->setPosition({m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() - (m_impl->verifier->getScaledContentHeight() / 2.f) - 10.f});
+    hint->setPosition({m_impl->verifier->getPositionX(), hintID->getPositionY() + 10.f});
 
     m_mainLayer->addChild(hint);
 
-    auto hintID = SimpleTextArea::create(btnID, "bigFont.fnt", 0.5f, m_mainLayer->getScaledContentWidth() - 25.f);
-    hintID->setID("hint-id");
-    hintID->setAlignment(kCCTextAlignmentCenter);
-    hintID->setPosition({m_impl->verifier->getPositionX(), hint->getPositionY() - 12.5f});
+    auto refreshBtn = Button::createWithNode(
+        ButtonSprite::create(
+            "Refresh",
+            "bigFont.fnt",
+            themes::getButtonSquareSprite(theme)),
+        [this](auto) {
+            setupVerifier(m_impl->expected);
+        });
+    refreshBtn->setID("refresh-btn");
+    refreshBtn->setScale(0.625f);
+    refreshBtn->setPosition({m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() - (m_impl->verifier->getScaledContentHeight() / 2.f) - (refreshBtn->getScaledContentHeight() * 0.825f)});
 
-    m_mainLayer->addChild(hintID, 1);
+    m_mainLayer->addChild(refreshBtn, 1);
+
+    auto infoBtn = Button::createWithSpriteFrameName(
+        "GJ_infoIcon_001.png",
+        [this](auto) {
+            unscheduleUpdate();
+
+            createQuickPopup(
+                "Help",
+                "Press on the images that correspond to the provided captcha hint. It is purposefully obscured to make this sillier.\n\n<cc>Refresh the captcha if you can't find any button that matches the hint.</c>",
+                "OK",
+                nullptr,  // captcha popup can exit asynchronously
+                [self = WeakRef(this)](auto, auto) {
+                    if (auto s = self.lock()) s->scheduleUpdate();
+                });
+        });
+    infoBtn->setID("info-btn");
+    infoBtn->setScale(0.875f);
+
+    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-17.5f, -17.5f});
 
     scheduleUpdate();
 
@@ -112,6 +171,8 @@ void Captcha::callAfterFeedback(float) {
 
 void Captcha::setSuccess(bool v) {
     m_impl->success = v;
+
+    unscheduleUpdate();
 
     cue::resetNode(m_impl->verifier);
 
@@ -136,8 +197,7 @@ void Captcha::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        // @geode-ignore(unknown-resource)
-        sfx::play("counter003.ogg");
+        sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };
 
@@ -171,7 +231,7 @@ void RobotVerifier::addNewBtn() {
         [this, &id = btnData.first](auto sender) {
             sfx::play("chestClick.ogg");
 
-            if (id == m_correct) {
+            if (id == m_expected) {
                 validateBtns(sender);
             } else {
                 m_callback(false);
@@ -181,39 +241,23 @@ void RobotVerifier::addNewBtn() {
 
     addChild(btn);
 
-    cue::rescaleToMatch(btn, 32.5f);
-};
-
-void RobotVerifier::validateBtns(Button* called) {
-    cue::resetNode(called);
-    updateLayout();
-
-    for (auto const& btn : getChildrenExt<Button>()) {
-        if (btn->getID() == m_correct) {
-            addNewBtn();
-            updateLayout();
-
-            return;
-        };
-    };
-
-    m_callback(true);
+    cue::rescaleToMatch(btn, 27.5f);
 };
 
 bool RobotVerifier::init(std::string id, Callback&& cb) {
-    m_correct = std::move(id);
+    m_expected = std::move(id);
     m_callback = std::move(cb);
 
     if (!CCNode::init()) return false;
 
     auto layout = RowLayout::create()
-                      ->setGap(2.5f)
-                      ->setGrowCrossAxis(true)
-                      ->setAutoScale(false);
+                      ->setGap(3.75f)
+                      ->setAutoScale(false)
+                      ->setGrowCrossAxis(true);
 
     setID("captcha-verifier");
     setAnchorPoint(anchor::center);
-    setContentWidth(150.f);
+    setContentWidth(125.f);
     setLayout(layout);
 
     for (int i = 0; i < 16; ++i) {
@@ -223,6 +267,22 @@ bool RobotVerifier::init(std::string id, Callback&& cb) {
     updateLayout();
 
     return true;
+};
+
+void RobotVerifier::validateBtns(Button* called) {
+    cue::resetNode(called);
+    updateLayout();
+
+    for (auto const& btn : getChildrenExt<Button>()) {
+        if (btn->getID() == m_expected) {
+            addNewBtn();
+            updateLayout();
+
+            return;
+        };
+    };
+
+    m_callback(true);
 };
 
 RobotVerifier* RobotVerifier::create(std::string id, Callback&& cb) {

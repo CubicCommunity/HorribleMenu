@@ -24,11 +24,15 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         uint8_t chance = options::getChance(THIS_ID);
 
         Ref<Captcha> currentCaptcha = nullptr;
+
+        float defSpeed = 0.f;
     };
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         nextCaptcha();
+
+        m_fields->defSpeed = m_player1->m_playerSpeed;
     };
 
     void resetLevelFromStart() {
@@ -64,15 +68,18 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
             if (auto captcha = Captcha::create()) {
                 captcha->setCallback([this](bool success) {
                     cursor::hide();
-                    m_player1->m_playerSpeed = 1.f;
-                    m_player2->m_playerSpeed = 1.f;
+
+                    auto f = m_fields.self();
+
+                    m_player1->m_playerSpeed = f->defSpeed;
+                    m_player2->m_playerSpeed = f->defSpeed;
 
                     if (!success) {
                         Notification::create("Knew you were a robot...", NotificationIcon::Error)->show();
                         resetLevelFromStart();
                     };
 
-                    cue::resetNode(m_fields->currentCaptcha);
+                    cue::resetNode(f->currentCaptcha);
                 });
 
                 captcha->show();
@@ -80,8 +87,8 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
 
                 cursor::show();
 
-                m_player1->m_playerSpeed = 0.125f;
-                m_player2->m_playerSpeed = 0.125f;
+                m_player1->m_playerSpeed = 0.0125f;
+                m_player2->m_playerSpeed = 0.0125f;
             };
         };
 
