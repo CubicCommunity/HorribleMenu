@@ -139,9 +139,9 @@ void Menu::setupSafeModeNode(bool safeMode) {
         m_impl->safeModeContainer->addChild(icon);
 
         auto label = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
+        label->setScale(0.325f);
         label->setColor(safeMode ? colors::green : colors::red);
         label->setAlignment(kCCTextAlignmentCenter);
-        label->setScale(0.325f);
 
         m_impl->safeModeContainer->addChild(label);
 
@@ -274,7 +274,7 @@ bool Menu::init() {
         {
             .opacity = 255,
             .texture = "GJ_square07.png",
-            .id = "bg-container-border",
+            .id = "",
         });
     border->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
@@ -338,7 +338,7 @@ bool Menu::init() {
         {
             .cornerRoundness = -0.875f,
             .zOrder = 1,
-            .id = "category-list-bg",
+            .id = "",
         });
     categoryListBg->setPosition(m_impl->categoryList->getPosition());
 
@@ -362,7 +362,7 @@ bool Menu::init() {
         {m_impl->optionList->getScaledContentWidth() + 8.75f, m_impl->optionList->getScaledContentHeight() + 10.f},
         {
             .cornerRoundness = -0.75f,
-            .id = "option-list-bg",
+            .id = "",
         });
     optionListBg->setPosition(m_impl->optionList->getPosition());
 
@@ -391,7 +391,7 @@ bool Menu::init() {
     auto filterContainerBg = cue::createBackground(
         {(mainLayerSize.width / 3.f), mainLayerSize.height - 45.f},
         {
-            .id = "filter-container-bg",
+            .id = "",
         });
     filterContainerBg->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f});
 

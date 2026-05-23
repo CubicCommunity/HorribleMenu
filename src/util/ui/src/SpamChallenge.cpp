@@ -94,10 +94,7 @@ bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
         m_impl->inputCount++;
         if (m_impl->counter) m_impl->counter->setString(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str());
 
-        if (m_impl->inputCount >= m_impl->inputTarget) {
-            unscheduleUpdate();
-            setSuccess(true);
-        };
+        if (m_impl->inputCount >= m_impl->inputTarget) setSuccess(true);
     };
 
     return false;
@@ -110,6 +107,8 @@ void SpamChallenge::callAfterFeedback(float) {
 
 void SpamChallenge::setSuccess(bool v) {
     m_impl->success = v;
+
+    unscheduleUpdate();
 
     cue::resetNode(m_impl->counter);
 
@@ -133,7 +132,6 @@ void SpamChallenge::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        // @geode-ignore(unknown-resource)
         sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };

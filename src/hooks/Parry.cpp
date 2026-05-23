@@ -68,7 +68,7 @@ static auto const o = Option::create(THIS_ID)
 
 //                 // play effects
 //                 playSpawnEffect();
-//                 sfx::play("chestClick.ogg");
+//                 sfx::play(sfx::file::click);
 
 //                 // Player 2 cancel
 //             } else if (this == pl->m_player2 && s_parryActive2) {
@@ -85,7 +85,7 @@ static auto const o = Option::create(THIS_ID)
 //                 s_activeParryPlayer = nullptr;
 
 //                 playSpawnEffect();
-//                 sfx::play("chestClick.ogg");
+//                 sfx::play(sfx::file::click);
 //             };
 //         };
 

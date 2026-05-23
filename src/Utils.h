@@ -53,6 +53,7 @@ namespace horrible {
             inline constexpr auto good = "crystal01.ogg";
             inline constexpr auto bad = "explode_11.ogg";
 
+            inline constexpr auto click = "chestClick.ogg";
             inline constexpr auto count = "counter003.ogg";
         };
 
