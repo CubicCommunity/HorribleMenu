@@ -45,6 +45,13 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         cue::resetNode(m_fields->currentCaptcha);
     };
 
+    void pauseGame(bool unfocused) {
+        PlayLayer::pauseGame(unfocused);
+
+        cue::resetNode(m_fields->currentCaptcha);
+        resetLevelFromStart();
+    };
+
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
 
