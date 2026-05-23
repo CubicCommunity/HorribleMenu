@@ -59,14 +59,10 @@ void WhackButton::reload() {
             m_impl->getButtonColor(diff)),
         [this](auto) {
             m_impl->inputCount += 1;
-            sfx::play("chestClick.ogg");
+            sfx::play(sfx::file::click);
 
-            if (m_impl->inputCount >= m_impl->inputTarget) {
-                setSuccess(true);
-                unscheduleUpdate();
-            } else {
-                reload();
-            };
+            if (m_impl->inputCount >= m_impl->inputTarget) return setSuccess(true);
+            reload();
         });
     m_impl->button->setID("whackable-btn");
     m_impl->button->setScale(m_impl->scale * 0.75f);
@@ -118,6 +114,8 @@ void WhackButton::callAfterFeedback(float) {
 void WhackButton::setSuccess(bool v) {
     m_impl->success = v;
 
+    unscheduleUpdate();
+
     cue::resetNode(m_impl->button);
 
     auto symbol = CCSprite::createWithSpriteFrameName(v ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
@@ -140,7 +138,6 @@ void WhackButton::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        // @geode-ignore(unknown-resource)
         sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };

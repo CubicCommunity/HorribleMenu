@@ -122,14 +122,23 @@ $on_game(Loaded) {
 
     ButtonSettingPressedEventV3(mod, "cheats")
         .listen([](std::string_view buttonKey) {
-            for (auto const& option : OptionManager::get()->getOptions()) {
-                if (auto o = option.lock()) {
-                    if (o->isCheating() && o->isEnabled()) o->disable();
-                };
-            };
+            createQuickPopup(
+                "Disable All Cheats",
+                "Are you sure you want to <cr>disable all options marked as cheats</c>?",
+                "Cancel",
+                "Yes",
+                [](auto, bool ok) {
+                    if (ok) {
+                        for (auto const& option : OptionManager::get()->getOptions()) {
+                            if (auto o = option.lock()) {
+                                if (o->isCheating() && o->isEnabled()) o->disable();
+                            };
+                        };
 
-            Notification::create("Disabled all cheats", NotificationIcon::Success)->show();
-            if (Menu::get()) menu::open(true);
+                        Notification::create("Disabled all cheats", NotificationIcon::Success)->show();
+                        if (Menu::get()) menu::open(true);
+                    };
+                });
         })
         .leak();
 

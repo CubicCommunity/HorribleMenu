@@ -37,7 +37,7 @@ class $modify(MockMenuLayer, MenuLayer) {
             log::trace("Reading path {}...", mockConfigPath);
 
             if (mockConfig.isOk()) {
-                log::trace("Reading path {}...", mockConfigPath);
+                log::debug("Path is ok!");
 
                 auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
