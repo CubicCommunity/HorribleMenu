@@ -128,7 +128,7 @@ bool MathQuiz::init() {
 
         problemText = fmt::format("{} {} {}", m_impl->numFirst, operation, m_impl->numSecond);
 
-        auto equalsLabel = CCLabelBMFont::create("= ?", "goldFont.fnt", getScaledContentWidth() - 1.25f);
+        auto equalsLabel = CCLabelBMFont::create("= ?", font::gold, getScaledContentWidth() - 1.25f);
         equalsLabel->setID("equals-label");
         equalsLabel->setAlignment(kCCTextAlignmentCenter);
         equalsLabel->setPosition({winSize.width / 2.f, winSize.height - 100.f});
@@ -137,7 +137,7 @@ bool MathQuiz::init() {
     };
 
     // reuse winSize declared above
-    auto problemLabel = CCLabelBMFont::create(problemText.c_str(), "bigFont.fnt", getScaledContentWidth() - 1.25f);
+    auto problemLabel = CCLabelBMFont::create(problemText.c_str(), font::big, getScaledContentWidth() - 1.25f);
     problemLabel->setID("problem-label");
     problemLabel->setAlignment(kCCTextAlignmentCenter);
     problemLabel->setPosition({winSize.width / 2.f, winSize.height - 60.f});
@@ -211,7 +211,7 @@ bool MathQuiz::init() {
                 fmt::format("{}", m_impl->answers[i]).c_str(),
                 80.f,
                 true,
-                "bigFont.fnt",
+                font::big,
                 themes::getButtonSquareSprite(theme),
                 0,
                 0.825f),
@@ -225,7 +225,7 @@ bool MathQuiz::init() {
 
                 auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-                auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", "goldFont.fnt");
+                auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", font::gold);
                 feedbackLabel->setID("feedback-label");
                 feedbackLabel->setScale(0.125f);
                 feedbackLabel->setColor(correct ? colors::green : colors::red);
@@ -305,7 +305,7 @@ void MathQuiz::update(float dt) {
 
         if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
 
-        auto feedbackLabel = CCLabelBMFont::create("Time's Up!", "goldFont.fnt");
+        auto feedbackLabel = CCLabelBMFont::create("Time's Up!", font::gold);
         feedbackLabel->setID("feedback-label");
         feedbackLabel->setColor(colors::red);
         feedbackLabel->setAnchorPoint(anchor::center);

@@ -117,7 +117,7 @@ static auto const o = Option::create(THIS_ID)
 //         };
 
 //         if (!m_fields->m_parryLabel) {
-//             m_fields->m_parryLabel = CCLabelBMFont::create("PARRY", "bigFont.fnt");
+//             m_fields->m_parryLabel = CCLabelBMFont::create("PARRY", font::big);
 //             m_fields->m_parryLabel->setColor(colors::yellow);
 //             m_fields->m_parryLabel->setScale(0.35f);
 //             m_fields->m_parryLabel->setAnchorPoint({ 0.5f, 0.5f });

@@ -127,7 +127,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
     void showMessage(float) {
         if (!m_hasCompletedLevel) {
-            auto label = CCLabelBMFont::create(s_msgs[rng::get(s_msgs.size())], "bigFont.fnt", getScaledContentWidth() - 12.5f);
+            auto label = CCLabelBMFont::create(s_msgs[rng::get(s_msgs.size())], font::big, getScaledContentWidth() - 12.5f);
             label->setAnchorPoint({0.5, 0});
             label->setAlignment(kCCTextAlignmentCenter);
             label->setPosition({getScaledContentWidth() / 2.f, -label->getScaledContentHeight()});

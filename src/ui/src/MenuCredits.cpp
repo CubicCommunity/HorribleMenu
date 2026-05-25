@@ -28,7 +28,7 @@ bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int c
 
     auto labelBtn = Button::createWithLabel(
         name,
-        "goldFont.fnt",
+        font::gold,
         [account](auto) {
             if (auto page = ProfilePage::create(account, false)) page->show();
         });
@@ -71,7 +71,7 @@ bool MenuCredits::init(ZStringView theme) {
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
-    auto leadDevLabel = CCLabelBMFont::create("Lead Developers", "bigFont.fnt");
+    auto leadDevLabel = CCLabelBMFont::create("Lead Developers", font::big);
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);
     leadDevLabel->setAnchorPoint(anchor::center);
@@ -153,7 +153,7 @@ bool MenuCredits::init(ZStringView theme) {
     auto websiteBtn = Button::createWithNode(
         ButtonSprite::create(
             "Website",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
         [](auto) {
             createQuickPopup(

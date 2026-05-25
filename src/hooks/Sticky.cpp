@@ -36,7 +36,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         auto f = m_fields.self();
 
         if (auto pl = PlayLayer::get()) {
-            f->m_clickLabel = CCLabelBMFont::create("Press again to un-stick!", "bigFont.fnt", pl->getScaledContentWidth() - 12.5f);
+            f->m_clickLabel = CCLabelBMFont::create("Press again to un-stick!", font::big, pl->getScaledContentWidth() - 12.5f);
             f->m_clickLabel->setID("sticky-alert"_spr);
             f->m_clickLabel->setScale(0.625f);
             f->m_clickLabel->setAlignment(kCCTextAlignmentCenter);

@@ -56,7 +56,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
         auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->oxygenLevel));
         if (!f->oxygenLabel) {
-            f->oxygenLabel = CCLabelBMFont::create(o2.c_str(), "bigFont.fnt");
+            f->oxygenLabel = CCLabelBMFont::create(o2.c_str(), font::big);
             f->oxygenLabel->setColor(colors::cyan);
             f->oxygenLabel->setAnchorPoint({0.f, 1.f});
             f->oxygenLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});

@@ -51,7 +51,7 @@ bool TermsAndConditions::init(Callback&& cb) {
     auto acceptBtn = Button::createWithNode(
         ButtonSprite::create(
             "Accept",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
             sfx::play(sfx::file::good);
@@ -63,7 +63,7 @@ bool TermsAndConditions::init(Callback&& cb) {
     auto declineBtn = Button::createWithNode(
         ButtonSprite::create(
             "Decline",
-            "goldFont.fnt",
+            font::gold,
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
             sfx::play(sfx::file::bad);

@@ -116,7 +116,7 @@ struct Menu::Impl final {
     };
 
     CCLabelBMFont* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
-        auto label = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
+        auto label = CCLabelBMFont::create(text.c_str(), font::big);
         label->setID(std::move(id));
         label->setScale(0.375f);
         label->setAnchorPoint(anchor::center);
@@ -138,7 +138,7 @@ void Menu::setupSafeModeNode(bool safeMode) {
 
         m_impl->safeModeContainer->addChild(icon);
 
-        auto label = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
+        auto label = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", font::big);
         label->setScale(0.325f);
         label->setColor(safeMode ? colors::green : colors::red);
         label->setAlignment(kCCTextAlignmentCenter);
@@ -372,7 +372,7 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->nothingLabel, 9);
 
     // add search bar
-    m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", "bigFont.fnt");
+    m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", font::big);
     m_impl->searchInput->setID("search-input");
     m_impl->searchInput->setAnchorPoint({0, 0.5});
     m_impl->searchInput->setPosition({10.f, mainLayerSize.height - 51.25f});
@@ -397,7 +397,7 @@ bool Menu::init() {
 
     m_mainLayer->addChild(filterContainerBg);
 
-    auto filterContainerLabel = CCLabelBMFont::create("Filters", "goldFont.fnt");
+    auto filterContainerLabel = CCLabelBMFont::create("Filters", font::gold);
     filterContainerLabel->setID("filter-container-label");
     filterContainerLabel->setScale(0.375f);
     filterContainerLabel->setAnchorPoint({0.5, 0});
@@ -420,7 +420,7 @@ bool Menu::init() {
 
     auto filterHint = SimpleTextArea::create(
         "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
-        "chatFont.fnt",
+        font::chat,
         0.5f);
     filterHint->setID("filter-hint");
     filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});

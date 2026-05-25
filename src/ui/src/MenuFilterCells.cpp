@@ -51,7 +51,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     // name of the joke
     auto nameLabel = CCLabelBMFont::create(
         m_category.c_str(),
-        "goldFont.fnt",
+        font::gold,
         getScaledContentWidth() - 35.f,
         kCCTextAlignmentLeft);
     nameLabel->setID("name-label");
@@ -117,7 +117,7 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
         });
     bg->setColor(color);
 
-    auto tierLabel = CCLabelBMFont::create(label.c_str(), "bigFont.fnt");
+    auto tierLabel = CCLabelBMFont::create(label.c_str(), font::big);
     tierLabel->setID("label");
     tierLabel->setScale(0.5f);
     tierLabel->setAnchorPoint(anchor::center);

@@ -36,7 +36,7 @@ bool SpamChallenge::init() {
 
     auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-    auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", "bigFont.fnt", getScaledContentWidth() - 1.25f);
+    auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", font::big, getScaledContentWidth() - 1.25f);
     label->setID("label");
     label->setAlignment(kCCTextAlignmentCenter);
     label->setPosition({winSize.width / 2.f, winSize.height - 50.f});
@@ -44,7 +44,7 @@ bool SpamChallenge::init() {
 
     addChild(label, 1);
 
-    auto descLabel = CCLabelBMFont::create("Use your mouse button or tap the screen to increase the count.", "chatFont.fnt", getScaledContentWidth() - 1.25f);
+    auto descLabel = CCLabelBMFont::create("Use your mouse button or tap the screen to increase the count.", font::chat, getScaledContentWidth() - 1.25f);
     descLabel->setID("description-label");
     descLabel->setAlignment(kCCTextAlignmentCenter);
     descLabel->setPosition({winSize.width / 2.f, 25.f});
@@ -53,7 +53,7 @@ bool SpamChallenge::init() {
 
     addChild(descLabel, 1);
 
-    m_impl->counter = CCLabelBMFont::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), "goldFont.fnt");
+    m_impl->counter = CCLabelBMFont::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), font::gold);
     m_impl->counter->setID("counter");
     m_impl->counter->setScale(2.5f);
     m_impl->counter->setAlignment(kCCTextAlignmentCenter);
