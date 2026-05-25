@@ -60,7 +60,7 @@ bool RandomAd::init() {
 
             if (auto pl = PlayLayer::get()) {
                 log::info("Switching from ad to Congregation jumpscare");
-                jumpscares::switchToLevel(pl, jumpscares::get::congregation(), false, false);
+                jumpscares::switchLevel(jumpscares::level::congregation, false, false);
             } else {
                 log::error("Player not in a level");
             };

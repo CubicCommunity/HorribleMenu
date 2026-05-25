@@ -28,14 +28,14 @@ static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setCheating(true)
                                  ->autoRegister();
 
-static void trySwitchToLevel(PlayLayer* pl, std::shared_ptr<jumpscares::DownloadDelegate> delegate, uint8_t chance, uint8_t rng, bool useReplay) {
+static void trySwitchToLevel(jumpscares::LevelInfo const& level, uint8_t chance, uint8_t rng, bool useReplay) {
     if (rng > chance) {
-        log::trace("{} jumpscare not triggered with {}/100 chance", delegate->getLevelName(), chance);
+        log::trace("jumpscare not triggered with {}/100 chance", chance);
         return;
     };
 
-    log::debug("{} jumpscare triggered!", delegate->getLevelName());
-    jumpscares::switchToLevel(pl, delegate, false, useReplay);
+    log::debug("jumpscare triggered!");
+    jumpscares::switchLevel(level, false, useReplay);
 };
 
 class $modify(GriefPlayLayer, PlayLayer) {
@@ -50,7 +50,7 @@ class $modify(GriefPlayLayer, PlayLayer) {
 
         if (object == m_anticheatSpike && !player->m_isDead) return;
 
-        trySwitchToLevel(this, jumpscares::get::grief(), m_fields->chance, rng::fast(), m_useReplay);
+        trySwitchToLevel(jumpscares::level::grief, m_fields->chance, rng::fast(), m_useReplay);
     };
 };
 
@@ -64,8 +64,10 @@ class $modify(CongregationPlayLayer, PlayLayer) {
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
 
+        if (options::isEnabled(THIS_ID_GRIEF)) return;
+
         if (object == m_anticheatSpike && !player->m_isDead) return;
 
-        trySwitchToLevel(this, jumpscares::get::congregation(), m_fields->chance, rng::fast(), m_useReplay);
+        trySwitchToLevel(jumpscares::level::congregation, m_fields->chance, rng::fast(), m_useReplay);
     };
 };
