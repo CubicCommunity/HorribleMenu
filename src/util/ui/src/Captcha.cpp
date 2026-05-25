@@ -229,7 +229,7 @@ void RobotVerifier::addNewBtn() {
     auto btn = Button::createWithSpriteFrameName(
         btnData.second,
         [this, &id = btnData.first](auto sender) {
-            sfx::play("chestClick.ogg");
+            sfx::play(sfx::file::click);
 
             if (id == m_expected) {
                 validateBtns(sender);
