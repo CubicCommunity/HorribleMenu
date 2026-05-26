@@ -16,7 +16,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
-static constexpr auto s_friends = std::to_array<const char*>({
+static constexpr auto g_friends = std::to_array<const char*>({
     "diffIcon_00_btn_001.png",
     "diffIcon_01_btn_001.png",
     "diffIcon_02_btn_001.png",
@@ -60,7 +60,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto yA = uiSize.height * rA;  // starting height pos
         auto yB = uiSize.height * rB;  // ending height pos
 
-        auto friendSpr = CCSprite::createWithSpriteFrameName(s_friends[rng::get(s_friends.size() - 1)]);
+        auto friendSpr = CCSprite::createWithSpriteFrameName(g_friends[rng::get(g_friends.size() - 1)]);
         friendSpr->setPosition({xA, yA});
         friendSpr->setScale(0.875f * (rB + rA));
         friendSpr->setRotation(180.f * (yA * yB));  // random rotation

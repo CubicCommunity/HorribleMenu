@@ -16,7 +16,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     setAnchorPoint(anchor::center);
     setVisible(false);
 
-    auto label = CCLabelBMFont::create("No options found :(", "bigFont.fnt");
+    auto label = CCLabelBMFont::create("No options found :(", font::big);
     label->setScale(0.5f);
     label->setOpacity(250);
     label->setAnchorPoint({0.5, 0});
@@ -26,7 +26,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
 
     addChild(label, 1);
 
-    auto labelHint = CCLabelBMFont::create("Try searching other keywords, or change some filters!", "chatFont.fnt");
+    auto labelHint = CCLabelBMFont::create("Try searching other keywords, or change some filters!", font::chat);
     labelHint->setScale(0.625f);
     labelHint->setOpacity(200);
     labelHint->setAnchorPoint({0.5, 1});
@@ -184,14 +184,14 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     x += 30.f;
 
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(o->getName().c_str(), "bigFont.fnt", getScaledContentWidth() - 40.f, kCCTextAlignmentLeft);
+    auto nameLabel = CCLabelBMFont::create(o->getName().c_str(), font::big, getScaledContentWidth() - 40.f, kCCTextAlignmentLeft);
     nameLabel->setID("name-label");
     nameLabel->setLineBreakWithoutSpace(true);
     nameLabel->setAnchorPoint({0.f, 0.5f});
     nameLabel->setPosition({x, yCenter});
     nameLabel->setScale(0.4f);
 
-    auto categoryLabel = CCLabelBMFont::create(o->getCategory().c_str(), "goldFont.fnt", getScaledContentWidth() - 60.f, kCCTextAlignmentLeft);
+    auto categoryLabel = CCLabelBMFont::create(o->getCategory().c_str(), font::gold, getScaledContentWidth() - 60.f, kCCTextAlignmentLeft);
     categoryLabel->setID("category-label");
     categoryLabel->setLineBreakWithoutSpace(true);
     categoryLabel->setAnchorPoint({0.f, 0.5f});
@@ -284,7 +284,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     newIcon->setID("new-option-icon");
     newIcon->setScale(0.25f);
 
-    auto newLabel = CCLabelBMFont::create("New!", "bigFont.fnt");
+    auto newLabel = CCLabelBMFont::create("New!", font::big);
     newLabel->setID("new-option-label");
     newLabel->setScale(0.25f);
     newLabel->setColor(colors::cyan);
@@ -316,7 +316,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     if (devMode) {
         auto str = fmt::format("{} | {} delegate(s)", o->getID(), options::getDelegates(o->getID()));
 
-        auto idLabel = CCLabelBMFont::create(str.c_str(), "chatFont.fnt", getScaledContentWidth() - 20.f, kCCTextAlignmentLeft);
+        auto idLabel = CCLabelBMFont::create(str.c_str(), font::chat, getScaledContentWidth() - 20.f, kCCTextAlignmentLeft);
         idLabel->setID("id-label");
         idLabel->setLineBreakWithoutSpace(true);
         idLabel->setPosition({getScaledContentWidth() - 7.5f, 5.25f});

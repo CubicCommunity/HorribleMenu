@@ -18,7 +18,7 @@ bool RandomAd::init() {
 
     popup::closeBtnID(m_closeBtn);
 
-    auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
+    auto label = CCLabelBMFont::create("Check out this cool level we found!", font::chat);
     label->setID("message");
     label->setAlignment(kCCTextAlignmentCenter);
     label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
@@ -52,7 +52,7 @@ bool RandomAd::init() {
     auto playBtn = Button::createWithNode(
         ButtonSprite::create(
             "Play!",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
         [loading = WeakRef(playBtnLoading)](Button* sender) {
             sender->setVisible(false);
@@ -60,7 +60,7 @@ bool RandomAd::init() {
 
             if (auto pl = PlayLayer::get()) {
                 log::info("Switching from ad to Congregation jumpscare");
-                jumpscares::switchToLevel(pl, jumpscares::get::congregation(), false, false);
+                jumpscares::switchLevel(jumpscares::level::congregation, false, false);
             } else {
                 log::error("Player not in a level");
             };

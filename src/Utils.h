@@ -70,6 +70,12 @@ namespace horrible {
         };
     };
 
+    namespace font {
+        inline constexpr auto big = "bigFont.fnt";
+        inline constexpr auto gold = "goldFont.fnt";
+        inline constexpr auto chat = "chatFont.fnt";
+    };
+
     namespace fs = asp::fs;                // Shortcut for `asp::fs`
     namespace str = geode::utils::string;  // Shortcut for `geode::utils::string`
 

@@ -68,7 +68,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                                 if (auto ss = screenshot.lock()) {
                                     auto const percLabelText = fmt::format("{}%", percent);
 
-                                    auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
+                                    auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), font::big);
                                     percLabel->setID("percentage");
                                     percLabel->setPosition(ss->getScaledContentSize() / 2.f);
                                     percLabel->setAlignment(kCCTextAlignmentLeft);

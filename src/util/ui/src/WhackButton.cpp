@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static std::unordered_map<int, const char*> const s_severities = {
+static std::unordered_map<int, const char*> const g_severities = {
     {1, "diffIcon_01_btn_001.png"},
     {2, "diffIcon_02_btn_001.png"},
     {3, "diffIcon_03_btn_001.png"},
@@ -22,7 +22,7 @@ static std::unordered_map<int, const char*> const s_severities = {
 
 struct WhackButton::Impl final {
     uint8_t inputCount = 0;
-    uint8_t inputTarget = s_severities.size();
+    uint8_t inputTarget = g_severities.size();
 
     float scale = rng::get(0.875f, 0.625f);
 
@@ -54,7 +54,7 @@ void WhackButton::reload() {
 
     m_impl->button = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
-            s_severities.at(diff),
+            g_severities.at(diff),
             1.f,
             m_impl->getButtonColor(diff)),
         [this](auto) {
@@ -78,7 +78,7 @@ void WhackButton::reload() {
 };
 
 bool WhackButton::init() {
-    m_impl->inputTarget = rng::get<uint8_t>(s_severities.size(), 3);
+    m_impl->inputTarget = rng::get<uint8_t>(g_severities.size(), 3);
 
     if (!CCNode::init()) return false;
 
