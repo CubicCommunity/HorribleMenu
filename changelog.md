@@ -1,7 +1,7 @@
 # v1.1.2 
 - Reworked internals for all *Jumpscares* category options
   - Level downloading reworked to better support all platforms
-  - Options from this category now work separately from each other even if multiple are enabled at once
+  - Options from this category will no longer conflict with each other if multiple are enabled at once
 - Added confirmation pop-up to *Disable Cheats* button in mod settings
 - Internal cleanup
 
