@@ -21,6 +21,11 @@ namespace horrible {
                     129066879,
                     895761,
                 };
+
+                inline constexpr LevelInfo tidal = {
+                    93733469,
+                    1138377,
+                };
             };
 
             void switchLevel(LevelInfo const& level, bool dontCreateObjects, bool useReplay);

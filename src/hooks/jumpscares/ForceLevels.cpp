@@ -13,6 +13,7 @@ using namespace horrible::prelude;
 
 #define THIS_ID_GRIEF "grief"
 #define THIS_ID_CONGREG "congregation"
+#define THIS_ID_TIDAL "tidal_wave"
 
 static auto const oGrief = Option::create(THIS_ID_GRIEF)
                                ->setName("Get Back on Grief")
@@ -20,7 +21,6 @@ static auto const oGrief = Option::create(THIS_ID_GRIEF)
                                ->setCategory(category::jumpscares)
                                ->setSillyTier(SillyTier::High)
                                ->setOnline(true)
-                               ->setCheating(true)
                                ->autoRegister();
 
 static auto const oCongreg = Option::create(THIS_ID_CONGREG)
@@ -29,8 +29,15 @@ static auto const oCongreg = Option::create(THIS_ID_CONGREG)
                                  ->setCategory(category::jumpscares)
                                  ->setSillyTier(SillyTier::High)
                                  ->setOnline(true)
-                                 ->setCheating(true)
                                  ->autoRegister();
+
+static auto const oTidal = Option::create(THIS_ID_TIDAL)
+                               ->setName("'Tidal Wave' Jumpscare!")
+                               ->setDescription("A chance of forcing you to play the level 'Tidal Wave' when you die in a level. The level called 'Tidal Wave'. That one.\n<cl>suggested by liliam25</c>")
+                               ->setCategory(category::jumpscares)
+                               ->setSillyTier(SillyTier::Medium)
+                               ->setOnline(true)
+                               ->autoRegister();
 
 static StringMap<bool> g_jsMap;
 static std::vector<std::weak_ptr<Hook>> g_jsHookVector;
@@ -39,6 +46,7 @@ namespace js_internal {
     static constexpr auto getLevelInfo(std::string_view id) noexcept {
         if (id == THIS_ID_GRIEF) return jumpscares::level::grief;
         if (id == THIS_ID_CONGREG) return jumpscares::level::congregation;
+        if (id == THIS_ID_TIDAL) return jumpscares::level::tidal;
 
         return jumpscares::level::grief;
     };
@@ -68,6 +76,7 @@ namespace js_internal {
 $on_mod(Loaded) {
     js_internal::toggleOption(THIS_ID_GRIEF, options::isEnabled(THIS_ID_GRIEF));
     js_internal::toggleOption(THIS_ID_CONGREG, options::isEnabled(THIS_ID_CONGREG));
+    js_internal::toggleOption(THIS_ID_TIDAL, options::isEnabled(THIS_ID_TIDAL));
 
     listenForHorribleOptionChanges(
         THIS_ID_GRIEF,
@@ -79,6 +88,12 @@ $on_mod(Loaded) {
         THIS_ID_CONGREG,
         [](HorribleOptionSave data) {
             js_internal::toggleOption(THIS_ID_CONGREG, data.enabled);
+        });
+
+    listenForHorribleOptionChanges(
+        THIS_ID_TIDAL,
+        [](HorribleOptionSave data) {
+            js_internal::toggleOption(THIS_ID_TIDAL, data.enabled);
         });
 };
 
