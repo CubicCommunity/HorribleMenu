@@ -21,9 +21,6 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields final {
-        bool isSetup = false;
-
-        float def = 0.f;
         float speed = 0.f;
 
         Ref<ProgressBar> speedMeter = nullptr;
@@ -32,14 +29,14 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
     bool init() {
         if (!GJBaseGameLayer::init()) return false;
 
-        // doesnt init everything instantly
+        // gjbgl doesnt init everything instantly
         queueInMainThread([self = WeakRef(this)]() {
             if (auto s = self.lock()) {
                 auto f = s->m_fields.self();
 
-                f->def = s->m_player1->m_playerSpeed * 1.25f;
+                f->speed = s->m_player1->m_playerSpeed * 2.5f;
 
-                s->m_player1->m_playerSpeed = f->def;
+                s->m_player1->m_playerSpeed = f->speed / 2.f;
 
                 if (auto pl = PlayLayer::get()) {
                     auto speedMeterLabel = CCLabelBMFont::create("Speed", font::big);
@@ -59,7 +56,7 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
 
                     pl->m_uiLayer->addChild(f->speedMeter, HIGHEST_Z);
 
-                    f->speedMeter->updateProgress(100.f);
+                    f->speedMeter->updateProgress(50.f);
                 };
             };
         });
@@ -70,8 +67,10 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
     void handleButton(bool down, int button, bool isPlayer1) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
 
-        unschedule(down ? schedule_selector(VelocityGJBaseGameLayer::updateSpeed) : schedule_selector(VelocityGJBaseGameLayer::increaseSpeed));
-        schedule(down ? schedule_selector(VelocityGJBaseGameLayer::increaseSpeed) : schedule_selector(VelocityGJBaseGameLayer::updateSpeed));
+        if (button == 1) {
+            unschedule(down ? schedule_selector(VelocityGJBaseGameLayer::updateSpeed) : schedule_selector(VelocityGJBaseGameLayer::increaseSpeed));
+            schedule(down ? schedule_selector(VelocityGJBaseGameLayer::increaseSpeed) : schedule_selector(VelocityGJBaseGameLayer::updateSpeed));
+        };
     };
 
     void resetPlayer() {
@@ -79,10 +78,12 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
 
         auto f = m_fields.self();
 
-        if (f->def > 0.f) m_player1->m_playerSpeed = f->def;
-        if (f->def > 0.f) m_player2->m_playerSpeed = f->def;
+        if (f->speed > 0.f) {
+            m_player1->m_playerSpeed = f->speed / 2.f;
+            m_player2->m_playerSpeed = f->speed / 2.f;
+        };
 
-        if (f->speedMeter) f->speedMeter->updateProgress(100.f);
+        if (f->speedMeter) f->speedMeter->updateProgress(50.f);
     };
 
     void increaseSpeed(float dt) {
@@ -91,10 +92,10 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
         auto f = m_fields.self();
 
         auto speedFt = dt * 0.375f;
-        if (m_player1->m_playerSpeed < f->def) m_player1->m_playerSpeed += speedFt;
-        if (m_player2->m_playerSpeed < f->def) m_player2->m_playerSpeed += speedFt;
+        if (m_player1->m_playerSpeed < f->speed) m_player1->m_playerSpeed += speedFt;
+        if (m_player2->m_playerSpeed < f->speed) m_player2->m_playerSpeed += speedFt;
 
-        if (f->speedMeter) f->speedMeter->updateProgress((m_player1->m_playerSpeed / f->def) * 100.f);
+        if (f->speedMeter) f->speedMeter->updateProgress((m_player1->m_playerSpeed / f->speed) * 100.f);
     };
 
     void updateSpeed(float dt) {
@@ -102,13 +103,13 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
 
         auto f = m_fields.self();
 
-        if (m_player1->m_playerSpeed > f->def) m_player1->m_playerSpeed = f->def;
-        if (m_player2->m_playerSpeed > f->def) m_player2->m_playerSpeed = f->def;
+        if (m_player1->m_playerSpeed > f->speed) m_player1->m_playerSpeed = f->speed;
+        if (m_player2->m_playerSpeed > f->speed) m_player2->m_playerSpeed = f->speed;
 
         auto speedFt = dt * 0.125f;
         if (m_player1->m_playerSpeed >= 0.125f) m_player1->m_playerSpeed -= speedFt;
         if (m_player2->m_playerSpeed >= 0.125f) m_player2->m_playerSpeed -= speedFt;
 
-        if (f->speedMeter) f->speedMeter->updateProgress((m_player1->m_playerSpeed / f->def) * 100.f);
+        if (f->speedMeter) f->speedMeter->updateProgress((m_player1->m_playerSpeed / f->speed) * 100.f);
     };
 };
