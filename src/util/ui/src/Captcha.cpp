@@ -80,9 +80,9 @@ bool Captcha::init() {
     m_impl->countdown = ProgressBar::create(ProgressBarStyle::Solid);
     m_impl->countdown->setID("countdown");
     m_impl->countdown->setScale(0.625f);
-    m_impl->countdown->setFillColor(colors::yellow);
     m_impl->countdown->setAnchorPoint(anchor::center);
     m_impl->countdown->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 17.5f});
+    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
 
     m_impl->countdown->updateProgress(100.f);
 
@@ -204,7 +204,10 @@ void Captcha::update(float dt) {
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     auto pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
+    if (m_impl->countdown) {
+        m_impl->countdown->updateProgress(pct);
+        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+    };
 
     if (m_impl->timeRemaining <= 0.f) {
         setSuccess(false);

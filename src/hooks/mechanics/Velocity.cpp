@@ -12,7 +12,7 @@ using namespace horrible::prelude;
 static auto const o = Option::create(THIS_ID)
                           ->setName("Powering Velocity")
                           ->setDescription("Your movement speed gradually decreases the longer you go without pressing your jump button. Hold it to recover your speed.\n<cl>created by Cheeseworks</c>")
-                          ->setCategory(category::misc)
+                          ->setCategory(category::mechanics)
                           ->setSillyTier(SillyTier::High)
                           ->setCheating(true)
                           ->autoRegister();
@@ -35,7 +35,6 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
                 auto f = s->m_fields.self();
 
                 f->speed = s->m_player1->m_playerSpeed * 2.5f;
-
                 s->m_player1->m_playerSpeed = f->speed / 2.f;
 
                 if (auto pl = PlayLayer::get()) {

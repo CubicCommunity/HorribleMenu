@@ -16,7 +16,7 @@ using namespace horrible::prelude;
 static auto const o = Option::create(THIS_ID)
                           ->setName("Parry Obstacles")
                           ->setDescription("Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>suggested by Wuffin</c>")
-                          ->setCategory(category::misc)
+                          ->setCategory(category::mechanics)
                           ->setSillyTier(SillyTier::None)
                           ->setRequiresRestart(true)
                           ->setSupportedPlatforms({})

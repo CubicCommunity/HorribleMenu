@@ -96,6 +96,7 @@ namespace horrible {
     namespace category {
         inline constexpr auto playerlife = "Player Life";
         inline constexpr auto jumpscares = "Jumpscares";
+        inline constexpr auto mechanics = "Mechanics";
         inline constexpr auto randoms = "Randoms";
         inline constexpr auto chances = "Chances";
         inline constexpr auto obstructive = "Obstructive";
