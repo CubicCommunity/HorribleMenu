@@ -1,3 +1,8 @@
+# v1.2.0 
+- Floating menu button can now be hidden in the editor
+  - Added toggle setting `Show Button in Editor`
+- Added fading color to progress bars on time-based options
+
 # v1.1.2 
 - Reworked internals for all *Jumpscares* category options
   - Level downloading reworked to better support all platforms

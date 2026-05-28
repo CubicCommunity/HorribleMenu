@@ -92,7 +92,7 @@ bool WhackButton::init() {
     m_impl->countdown->setScale(0.125f * m_impl->scale);
     m_impl->countdown->setAnchorPoint(anchor::center);
     m_impl->countdown->setPosition({getScaledContentWidth() / 2.f, -3.75f - (2.f * m_impl->scale)});
-    m_impl->countdown->setFillColor(colors::yellow);
+    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
 
     m_impl->countdown->updateProgress(100.f);
 

@@ -148,10 +148,10 @@ bool MathQuiz::init() {
     // i hope i did this right cheese, u added this progress bar thing
     m_impl->countdown = ProgressBar::create();
     m_impl->countdown->setID("countdown");
-    m_impl->countdown->setFillColor(colors::yellow);
     m_impl->countdown->setStyle(ProgressBarStyle::Solid);
     m_impl->countdown->setAnchorPoint(anchor::center);
     m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});
+    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
 
     m_impl->countdown->updateProgress(100.f);
 
