@@ -202,7 +202,7 @@ bool MathQuiz::init() {
     m_impl->answerMenu = CCMenu::create();
     m_impl->answerMenu->setID("answer-menu");
     m_impl->answerMenu->setContentSize({220.f, 75.f});
-    m_impl->answerMenu->setPosition({winSize.width / 2.f, winSize.height / 2.f - 20.f});
+    m_impl->answerMenu->setPosition({winSize.width / 2.f, (winSize.height / 2.f) - 20.f});
     m_impl->answerMenu->setLayout(answerMenuLayout);
 
     for (int i = 0; i < m_impl->answers.size(); i++) {
@@ -245,8 +245,6 @@ bool MathQuiz::init() {
 
                 setCorrect(correct);
             });
-        answerBtn->setID("submit-answer-btn");
-
         m_impl->answerMenu->addChild(answerBtn);
     };
 
@@ -295,7 +293,10 @@ void MathQuiz::update(float dt) {
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
+    if (m_impl->countdown) {
+        m_impl->countdown->updateProgress(pct);
+        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+    };
 
     if (m_impl->timeRemaining <= 0.f) {
         // automatic incorrect

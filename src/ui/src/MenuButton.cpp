@@ -28,6 +28,7 @@ matjson::Value matjson::Serialize<CCPoint>::toJson(CCPoint const& value) {
 
 struct MenuButton::Impl final {
     bool inLevel = mod->getSettingValue<bool>("floating-btn-level");
+    bool inEditor = mod->getSettingValue<bool>("floating-btn-editor");
 
     float scale = mod->getSettingValue<float>("floating-btn-scale");
     uint8_t opacity = mod->getSettingValue<uint8_t>("floating-btn-opacity");
@@ -97,6 +98,10 @@ void MenuButton::setOpacity(GLubyte opacity) {
 
 void MenuButton::setShowInLevel(bool show) {
     m_impl->inLevel = show;
+};
+
+void MenuButton::setShowInEditor(bool show) {
+    m_impl->inEditor = show;
 };
 
 void MenuButton::setScale(float scale) {
@@ -210,6 +215,10 @@ float MenuButton::getScaleSetting() const noexcept {
 
 bool MenuButton::showInLevel() const noexcept {
     return m_impl->inLevel;
+};
+
+bool MenuButton::showInEditor() const noexcept {
+    return m_impl->inEditor;
 };
 
 MenuButton* MenuButton::create() {

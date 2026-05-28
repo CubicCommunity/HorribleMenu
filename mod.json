@@ -166,6 +166,13 @@
             "default": false,
             "enable-if": "floating-btn"
         },
+        "floating-btn-editor": {
+            "type": "bool",
+            "name": "Show Button in Editor",
+            "description": "Show the floating menu button while editing a level.",
+            "default": false,
+            "enable-if": "floating-btn"
+        },
         "floating-btn-icon": {
             "type": "string",
             "name": "Floating Button Icon",

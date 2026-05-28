@@ -21,7 +21,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     label->setOpacity(250);
     label->setAnchorPoint({0.5, 0});
     label->setAlignment(kCCTextAlignmentCenter);
-    label->limitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale());
+    label->limitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale() * 0.125f);
     label->setPosition(getScaledContentSize() / 2.f);
 
     addChild(label, 1);
@@ -31,7 +31,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     labelHint->setOpacity(200);
     labelHint->setAnchorPoint({0.5, 1});
     labelHint->setAlignment(kCCTextAlignmentCenter);
-    labelHint->limitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale());
+    labelHint->limitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale() * 0.125f);
     labelHint->setPosition(getScaledContentSize() / 2.f);
 
     addChild(labelHint);

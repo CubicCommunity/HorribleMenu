@@ -6,6 +6,7 @@
 #include <ui/MenuButton.h>
 
 #include <Geode/modify/PlayLayer.hpp>
+#include <Geode/modify/LevelEditorLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/GJGameLevel.hpp>
 
@@ -85,6 +86,12 @@ $on_game(Loaded) {
             if (auto fb = MenuButton::get()) fb->setShowInLevel(value);
         });
 
+    listenForSettingChanges<bool>(
+        "floating-btn-editor",
+        [](bool value) {
+            if (auto fb = MenuButton::get()) fb->setShowInEditor(value);
+        });
+
     listenForSettingChanges<float>(
         "floating-btn-scale",
         [](float value) {
@@ -155,7 +162,7 @@ $on_game(Loaded) {
 };
 
 // safe mode
-class $modify(HISafeGJGameLevel, GJGameLevel) {
+class $modify(HMSafeGJGameLevel, GJGameLevel) {
     HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
 
     void savePercentage(int, bool, int, int, bool) {
@@ -164,7 +171,7 @@ class $modify(HISafeGJGameLevel, GJGameLevel) {
 };
 
 // safe mode
-class $modify(HISafePlayLayer, PlayLayer) {
+class $modify(HMSafePlayLayer, PlayLayer) {
     HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
 
     // safe mode prevents level completion
@@ -179,7 +186,37 @@ class $modify(HISafePlayLayer, PlayLayer) {
     };
 };
 
-class $modify(HIFloatBtnPauseLayer, PauseLayer) {
+static void toggleButton(bool toggle = false, bool editor = false) {
+    log::trace("{} floating button", toggle ? "Showing" : "Hiding");
+
+    if (auto fb = MenuButton::get()) {
+        auto toggleTo = mod->getSettingValue<bool>(setting::FloatingBtn) && ((editor ? fb->showInEditor() : fb->showInLevel()) || toggle);
+
+        fb->setVisible(toggleTo);
+        fb->setTouchEnabled(toggleTo);
+    };
+};
+
+class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
+    HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
+
+    struct Fields final {
+        ~Fields() {
+            toggleButton(true, true);
+        };
+    };
+
+    bool init(GJGameLevel* level, bool noUI) {
+        if (!LevelEditorLayer::init(level, noUI)) return false;
+
+        m_fields.self();  // lazy init
+        toggleButton(false, true);
+
+        return true;
+    };
+};
+
+class $modify(HMFloatBtnPauseLayer, PauseLayer) {
     HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
 
     void customSetup() {
@@ -195,7 +232,7 @@ class $modify(HIFloatBtnPauseLayer, PauseLayer) {
     };
 };
 
-class $modify(HIFloatBtnPlayLayer, PlayLayer) {
+class $modify(HMFloatBtnPlayLayer, PlayLayer) {
     HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
 
     void setupHasCompleted() {
@@ -221,16 +258,5 @@ class $modify(HIFloatBtnPlayLayer, PlayLayer) {
     void onQuit() {
         toggleButton(true);
         PlayLayer::onQuit();
-    };
-
-    void toggleButton(bool toggle = false) {
-        log::trace("{} floating button", toggle ? "Showing" : "Hiding");
-
-        if (auto fb = MenuButton::get()) {
-            auto toggleTo = mod->getSettingValue<bool>(setting::FloatingBtn) && (fb->showInLevel() || toggle);
-
-            fb->setVisible(toggleTo);
-            fb->setTouchEnabled(toggleTo);
-        };
     };
 };

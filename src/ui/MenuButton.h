@@ -36,7 +36,9 @@ namespace horrible {
         static MenuButton* get();
 
         void setOpacity(GLubyte opacity);
+
         void setShowInLevel(bool show);
+        void setShowInEditor(bool show);
 
         void setTheme(std::string theme);
         void setButtonIcon(std::string icon);
@@ -45,6 +47,8 @@ namespace horrible {
 
         uint8_t getOpacitySetting() const noexcept;
         float getScaleSetting() const noexcept;
+
         bool showInLevel() const noexcept;
+        bool showInEditor() const noexcept;
     };
 };
