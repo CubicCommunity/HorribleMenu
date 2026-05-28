@@ -113,6 +113,9 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
                 f->chargeMeter->updateProgress(0.f);
             };
 
+            setOnGround(m_player1, true);
+            setOnGround(m_player2, true);
+
             handleButton(false, 1, true);
 
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
@@ -146,6 +149,9 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
                 f->chargeMeter->updateProgress(0.f);
             };
 
+            setOnGround(m_player1, true);
+            setOnGround(m_player2, true);
+
             unschedule(schedule_selector(LeapGJBaseGameLayer::decharge));
         };
 
@@ -168,5 +174,12 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
     bool onGround(PlayerObject* player) noexcept {
         if (player) return player->m_isOnGround && player->m_isOnGround2 && player->m_isOnGround3 && player->m_isOnGround4;
         return false;
+    };
+
+    void setOnGround(PlayerObject* player, bool onGround) {
+        player->m_isOnGround = onGround;
+        player->m_isOnGround2 = onGround;
+        player->m_isOnGround3 = onGround;
+        player->m_isOnGround4 = onGround;
     };
 };
