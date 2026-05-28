@@ -84,9 +84,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             auto pct = f->charge / 100.f;
 
             auto newSpeed = (f->speed * 3.75f) * pct;
-            auto boostHeight = 25.f * pct;
-
-            GJBaseGameLayer::handleButton(down, button, isPlayer1);
+            auto boostHeight = 20.f * pct;
 
             m_player1->m_playerSpeed = newSpeed;
             m_player2->m_playerSpeed = newSpeed;
@@ -94,11 +92,15 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             if (onGround(m_player1)) m_player1->boostPlayer(boostHeight);
             if (onGround(m_player2)) m_player2->boostPlayer(boostHeight);
 
+            GJBaseGameLayer::handleButton(true, button, isPlayer1);
+
             sfx::play(sfx::file::pop);
 
             schedule(schedule_selector(LeapGJBaseGameLayer::decharge));
 
             f->charge = 0.f;
+
+            GJBaseGameLayer::handleButton(false, button, isPlayer1);
         };
     };
 
@@ -122,7 +124,6 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         };
 
         f->charge += 12.5f;
-        sfx::play(sfx::file::count);
 
         if (f->chargeMeter) {
             f->chargeMeter->updateProgress(f->charge);
