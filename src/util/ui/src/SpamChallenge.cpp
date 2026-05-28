@@ -139,7 +139,10 @@ void SpamChallenge::update(float dt) {
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     auto pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
+    if (m_impl->countdown) {
+        m_impl->countdown->updateProgress(pct);
+        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+    };
 
     if (m_impl->timeRemaining <= 0.f) {
         setSuccess(false);

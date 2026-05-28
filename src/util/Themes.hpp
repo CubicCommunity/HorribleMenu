@@ -17,6 +17,24 @@ namespace horrible {
         inline constexpr cocos2d::ccColor3B pink = {255, 105, 180};
         inline constexpr cocos2d::ccColor3B gold = {255, 200, 150};
         inline constexpr cocos2d::ccColor3B black = {0, 0, 0};
+
+        inline constexpr cocos2d::ccColor3B lerpColor(cocos2d::ccColor3B const& a, cocos2d::ccColor3B const& b, float t) noexcept {
+            return {
+                static_cast<GLubyte>(a.r + (b.r - a.r) * t),
+                static_cast<GLubyte>(a.g + (b.g - a.g) * t),
+                static_cast<GLubyte>(a.b + (b.b - a.b) * t),
+            };
+        };
+
+        inline constexpr cocos2d::ccColor3B fadeColor(float value) noexcept {
+            if (value <= 50.0f) {
+                float t = value / 50.0f;
+                return lerpColor(red, yellow, t);
+            } else {
+                float t = (value - 50.0f) / 50.0f;
+                return lerpColor(yellow, green, t);
+            };
+        };
     };
 
     namespace util {
