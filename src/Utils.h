@@ -9,6 +9,7 @@
 #include <util/Random.hpp>
 #include <util/Themes.hpp>
 
+#include <util/ui/Captcha.hpp>
 #include <util/ui/MathQuiz.hpp>
 #include <util/ui/RandomAd.hpp>
 #include <util/ui/SpamChallenge.hpp>
@@ -24,6 +25,8 @@
 #include <cocos2d.h>
 
 #include <Geode/ui/Button.hpp>
+
+#include <Geode/utils/cocos.hpp>
 
 #include <Geode/binding/FMODAudioEngine.hpp>
 
@@ -93,6 +96,7 @@ namespace horrible {
     namespace category {
         inline constexpr auto playerlife = "Player Life";
         inline constexpr auto jumpscares = "Jumpscares";
+        inline constexpr auto mechanics = "Mechanics";
         inline constexpr auto randoms = "Randoms";
         inline constexpr auto chances = "Chances";
         inline constexpr auto obstructive = "Obstructive";

@@ -267,6 +267,40 @@
                 "big-arrow-step": 20
             }
         },
+        "tidal_wave-chance": {
+            "type": "int",
+            "name": "Tidal Wave Chance",
+            "description": "<cc>'Tidal Wave' Jumpscare!</c> - Chance of your level switching to the level named 'Tidal Wave'.",
+            "default": 15,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
+        "troll_level-chance": {
+            "type": "int",
+            "name": "Troll Level Chance",
+            "description": "<cc>You're Getting Trolled</c> - Chance of your level switching to Congregation.",
+            "default": 20,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
         "whack_a_face-chance": {
             "type": "int",
             "name": "Whack-A-Face Chance",
@@ -323,6 +357,23 @@
             "name": "Math Quiz Chance",
             "description": "<cc>Richard's Math Quiz!</c> - Chance of Richard's math quiz appearing in a level.",
             "default": 35,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
+        "captcha-chance": {
+            "type": "int",
+            "name": "Captcha Chance",
+            "description": "<cc>Verify Your Captchas...</c> - Chance of the captcha appearing in a level.",
+            "default": 20,
             "min": 0,
             "max": 100,
             "control": {
