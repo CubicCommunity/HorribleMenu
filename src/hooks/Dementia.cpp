@@ -44,7 +44,8 @@ class $modify(DementiaPlayerObject, PlayerObject) {
             auto bgchannel = fmod->m_backgroundMusicChannel;
             auto channel = bgchannel->getChannel(0, &musicChannel);
 
-            auto onGround = m_isOnGround || m_isOnGround2 || m_isOnGround3 || m_isOnGround4;
+            auto onGround = m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
+
             // dementia
             if (rnd <= f->chance) {
                 setPosition({f->lastX, f->lastY});

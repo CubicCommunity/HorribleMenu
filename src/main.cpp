@@ -17,6 +17,28 @@ using namespace horrible::prelude;
 static std::vector<std::weak_ptr<Hook>> g_safeModeHooks;
 static std::vector<std::weak_ptr<Hook>> g_floatingBtnHooks;
 
+namespace main {
+    static void toggleButton(bool toggle = false, bool editor = false) {
+        log::trace("{} floating button", toggle ? "Showing" : "Hiding");
+
+        if (auto fb = MenuButton::get()) {
+            auto toggleTo = mod->getSettingValue<bool>(setting::FloatingBtn) && ((editor ? fb->showInEditor() : fb->showInLevel()) || toggle);
+
+            fb->setVisible(toggleTo);
+            fb->setTouchEnabled(toggleTo);
+        };
+    };
+
+    static void toggleSafeModeHooks(bool value) {
+        for (auto const& hook : g_safeModeHooks) {
+            if (auto h = hook.lock()) {
+                log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
+                (void)h->toggle(value);
+            };
+        };
+    };
+};
+
 #define HORRIBLE_HOOK_INTERNAL(hookVector, settingId)                                  \
     static void onModify(auto& self) {                                                 \
         utils::StringMap<std::shared_ptr<Hook>>& hooks = self.m_hooks;                 \
@@ -32,15 +54,6 @@ static std::vector<std::weak_ptr<Hook>> g_floatingBtnHooks;
         };                                                                             \
     }
 
-static void toggleSafeModeHooks(bool value) {
-    for (auto const& hook : g_safeModeHooks) {
-        if (auto h = hook.lock()) {
-            log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
-            (void)h->toggle(value);
-        };
-    };
-};
-
 $on_game(Loaded) {
     if (auto om = OverlayManager::get()) {
         if (auto fb = MenuButton::get()) om->addChild(fb);
@@ -49,13 +62,13 @@ $on_game(Loaded) {
     listenForSettingChanges<bool>(
         setting::SafeMode,
         [](bool value) {
-            if (!mod->getSettingValue<bool>(setting::DynamicSafeMode)) toggleSafeModeHooks(value);
+            if (!mod->getSettingValue<bool>(setting::DynamicSafeMode)) main::toggleSafeModeHooks(value);
         });
 
     listenForSettingChanges<bool>(
         setting::DynamicSafeMode,
         [](bool) {
-            if (auto om = OptionManager::get()) toggleSafeModeHooks(om->shouldBeSafeMode());
+            if (auto om = OptionManager::get()) main::toggleSafeModeHooks(om->shouldBeSafeMode());
         });
 
     listenForKeybindSettingPresses(
@@ -153,7 +166,7 @@ $on_game(Loaded) {
         .listen([](bool cheating) {
             if (mod->getSettingValue<bool>(setting::DynamicSafeMode)) {
                 log::warn("Dynamic safe mode is now {}", cheating ? "ON" : "OFF");
-                toggleSafeModeHooks(cheating);
+                main::toggleSafeModeHooks(cheating);
             };
         })
         .leak();
@@ -161,7 +174,6 @@ $on_game(Loaded) {
     (void)branding::registerBrand(GEODE_MOD_ID, "https://moddev.cheeseworks.gay/cdn/cubic_horriblemenu.webp", branding::Type::URL);
 };
 
-// safe mode
 class $modify(HMSafeGJGameLevel, GJGameLevel) {
     HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
 
@@ -186,23 +198,12 @@ class $modify(HMSafePlayLayer, PlayLayer) {
     };
 };
 
-static void toggleButton(bool toggle = false, bool editor = false) {
-    log::trace("{} floating button", toggle ? "Showing" : "Hiding");
-
-    if (auto fb = MenuButton::get()) {
-        auto toggleTo = mod->getSettingValue<bool>(setting::FloatingBtn) && ((editor ? fb->showInEditor() : fb->showInLevel()) || toggle);
-
-        fb->setVisible(toggleTo);
-        fb->setTouchEnabled(toggleTo);
-    };
-};
-
 class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
     HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
 
     struct Fields final {
         ~Fields() {
-            toggleButton(true, true);
+            main::toggleButton(true, true);
         };
     };
 
@@ -210,7 +211,7 @@ class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
         if (!LevelEditorLayer::init(level, noUI)) return false;
 
         m_fields.self();  // lazy init
-        toggleButton(false, true);
+        main::toggleButton(false, true);
 
         return true;
     };
@@ -236,27 +237,27 @@ class $modify(HMFloatBtnPlayLayer, PlayLayer) {
     HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
 
     void setupHasCompleted() {
-        toggleButton();
+        main::toggleButton();
         PlayLayer::setupHasCompleted();
     };
 
     void resume() {
-        toggleButton();
+        main::toggleButton();
         PlayLayer::resume();
     };
 
     void resumeAndRestart(bool fromStart) {
-        toggleButton();
+        main::toggleButton();
         PlayLayer::resumeAndRestart(fromStart);
     };
 
     void showEndLayer() {
-        toggleButton(true);
+        main::toggleButton(true);
         PlayLayer::showEndLayer();
     };
 
     void onQuit() {
-        toggleButton(true);
+        main::toggleButton(true);
         PlayLayer::onQuit();
     };
 };

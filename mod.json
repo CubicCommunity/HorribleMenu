@@ -8,7 +8,7 @@
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "developers": [
         "Team Breakeode",
         "Cheeseworks",
@@ -159,20 +159,6 @@
                 "ios": true
             }
         },
-        "floating-btn-level": {
-            "type": "bool",
-            "name": "Show Button in Level",
-            "description": "Show the floating menu button while playing a level.",
-            "default": false,
-            "enable-if": "floating-btn"
-        },
-        "floating-btn-editor": {
-            "type": "bool",
-            "name": "Show Button in Editor",
-            "description": "Show the floating menu button while editing a level.",
-            "default": false,
-            "enable-if": "floating-btn"
-        },
         "floating-btn-icon": {
             "type": "string",
             "name": "Floating Button Icon",
@@ -190,6 +176,20 @@
                 "durr",
                 "Sapphire SDK"
             ],
+            "enable-if": "floating-btn"
+        },
+        "floating-btn-level": {
+            "type": "bool",
+            "name": "Show Button in Level",
+            "description": "Show the floating menu button while playing a level.",
+            "default": false,
+            "enable-if": "floating-btn"
+        },
+        "floating-btn-editor": {
+            "type": "bool",
+            "name": "Show Button in Editor",
+            "description": "Show the floating menu button while editing a level.",
+            "default": false,
             "enable-if": "floating-btn"
         },
         "floating-btn-scale": {
