@@ -10,7 +10,8 @@
 - Added new *Obstructive* option **Verify Your Captchas...**
 - Added new *Misc* option **Flicks**
 - Floating menu button can now be hidden in the editor
-  - Added toggle setting `Show Button in Editor`
+  - Added toggle setting `Show in Editor`
+- Moved floating menu button settings to their own section in mod settings
 - Added fading color to progress bars on time-based options
 - Unmarked all *Jumpscares* category options as cheats
 - Tweaked *Double-Jump* and *Dementia* ground detection

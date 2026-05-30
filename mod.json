@@ -148,10 +148,15 @@
                 ]
             }
         },
+        "floating-btn-section": {
+            "type": "title",
+            "name": "Floating Button",
+            "description": "Configure the floating menu button, intended for touchscreen users to easily access the <cg>Horrible Options</c> menu."
+        },
         "floating-btn": {
             "type": "bool",
-            "name": "Floating Menu Button",
-            "description": "Show a floating button to quickly open the <cg>Horrible Options</c> menu.",
+            "name": "Enable Floating Button",
+            "description": "Show the floating button to quickly open the <cg>Horrible Options</c> menu.",
             "default": {
                 "win": false,
                 "mac": false,
@@ -161,7 +166,7 @@
         },
         "floating-btn-icon": {
             "type": "string",
-            "name": "Floating Button Icon",
+            "name": "Button Icon",
             "description": "Show an icon on the floating button.",
             "default": "Default",
             "one-of": [
@@ -180,21 +185,21 @@
         },
         "floating-btn-level": {
             "type": "bool",
-            "name": "Show Button in Level",
+            "name": "Show in Level",
             "description": "Show the floating menu button while playing a level.",
             "default": false,
             "enable-if": "floating-btn"
         },
         "floating-btn-editor": {
             "type": "bool",
-            "name": "Show Button in Editor",
+            "name": "Show in Editor",
             "description": "Show the floating menu button while editing a level.",
             "default": false,
             "enable-if": "floating-btn"
         },
         "floating-btn-scale": {
             "type": "float",
-            "name": "Floating Button Scale",
+            "name": "Button Scale",
             "description": "Change the size of the floating button.",
             "default": 1.0,
             "min": 0.5,
@@ -212,7 +217,7 @@
         },
         "floating-btn-opacity": {
             "type": "int",
-            "name": "Floating Button Opacity",
+            "name": "Button Opacity",
             "description": "Change the opacity of the floating button.",
             "default": 125,
             "min": 25,
