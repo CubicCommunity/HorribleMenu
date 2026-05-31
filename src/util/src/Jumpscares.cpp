@@ -7,29 +7,23 @@
 using namespace geode::prelude;
 using namespace horrible::util;
 
-void jumpscares::switchLevel(LevelInfo const& level, bool dontCreateObjects, bool useReplay) {
+void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay) {
     if (auto pl = PlayLayer::get()) {
-        if (pl->m_level->m_levelID == level.id) return;
+        if (pl->m_level->m_levelID == level) return;
     };
 
-    coro::getLevel(level.id, [level, dontCreateObjects, useReplay](Result<GJGameLevel*> result) {
+    coro::getLevel(level, [level, dontCreateObjects, useReplay](Result<GJGameLevel*> result) {
         if (result.isOk()) {
-            auto level = std::move(result).unwrap();
+            auto lvl = std::move(result).unwrap();
 
-            if (auto mdm = MusicDownloadManager::sharedState()) {
-                mdm->addMusicDownloadDelegate(jumpscares::JumpscareLevelManager::get());
-                mdm->downloadSong(level->m_songID);
-            };
+            if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(lvl);
 
-            if (auto glm = GameLevelManager::sharedState()) glm->saveLevel(level);
-            if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(level);
+            log::warn("Switching to {} level ({})", lvl->m_levelName, lvl->m_levelID.value());
 
-            log::warn("Switching to {} level ({})", level->m_levelName, level->m_levelID.value());
-
-            auto scene = PlayLayer::scene(level, useReplay, dontCreateObjects);
+            auto scene = PlayLayer::scene(lvl, useReplay, dontCreateObjects);
             CCDirector::sharedDirector()->replaceScene(scene);
         } else if (result.isErr()) {
-            log::error("Failed to get level {}: {}", level.id, result.unwrapErr());
+            log::error("Failed to get level {}: {}", level, result.unwrapErr());
         };
     });
 };
@@ -67,23 +61,14 @@ void jumpscares::coro::getLevel(int id, CopyableFunction<void(Result<GJGameLevel
         });
 };
 
-void jumpscares::JumpscareLevelManager::loadSongInfoFinished(SongInfoObject* object) {
-    log::info("Song info loaded for song ID {}, saving level to cache if it exists...", object->m_songID);
-};
-
-void jumpscares::JumpscareLevelManager::loadSongInfoFailed(int id, GJSongError errorType) {
-    log::error("Failed to load song info for song ID {}: error code {}", id, errorType == GJSongError::FailedToFetch ? "Failed to fetch" : "Unknown");
-};
-
-void jumpscares::JumpscareLevelManager::downloadSongStarted(int id) {
-    log::trace("Download started for song ID {}", id);
-};
-
-void jumpscares::JumpscareLevelManager::downloadSongFinished(int id) {
-    log::debug("Download finished for song ID {}", id);
-};
-
 void jumpscares::JumpscareLevelManager::saveLevel(GJGameLevel* level) {
+    if (auto mdm = MusicDownloadManager::sharedState()) {
+        // mdm->addMusicDownloadDelegate(jumpscares::JumpscareLevelManager::get());
+        mdm->downloadSong(level->m_songID);
+    };
+
+    if (auto glm = GameLevelManager::sharedState()) glm->saveLevel(level);
+
     m_levels[level->m_levelID.value()] = level;
 };
 

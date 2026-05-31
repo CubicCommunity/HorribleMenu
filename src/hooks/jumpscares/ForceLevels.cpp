@@ -102,7 +102,7 @@ static void tryJumpscare(bool useReplay) {
         if (rng::fast() <= options::getChance(js.first)) {
             auto const level = js_internal::getLevelInfo(js.first);
 
-            log::debug("jumpscare for {} triggered!", level.id);
+            log::debug("jumpscare for {} triggered!", level);
             return jumpscares::switchLevel(level, false, useReplay);
         };
     };

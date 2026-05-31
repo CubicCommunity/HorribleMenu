@@ -23,15 +23,7 @@ namespace js_internal {
     static void saveTrollLevel() {
         jumpscares::coro::getLevel(id, [](Result<GJGameLevel*> result) {
             if (result.isOk()) {
-                auto level = std::move(result).unwrap();
-
-                if (auto mdm = MusicDownloadManager::sharedState()) {
-                    mdm->addMusicDownloadDelegate(jumpscares::JumpscareLevelManager::get());
-                    mdm->downloadSong(level->m_songID);
-                };
-
-                if (auto glm = GameLevelManager::sharedState()) glm->saveLevel(level);
-                if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(level);
+                if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(std::move(result).unwrap());
             } else if (result.isErr()) {
                 log::error("Failed to get level {}: {}", id, result.unwrapErr());
             };

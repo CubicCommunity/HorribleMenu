@@ -591,7 +591,7 @@ bool Menu::init() {
 };
 
 void Menu::onExit() {
-    if (auto credits = MenuCredits::get()) cue::resetNode(credits);
+    if (auto credits = MenuCredits::get()) credits->removeFromParent();
     s_inst = nullptr;
 
     Popup::onExit();

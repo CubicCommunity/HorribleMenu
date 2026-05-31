@@ -17,6 +17,8 @@ using namespace horrible::prelude;
 static std::vector<std::weak_ptr<Hook>> g_safeModeHooks;
 static std::vector<std::weak_ptr<Hook>> g_floatingBtnHooks;
 
+static bool g_loadedOnce = false;
+
 namespace main {
     static void toggleButton(bool toggle = false, bool editor = false) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
@@ -172,6 +174,13 @@ $on_game(Loaded) {
         .leak();
 
     (void)branding::registerBrand(GEODE_MOD_ID, "https://moddev.cheeseworks.gay/cdn/cubic_horriblemenu.webp", branding::Type::URL);
+
+    g_loadedOnce = true;
+};
+
+$on_game(TexturesLoaded) {
+    if (!g_loadedOnce) return;  // trigger the button setup to match graphics quality !!!
+    if (auto fb = MenuButton::get()) fb->setTheme(mod->getSettingValue<std::string>("theme"));
 };
 
 class $modify(HMSafeGJGameLevel, GJGameLevel) {

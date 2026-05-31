@@ -6,29 +6,13 @@ namespace horrible {
     namespace util {
         // Jumpscare level manager
         namespace jumpscares {
-            struct LevelInfo final {
-                int id;
-                int songID;
-            };
-
             namespace level {
-                inline constexpr LevelInfo grief = {
-                    129066933,
-                    482872,
-                };
-
-                inline constexpr LevelInfo congregation = {
-                    129066879,
-                    895761,
-                };
-
-                inline constexpr LevelInfo tidal = {
-                    93733469,
-                    1138377,
-                };
+                inline constexpr auto grief = 129066933;
+                inline constexpr auto congregation = 129066879;
+                inline constexpr auto tidal = 93733469;
             };
 
-            void switchLevel(LevelInfo const& level, bool dontCreateObjects, bool useReplay);
+            void switchLevel(int level, bool dontCreateObjects, bool useReplay);
 
             namespace coro {
                 void getLevel(int id, geode::CopyableFunction<void(geode::Result<GJGameLevel*>)>&& callback);
@@ -54,13 +38,6 @@ namespace horrible {
                 void saveLevel(GJGameLevel* level);
 
                 GJGameLevel* getLevel(int id) const noexcept;
-
-                // mainly for debug
-
-                void loadSongInfoFinished(SongInfoObject* object) override;
-                void loadSongInfoFailed(int id, GJSongError errorType) override;
-                void downloadSongStarted(int id) override;
-                void downloadSongFinished(int id) override;
             };
         };
     };

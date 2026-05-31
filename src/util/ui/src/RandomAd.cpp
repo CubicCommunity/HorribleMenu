@@ -27,18 +27,15 @@ bool RandomAd::init() {
     m_mainLayer->addChild(label);
 
     // featured project thumbnail
-    auto projThumb = LazySprite::create({192.f, 108.f}, true);
+    auto projThumb = LazySprite::create({228.f, 128.f}, true);
     projThumb->setID("thumbnail");
-    projThumb->setAnchorPoint(anchor::center);
-    projThumb->setPosition({m_mainLayer->getContentWidth() / 2.f, 110.f});
+    projThumb->setAutoResize(true);
+    projThumb->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 110.f});
 
-    projThumb->setLoadCallback([thumbnail = WeakRef(projThumb)](Result<> res) {
-        if (res.isOk()) {
-            log::info("Sprite loaded successfully");
-            if (auto thumb = thumbnail.lock()) thumb->setScale(0.625);
-        } else {
-            log::error("Sprite failed to load: {}", res.unwrapErr());
-        };
+    projThumb->setLoadCallback([](Result<> res) {
+        res.isOk()
+            ? log::info("Ad sprite loaded successfully")
+            : log::error("Ad sprite failed to load: {}", res.unwrapErr());
     });
 
     projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
@@ -54,11 +51,13 @@ bool RandomAd::init() {
             "Play!",
             font::big,
             themes::getButtonSquareSprite(theme)),
-        [loading = WeakRef(playBtnLoading)](Button* sender) {
+        [this, loading = WeakRef(playBtnLoading)](Button* sender) {
             sender->setVisible(false);
             if (auto load = loading.lock()) load->setVisible(true);
 
             if (auto pl = PlayLayer::get()) {
+                if (pl->m_level->m_levelID == jumpscares::level::congregation) return removeFromParent();
+
                 log::info("Switching from ad to Congregation jumpscare");
                 jumpscares::switchLevel(jumpscares::level::congregation, false, false);
             } else {
