@@ -49,14 +49,16 @@ class $modify(GamblerPlayLayer, PlayLayer) {
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
         m_fields->triggered = false;
-        log::trace("gambler level reset");
+        log::trace("gambler level reset from start");
     };
 
     void gamblerCheck(float) {
         auto f = m_fields.self();
 
+        if (f->triggered) return;
+
         // detect the moment the player first reaches or crosses 95
-        if (getCurrentPercentInt() >= 95 && !f->triggered) {
+        if (getCurrentPercentInt() >= 95) {
             if (rng::flip()) {
                 log::info("Gambler lost the bet!");
 
@@ -68,8 +70,6 @@ class $modify(GamblerPlayLayer, PlayLayer) {
 
                 m_player1->boostPlayer(rng::get(12.5f, 8.75f));
                 m_player2->boostPlayer(rng::get(12.5f, 8.75f));
-
-                f->triggered = true;
             } else {
                 log::info("Gambler won the bet! instant win.");
 
@@ -77,9 +77,10 @@ class $modify(GamblerPlayLayer, PlayLayer) {
                 Notification::create("You got lucky this time...", NotificationIcon::Success)->show();
 
                 levelComplete();
-
-                f->triggered = true;
             };
+
+            f->triggered = true;
+            unschedule(schedule_selector(GamblerPlayLayer::gamblerCheck));
         };
     };
 };

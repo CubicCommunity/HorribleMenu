@@ -6,87 +6,38 @@ namespace horrible {
     namespace util {
         // Jumpscare level manager
         namespace jumpscares {
+            namespace level {
+                inline constexpr auto grief = 129066933;
+                inline constexpr auto congregation = 129066879;
+                inline constexpr auto tidal = 93733469;
+            };
 
-            class JumpscareDelegateData {
+            void switchLevel(int level, bool dontCreateObjects, bool useReplay);
+
+            namespace coro {
+                void getLevel(int id, geode::CopyableFunction<void(geode::Result<GJGameLevel*>)>&& callback);
+            };
+
+            class JumpscareLevelManager final : public MusicDownloadDelegate {
             private:
-                geode::WeakRef<PlayLayer> m_playLayer = nullptr;
-
-                int m_levelID = 0;
-                int m_songID = 0;
-                std::string m_levelName = "";
-
-                bool m_dontCreateObjects = false;
-                bool m_useReplay = false;
+                std::unordered_map<int, geode::Ref<GJGameLevel>> m_levels;
 
             protected:
-                explicit JumpscareDelegateData(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
-                virtual ~JumpscareDelegateData() = default;
+                JumpscareLevelManager() = default;
+                ~JumpscareLevelManager() = default;
+
+                JumpscareLevelManager(const JumpscareLevelManager&) = delete;
+                JumpscareLevelManager& operator=(const JumpscareLevelManager&) = delete;
+
+                JumpscareLevelManager(JumpscareLevelManager&&) = delete;
+                JumpscareLevelManager& operator=(JumpscareLevelManager&&) = delete;
 
             public:
-                geode::WeakRef<PlayLayer> const& getPlayLayer() const noexcept;
+                static JumpscareLevelManager* get() noexcept;
 
-                int getLevelID() const noexcept;
-                int getSongID() const noexcept;
-                geode::ZStringView getLevelName() const noexcept;
+                void saveLevel(GJGameLevel* level);
 
-                bool getDontCreateObjects() const noexcept;
-                bool getUseReplay() const noexcept;
-            };
-
-            struct SearchDelegate final : public LevelManagerDelegate, public JumpscareDelegateData, std::enable_shared_from_this<SearchDelegate> {
-            public:
-                SearchDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
-
-                void loadLevelsFinished(cocos2d::CCArray* levels, char const* key) override;
-                void loadLevelsFailed(char const* key) override;
-            };
-
-            struct DownloadDelegate final : public LevelDownloadDelegate, public JumpscareDelegateData, std::enable_shared_from_this<DownloadDelegate> {
-            public:
-                DownloadDelegate(PlayLayer* pl, int levelID, int songID, std::string levelName, bool dontCreateObjects, bool useReplay);
-
-                void levelDownloadFinished(GJGameLevel* level) override;
-                void levelDownloadFailed(int response) override;
-            };
-
-            namespace get {
-                std::shared_ptr<DownloadDelegate> grief();
-                std::shared_ptr<DownloadDelegate> congregation();
-            };
-
-            void switchToLevel(PlayLayer* pl, std::shared_ptr<DownloadDelegate> delegate, bool dontCreateObjects, bool useReplay);
-
-            void downloadLevelAsync(std::shared_ptr<DownloadDelegate> delegate);
-
-            GJGameLevel* getSavedDownloadedLevel(int levelID);
-            GJSearchObject* createLevelSearchObject(int levelID);
-
-            class JumpscareDelegateManager final {
-            private:
-                std::shared_ptr<SearchDelegate> m_searchDelegate;
-                std::shared_ptr<DownloadDelegate> m_downloadDelegate;
-
-            protected:
-                JumpscareDelegateManager() = default;
-                ~JumpscareDelegateManager() = default;
-
-                JumpscareDelegateManager(const JumpscareDelegateManager&) = delete;
-                JumpscareDelegateManager& operator=(const JumpscareDelegateManager&) = delete;
-
-                JumpscareDelegateManager(JumpscareDelegateManager&&) = delete;
-                JumpscareDelegateManager& operator=(JumpscareDelegateManager&&) = delete;
-
-            public:
-                static JumpscareDelegateManager* get() noexcept;
-
-                std::weak_ptr<SearchDelegate> getSearchDelegate() const noexcept;
-                std::weak_ptr<DownloadDelegate> getDownloadDelegate() const noexcept;
-
-                void setSearchDelegate(std::shared_ptr<SearchDelegate> delegate);
-                void setDownloadDelegate(std::shared_ptr<DownloadDelegate> delegate);
-
-                void clearSearchDelegate();
-                void clearDownloadDelegate();
+                GJGameLevel* getLevel(int id) const noexcept;
             };
         };
     };

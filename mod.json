@@ -8,7 +8,7 @@
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "developers": [
         "Team Breakeode",
         "Cheeseworks",
@@ -88,6 +88,14 @@
             "description": "Automatically toggle Safe Mode whenever you toggle any options that are marked as cheats.",
             "default": true
         },
+        "cheats": {
+            "type": "button",
+            "name": "Disable All Cheats",
+            "buttons": {
+                "disable": "Disable Cheats"
+            },
+            "description": "Quickly disable every option that is <cr>marked as cheating</c>. <cg>Feel free to do this if *Automatic Safe Mode* is enabled and you're not sure what's triggering it.</c>"
+        },
         "ui": {
             "type": "title",
             "name": "Interface",
@@ -140,10 +148,15 @@
                 ]
             }
         },
+        "floating-btn-section": {
+            "type": "title",
+            "name": "Floating Button",
+            "description": "Configure the floating menu button, intended for touchscreen users to easily access the <cg>Horrible Options</c> menu."
+        },
         "floating-btn": {
             "type": "bool",
-            "name": "Floating Menu Button",
-            "description": "Show a floating button to quickly open the <cg>Horrible Options</c> menu.",
+            "name": "Enable Floating Button",
+            "description": "Show the floating button to quickly open the <cg>Horrible Options</c> menu.",
             "default": {
                 "win": false,
                 "mac": false,
@@ -151,16 +164,9 @@
                 "ios": true
             }
         },
-        "floating-btn-level": {
-            "type": "bool",
-            "name": "Show Button in Level",
-            "description": "Show the floating menu button while playing a level.",
-            "default": false,
-            "enable-if": "floating-btn"
-        },
         "floating-btn-icon": {
             "type": "string",
-            "name": "Floating Button Icon",
+            "name": "Button Icon",
             "description": "Show an icon on the floating button.",
             "default": "Default",
             "one-of": [
@@ -177,9 +183,23 @@
             ],
             "enable-if": "floating-btn"
         },
+        "floating-btn-level": {
+            "type": "bool",
+            "name": "Show in Level",
+            "description": "Show the floating menu button while playing a level.",
+            "default": false,
+            "enable-if": "floating-btn"
+        },
+        "floating-btn-editor": {
+            "type": "bool",
+            "name": "Show in Editor",
+            "description": "Show the floating menu button while editing a level.",
+            "default": false,
+            "enable-if": "floating-btn"
+        },
         "floating-btn-scale": {
             "type": "float",
-            "name": "Floating Button Scale",
+            "name": "Button Scale",
             "description": "Change the size of the floating button.",
             "default": 1.0,
             "min": 0.5,
@@ -197,7 +217,7 @@
         },
         "floating-btn-opacity": {
             "type": "int",
-            "name": "Floating Button Opacity",
+            "name": "Button Opacity",
             "description": "Change the opacity of the floating button.",
             "default": 125,
             "min": 25,
@@ -240,6 +260,40 @@
             "name": "Congregation Chance",
             "description": "<cc>Congregation Jumpscare</c> - Chance of your level switching to Congregation.",
             "default": 10,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
+        "tidal_wave-chance": {
+            "type": "int",
+            "name": "Tidal Wave Chance",
+            "description": "<cc>'Tidal Wave' Jumpscare!</c> - Chance of your level switching to the level named 'Tidal Wave'.",
+            "default": 15,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
+        "troll_level-chance": {
+            "type": "int",
+            "name": "Troll Level Chance",
+            "description": "<cc>You're Getting Trolled</c> - Chance of your level switching to Congregation.",
+            "default": 20,
             "min": 0,
             "max": 100,
             "control": {
@@ -308,6 +362,23 @@
             "name": "Math Quiz Chance",
             "description": "<cc>Richard's Math Quiz!</c> - Chance of Richard's math quiz appearing in a level.",
             "default": 35,
+            "min": 0,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
+        "captcha-chance": {
+            "type": "int",
+            "name": "Captcha Chance",
+            "description": "<cc>Verify Your Captchas...</c> - Chance of the captcha appearing in a level.",
+            "default": 20,
             "min": 0,
             "max": 100,
             "control": {

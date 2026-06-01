@@ -12,8 +12,8 @@ using namespace horrible::prelude;
 static auto const o = Option::create(THIS_ID)
                           ->setName("Inversed Inputs")
                           ->setDescription("You jump while you're not holding the button, and don't jump while you hold the button. In platformer, horizontal movement inputs are switched with each other.\n<cl>suggested by ItsZentry</c>")
-                          ->setCategory(category::misc)
-                          ->setSillyTier(SillyTier::Low)
+                          ->setCategory(category::mechanics)
+                          ->setSillyTier(SillyTier::Medium)
                           ->setCheating(true)
                           ->autoRegister();
 

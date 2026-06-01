@@ -9,8 +9,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class MathQuiz::Impl final {
-public:
+struct MathQuiz::Impl final {
     Richard* richard = nullptr;
 
     uint8_t numFirst = 0;
@@ -129,7 +128,7 @@ bool MathQuiz::init() {
 
         problemText = fmt::format("{} {} {}", m_impl->numFirst, operation, m_impl->numSecond);
 
-        auto equalsLabel = CCLabelBMFont::create("= ?", "goldFont.fnt", getScaledContentWidth() - 1.25f);
+        auto equalsLabel = CCLabelBMFont::create("= ?", font::gold, getScaledContentWidth() - 1.25f);
         equalsLabel->setID("equals-label");
         equalsLabel->setAlignment(kCCTextAlignmentCenter);
         equalsLabel->setPosition({winSize.width / 2.f, winSize.height - 100.f});
@@ -138,7 +137,7 @@ bool MathQuiz::init() {
     };
 
     // reuse winSize declared above
-    auto problemLabel = CCLabelBMFont::create(problemText.c_str(), "bigFont.fnt", getScaledContentWidth() - 1.25f);
+    auto problemLabel = CCLabelBMFont::create(problemText.c_str(), font::big, getScaledContentWidth() - 1.25f);
     problemLabel->setID("problem-label");
     problemLabel->setAlignment(kCCTextAlignmentCenter);
     problemLabel->setPosition({winSize.width / 2.f, winSize.height - 60.f});
@@ -149,10 +148,10 @@ bool MathQuiz::init() {
     // i hope i did this right cheese, u added this progress bar thing
     m_impl->countdown = ProgressBar::create();
     m_impl->countdown->setID("countdown");
-    m_impl->countdown->setFillColor(colors::yellow);
     m_impl->countdown->setStyle(ProgressBarStyle::Solid);
     m_impl->countdown->setAnchorPoint(anchor::center);
     m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});
+    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
 
     m_impl->countdown->updateProgress(100.f);
 
@@ -203,7 +202,7 @@ bool MathQuiz::init() {
     m_impl->answerMenu = CCMenu::create();
     m_impl->answerMenu->setID("answer-menu");
     m_impl->answerMenu->setContentSize({220.f, 75.f});
-    m_impl->answerMenu->setPosition({winSize.width / 2.f, winSize.height / 2.f - 20.f});
+    m_impl->answerMenu->setPosition({winSize.width / 2.f, (winSize.height / 2.f) - 20.f});
     m_impl->answerMenu->setLayout(answerMenuLayout);
 
     for (int i = 0; i < m_impl->answers.size(); i++) {
@@ -212,7 +211,7 @@ bool MathQuiz::init() {
                 fmt::format("{}", m_impl->answers[i]).c_str(),
                 80.f,
                 true,
-                "bigFont.fnt",
+                font::big,
                 themes::getButtonSquareSprite(theme),
                 0,
                 0.825f),
@@ -226,7 +225,7 @@ bool MathQuiz::init() {
 
                 auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-                auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", "goldFont.fnt");
+                auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", font::gold);
                 feedbackLabel->setID("feedback-label");
                 feedbackLabel->setScale(0.125f);
                 feedbackLabel->setColor(correct ? colors::green : colors::red);
@@ -246,8 +245,6 @@ bool MathQuiz::init() {
 
                 setCorrect(correct);
             });
-        answerBtn->setID("submit-answer-btn");
-
         m_impl->answerMenu->addChild(answerBtn);
     };
 
@@ -289,15 +286,17 @@ void MathQuiz::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        // @geode-ignore(unknown-resource)
-        sfx::play("counter003.ogg");
+        sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };
 
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
+    if (m_impl->countdown) {
+        m_impl->countdown->updateProgress(pct);
+        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+    };
 
     if (m_impl->timeRemaining <= 0.f) {
         // automatic incorrect
@@ -307,7 +306,7 @@ void MathQuiz::update(float dt) {
 
         if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
 
-        auto feedbackLabel = CCLabelBMFont::create("Time's Up!", "goldFont.fnt");
+        auto feedbackLabel = CCLabelBMFont::create("Time's Up!", font::gold);
         feedbackLabel->setID("feedback-label");
         feedbackLabel->setColor(colors::red);
         feedbackLabel->setAnchorPoint(anchor::center);

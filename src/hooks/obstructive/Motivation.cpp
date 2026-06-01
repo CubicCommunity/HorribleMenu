@@ -16,7 +16,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
-static constexpr auto s_msgs = std::to_array<const char*>({
+static constexpr auto g_msgs = std::to_array<const char*>({
     "Surprised you haven't quit already.",
     "OW! I hit my knee on my desk.",
     "mrrp meow :3",
@@ -117,7 +117,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        log::trace("Preparing {} motivational messages", s_msgs.size());
+        log::trace("Preparing {} motivational messages", g_msgs.size());
 
         auto delay = rng::get(10.f, 3.f);
         log::debug("Motivational message will show after {} seconds", delay);
@@ -127,7 +127,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
     void showMessage(float) {
         if (!m_hasCompletedLevel) {
-            auto label = CCLabelBMFont::create(s_msgs[rng::get(s_msgs.size())], "bigFont.fnt", getScaledContentWidth() - 12.5f);
+            auto label = CCLabelBMFont::create(g_msgs[rng::get(g_msgs.size())], font::big, getScaledContentWidth() - 12.5f);
             label->setAnchorPoint({0.5, 0});
             label->setAlignment(kCCTextAlignmentCenter);
             label->setPosition({getScaledContentWidth() / 2.f, -label->getScaledContentHeight()});

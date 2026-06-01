@@ -15,8 +15,8 @@ using namespace horrible::prelude;
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Parry Obstacles")
-                          ->setDescription("Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>suggested by Wuffin</c>")
-                          ->setCategory(category::misc)
+                          ->setDescription("Whenever your hitbox is inside of a hazard hitbox, you will instead destroy it if you time your input right.\n<cl>suggested by Wuffin</c>\n\n<cr>COMING SOON!</c>")
+                          ->setCategory(category::mechanics)
                           ->setSillyTier(SillyTier::None)
                           ->setRequiresRestart(true)
                           ->setSupportedPlatforms({})
@@ -68,7 +68,7 @@ static auto const o = Option::create(THIS_ID)
 
 //                 // play effects
 //                 playSpawnEffect();
-//                 sfx::play("chestClick.ogg");
+//                 sfx::play(sfx::file::click);
 
 //                 // Player 2 cancel
 //             } else if (this == pl->m_player2 && s_parryActive2) {
@@ -85,7 +85,7 @@ static auto const o = Option::create(THIS_ID)
 //                 s_activeParryPlayer = nullptr;
 
 //                 playSpawnEffect();
-//                 sfx::play("chestClick.ogg");
+//                 sfx::play(sfx::file::click);
 //             };
 //         };
 
@@ -117,7 +117,7 @@ static auto const o = Option::create(THIS_ID)
 //         };
 
 //         if (!m_fields->m_parryLabel) {
-//             m_fields->m_parryLabel = CCLabelBMFont::create("PARRY", "bigFont.fnt");
+//             m_fields->m_parryLabel = CCLabelBMFont::create("PARRY", font::big);
 //             m_fields->m_parryLabel->setColor(colors::yellow);
 //             m_fields->m_parryLabel->setScale(0.35f);
 //             m_fields->m_parryLabel->setAnchorPoint({ 0.5f, 0.5f });

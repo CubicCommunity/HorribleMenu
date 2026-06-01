@@ -18,7 +18,7 @@ bool RandomAd::init() {
 
     popup::closeBtnID(m_closeBtn);
 
-    auto label = CCLabelBMFont::create("Check out this cool level we found!", "chatFont.fnt");
+    auto label = CCLabelBMFont::create("Check out this cool level we found!", font::chat);
     label->setID("message");
     label->setAlignment(kCCTextAlignmentCenter);
     label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
@@ -27,18 +27,15 @@ bool RandomAd::init() {
     m_mainLayer->addChild(label);
 
     // featured project thumbnail
-    auto projThumb = LazySprite::create({192.f, 108.f}, true);
+    auto projThumb = LazySprite::create({228.f, 128.f}, true);
     projThumb->setID("thumbnail");
-    projThumb->setAnchorPoint(anchor::center);
-    projThumb->setPosition({m_mainLayer->getContentWidth() / 2.f, 110.f});
+    projThumb->setAutoResize(true);
+    projThumb->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 110.f});
 
-    projThumb->setLoadCallback([thumbnail = WeakRef(projThumb)](Result<> res) {
-        if (res.isOk()) {
-            log::info("Sprite loaded successfully");
-            if (auto thumb = thumbnail.lock()) thumb->setScale(0.625);
-        } else {
-            log::error("Sprite failed to load: {}", res.unwrapErr());
-        };
+    projThumb->setLoadCallback([](Result<> res) {
+        res.isOk()
+            ? log::info("Ad sprite loaded successfully")
+            : log::error("Ad sprite failed to load: {}", res.unwrapErr());
     });
 
     projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
@@ -52,15 +49,17 @@ bool RandomAd::init() {
     auto playBtn = Button::createWithNode(
         ButtonSprite::create(
             "Play!",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
-        [loading = WeakRef(playBtnLoading)](Button* sender) {
+        [this, loading = WeakRef(playBtnLoading)](Button* sender) {
             sender->setVisible(false);
             if (auto load = loading.lock()) load->setVisible(true);
 
             if (auto pl = PlayLayer::get()) {
+                if (pl->m_level->m_levelID == jumpscares::level::congregation) return removeFromParent();
+
                 log::info("Switching from ad to Congregation jumpscare");
-                jumpscares::switchToLevel(pl, jumpscares::get::congregation(), false, false);
+                jumpscares::switchLevel(jumpscares::level::congregation, false, false);
             } else {
                 log::error("Player not in a level");
             };

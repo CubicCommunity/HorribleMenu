@@ -13,7 +13,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Player Health")
                           ->setDescription("Add a health bar and decreases everytime you collide with a hazard. If your health reaches zero, the player dies.\n<cl>suggested by Cheeseworks</c>")
                           ->setCategory(category::playerlife)
-                          ->setSillyTier(SillyTier::Medium)
+                          ->setSillyTier(SillyTier::Low)
                           ->setCheating(true)
                           ->autoRegister();
 
@@ -49,7 +49,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
         auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->health));
         if (!f->healthLabel) {
-            f->healthLabel = CCLabelBMFont::create(hp.c_str(), "bigFont.fnt");
+            f->healthLabel = CCLabelBMFont::create(hp.c_str(), font::big);
             f->healthLabel->setColor(colors::red);
             f->healthLabel->setAnchorPoint({0.f, 1.f});
             f->healthLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->healthBar->getScaledContentWidth() / 2.f) - 1.25f});

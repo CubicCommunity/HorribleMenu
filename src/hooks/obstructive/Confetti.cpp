@@ -13,10 +13,10 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Confetti Explosions")
                           ->setDescription("While playing a level, the screen will sometimes cause an explosion of random textures.\n<cl>created by Cheeseworks</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium)
+                          ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
-static constexpr auto s_confettis = std::to_array<const char*>({
+static constexpr auto g_confettis = std::to_array<const char*>({
     "diffIcon_02_btn_001.png",
     "explosionIcon_20_001.png",
     "GJ_duplicateObjectBtn2_001.png",
@@ -61,7 +61,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     };
 
     void createConfetti() {
-        auto conf = CCSprite::createWithSpriteFrameName(s_confettis[rng::get(s_confettis.size() - 1)]);
+        auto conf = CCSprite::createWithSpriteFrameName(g_confettis[rng::get(g_confettis.size() - 1)]);
         conf->setScale(1.25f * rng::pc());
 
         auto useY = rng::flip();

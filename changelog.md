@@ -1,3 +1,43 @@
+# v1.2.1 
+- Raised *Inversed Inputs* option Silly Tier to **Medium**
+- Lowered *Player Health* option Silly Tier to **Low**
+- Lowered *Earthquake* option Silly Tier to **Low**
+- Lowered *Confetti Explosions* option Silly Tier to **Low**
+- Floating menu button now resizes properly when changing graphics quality
+- Fix sizing issues with thumbnails on *Level Ads* for lower graphics qualities
+- Fix ad on *Level Ads* being stuck loading if already playing the advertised level
+- Internal tweaks
+
+# v1.2.0 
+- Added new option category **Mechanics**
+  - Added new *Mechanics* option **Charged Leap**
+  - Added new *Mechanics* option **Powering Velocity**
+  - Moved *Double-Jump* option to Mechanics category
+  - Moved *Inversed Inputs* option to Mechanics category
+  - Moved *Parry Obstacles* option to Mechanics category
+- Added new *Jumpscares* option **'Tidal Wave' Jumpscare!**
+- Added new *Jumpscares* option **You're Getting Trolled**
+- Added new *Obstructive* option **Verify Your Captchas...**
+- Added new *Misc* option **Flicks**
+- Floating menu button can now be hidden in the editor
+  - Added toggle setting `Show in Editor`
+- Moved floating menu button settings to their own section in mod settings
+- Added fading color to progress bars on time-based options
+- Unmarked all *Jumpscares* category options as cheats
+- Tweaked *Double-Jump* and *Dementia* ground detection
+- Clarify that *Parry Obstacles* is still in the works :)
+
+# v1.1.2 
+- Reworked internals for all *Jumpscares* category options
+  - Level downloading reworked to better support all platforms
+  - Options from this category will no longer conflict with each other if multiple are enabled at once
+- Added confirmation pop-up to *Disable Cheats* button in mod settings
+- Internal cleanup
+
+# v1.1.1 
+- Added *Disable Cheats* button in mod settings
+- micro-optimzations :)
+
 # v1.1.0 
 - Raised minimum Geode loader support to `v5.4.0`
 - Added dynamic safe mode setting ([#6](https://github.com/CubicCommunity/HorribleMenu/pull/6))

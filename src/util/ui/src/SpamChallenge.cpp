@@ -7,8 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-class SpamChallenge::Impl final {
-public:
+struct SpamChallenge::Impl final {
     uint8_t inputCount = 0;
     uint8_t inputTarget = 45;
 
@@ -37,7 +36,7 @@ bool SpamChallenge::init() {
 
     auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-    auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", "bigFont.fnt", getScaledContentWidth() - 1.25f);
+    auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", font::big, getScaledContentWidth() - 1.25f);
     label->setID("label");
     label->setAlignment(kCCTextAlignmentCenter);
     label->setPosition({winSize.width / 2.f, winSize.height - 50.f});
@@ -45,7 +44,7 @@ bool SpamChallenge::init() {
 
     addChild(label, 1);
 
-    auto descLabel = CCLabelBMFont::create("Use your mouse button or tap the screen to increase the count.", "chatFont.fnt", getScaledContentWidth() - 1.25f);
+    auto descLabel = CCLabelBMFont::create("Use your mouse button or tap the screen to increase the count.", font::chat, getScaledContentWidth() - 1.25f);
     descLabel->setID("description-label");
     descLabel->setAlignment(kCCTextAlignmentCenter);
     descLabel->setPosition({winSize.width / 2.f, 25.f});
@@ -54,7 +53,7 @@ bool SpamChallenge::init() {
 
     addChild(descLabel, 1);
 
-    m_impl->counter = CCLabelBMFont::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), "goldFont.fnt");
+    m_impl->counter = CCLabelBMFont::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), font::gold);
     m_impl->counter->setID("counter");
     m_impl->counter->setScale(2.5f);
     m_impl->counter->setAlignment(kCCTextAlignmentCenter);
@@ -71,9 +70,9 @@ bool SpamChallenge::init() {
     m_impl->countdown = ProgressBar::create();
     m_impl->countdown->setID("countdown");
     m_impl->countdown->setAnchorPoint(anchor::center);
-    m_impl->countdown->setFillColor(colors::yellow);
     m_impl->countdown->setStyle(ProgressBarStyle::Solid);
     m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});
+    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
 
     m_impl->countdown->updateProgress(100.f);
 
@@ -95,10 +94,7 @@ bool SpamChallenge::ccTouchBegan(CCTouch* touch, CCEvent* event) {
         m_impl->inputCount++;
         if (m_impl->counter) m_impl->counter->setString(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str());
 
-        if (m_impl->inputCount >= m_impl->inputTarget) {
-            unscheduleUpdate();
-            setSuccess(true);
-        };
+        if (m_impl->inputCount >= m_impl->inputTarget) setSuccess(true);
     };
 
     return false;
@@ -111,6 +107,8 @@ void SpamChallenge::callAfterFeedback(float) {
 
 void SpamChallenge::setSuccess(bool v) {
     m_impl->success = v;
+
+    unscheduleUpdate();
 
     cue::resetNode(m_impl->counter);
 
@@ -134,15 +132,17 @@ void SpamChallenge::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        // @geode-ignore(unknown-resource)
-        sfx::play("counter003.ogg");
+        sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };
 
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     auto pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
+    if (m_impl->countdown) {
+        m_impl->countdown->updateProgress(pct);
+        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+    };
 
     if (m_impl->timeRemaining <= 0.f) {
         setSuccess(false);

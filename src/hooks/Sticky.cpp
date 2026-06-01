@@ -36,7 +36,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         auto f = m_fields.self();
 
         if (auto pl = PlayLayer::get()) {
-            f->m_clickLabel = CCLabelBMFont::create("Press again to un-stick!", "bigFont.fnt", pl->getScaledContentWidth() - 12.5f);
+            f->m_clickLabel = CCLabelBMFont::create("Press again to un-stick!", font::big, pl->getScaledContentWidth() - 12.5f);
             f->m_clickLabel->setID("sticky-alert"_spr);
             f->m_clickLabel->setScale(0.625f);
             f->m_clickLabel->setAlignment(kCCTextAlignmentCenter);
@@ -45,9 +45,9 @@ class $modify(StickyPlayerObject, PlayerObject) {
             f->m_clickLabel->setVisible(false);
 
             auto seq = CCSequence::create(
-                CCCallFunc::create(this, callfunc_selector(StickyPlayerObject::stickyCol1)),
+                CCCallFuncN::create(this, callfuncN_selector(StickyPlayerObject::stickyCol1)),
                 CCDelayTime::create(0.125f),
-                CCCallFunc::create(this, callfunc_selector(StickyPlayerObject::stickyCol2)),
+                CCCallFuncN::create(this, callfuncN_selector(StickyPlayerObject::stickyCol2)),
                 CCDelayTime::create(0.125f),
                 nullptr);
 
@@ -60,14 +60,12 @@ class $modify(StickyPlayerObject, PlayerObject) {
         return true;
     };
 
-    void stickyCol1() {
-        auto f = m_fields.self();
-        if (f->m_clickLabel) f->m_clickLabel->setColor(colors::yellow);
+    void stickyCol1(CCNode* sender) {
+        if (auto label = typeinfo_cast<CCLabelBMFont*>(sender)) label->setColor(colors::yellow);
     };
 
-    void stickyCol2() {
-        auto f = m_fields.self();
-        if (f->m_clickLabel) f->m_clickLabel->setColor(colors::white);
+    void stickyCol2(CCNode* sender) {
+        if (auto label = typeinfo_cast<CCLabelBMFont*>(sender)) label->setColor(colors::white);
     };
 
     bool onGround() {

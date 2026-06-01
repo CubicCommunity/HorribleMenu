@@ -37,7 +37,7 @@ class $modify(MockMenuLayer, MenuLayer) {
             log::trace("Reading path {}...", mockConfigPath);
 
             if (mockConfig.isOk()) {
-                log::trace("Reading path {}...", mockConfigPath);
+                log::debug("Path is ok!");
 
                 auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
@@ -68,7 +68,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                                 if (auto ss = screenshot.lock()) {
                                     auto const percLabelText = fmt::format("{}%", percent);
 
-                                    auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), "bigFont.fnt");
+                                    auto percLabel = CCLabelBMFont::create(percLabelText.c_str(), font::big);
                                     percLabel->setID("percentage");
                                     percLabel->setPosition(ss->getScaledContentSize() / 2.f);
                                     percLabel->setAlignment(kCCTextAlignmentLeft);
@@ -129,15 +129,12 @@ class $modify(MockPlayLayer, PlayLayer) {
         log::debug("Level percentage: {}", percentage);
 
         if (percentage >= 90) {
-            auto director = CCDirector::sharedDirector();
-            auto scene = CCScene::get();
-
             // Get the window size in points and scale to pixels
-            auto const winSize = director->getWinSize();
+            auto const winSize = CCDirector::sharedDirector()->getWinSize();
             auto renderTexture = CCRenderTexture::create(static_cast<int>(winSize.width), static_cast<int>(winSize.height));
 
             renderTexture->begin();
-            scene->visit();
+            CCScene::get()->visit();
             renderTexture->end();
 
             if (auto image = renderTexture->newCCImage()) {

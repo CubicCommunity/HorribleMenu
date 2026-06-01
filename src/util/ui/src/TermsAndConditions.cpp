@@ -53,7 +53,7 @@ bool TermsAndConditions::init(Callback&& cb) {
     m_acceptBtn = Button::createWithNode(
         ButtonSprite::create(
             "Accept",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
             sfx::play(sfx::file::good);
@@ -65,7 +65,7 @@ bool TermsAndConditions::init(Callback&& cb) {
     auto declineBtn = Button::createWithNode(
         ButtonSprite::create(
             "Decline",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
             sfx::play(sfx::file::bad);
@@ -103,7 +103,7 @@ void TermsAndConditions::finishBtnFade(CCNode* sender) {
 void TermsAndConditions::update(float dt) {
     if (!m_acceptBtn) return;
 
-    CCPoint const winSize = CCDirector::sharedDirector()->getWinSize();
+    CCSize const winSize = CCDirector::sharedDirector()->getWinSize();
     CCPoint pos = m_acceptBtn->getPosition();
     CCSize const buttonSize = m_acceptBtn->getScaledContentSize();
 

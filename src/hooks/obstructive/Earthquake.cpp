@@ -13,7 +13,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Earthquake")
                           ->setDescription("Constantly shakes the camera while playing a level.\n<cl>created by ArcticWoof</c>")
                           ->setCategory(category::obstructive)
-                          ->setSillyTier(SillyTier::Medium)
+                          ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
 class $modify(EarthquakePlayLayer, PlayLayer) {

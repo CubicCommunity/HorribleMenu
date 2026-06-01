@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-static std::unordered_map<int, const char*> const s_severities = {
+static std::unordered_map<int, const char*> const g_severities = {
     {1, "diffIcon_01_btn_001.png"},
     {2, "diffIcon_02_btn_001.png"},
     {3, "diffIcon_03_btn_001.png"},
@@ -20,10 +20,9 @@ static std::unordered_map<int, const char*> const s_severities = {
     {10, "diffIcon_10_btn_001.png"},
 };
 
-class WhackButton::Impl final {
-public:
+struct WhackButton::Impl final {
     uint8_t inputCount = 0;
-    uint8_t inputTarget = s_severities.size();
+    uint8_t inputTarget = g_severities.size();
 
     float scale = rng::get(0.875f, 0.625f);
 
@@ -55,19 +54,15 @@ void WhackButton::reload() {
 
     m_impl->button = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
-            s_severities.at(diff),
+            g_severities.at(diff),
             1.f,
             m_impl->getButtonColor(diff)),
         [this](auto) {
             m_impl->inputCount += 1;
-            sfx::play("chestClick.ogg");
+            sfx::play(sfx::file::click);
 
-            if (m_impl->inputCount >= m_impl->inputTarget) {
-                setSuccess(true);
-                unscheduleUpdate();
-            } else {
-                reload();
-            };
+            if (m_impl->inputCount >= m_impl->inputTarget) return setSuccess(true);
+            reload();
         });
     m_impl->button->setID("whackable-btn");
     m_impl->button->setScale(m_impl->scale * 0.75f);
@@ -83,7 +78,7 @@ void WhackButton::reload() {
 };
 
 bool WhackButton::init() {
-    m_impl->inputTarget = rng::get<uint8_t>(s_severities.size(), 3);
+    m_impl->inputTarget = rng::get<uint8_t>(g_severities.size(), 3);
 
     if (!CCNode::init()) return false;
 
@@ -97,7 +92,9 @@ bool WhackButton::init() {
     m_impl->countdown->setScale(0.125f * m_impl->scale);
     m_impl->countdown->setAnchorPoint(anchor::center);
     m_impl->countdown->setPosition({getScaledContentWidth() / 2.f, -3.75f - (2.f * m_impl->scale)});
-    m_impl->countdown->setFillColor(colors::yellow);
+    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
+
+    m_impl->countdown->updateProgress(100.f);
 
     addChild(m_impl->countdown, 9);
 
@@ -118,6 +115,8 @@ void WhackButton::callAfterFeedback(float) {
 
 void WhackButton::setSuccess(bool v) {
     m_impl->success = v;
+
+    unscheduleUpdate();
 
     cue::resetNode(m_impl->button);
 
@@ -141,15 +140,17 @@ void WhackButton::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        // @geode-ignore(unknown-resource)
-        sfx::play("counter003.ogg");
+        sfx::play(sfx::file::count);
         m_impl->timeDt = 0.f;
     };
 
     if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
     float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
 
-    if (m_impl->countdown) m_impl->countdown->updateProgress(pct);
+    if (m_impl->countdown) {
+        m_impl->countdown->updateProgress(pct);
+        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+    };
 
     if (m_impl->timeRemaining <= 0.f) {
         setSuccess(false);

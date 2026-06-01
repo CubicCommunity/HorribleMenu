@@ -9,6 +9,7 @@
 #include <util/Random.hpp>
 #include <util/Themes.hpp>
 
+#include <util/ui/Captcha.hpp>
 #include <util/ui/MathQuiz.hpp>
 #include <util/ui/RandomAd.hpp>
 #include <util/ui/SpamChallenge.hpp>
@@ -24,6 +25,8 @@
 #include <cocos2d.h>
 
 #include <Geode/ui/Button.hpp>
+
+#include <Geode/utils/cocos.hpp>
 
 #include <Geode/binding/FMODAudioEngine.hpp>
 
@@ -52,6 +55,9 @@ namespace horrible {
             inline constexpr auto pop = "chest07.ogg";
             inline constexpr auto good = "crystal01.ogg";
             inline constexpr auto bad = "explode_11.ogg";
+
+            inline constexpr auto click = "chestClick.ogg";
+            inline constexpr auto count = "counter003.ogg";
         };
 
         /**
@@ -62,6 +68,12 @@ namespace horrible {
         inline void play(const char* file) {
             if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
         };
+    };
+
+    namespace font {
+        inline constexpr auto big = "bigFont.fnt";
+        inline constexpr auto gold = "goldFont.fnt";
+        inline constexpr auto chat = "chatFont.fnt";
     };
 
     namespace fs = asp::fs;                // Shortcut for `asp::fs`
@@ -84,6 +96,7 @@ namespace horrible {
     namespace category {
         inline constexpr auto playerlife = "Player Life";
         inline constexpr auto jumpscares = "Jumpscares";
+        inline constexpr auto mechanics = "Mechanics";
         inline constexpr auto randoms = "Randoms";
         inline constexpr auto chances = "Chances";
         inline constexpr auto obstructive = "Obstructive";

@@ -19,8 +19,7 @@ using namespace horrible::prelude;
 
 Menu* Menu::s_inst = nullptr;
 
-class Menu::Impl final {
-public:
+struct Menu::Impl final {
     bool devMode = mod->getSettingValue<bool>("dev-mode");
 
     SillyTier selectedTier = SillyTier::None;
@@ -117,7 +116,7 @@ public:
     };
 
     CCLabelBMFont* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
-        auto label = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
+        auto label = CCLabelBMFont::create(text.c_str(), font::big);
         label->setID(std::move(id));
         label->setScale(0.375f);
         label->setAnchorPoint(anchor::center);
@@ -139,10 +138,10 @@ void Menu::setupSafeModeNode(bool safeMode) {
 
         m_impl->safeModeContainer->addChild(icon);
 
-        auto label = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", "bigFont.fnt");
+        auto label = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", font::big);
+        label->setScale(0.325f);
         label->setColor(safeMode ? colors::green : colors::red);
         label->setAlignment(kCCTextAlignmentCenter);
-        label->setScale(0.325f);
 
         m_impl->safeModeContainer->addChild(label);
 
@@ -151,7 +150,7 @@ void Menu::setupSafeModeNode(bool safeMode) {
             [safeMode](auto) {
                 createQuickPopup(
                     "Safe Mode",
-                    fmt::format("{}\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in levels</c>.", safeMode ? "Currently <cc>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cf>progress on levels WILL save</c>!"),
+                    fmt::format("{}\n\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in gameplay</c>.\n\n<cy>You can toggle Safe Mode in settings.</c>", safeMode ? "Currently <cc>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cf>progress on levels WILL save</c>!"),
                     "OK",
                     nullptr,
                     nullptr);
@@ -275,7 +274,7 @@ bool Menu::init() {
         {
             .opacity = 255,
             .texture = "GJ_square07.png",
-            .id = "bg-container-border",
+            .id = "",
         });
     border->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
@@ -339,7 +338,7 @@ bool Menu::init() {
         {
             .cornerRoundness = -0.875f,
             .zOrder = 1,
-            .id = "category-list-bg",
+            .id = "",
         });
     categoryListBg->setPosition(m_impl->categoryList->getPosition());
 
@@ -359,14 +358,11 @@ bool Menu::init() {
     optionListScroll->setID("option-list-scrollbar");
     optionListScroll->setPosition({m_impl->optionList->getPositionX() + (m_impl->optionList->getScaledContentWidth() / 1.825f), m_impl->optionList->getPositionY()});
 
-    m_mainLayer->addChild(m_impl->optionList, 9);
-    m_mainLayer->addChild(optionListScroll);
-
     auto optionListBg = cue::createBackground(
         {m_impl->optionList->getScaledContentWidth() + 8.75f, m_impl->optionList->getScaledContentHeight() + 10.f},
         {
             .cornerRoundness = -0.75f,
-            .id = "option-list-bg",
+            .id = "",
         });
     optionListBg->setPosition(m_impl->optionList->getPosition());
 
@@ -376,7 +372,7 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->nothingLabel, 9);
 
     // add search bar
-    m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", "bigFont.fnt");
+    m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", font::big);
     m_impl->searchInput->setID("search-input");
     m_impl->searchInput->setAnchorPoint({0, 0.5});
     m_impl->searchInput->setPosition({10.f, mainLayerSize.height - 51.25f});
@@ -395,13 +391,13 @@ bool Menu::init() {
     auto filterContainerBg = cue::createBackground(
         {(mainLayerSize.width / 3.f), mainLayerSize.height - 45.f},
         {
-            .id = "filter-container-bg",
+            .id = "",
         });
     filterContainerBg->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f});
 
     m_mainLayer->addChild(filterContainerBg);
 
-    auto filterContainerLabel = CCLabelBMFont::create("Filters", "goldFont.fnt");
+    auto filterContainerLabel = CCLabelBMFont::create("Filters", font::gold);
     filterContainerLabel->setID("filter-container-label");
     filterContainerLabel->setScale(0.375f);
     filterContainerLabel->setAnchorPoint({0.5, 0});
@@ -416,11 +412,15 @@ bool Menu::init() {
     // adding now to fix touch issue with cue dropdown
     m_mainLayer->addChild(m_impl->categoryList, 9);
 
+    // same here lol
+    m_mainLayer->addChild(m_impl->optionList, 9);
+    m_mainLayer->addChild(optionListScroll);
+
     m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), m_impl->sillyFilterDropdown->getPositionY() + 8.75f}), 1);
 
     auto filterHint = SimpleTextArea::create(
         "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
-        "chatFont.fnt",
+        font::chat,
         0.5f);
     filterHint->setID("filter-hint");
     filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
@@ -591,7 +591,7 @@ bool Menu::init() {
 };
 
 void Menu::onExit() {
-    if (auto credits = MenuCredits::get()) cue::resetNode(credits);
+    if (auto credits = MenuCredits::get()) credits->removeFromParent();
     s_inst = nullptr;
 
     Popup::onExit();
