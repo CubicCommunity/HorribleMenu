@@ -4,7 +4,6 @@
 #include <Utils.h>
 
 #include <Geode/Geode.hpp>
-#include "Geode/cocos/cocoa/CCGeometry.h"
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
@@ -58,8 +57,12 @@ bool TermsAndConditions::init(Callback&& cb) {
         [this, cb](auto) {
             sfx::play(sfx::file::good);
             if (cb) cb(true);
+            if (auto pl = PlayLayer::get()) {
+                pl->resume();
+            }
             removeFromParent();
         });
+    m_acceptBtn->setZOrder(10);
     m_acceptBtn->setScale(0.75f);
 
     auto declineBtn = Button::createWithNode(
@@ -72,6 +75,7 @@ bool TermsAndConditions::init(Callback&& cb) {
             if (cb) cb(false);
             removeFromParent();
         });
+    declineBtn->setZOrder(10);
     declineBtn->setScale(0.75f);
 
     m_mainLayer->addChildAtPosition(m_acceptBtn, Anchor::Bottom, {-60.f, 25.f});
@@ -104,14 +108,16 @@ void TermsAndConditions::update(float dt) {
     if (!m_acceptBtn) return;
 
     CCSize const winSize = CCDirector::sharedDirector()->getWinSize();
-    CCPoint pos = m_acceptBtn->getPosition();
+    CCPoint const localPos = m_acceptBtn->getPosition();
+    CCPoint worldPos = m_mainLayer->convertToWorldSpace(localPos);
     CCSize const buttonSize = m_acceptBtn->getScaledContentSize();
 
     CCPoint const mousePos = cocos::getMousePos();
-    CCPoint const away = ccpSub(pos, mousePos);
+    CCPoint const away = ccpSub(worldPos, mousePos);
     float const dist = std::sqrt(away.x * away.x + away.y * away.y);
     float speed = m_acceptSpeed;
 
+    // make the mouse (like cheeseworks) to chase the accept button cuz im evil
     if (dist < m_mouseAvoidDistance && dist > 0.f) {
         auto normalizedAway = ccp(away.x / dist, away.y / dist);
         auto currentVelLen = std::sqrt(m_acceptVelocity.x * m_acceptVelocity.x + m_acceptVelocity.y * m_acceptVelocity.y);
@@ -128,29 +134,28 @@ void TermsAndConditions::update(float dt) {
         speed *= m_mouseAvoidMultiplier;
     }
 
-    auto const delta = ccpMult(m_acceptVelocity, speed * dt);
-    pos = ccpAdd(pos, delta);
+    worldPos = ccpAdd(worldPos, ccpMult(m_acceptVelocity, speed * dt));
 
     auto const halfW = buttonSize.width / 2.f;
     auto const halfH = buttonSize.height / 2.f;
 
-    if (pos.x < halfW) {
-        pos.x = halfW;
+    if (worldPos.x < halfW) {
+        worldPos.x = halfW;
         m_acceptVelocity.x = fabsf(m_acceptVelocity.x);
-    } else if (pos.x > winSize.width - halfW) {
-        pos.x = winSize.width - halfW;
+    } else if (worldPos.x > winSize.width - halfW) {
+        worldPos.x = winSize.width - halfW;
         m_acceptVelocity.x = -fabsf(m_acceptVelocity.x);
     }
 
-    if (pos.y < halfH) {
-        pos.y = halfH;
+    if (worldPos.y < halfH) {
+        worldPos.y = halfH;
         m_acceptVelocity.y = fabsf(m_acceptVelocity.y);
-    } else if (pos.y > winSize.height - halfH) {
-        pos.y = winSize.height - halfH;
+    } else if (worldPos.y > winSize.height - halfH) {
+        worldPos.y = winSize.height - halfH;
         m_acceptVelocity.y = -fabsf(m_acceptVelocity.y);
     }
 
-    m_acceptBtn->setPosition(pos);
+    m_acceptBtn->setPosition(m_mainLayer->convertToNodeSpace(worldPos));
 };
 
 TermsAndConditions* TermsAndConditions::create(Callback&& cb) {

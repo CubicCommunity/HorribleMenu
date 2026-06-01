@@ -51,7 +51,7 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
 
                 cursor::show();
 
-                updateTimeWarp(0.125f);
+                //updateTimeWarp(0.125f);
             };
         };
     };

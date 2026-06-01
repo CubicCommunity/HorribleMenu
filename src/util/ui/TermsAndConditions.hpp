@@ -11,7 +11,7 @@ namespace horrible {
         private:
             geode::Button* m_acceptBtn = nullptr;
             cocos2d::CCPoint m_acceptVelocity = {0.f, 0.f};
-            float m_acceptSpeed = 2400.f;
+            float m_acceptSpeed = 100.f;
             float m_mouseAvoidDistance = 25.f;
             float m_mouseAvoidMultiplier = 1.75f;
 
