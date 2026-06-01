@@ -83,8 +83,8 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
 
             auto pct = f->charge / 100.f;
 
-            auto newSpeed = (f->speed * 3.75f) * pct;
-            auto boostHeight = 20.f * pct;
+            auto newSpeed = (f->speed * 3.f) * pct;
+            auto boostHeight = 16.25f * pct;
 
             m_player1->m_playerSpeed = newSpeed;
             m_player2->m_playerSpeed = newSpeed;

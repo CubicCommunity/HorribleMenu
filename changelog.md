@@ -3,6 +3,9 @@
 - Lowered *Player Health* option Silly Tier to **Low**
 - Lowered *Earthquake* option Silly Tier to **Low**
 - Lowered *Confetti Explosions* option Silly Tier to **Low**
+- Re-balanced maximum leap power for *Charged Leap* option
+  - Decreased speed multiplier by `20%`
+  - Decreased jump power by `18.75%`
 - Floating menu button now resizes properly when changing graphics quality
 - Fix sizing issues with thumbnails on *Level Ads* for lower graphics qualities
 - Fix ad on *Level Ads* being stuck loading if already playing the advertised level
