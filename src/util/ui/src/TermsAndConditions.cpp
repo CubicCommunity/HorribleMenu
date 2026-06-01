@@ -1,8 +1,10 @@
 #include "../TermsAndConditions.hpp"
 
+#include <numbers>
 #include <Utils.h>
 
 #include <Geode/Geode.hpp>
+#include "Geode/cocos/cocoa/CCGeometry.h"
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
@@ -48,7 +50,7 @@ bool TermsAndConditions::init(Callback&& cb) {
 
     m_mainLayer->addChild(tosArea);
 
-    auto acceptBtn = Button::createWithNode(
+    m_acceptBtn = Button::createWithNode(
         ButtonSprite::create(
             "Accept",
             "bigFont.fnt",
@@ -58,12 +60,12 @@ bool TermsAndConditions::init(Callback&& cb) {
             if (cb) cb(true);
             removeFromParent();
         });
-    acceptBtn->setScale(0.75f);
+    m_acceptBtn->setScale(0.75f);
 
     auto declineBtn = Button::createWithNode(
         ButtonSprite::create(
             "Decline",
-            "goldFont.fnt",
+            "bigFont.fnt",
             themes::getButtonSquareSprite(theme)),
         [this, cb](auto) {
             sfx::play(sfx::file::bad);
@@ -72,11 +74,15 @@ bool TermsAndConditions::init(Callback&& cb) {
         });
     declineBtn->setScale(0.75f);
 
-    m_mainLayer->addChildAtPosition(acceptBtn, Anchor::Bottom, {-60.f, 25.f});
+    m_mainLayer->addChildAtPosition(m_acceptBtn, Anchor::Bottom, {-60.f, 25.f});
     m_mainLayer->addChildAtPosition(declineBtn, Anchor::Bottom, {60.f, 25.f});
 
-    if (auto acceptBtnSpr = typeinfo_cast<ButtonSprite*>(acceptBtn->getDisplayNode())) {
-        acceptBtn->setEnabled(false);
+    auto const angle = rng::get(2.f * std::numbers::pi);
+    m_acceptVelocity = ccp(cosf(angle), sinf(angle));
+    scheduleUpdate();
+
+    if (auto acceptBtnSpr = typeinfo_cast<ButtonSprite*>(m_acceptBtn->getDisplayNode())) {
+        m_acceptBtn->setEnabled(false);
         acceptBtnSpr->setOpacity(0);
 
         acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(
@@ -92,6 +98,59 @@ bool TermsAndConditions::init(Callback&& cb) {
 
 void TermsAndConditions::finishBtnFade(CCNode* sender) {
     if (auto btn = typeinfo_cast<Button*>(sender->getParent())) btn->setEnabled(true);
+};
+
+void TermsAndConditions::update(float dt) {
+    if (!m_acceptBtn) return;
+
+    CCPoint const winSize = CCDirector::sharedDirector()->getWinSize();
+    CCPoint pos = m_acceptBtn->getPosition();
+    CCSize const buttonSize = m_acceptBtn->getScaledContentSize();
+
+    CCPoint const mousePos = cocos::getMousePos();
+    CCPoint const away = ccpSub(pos, mousePos);
+    float const dist = std::sqrt(away.x * away.x + away.y * away.y);
+    float speed = m_acceptSpeed;
+
+    if (dist < m_mouseAvoidDistance && dist > 0.f) {
+        auto normalizedAway = ccp(away.x / dist, away.y / dist);
+        auto currentVelLen = std::sqrt(m_acceptVelocity.x * m_acceptVelocity.x + m_acceptVelocity.y * m_acceptVelocity.y);
+        if (currentVelLen > 0.f) {
+            normalizedAway.x += m_acceptVelocity.x / currentVelLen;
+            normalizedAway.y += m_acceptVelocity.y / currentVelLen;
+        }
+        auto const newLen = std::sqrt(normalizedAway.x * normalizedAway.x + normalizedAway.y * normalizedAway.y);
+        if (newLen > 0.f) {
+            normalizedAway.x /= newLen;
+            normalizedAway.y /= newLen;
+            m_acceptVelocity = normalizedAway;
+        }
+        speed *= m_mouseAvoidMultiplier;
+    }
+
+    auto const delta = ccpMult(m_acceptVelocity, speed * dt);
+    pos = ccpAdd(pos, delta);
+
+    auto const halfW = buttonSize.width / 2.f;
+    auto const halfH = buttonSize.height / 2.f;
+
+    if (pos.x < halfW) {
+        pos.x = halfW;
+        m_acceptVelocity.x = fabsf(m_acceptVelocity.x);
+    } else if (pos.x > winSize.width - halfW) {
+        pos.x = winSize.width - halfW;
+        m_acceptVelocity.x = -fabsf(m_acceptVelocity.x);
+    }
+
+    if (pos.y < halfH) {
+        pos.y = halfH;
+        m_acceptVelocity.y = fabsf(m_acceptVelocity.y);
+    } else if (pos.y > winSize.height - halfH) {
+        pos.y = winSize.height - halfH;
+        m_acceptVelocity.y = -fabsf(m_acceptVelocity.y);
+    }
+
+    m_acceptBtn->setPosition(pos);
 };
 
 TermsAndConditions* TermsAndConditions::create(Callback&& cb) {
