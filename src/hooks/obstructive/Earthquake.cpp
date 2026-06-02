@@ -32,11 +32,7 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
     };
 
     void quake(float) {
-        // shake the camera randomly based on intensity
-        auto rnd = rng::fast();
-
         shakeCamera(rng::get(2.5f, 1.f), rng::get(5.f, 1.f), 0.00125f);
-
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
     };
 };

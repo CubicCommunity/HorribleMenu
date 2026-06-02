@@ -30,7 +30,7 @@ class $modify(RandomReverseGJBaseGameLayer, GJBaseGameLayer) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
 
         if (down && button == 1) {
-            if (rng::fast() <= m_fields->chance) reversePlayers();
+            if (rng::chance(m_fields->chance)) reversePlayers();
         };
     };
 

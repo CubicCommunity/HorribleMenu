@@ -33,7 +33,7 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
 
         auto f = m_fields.self();
 
-        if (rng::fast() <= f->chance) {
+        if (rng::chance(f->chance)) {
             cue::resetNode(f->currentTos);
 
             if (auto popup = TermsAndConditions::create(

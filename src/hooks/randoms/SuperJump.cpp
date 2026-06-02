@@ -28,7 +28,7 @@ class $modify(SuperJumpPlayerObject, PlayerObject) {
         if (!m_gameLayer) return PlayerObject::pushButton(button);
         if (button != PlayerButton::Jump) return PlayerObject::pushButton(button);
 
-        if (m_isOnGround && rng::fast() <= m_fields->chance) {
+        if (m_isOnGround && rng::chance(m_fields->chance)) {
             sfx::play(sfx::file::pop);
             boostPlayer(rng::get(25.f, 17.5f));
             Notification::create("Super jump!", NotificationIcon::None, 0.125f)->show();

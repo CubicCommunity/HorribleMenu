@@ -6,6 +6,8 @@ namespace horrible {
     namespace util {
         // Random number generator utilities
         namespace rng {
+            namespace internal = geode::utils::random;
+
             /**
              * Get a random number between `min` and `max`
              *
@@ -16,13 +18,18 @@ namespace horrible {
                 typename T = int,
                 typename = std::enable_if_t<std::is_arithmetic_v<T>>>
             inline T get(T max, T min = static_cast<T>(0)) {
-                if constexpr (std::is_integral_v<T>) return geode::utils::random::generate<T>(min, max + static_cast<T>(1));
-                return geode::utils::random::generate<T>(min, max);
+                if constexpr (std::is_integral_v<T>) return internal::generate<T>(min, max + static_cast<T>(1));
+                return internal::generate<T>(min, max);
             };
 
             // Get a random bool
             inline bool flip() {
-                return geode::utils::random::generate<bool>();
+                return internal::generate<bool>();
+            };
+
+            // Get a chance bool
+            inline bool chance(uint8_t percent) {
+                return get(100) <= percent;
             };
 
             // Get any integer between 0 and 100

@@ -30,7 +30,7 @@ class $modify(MockMenuLayer, MenuLayer) {
         if (!MenuLayer::init()) return false;
 
         // show a lazysprite for the first png found in the save dir
-        if (rng::fast() <= m_fields->chance) {
+        if (rng::chance(m_fields->chance)) {
             auto const mockConfigPath = mod->getSaveDir() / "mock.json";
             auto const mockConfig = file::readJson(mockConfigPath);
 

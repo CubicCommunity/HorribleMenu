@@ -84,7 +84,6 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
         if (obj == m_anticheatSpike && !player->m_isDead) return PlayLayer::destroyPlayer(player, obj);
 
-        auto rnd = rng::fast();
         if (f->health > 0) {
             f->health -= 0.125f;
 

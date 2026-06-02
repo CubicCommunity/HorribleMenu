@@ -57,7 +57,7 @@ class $modify(TrollLevelPlayLayer, PlayLayer) {
 
     bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (auto jm = jumpscares::JumpscareLevelManager::get()) {
-            if (rng::fast() <= m_fields->chance) {
+            if (rng::chance(m_fields->chance)) {
                 if (auto lvl = jm->getLevel(js_internal::id)) return PlayLayer::init(lvl, useReplay, dontCreateObjects);
             };
         };

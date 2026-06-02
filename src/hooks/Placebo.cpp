@@ -19,10 +19,7 @@ static auto const o = Option::create(THIS_ID)
                           ->autoRegister();
 
 void placeboEffect() {
-    auto rnd = rng::fast();
-    log::trace("placebo effect roll: {} / 1", rnd);
-
-    if (rnd <= 1) {  // 1% chance :trol:
+    if (rng::fast() <= 1) {  // 1% chance :trol:
         log::warn("Placebo effect activated! Toggling all options...");
 
         for (auto const& option : options::getAll()) {
@@ -32,6 +29,8 @@ void placeboEffect() {
                 options::set(o->getID(), !saved.enabled, saved.pin, saved.viewed);
             };
         };
+    } else {
+        log::trace("Placebo effect did not activate");
     };
 };
 

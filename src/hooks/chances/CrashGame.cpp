@@ -29,10 +29,7 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
         // ignore the anti-cheat spike lmao
         if (p1 == m_anticheatSpike && p0 && !p0->m_isDead) return;
 
-        auto rnd = rng::fast();
-        log::trace("crash destroy chance {}", rnd);
-
-        if (rnd <= f->chance) {
+        if (rng::chance(f->chance)) {
             log::warn("ur game crash hehehehehehehe");
 
             PlayLayer::destroyPlayer(p0, p1);

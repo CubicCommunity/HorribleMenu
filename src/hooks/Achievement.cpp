@@ -28,6 +28,6 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
         CCMenuItem::activate();
 
         // @geode-ignore(unknown-resource)
-        if (rng::fast() <= m_fields->chance) sfx::play("achievement_01.ogg");
+        if (rng::chance(m_fields->chance)) sfx::play("achievement_01.ogg");
     };
 };
