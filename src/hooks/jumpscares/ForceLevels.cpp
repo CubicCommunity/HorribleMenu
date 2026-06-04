@@ -103,7 +103,9 @@ static void tryJumpscare(bool useReplay) {
             auto const level = js_internal::getLevelInfo(js.first);
 
             log::debug("jumpscare for {} triggered!", level);
-            return jumpscares::switchLevel(level, false, useReplay);
+            return jumpscares::switchLevel(level, false, useReplay, [level]() {
+                if (level == jumpscares::level::tidal) Notification::create("Wait, this isn't Tidal Wave...")->show();
+            });
         };
     };
 };

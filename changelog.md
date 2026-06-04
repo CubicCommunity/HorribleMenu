@@ -9,6 +9,7 @@
 - Floating menu button now resizes properly when changing graphics quality
 - Fix sizing issues with thumbnails on *Level Ads* for lower graphics qualities
 - Fix ad on *Level Ads* being stuck loading if already playing the advertised level
+- Add notification hint for *'Tidal Wave' Jumpscare!* option to clarify it intentionally doesn't switch to the extreme demon we're all thinking about
 - Internal tweaks
 
 # v1.2.0 

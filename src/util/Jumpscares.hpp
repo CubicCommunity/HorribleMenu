@@ -12,7 +12,7 @@ namespace horrible {
                 inline constexpr auto tidal = 93733469;
             };
 
-            void switchLevel(int level, bool dontCreateObjects, bool useReplay);
+            void switchLevel(int level, bool dontCreateObjects, bool useReplay, geode::CopyableFunction<void()>&& callback = nullptr);
 
             namespace coro {
                 void getLevel(int id, geode::CopyableFunction<void(geode::Result<GJGameLevel*>)>&& callback);

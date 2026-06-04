@@ -7,12 +7,12 @@
 using namespace geode::prelude;
 using namespace horrible::util;
 
-void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay) {
+void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay, geode::CopyableFunction<void()>&& callback) {
     if (auto pl = PlayLayer::get()) {
         if (pl->m_level->m_levelID == level) return;
     };
 
-    coro::getLevel(level, [level, dontCreateObjects, useReplay](Result<GJGameLevel*> result) {
+    coro::getLevel(level, [level, dontCreateObjects, useReplay, cb = std::move(callback)](Result<GJGameLevel*> result) {
         if (result.isOk()) {
             auto lvl = std::move(result).unwrap();
 
@@ -22,6 +22,8 @@ void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay) 
 
             auto scene = PlayLayer::scene(lvl, useReplay, dontCreateObjects);
             CCDirector::sharedDirector()->replaceScene(scene);
+
+            if (cb) cb();
         } else if (result.isErr()) {
             log::error("Failed to get level {}: {}", level, result.unwrapErr());
         };
