@@ -1,3 +1,6 @@
+# v1.2.2 
+- Fix visual bug with fading color progress bars
+
 # v1.2.1 
 - Raised *Inversed Inputs* option Silly Tier to **Medium**
 - Raised *Size Changer* option Silly Tier to **Medium**
