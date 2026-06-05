@@ -58,7 +58,7 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
         };
     };
 
-    bool onGround() noexcept {
+    bool onGround() const noexcept {
         return m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
     };
 

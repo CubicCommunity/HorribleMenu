@@ -1,16 +1,20 @@
 # v1.2.1 
 - Raised *Inversed Inputs* option Silly Tier to **Medium**
+- Raised *Size Changer* option Silly Tier to **Medium**
 - Lowered *Player Health* option Silly Tier to **Low**
 - Lowered *Earthquake* option Silly Tier to **Low**
 - Lowered *Confetti Explosions* option Silly Tier to **Low**
-- Re-balanced maximum leap power for *Charged Leap* option
+- Added *Copy Enabled Options* button in mod settings
+- Re-balanced leap power for *Charged Leap* option
   - Decreased speed multiplier by `20%`
   - Decreased jump power by `18.75%`
+  - Increased charge-up rate by `30%`
+- Decreased speed-up rate for *Powering Velocity* option by `52.5%` for flying game modes
 - Floating menu button now resizes properly when changing graphics quality
 - Fix sizing issues with thumbnails on *Level Ads* for lower graphics qualities
 - Fix ad on *Level Ads* being stuck loading if already playing the advertised level
 - Add notification hint for *'Tidal Wave' Jumpscare!* option to clarify it intentionally doesn't switch to the extreme demon we're all thinking about
-- Internal tweaks
+- Internal optimizations
 
 # v1.2.0 
 - Added new option category **Mechanics**

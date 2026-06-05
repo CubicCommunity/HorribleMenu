@@ -13,7 +13,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setName("Size Changer")
                           ->setDescription("Randomly change the player size every time you jump.\n<cl>suggested by himynameisryan21</c>")
                           ->setCategory(category::randoms)
-                          ->setSillyTier(SillyTier::Low)
+                          ->setSillyTier(SillyTier::Medium)
                           ->setCheating(true)
                           ->autoRegister();
 

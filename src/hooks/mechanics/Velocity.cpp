@@ -91,8 +91,8 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
         auto f = m_fields.self();
 
         auto speedFt = dt * 0.375f;
-        if (m_player1->m_playerSpeed < f->speed) m_player1->m_playerSpeed += speedFt;
-        if (m_player2->m_playerSpeed < f->speed) m_player2->m_playerSpeed += speedFt;
+        if (m_player1->m_playerSpeed < f->speed) m_player1->m_playerSpeed += speedFt * (mustDecreaseRate(m_player1) ? 0.475f : 1.f);
+        if (m_player2->m_playerSpeed < f->speed) m_player2->m_playerSpeed += speedFt * (mustDecreaseRate(m_player2) ? 0.475f : 1.f);
 
         if (f->speedMeter) f->speedMeter->updateProgress((m_player1->m_playerSpeed / f->speed) * 100.f);
     };
@@ -110,5 +110,10 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
         if (m_player2->m_playerSpeed >= 0.125f) m_player2->m_playerSpeed -= speedFt;
 
         if (f->speedMeter) f->speedMeter->updateProgress((m_player1->m_playerSpeed / f->speed) * 100.f);
+    };
+
+    bool mustDecreaseRate(PlayerObject* player) const noexcept {
+        if (player) return (player->m_isShip || player->m_isDart || player->m_isSwing) && !(player->m_isOnGround && player->m_isOnGround2 && player->m_isOnGround3 && player->m_isOnGround4);
+        return false;
     };
 };

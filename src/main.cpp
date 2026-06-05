@@ -142,25 +142,42 @@ $on_game(Loaded) {
         })
         .leak();
 
-    ButtonSettingPressedEventV3(mod, "cheats")
+    ButtonSettingPressedEventV3(mod, "utils")
         .listen([](std::string_view buttonKey) {
-            createQuickPopup(
-                "Disable All Cheats",
-                "Are you sure you want to <cr>disable all options marked as cheats</c>?",
-                "Cancel",
-                "Yes",
-                [](auto, bool ok) {
-                    if (ok) {
-                        for (auto const& option : OptionManager::get()->getOptions()) {
-                            if (auto o = option.lock()) {
-                                if (o->isCheating() && o->isEnabled()) o->disable();
-                            };
-                        };
+            if (buttonKey == "copy-list") {
+                std::string list = "";
 
-                        Notification::create("Disabled all cheats", NotificationIcon::Success)->show();
-                        if (Menu::get()) menu::open(true);
+                for (auto const& option : OptionManager::get()->getOptions()) {
+                    if (auto o = option.lock()) {
+                        if (o->isEnabled()) list = fmt::format("{}{} | {}\n", list, o->isCheating() ? "!" : " ", o->getID());
                     };
-                });
+                };
+
+                if (list.empty()) {
+                    Notification::create("No options enabled", NotificationIcon::Error)->show();
+                } else {
+                    utils::clipboard::write(list);
+                    Notification::create("Copied list to clipboard", NotificationIcon::Success)->show();
+                };
+            } else if (buttonKey == "disable-cheats") {
+                createQuickPopup(
+                    "Disable All Cheats",
+                    "Are you sure you want to <cr>disable all options marked as cheats</c>?",
+                    "Cancel",
+                    "Yes",
+                    [](auto, bool ok) {
+                        if (ok) {
+                            for (auto const& option : OptionManager::get()->getOptions()) {
+                                if (auto o = option.lock()) {
+                                    if (o->isCheating() && o->isEnabled()) o->disable();
+                                };
+                            };
+
+                            Notification::create("Disabled all cheats", NotificationIcon::Success)->show();
+                            if (Menu::get()) menu::open(true);
+                        };
+                    });
+            };
         })
         .leak();
 

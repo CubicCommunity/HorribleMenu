@@ -123,7 +123,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
         };
 
-        f->charge += 12.5f;
+        f->charge += 16.25f;
 
         if (f->chargeMeter) {
             f->chargeMeter->updateProgress(f->charge);
@@ -167,12 +167,12 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         if ((m_player1->m_playerSpeed == f->speed) && (m_player2->m_playerSpeed == f->speed)) unschedule(schedule_selector(LeapGJBaseGameLayer::decharge));
     };
 
-    bool isGroundMode(PlayerObject* player) noexcept {
+    bool isGroundMode(PlayerObject* player) const noexcept {
         if (player) return player->m_isRobot || (!player->m_isShip && !player->m_isBall && !player->m_isBird && !player->m_isDart && !player->m_isRobot && !player->m_isSpider && !player->m_isSwing);
         return false;
     };
 
-    bool onGround(PlayerObject* player) noexcept {
+    bool onGround(PlayerObject* player) const noexcept {
         if (player) return player->m_isOnGround && player->m_isOnGround2 && player->m_isOnGround3 && player->m_isOnGround4;
         return false;
     };
