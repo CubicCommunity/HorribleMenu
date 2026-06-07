@@ -67,7 +67,7 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 *as well as...*
 
 - **[Geode SDK](mod:geode.loader)**: Created an incredible SDK that made this mod possible!
-- **[RobTop Games](user:71)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
+- **[RobTop Games](user:71)**: Made [Geometry Dash](https://www.geometrydash.com/)...
 
 *and...*
 
