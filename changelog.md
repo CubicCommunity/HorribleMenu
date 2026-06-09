@@ -1,4 +1,6 @@
 # v1.2.2 
+- Tweaked charge-up functionality for *Charged Leap* option
+- Decreased speed multiplier for *Charged Leap* option by `16.7%`
 - Fix visual bug with fading color progress bars
 
 # v1.2.1 

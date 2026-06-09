@@ -76,8 +76,15 @@ namespace horrible {
         inline constexpr auto chat = "chatFont.fnt";
     };
 
-    namespace fs = asp::fs;                // Shortcut for `asp::fs`
-    namespace str = geode::utils::string;  // Shortcut for `geode::utils::string`
+    namespace fs = asp::fs;  // Shortcut for `asp::fs`
+
+    namespace str {
+        using namespace geode::utils::string;
+
+        inline constexpr auto isOnOff(bool on) {
+            return on ? "ON" : "OFF";
+        };
+    };
 
     namespace popup {
         inline void closeBtnID(CCMenuItemSpriteExtra* btn) {

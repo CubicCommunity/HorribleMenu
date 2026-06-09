@@ -63,7 +63,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         if (down) {
             f->charge = 0.f;
 
-            schedule(schedule_selector(LeapGJBaseGameLayer::chargeUp), 0.125f);
+            schedule(schedule_selector(LeapGJBaseGameLayer::chargeUp), 0.1f);
             if (f->chargeMeter) f->chargeMeter->setVisible(true);
         } else {
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
@@ -83,7 +83,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
 
             auto pct = f->charge / 100.f;
 
-            auto newSpeed = (f->speed * 3.f) * pct;
+            auto newSpeed = (f->speed * 2.5f) * pct;
             auto boostHeight = 16.25f * pct;
 
             m_player1->m_playerSpeed = newSpeed;
@@ -123,7 +123,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
         };
 
-        f->charge += 16.25f;
+        f->charge += 20.f;
 
         if (f->chargeMeter) {
             f->chargeMeter->updateProgress(f->charge);

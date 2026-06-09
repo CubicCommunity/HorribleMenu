@@ -34,7 +34,7 @@ namespace main {
     static void toggleSafeModeHooks(bool value) {
         for (auto const& hook : g_safeModeHooks) {
             if (auto h = hook.lock()) {
-                log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
+                log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), str::isOnOff(value));
                 (void)h->toggle(value);
             };
         };
@@ -89,7 +89,7 @@ $on_game(Loaded) {
 
             for (auto const& hook : g_floatingBtnHooks) {
                 if (auto h = hook.lock()) {
-                    log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), value ? "ON" : "OFF");
+                    log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), str::isOnOff(value));
                     (void)h->toggle(value);
                 };
             };
@@ -184,7 +184,7 @@ $on_game(Loaded) {
     OptionCheatingEvent()
         .listen([](bool cheating) {
             if (mod->getSettingValue<bool>(setting::DynamicSafeMode)) {
-                log::warn("Dynamic safe mode is now {}", cheating ? "ON" : "OFF");
+                log::warn("Dynamic safe mode is now {}", str::isOnOff(cheating));
                 main::toggleSafeModeHooks(cheating);
             };
         })

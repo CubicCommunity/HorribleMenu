@@ -52,7 +52,7 @@ namespace js_internal {
     };
 
     static void toggleHooks(bool on) {
-        log::trace("Toggling all jumpscare hooks {}", on ? "ON" : "OFF");
+        log::trace("Toggling all jumpscare hooks {}", str::isOnOff(on));
 
         for (auto& hook : g_jsHookVector) {
             if (auto h = hook.lock()) (void)h->toggle(on);
