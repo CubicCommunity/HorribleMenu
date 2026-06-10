@@ -24,6 +24,12 @@ namespace horrible {
             int glowColor;
         };
 
+        struct ResourceButton final {
+            const char* id;
+            const char* label;
+            geode::Button::ButtonCallback callback;
+        };
+
     private:
         static MenuCredits* s_inst;
 

@@ -2,6 +2,7 @@
 - Tweaked charge-up functionality for *Charged Leap* option
 - Decreased speed multiplier for *Charged Leap* option by `16.7%`
 - Fix visual bug with fading color progress bars
+- Added some helpful buttons to the Horrible Menu credits pop-up!
 
 # v1.2.1 
 - Raised *Inversed Inputs* option Silly Tier to **Medium**

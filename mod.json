@@ -95,7 +95,7 @@
                 "copy-list": "Copy Enabled Options",
                 "disable-cheats": "Disable Cheats"
             },
-            "description": "Quickly disable every option that is <cr>marked as cheating</c>. <cg>Feel free to do this if *Automatic Safe Mode* is enabled and you're not sure what's triggering it.</c>\n\n> ![**(i)**](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*When reaching support, be sure to copy your currently enabled options list beforehand.*</c>"
+            "description": "Quickly disable every option that is <cr>marked as cheating</c>. <cg>Feel free to do this if *Automatic Safe Mode* is enabled and you're not sure what's triggering it.</c>\n\n> ![**(i)**](frame:GJ_infoIcon_001.png?scale=0.425) <cj>*Before reaching support, be sure to keep a copy of your currently enabled options list.*</c>"
         },
         "ui": {
             "type": "title",
@@ -128,7 +128,7 @@
         "theme-background": {
             "type": "file",
             "name": "Menu Theme Background",
-            "description": "Local image file to use as a semi-transparent background image for the <cg>Horrible Options</c> menu interface. <co>Selected image will be stretched to fit the menu window's size.</c>\n\n> ![**(o)**](frame:collaborationIcon_001.png) <cg>*To load animated images, first install [ImagePlus](mod:prevter.imageplus).*</c>\n\n<mod:prevter.imageplus>",
+            "description": "Local image file to use as a semi-transparent background image for the <cg>Horrible Options</c> menu interface. <co>Selected image will be stretched to fit the menu window's size.</c>\n\n> ![**(o)**](frame:collaborationIcon_001.png?scale=0.95) <cg>*To load animated images, first install [ImagePlus](mod:prevter.imageplus).*</c>\n\n<mod:prevter.imageplus>",
             "default": "",
             "control": {
                 "dialog": "open",

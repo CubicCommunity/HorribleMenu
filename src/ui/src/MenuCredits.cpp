@@ -74,8 +74,8 @@ bool MenuCredits::init(ZStringView theme) {
     auto leadDevLabel = CCLabelBMFont::create("Lead Developers", font::big);
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);
-    leadDevLabel->setAnchorPoint(anchor::center);
-    leadDevLabel->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 91.25f});
+    leadDevLabel->setAnchorPoint({0, 0.5});
+    leadDevLabel->setPosition({30.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 91.25f});
 
     m_mainLayer->addChild(leadDevLabel);
 
@@ -86,8 +86,7 @@ bool MenuCredits::init(ZStringView theme) {
 
     auto leadDevContainer = CCNode::create();
     leadDevContainer->setID("lead-dev-container");
-    leadDevContainer->setAnchorPoint(anchor::center);
-    leadDevContainer->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, leadDevLabel->getPositionY() - 35.f});
+    leadDevContainer->setAnchorPoint({anchor::center});
     leadDevContainer->setLayout(leadDevContainerLayout);
 
     constexpr LeadDevIcon devs[] = {
@@ -122,15 +121,71 @@ bool MenuCredits::init(ZStringView theme) {
 
     leadDevContainer->updateLayout();
 
+    leadDevContainer->setPosition({2.5f + leadDevLabel->getPositionX() + (leadDevContainer->getScaledContentWidth() / 2.f), leadDevLabel->getPositionY() - 35.f});
+
     auto leadDevContainerBg = cue::createBackground(
         {leadDevContainer->getScaledContentWidth() + 10.f, leadDevContainer->getScaledContentHeight() + 6.25f},
         {
             .zOrder = 0,
-            .id = "lead-dev-container-bg",
+            .id = "",
         });
     leadDevContainerBg->setPosition(leadDevContainer->getPosition());
 
     m_mainLayer->addChild(leadDevContainerBg);
+
+    auto resrcBtnContainerLayout = RowLayout::create()
+                                       ->setGap(2.5f)
+                                       ->setAutoScale(false)
+                                       ->setGrowCrossAxis(true);
+
+    auto resrcBtnContainer = CCNode::create();
+    resrcBtnContainer->setID("resources-container");
+    resrcBtnContainer->setAnchorPoint({0, 0.5});
+    resrcBtnContainer->setContentSize({m_mainLayer->getScaledContentWidth() - 198.75f, leadDevContainer->getScaledContentHeight()});
+    resrcBtnContainer->setPosition({leadDevContainer->getPositionX() + (leadDevContainerBg->getScaledContentWidth() / 2.f) + 8.75f, leadDevContainer->getPositionY()});
+    resrcBtnContainer->setLayout(resrcBtnContainerLayout);
+
+    m_mainLayer->addChild(resrcBtnContainer, 9);
+
+    auto resrcBtns = std::to_array<ResourceButton>({
+        {
+            "breakeode-support-btn",
+            "Need Help?",
+            [](auto) {
+                createQuickPopup(
+                    "Breakeode Support",
+                    "If <cg>Horrible Menu</c> <cy>is causing issues</c>, you may reach out to the <cl>Breakeode</c> development team by <cy>creating a ticket in their support server</c>. If you have any other questions, feel free to ask!\n\n"
+                    "Would you like to join <cl>Breakeode</c>'s support Discord server?",
+                    "Cancel",
+                    "OK",
+                    [](auto, bool ok) {
+                        if (ok) web::openLinkInBrowser("https://dsc.gg/breakeode");
+                    });
+            },
+        },
+        {
+            "changelog-btn",
+            "What's New?",
+            [](auto) {
+                openChangelogPopup(mod);
+            },
+        },
+    });
+
+    for (auto& b : resrcBtns) {
+        auto btn = Button::createWithNode(
+            ButtonSprite::create(
+                b.label,
+                font::gold,
+                themes::getButtonSquareSprite(theme)),
+            std::move(b.callback));
+        btn->setID(b.id);
+        btn->setScale(0.75f);
+
+        resrcBtnContainer->addChild(btn);
+    };
+
+    resrcBtnContainer->updateLayout();
 
     auto creditsMd = MDTextArea::create(
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
@@ -158,7 +213,7 @@ bool MenuCredits::init(ZStringView theme) {
         [](auto) {
             createQuickPopup(
                 "Breakeode",
-                "Visit <cr>Breakeode</c>'s official website?",
+                "Visit <cl>Breakeode</c>'s official website?",
                 "Cancel",
                 "OK",
                 [](auto, bool ok) {
