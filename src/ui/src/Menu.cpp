@@ -510,7 +510,7 @@ bool Menu::init() {
                 [](auto) {
                     createQuickPopup(
                         "Discord",
-                        "Join the <cj>Cubic Studios</c> official community Discord server?",
+                        "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
                         "Cancel",
                         "OK",
                         [](auto, bool ok) {

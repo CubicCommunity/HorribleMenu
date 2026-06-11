@@ -498,7 +498,7 @@
             "type": "int",
             "name": "No Jump Chance",
             "description": "<cc>Randomly Don't Jump</c> - Chance of your jump input not registering.",
-            "default": 50,
+            "default": 30,
             "min": 0,
             "max": 100,
             "control": {

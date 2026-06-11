@@ -52,7 +52,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
     void removeBlackScreen(CCNode* sender) {
         cue::resetNode(sender);
 
-        auto delay = rng::get(3.75f);
+        auto delay = rng::get(2.5f);
         log::debug("Black screen will appear again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);

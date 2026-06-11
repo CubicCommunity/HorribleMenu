@@ -20,7 +20,7 @@ class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields final {
-        uint8_t chance = options::isEnabled(THIS_ID);
+        uint8_t chance = options::getChance(THIS_ID);
     };
 
     void handleButton(bool down, int button, bool isPlayer1) {

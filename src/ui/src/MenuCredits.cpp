@@ -154,8 +154,8 @@ bool MenuCredits::init(ZStringView theme) {
             [](auto) {
                 createQuickPopup(
                     "Breakeode Support",
-                    "If <cg>Horrible Menu</c> <cy>is causing issues</c>, you may reach out to the <cl>Breakeode</c> development team by <cy>creating a ticket in their support server</c>. If you have any other questions, feel free to ask!\n\n"
-                    "Would you like to join <cl>Breakeode</c>'s support Discord server?",
+                    "If <cg>Horrible Menu</c> <cy>is causing issues</c>, you may reach out to the <cl>Breakeode</c> development team by <cy>creating a support ticket in the Discord server</c>. If you have any other questions, feel free to ask!\n\n"
+                    "Would you like to join <cl>Breakeode</c>'s <cj>support Discord server</c>?",
                     "Cancel",
                     "OK",
                     [](auto, bool ok) {
