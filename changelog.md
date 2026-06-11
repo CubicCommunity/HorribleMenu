@@ -1,8 +1,9 @@
 # v1.2.2 
-- Tweaked charge-up functionality for *Charged Leap* option
+- Tweaked charge-up flow for *Charged Leap* option
 - Decreased speed multiplier for *Charged Leap* option by `16.7%`
 - Fix visual bug with fading color progress bars
 - Added some helpful buttons to the Horrible Menu credits pop-up!
+  - **Breakeode has opened [a support Discord server](https://dsc.gg/breakeode)** for players to report bugs or look for help with using this mod!
 
 # v1.2.1 
 - Raised *Inversed Inputs* option Silly Tier to **Medium**

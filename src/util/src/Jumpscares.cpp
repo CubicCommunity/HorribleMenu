@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::util;
 
-void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay, geode::CopyableFunction<void()>&& callback) {
+void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay, CopyableFunction<void()>&& callback) {
     if (auto pl = PlayLayer::get()) {
         if (pl->m_level->m_levelID == level) return;
     };
