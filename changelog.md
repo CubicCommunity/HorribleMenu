@@ -3,7 +3,7 @@
   - This should reduce crash issues with *Flicks* option
 - Fix jump boost not working for *Ending Gamble*, *Charged Leap*, and *Super Jump* options while the player's gravity is upside-down
 - Lowered cooldown range for *Blinking Icon* option
-- Several other fixes
+- Several tweaks
 
 # v1.2.2 
 - Tweaked charge-up flow for *Charged Leap* option

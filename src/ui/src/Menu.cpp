@@ -79,13 +79,12 @@ struct Menu::Impl final {
             return false;
         });
 
-        if (list.empty()) {
-            nothingLabel->setVisible(true);
-            optionList->setVisible(false);
-        } else {
-            nothingLabel->setVisible(false);
-            optionList->setVisible(true);
+        auto empty = list.empty();
 
+        nothingLabel->setVisible(empty);
+        optionList->setVisible(!empty);
+
+        if (!empty) {
             for (auto& oRef : list) {
                 if (auto o = oRef.lock()) {
                     if (auto modOption = MenuOptionCell::create(
