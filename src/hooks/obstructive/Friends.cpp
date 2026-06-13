@@ -16,7 +16,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
-static constexpr auto g_friends = std::to_array<const char*>({
+static constexpr auto g_friends = std::to_array({
     "diffIcon_00_btn_001.png",
     "diffIcon_01_btn_001.png",
     "diffIcon_02_btn_001.png",

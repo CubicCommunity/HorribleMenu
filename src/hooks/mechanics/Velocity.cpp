@@ -24,6 +24,52 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
         float speed = 0.f;
 
         Ref<ProgressBar> speedMeter = nullptr;
+        Ref<CCLabelBMFont> speedMeterLabel = nullptr;
+    };
+
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        auto f = m_fields.self();
+
+        if (!on) {
+            cue::resetNode(f->speedMeter);
+            cue::resetNode(f->speedMeterLabel);
+
+            unschedule(schedule_selector(VelocityGJBaseGameLayer::increaseSpeed));
+            unschedule(schedule_selector(VelocityGJBaseGameLayer::updateSpeed));
+
+            m_player1->m_playerSpeed = f->speed;
+            m_player2->m_playerSpeed = f->speed;
+
+            return;
+        };
+
+        f->speed = m_player1->m_playerSpeed * 2.5f;
+        m_player1->m_playerSpeed = f->speed / 2.f;
+
+        if (auto pl = PlayLayer::get(); pl) {
+            if (!f->speedMeterLabel) {
+                f->speedMeterLabel = CCLabelBMFont::create("Speed", font::big);
+                f->speedMeterLabel->setScale(0.375f);
+                f->speedMeterLabel->setColor(colors::gold);
+                f->speedMeterLabel->setAnchorPoint(anchor::center);
+                f->speedMeterLabel->setPosition({pl->m_uiLayer->getScaledContentWidth() / 2.f, 37.5f});
+
+                pl->m_uiLayer->addChild(f->speedMeterLabel, HIGHEST_Z);
+            };
+
+            if (!f->speedMeter) {
+                f->speedMeter = ProgressBar::create();
+                f->speedMeter->setID("speed-meter"_spr);
+                f->speedMeter->setFillColor(colors::gold);
+                f->speedMeter->setAnchorPoint(anchor::center);
+                f->speedMeter->setPosition({f->speedMeterLabel->getPositionX(), f->speedMeterLabel->getPositionY() - 12.5f});
+                f->speedMeter->setScale(0.875f);
+
+                pl->m_uiLayer->addChild(f->speedMeter, HIGHEST_Z);
+
+                f->speedMeter->updateProgress(50.f);
+            };
+        };
     };
 
     bool init() {
@@ -31,33 +77,7 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
 
         // gjbgl doesnt init everything instantly
         queueInMainThread([self = WeakRef(this)]() {
-            if (auto s = self.lock()) {
-                auto f = s->m_fields.self();
-
-                f->speed = s->m_player1->m_playerSpeed * 2.5f;
-                s->m_player1->m_playerSpeed = f->speed / 2.f;
-
-                if (auto pl = PlayLayer::get()) {
-                    auto speedMeterLabel = CCLabelBMFont::create("Speed", font::big);
-                    speedMeterLabel->setScale(0.375f);
-                    speedMeterLabel->setColor(colors::gold);
-                    speedMeterLabel->setAnchorPoint(anchor::center);
-                    speedMeterLabel->setPosition({pl->m_uiLayer->getScaledContentWidth() / 2.f, 37.5f});
-
-                    pl->m_uiLayer->addChild(speedMeterLabel, HIGHEST_Z);
-
-                    f->speedMeter = ProgressBar::create();
-                    f->speedMeter->setID("speed-meter"_spr);
-                    f->speedMeter->setFillColor(colors::gold);
-                    f->speedMeter->setAnchorPoint(anchor::center);
-                    f->speedMeter->setPosition({speedMeterLabel->getPositionX(), speedMeterLabel->getPositionY() - 12.5f});
-                    f->speedMeter->setScale(0.875f);
-
-                    pl->m_uiLayer->addChild(f->speedMeter, HIGHEST_Z);
-
-                    f->speedMeter->updateProgress(50.f);
-                };
-            };
+            if (auto s = self.lock()) s->setupHorribleInterface();
         });
 
         return true;
@@ -116,4 +136,12 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
         if (player) return (player->m_isShip || player->m_isDart || player->m_isSwing) && !(player->m_isOnGround && player->m_isOnGround2 && player->m_isOnGround3 && player->m_isOnGround4);
         return false;
     };
+};
+
+$on_mod(Loaded) {
+    listenForHorribleOptionChanges(
+        THIS_ID,
+        [](HorribleOptionSave data) {
+            if (auto gjbgl = GJBaseGameLayer::get()) modify_cast<VelocityGJBaseGameLayer*>(gjbgl)->setupHorribleInterface(data.enabled);
+        });
 };

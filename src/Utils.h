@@ -32,6 +32,20 @@
 
 #define HIGHEST_Z cocos2d::CCScene::get()->getHighestChildZ() + 1
 
+#define HORRIBLE_MODIFY_EVENT_HANDLER(Base, Derived)                                                  \
+    listenForHorribleOptionChanges(                                                                   \
+        THIS_ID,                                                                                      \
+        [](HorribleOptionSave data) {                                                                 \
+            if (auto b = Base::get()) modify_cast<Derived*>(b)->setupHorribleInterface(data.enabled); \
+        })
+
+#define HORRIBLE_TOGGLE_MODIFY(Base, Derived)         \
+    $on_mod(Loaded) {                                 \
+        HORRIBLE_MODIFY_EVENT_HANDLER(Base, Derived); \
+    }
+
+#define HORRIBLE_SETUP_INTERFACE_FUNC void setupHorribleInterface(bool on = true)
+
 // Additional utility methods for Horrible Menu
 namespace horrible {
     // Pointer to this Geode mod

@@ -25,9 +25,20 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
         bool isFlipped = false;
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal));
+            unschedule(schedule_selector(RandomMirrorPlayLayer::flipPortal));
+
+            return;
+        };
+
+        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 0.125f);
+    };
+
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 0.125f);
+        setupHorribleInterface();
     };
 
     void toggleFlipped(bool p0, bool p1) {
@@ -45,9 +56,9 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
     };
 
     void flipPortal(float) {
-        auto f = m_fields.self();
-
-        toggleFlipped(!f->isFlipped, false);
+        toggleFlipped(!m_fields->isFlipped, false);
         scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 2.5f);
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, RandomMirrorPlayLayer);

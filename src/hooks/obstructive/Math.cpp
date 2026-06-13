@@ -25,9 +25,21 @@ class $modify(MathPlayLayer, PlayLayer) {
         Ref<MathQuiz> currentMath = nullptr;
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            cue::resetNode(m_fields->currentMath);
+
+            unschedule(schedule_selector(MathPlayLayer::doQuiz));
+
+            return;
+        };
+
+        nextQuiz();
+    };
+
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        nextQuiz();
+        setupHorribleInterface();
     };
 
     void resetLevelFromStart() {
@@ -83,3 +95,13 @@ class $modify(MathPlayLayer, PlayLayer) {
         });
     };
 };
+
+$on_mod(Loaded) {
+    listenForHorribleOptionChanges(
+        THIS_ID,
+        [](HorribleOptionSave data) {
+            if (auto pl = PlayLayer::get()) modify_cast<MathPlayLayer*>(pl)->setupHorribleInterface(data.enabled);
+        });
+};
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, MathPlayLayer);

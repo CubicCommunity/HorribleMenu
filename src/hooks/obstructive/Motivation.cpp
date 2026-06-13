@@ -16,7 +16,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
-static constexpr auto g_msgs = std::to_array<const char*>({
+static constexpr auto g_msgs = std::to_array({
     "Surprised you haven't quit already.",
     "OW! I hit my knee on my desk.",
     "mrrp meow :3",

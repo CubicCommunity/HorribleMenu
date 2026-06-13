@@ -26,6 +26,10 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
         Ref<TermsAndConditions> currentTos = nullptr;
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) cue::resetNode(m_fields->currentTos);
+    };
+
     void handleButton(bool down, int button, bool isPlayer1) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
 
@@ -56,3 +60,5 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
         };
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(GJBaseGameLayer, TOSGJBaseGameLayer);

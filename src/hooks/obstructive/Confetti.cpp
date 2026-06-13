@@ -16,7 +16,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
-static constexpr auto g_confettis = std::to_array<const char*>({
+static constexpr auto g_confettis = std::to_array({
     "diffIcon_02_btn_001.png",
     "explosionIcon_20_001.png",
     "GJ_duplicateObjectBtn2_001.png",
@@ -37,9 +37,20 @@ static constexpr auto g_confettis = std::to_array<const char*>({
 class $modify(ConfettiPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(ConfettiPlayLayer::nextConfetti));
+            unschedule(schedule_selector(ConfettiPlayLayer::confetti));
+
+            return;
+        };
+
+        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
+    };
+
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
+        setupHorribleInterface();
     };
 
     void nextConfetti(float) {
@@ -86,3 +97,5 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         cue::resetNode(sender);
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, ConfettiPlayLayer);

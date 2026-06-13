@@ -21,10 +21,12 @@ class $modify(ClickSpeedPlayerObject, PlayerObject) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     bool pushButton(PlayerButton p0) {
-        int currentSpeed = m_playerSpeed;
+        if (!m_gameLayer) return PlayerObject::pushButton(p0);
+
+        auto currentSpeed = m_playerSpeed;
         log::trace("current speed: {}", currentSpeed);
 
-        m_playerSpeed = rng::flip() ? currentSpeed + 1 : currentSpeed - 1;
+        m_playerSpeed = rng::flip() ? currentSpeed + 1.f : currentSpeed - 1.f;
 
         log::debug("Click Speed modified player speed to {}", m_playerSpeed);
 

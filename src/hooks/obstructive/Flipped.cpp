@@ -21,18 +21,21 @@ class $modify(FlippedPlayLayer, PlayLayer) {
 
     struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
+    };
 
-        bool flipping = false;
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(FlippedPlayLayer::flip));
+
+            return;
+        };
+
+        nextFlip();
     };
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        nextFlip();
-    };
-
-    void flippingEnded() {
-        m_fields->flipping = false;
-        log::info("playlayer flipped");
+        setupHorribleInterface();
     };
 
     void nextFlip() {
@@ -41,10 +44,17 @@ class $modify(FlippedPlayLayer, PlayLayer) {
     };
 
     void flip(float) {
-        if (rng::fast() > m_fields->chance) runAction(CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.f)));
+        if (rng::chance(m_fields->chance)) runAction(
+            CCSequence::createWithTwoActions(
+                CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.f)),
+                CCCallFunc::create(this, callfunc_selector(FlippedPlayLayer::finishFlip))));
+    };
 
+    void finishFlip() {
         queueInMainThread([self = WeakRef(this)]() {
             if (auto s = self.lock()) s->nextFlip();
         });
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, FlippedPlayLayer);

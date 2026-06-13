@@ -24,39 +24,31 @@ class $modify(GamblerPlayLayer, PlayLayer) {
         bool triggered = false;
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(GamblerPlayLayer::gamblerCheck));
+
+            return;
+        };
+
+        schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.125f);
+    };
+
     bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 
-        // check every frame so we can detect each percentage change
-        if (!m_fields->triggered) schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.125f);
+        setupHorribleInterface();
 
         return true;
     };
 
-    // ensure that triggered is reset on level restart/full reset
     void fullReset() {
         PlayLayer::fullReset();
-        m_fields->triggered = false;
+        schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.125f);
         log::trace("gambler full reset");
     };
 
-    void resetLevel() {
-        PlayLayer::resetLevel();
-        m_fields->triggered = false;
-        log::trace("gambler level reset");
-    };
-
-    void resetLevelFromStart() {
-        PlayLayer::resetLevelFromStart();
-        m_fields->triggered = false;
-        log::trace("gambler level reset from start");
-    };
-
     void gamblerCheck(float) {
-        auto f = m_fields.self();
-
-        if (f->triggered) return;
-
         // detect the moment the player first reaches or crosses 95
         if (getCurrentPercentInt() >= 95) {
             if (rng::flip()) {
@@ -68,8 +60,8 @@ class $modify(GamblerPlayLayer, PlayLayer) {
                 m_player1->reversePlayer(nullptr);
                 m_player2->reversePlayer(nullptr);
 
-                m_player1->boostPlayer(rng::get(12.5f, 8.75f));
-                m_player2->boostPlayer(rng::get(12.5f, 8.75f));
+                m_player1->boostPlayer(rng::get(12.5f, 8.75f) * (m_player1->m_isUpsideDown ? -1.f : 1.f));
+                m_player2->boostPlayer(rng::get(12.5f, 8.75f) * (m_player2->m_isUpsideDown ? -1.f : 1.f));
             } else {
                 log::info("Gambler won the bet! instant win.");
 
@@ -79,8 +71,9 @@ class $modify(GamblerPlayLayer, PlayLayer) {
                 levelComplete();
             };
 
-            f->triggered = true;
             unschedule(schedule_selector(GamblerPlayLayer::gamblerCheck));
         };
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, GamblerPlayLayer);

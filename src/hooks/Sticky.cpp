@@ -23,26 +23,32 @@ class $modify(StickyPlayerObject, PlayerObject) {
     struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
-        float m_defSpeed = 0.f;
+        float defSpeed = 0.f;
 
-        CCLabelBMFont* m_clickLabel = nullptr;
+        CCLabelBMFont* clickLabel = nullptr;
 
-        bool m_onGround = true;
+        bool onGround = true;
     };
 
-    bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
-        if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
-
+    HORRIBLE_SETUP_INTERFACE_FUNC {
         auto f = m_fields.self();
 
-        if (auto pl = PlayLayer::get()) {
-            f->m_clickLabel = CCLabelBMFont::create("Press again to un-stick!", font::big, pl->getScaledContentWidth() - 12.5f);
-            f->m_clickLabel->setID("sticky-alert"_spr);
-            f->m_clickLabel->setScale(0.625f);
-            f->m_clickLabel->setAlignment(kCCTextAlignmentCenter);
-            f->m_clickLabel->setAnchorPoint({0.5, 0});
-            f->m_clickLabel->setPosition({pl->getScaledContentWidth() / 2.f, 25.f});
-            f->m_clickLabel->setVisible(false);
+        if (!on) {
+            cue::resetNode(f->clickLabel);
+
+            m_playerSpeed = f->defSpeed;
+
+            return;
+        };
+
+        if (auto pl = PlayLayer::get(); pl && !f->clickLabel && !m_isSecondPlayer) {
+            f->clickLabel = CCLabelBMFont::create("Press again to un-stick!", font::big, pl->getScaledContentWidth() - 12.5f);
+            f->clickLabel->setID("sticky-alert"_spr);
+            f->clickLabel->setScale(0.625f);
+            f->clickLabel->setAlignment(kCCTextAlignmentCenter);
+            f->clickLabel->setAnchorPoint({0.5, 0});
+            f->clickLabel->setPosition({pl->getScaledContentWidth() / 2.f, 25.f});
+            f->clickLabel->setVisible(m_playerSpeed <= 0.f);
 
             auto seq = CCSequence::create(
                 CCCallFuncN::create(this, callfuncN_selector(StickyPlayerObject::stickyCol1)),
@@ -51,11 +57,19 @@ class $modify(StickyPlayerObject, PlayerObject) {
                 CCDelayTime::create(0.125f),
                 nullptr);
 
-            pl->m_uiLayer->addChild(f->m_clickLabel, HIGHEST_Z);
-            f->m_clickLabel->runAction(CCRepeatForever::create(seq));
+            pl->m_uiLayer->addChild(f->clickLabel, HIGHEST_Z);
+            f->clickLabel->runAction(CCRepeatForever::create(seq));
         };
+    };
 
-        f->m_onGround = onGround();
+    bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
+        if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
+
+        if (playLayer) {
+            m_fields->onGround = onGround();
+
+            setupHorribleInterface();
+        };
 
         return true;
     };
@@ -78,21 +92,21 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        auto wasOnGround = f->m_onGround;
+        auto wasOnGround = f->onGround;
         PlayerObject::hitGround(object, notFlipped);
         auto nowOnGround = onGround();
 
         if (m_hasEverJumped) {
             if (nowOnGround && !wasOnGround) {
                 if (rng::fast() < f->chance) {
-                    f->m_defSpeed = m_playerSpeed;
+                    f->defSpeed = m_playerSpeed;
                     m_playerSpeed = 0.f;
 
-                    if (f->m_clickLabel) f->m_clickLabel->setVisible(true);
+                    if (f->clickLabel) f->clickLabel->setVisible(true);
                 };
             };
 
-            f->m_onGround = nowOnGround;
+            f->onGround = nowOnGround;
         };
     };
 
@@ -101,13 +115,21 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        if (m_playerSpeed <= 0.f && f->m_onGround) {
-            m_playerSpeed = f->m_defSpeed;
-            if (f->m_clickLabel) f->m_clickLabel->setVisible(false);
+        if (m_playerSpeed <= 0.f && f->onGround) {
+            m_playerSpeed = f->defSpeed;
+            if (f->clickLabel) f->clickLabel->setVisible(false);
         };
 
-        f->m_onGround = onGround();
+        f->onGround = onGround();
 
         return true;
     };
+};
+
+$on_mod(Loaded) {
+    listenForHorribleOptionChanges(
+        THIS_ID,
+        [](HorribleOptionSave data) {
+            if (auto pl = PlayLayer::get()) modify_cast<StickyPlayerObject*>(pl->m_player1)->setupHorribleInterface(data.enabled);
+        });
 };

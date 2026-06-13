@@ -36,11 +36,21 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         };
     };
 
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(WhackAFacePlayLayer::doWhack));
+            m_fields->clearWhackBtns();
+
+            return;
+        };
 
         cursor::show();
         nextWhack();
+    };
+
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
+        setupHorribleInterface();
     };
 
     void levelComplete() {
@@ -115,3 +125,5 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         };
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, WhackAFacePlayLayer);
