@@ -6,12 +6,6 @@ namespace horrible {
     namespace util {
         // Jumpscare level manager
         namespace jumpscares {
-            namespace level {
-                inline constexpr auto grief = 129066933;
-                inline constexpr auto congregation = 129066879;
-                inline constexpr auto tidal = 93733469;
-            };
-
             void switchLevel(int level, bool dontCreateObjects, bool useReplay, geode::CopyableFunction<void()>&& callback = nullptr);
 
             namespace coro {

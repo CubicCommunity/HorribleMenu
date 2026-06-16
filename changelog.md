@@ -1,5 +1,6 @@
 # v1.2.4 
 - Sound effect for *Charged Leap* option will now only play when leaping at full charge
+- Internal tweaks
 
 # v1.2.3 
 - Rework game modification internals to allow safer option toggling mid-level

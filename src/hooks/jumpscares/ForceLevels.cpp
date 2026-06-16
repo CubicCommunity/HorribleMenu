@@ -44,11 +44,11 @@ static std::vector<std::weak_ptr<Hook>> g_jsHookVector;
 
 namespace js_internal {
     static constexpr auto getLevelInfo(std::string_view id) noexcept {
-        if (id == THIS_ID_GRIEF) return jumpscares::level::grief;
-        if (id == THIS_ID_CONGREG) return jumpscares::level::congregation;
-        if (id == THIS_ID_TIDAL) return jumpscares::level::tidal;
+        if (id == THIS_ID_GRIEF) return HORRIBLE_JUMPSCARES_GRIEF;
+        if (id == THIS_ID_CONGREG) return HORRIBLE_JUMPSCARES_CONGREG;
+        if (id == THIS_ID_TIDAL) return HORRIBLE_JUMPSCARES_TIDAL;
 
-        return jumpscares::level::grief;
+        return HORRIBLE_JUMPSCARES_GRIEF;
     };
 
     static void toggleHooks(bool on) {
@@ -104,7 +104,7 @@ static void tryJumpscare(bool useReplay) {
 
             log::debug("jumpscare for {} triggered!", level);
             return jumpscares::switchLevel(level, false, useReplay, [level]() {
-                if (level == jumpscares::level::tidal) Notification::create("Wait, this isn't Tidal Wave...")->show();
+                if (level == HORRIBLE_JUMPSCARES_TIDAL) Notification::create("Wait, this isn't Tidal Wave...")->show();
             });
         };
     };

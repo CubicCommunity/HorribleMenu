@@ -3,18 +3,8 @@
 #include <horrible/API.h>
 #include <horrible/OptionalAPI.hpp>
 
-#include <util/Cursor.hpp>
-#include <util/Jumpscares.hpp>
-#include <util/Options.hpp>
-#include <util/Random.hpp>
-#include <util/Themes.hpp>
-
-#include <util/ui/Captcha.hpp>
-#include <util/ui/MathQuiz.hpp>
-#include <util/ui/RandomAd.hpp>
-#include <util/ui/SpamChallenge.hpp>
-#include <util/ui/TermsAndConditions.hpp>
-#include <util/ui/WhackButton.hpp>
+#include <util/Include.h>
+#include <util/Macros.h>
 
 #include <cue/Util.hpp>
 #include <cue/DropdownNode.hpp>
@@ -29,22 +19,6 @@
 #include <Geode/utils/cocos.hpp>
 
 #include <Geode/binding/FMODAudioEngine.hpp>
-
-#define HIGHEST_Z cocos2d::CCScene::get()->getHighestChildZ() + 1
-
-#define HORRIBLE_MODIFY_EVENT_HANDLER(Base, Derived)                                                  \
-    listenForHorribleOptionChanges(                                                                   \
-        THIS_ID,                                                                                      \
-        [](HorribleOptionSave data) {                                                                 \
-            if (auto b = Base::get()) modify_cast<Derived*>(b)->setupHorribleInterface(data.enabled); \
-        })
-
-#define HORRIBLE_TOGGLE_MODIFY(Base, Derived)         \
-    $on_mod(Loaded) {                                 \
-        HORRIBLE_MODIFY_EVENT_HANDLER(Base, Derived); \
-    }
-
-#define HORRIBLE_SETUP_INTERFACE_FUNC void setupHorribleInterface(bool on = true)
 
 // Additional utility methods for Horrible Menu
 namespace horrible {

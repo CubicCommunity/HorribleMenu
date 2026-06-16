@@ -56,10 +56,10 @@ bool RandomAd::init() {
             if (auto load = loading.lock()) load->setVisible(true);
 
             if (auto pl = PlayLayer::get()) {
-                if (pl->m_level->m_levelID == jumpscares::level::congregation) return removeFromParent();
+                if (pl->m_level->m_levelID == HORRIBLE_JUMPSCARES_CONGREG) return removeFromParent();
 
                 log::info("Switching from ad to Congregation jumpscare");
-                jumpscares::switchLevel(jumpscares::level::congregation, false, false);
+                jumpscares::switchLevel(HORRIBLE_JUMPSCARES_CONGREG, false, false);
             } else {
                 log::error("Player not in a level");
             };
