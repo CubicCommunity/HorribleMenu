@@ -447,7 +447,7 @@
             "type": "int",
             "name": "Achievement Sound Chance",
             "description": "<cc>Random Achievements</c> - Chance of the achievement sound playing.",
-            "default": 25,
+            "default": 20,
             "min": 0,
             "max": 100,
             "control": {
