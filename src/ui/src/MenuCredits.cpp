@@ -189,13 +189,17 @@ bool MenuCredits::init(ZStringView theme) {
 
     auto creditsMd = MDTextArea::create(
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
+        "**[Geode Team](mod:geode.loader)**: '*[Geode SDK](https://github.com/geode-sdk/geode)*' Geometry Dash modding framework\n\n"
         "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
-        "**[dankmeme](user:9735891)**: '*[cue](https://github.com/dankmeme01/cue)*' user interface library\n\n"
+        "**[dankmeme](user:9735891)**: '*[cue](https://github.com/dankmeme01/cue)*' user interface library, '*[asp2](https://github.com/dankmeme01/asp2)*' utility library, '*[arc](https://github.com/dankmeme01/arc)*' async runtime library\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
         "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
-        "**[ArcticWoof](user:7689052)**: Original idea for this mod\n\n",
+        "**[ArcticWoof](user:7689052)**: Original idea for this mod\n\n"
+        "# ![📖](frame:accountBtn_myLists_001.png?scale=0.5) License & Attribution\n"
+        "The current build of [Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://github.com/CubicCommunity/HorribleMenu/blob/main/LICENSE.md).\n\n"
+        "Third-party assets, API modifications, libraries, and other external resources are credited in their respective sections above.",
         {
             m_mainLayer->getScaledContentWidth() - 55.f,
             140.f,

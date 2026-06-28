@@ -1,6 +1,7 @@
 # v1.2.4 
 - Sound effect for *Charged Leap* option will now only play when leaping at full charge
 - Lowered default chance setting for *Random Achievements* option to `20%`
+- Added license information to Horrible Menu credits pop-up
 - Internal tweaks
 
 # v1.2.3 
