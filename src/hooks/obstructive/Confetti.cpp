@@ -50,7 +50,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        setupHorribleInterface();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void nextConfetti(float) {

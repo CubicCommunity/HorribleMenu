@@ -85,7 +85,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
         m_fields->oxygenLevel = 50.f;
 
-        setupHorribleInterface();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void decreaseOxygen(float dt) {

@@ -37,7 +37,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        setupHorribleInterface();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void nextAd() {

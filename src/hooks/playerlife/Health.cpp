@@ -71,7 +71,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
         m_fields->health = 100.f;
 
-        setupHorribleInterface();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void resetHealth() {

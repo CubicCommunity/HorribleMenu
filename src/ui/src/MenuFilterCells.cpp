@@ -15,7 +15,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     if (!CCMenu::init()) return false;
 
     // lol
-    setID(str::join(str::split(str::filter(str::toLower(m_category), filterId), " "), "-"));
+    setID(str::join(asp::iter::split(str::filter(str::toLower(m_category), filterId), " ").collect(), "-"));
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 

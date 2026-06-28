@@ -68,7 +68,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         if (playLayer) {
             m_fields->onGround = onGround();
 
-            setupHorribleInterface();
+            HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
         };
 
         return true;
@@ -130,6 +130,6 @@ $on_mod(Loaded) {
     listenForHorribleOptionChanges(
         THIS_ID,
         [](HorribleOptionSave data) {
-            if (auto pl = PlayLayer::get()) modify_cast<StickyPlayerObject*>(pl->m_player1)->setupHorribleInterface(data.enabled);
+            if (auto pl = PlayLayer::get()) modify_cast<StickyPlayerObject*>(pl->m_player1)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
         });
 };

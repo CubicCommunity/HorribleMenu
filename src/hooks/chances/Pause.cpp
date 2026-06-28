@@ -36,7 +36,7 @@ class $modify(PausePlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        setupHorribleInterface();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void nextPause() {

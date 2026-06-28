@@ -39,7 +39,7 @@ class $modify(MathPlayLayer, PlayLayer) {
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        setupHorribleInterface();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void resetLevelFromStart() {
@@ -100,7 +100,7 @@ $on_mod(Loaded) {
     listenForHorribleOptionChanges(
         THIS_ID,
         [](HorribleOptionSave data) {
-            if (auto pl = PlayLayer::get()) modify_cast<MathPlayLayer*>(pl)->setupHorribleInterface(data.enabled);
+            if (auto pl = PlayLayer::get()) modify_cast<MathPlayLayer*>(pl)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
         });
 };
 

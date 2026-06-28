@@ -54,11 +54,9 @@ void jumpscares::coro::getLevel(int id, CopyableFunction<void(Result<GJGameLevel
             };
 
             auto dict = CCDictionary::create();
-            auto splits = asp::iter::split(resStr, ":")
-                              .mapCast<std::string>()
-                              .collect();
+            auto splits = asp::iter::split(resStr, ":").collect();
 
-            for (size_t i = 0; i + 1 < splits.size(); i += 2) dict->setObject(CCString::create(splits[i + 1]), splits[i]);
+            for (size_t i = 0; i + 1 < splits.size(); i += 2) dict->setObject(CCString::create(std::string{splits[i + 1]}), std::string{splits[i]});
             cb(Ok(GJGameLevel::create(dict, false)));
         });
 };

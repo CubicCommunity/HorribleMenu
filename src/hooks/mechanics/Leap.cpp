@@ -65,7 +65,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         if (!GJBaseGameLayer::init()) return false;
 
         queueInMainThread([self = WeakRef(this)]() {
-            if (auto s = self.lock()) s->setupHorribleInterface();
+            if (auto s = self.lock()) s->HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
         });
 
         return true;
@@ -205,6 +205,6 @@ $on_mod(Loaded) {
     listenForHorribleOptionChanges(
         THIS_ID,
         [](HorribleOptionSave data) {
-            if (auto gjbgl = GJBaseGameLayer::get()) modify_cast<LeapGJBaseGameLayer*>(gjbgl)->setupHorribleInterface(data.enabled);
+            if (auto gjbgl = GJBaseGameLayer::get()) modify_cast<LeapGJBaseGameLayer*>(gjbgl)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
         });
 };
