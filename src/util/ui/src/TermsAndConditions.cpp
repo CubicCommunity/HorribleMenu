@@ -8,7 +8,20 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+struct TermsAndConditions::Impl final {
+    Button* acceptBtn = nullptr;
+
+    CCPoint acceptVelocity = {0.f, 0.f};
+
+    Callback callback;
+};
+
+TermsAndConditions::TermsAndConditions() : m_impl(std::make_unique<Impl>()) {};
+TermsAndConditions::~TermsAndConditions() {};
+
 bool TermsAndConditions::init(Callback&& cb) {
+    m_impl->callback = std::move(cb);
+
     auto const theme = mod->getSettingValue<std::string>("theme");
 
     if (!Popup::init(420.f, 240.f, themes::getBackgroundSprite(theme))) return false;
@@ -33,7 +46,7 @@ bool TermsAndConditions::init(Callback&& cb) {
         "1. You will NOT make fun of the guy who's second in the *Thanks* list.\n"
         "2. You will love and adore Breakeode and buy all of their merch.\n"
         "3. You will consent to using this mod forever and ever.\n"
-        "4. You will respect the intellectual... Yeah, that's it.\n"
+        "4. You will used Charged Leap to assert your dominance over other Globed players.\n"
         "5. You will not hate Level Ads.\n"
         "6. You will NOT tell us Horrible Menu isn't perfect.\n"
         "7. You will NOT!!!\n"
@@ -43,50 +56,52 @@ bool TermsAndConditions::init(Callback&& cb) {
         "**By clicking 'Accept', you acknowledge that you have read and agree to these terms and conditions.**\n\n"
         "---\n\n"
         "For legal reasons, this is all a joke..!",
-        {380.f, 145.f},
+        {385.f, 145.f},
         false);
     tosArea->setPosition({m_mainLayer->getContentSize().width / 2.f, (m_mainLayer->getContentSize().height / 2.f) + 5.f});
 
     m_mainLayer->addChild(tosArea);
 
-    m_acceptBtn = Button::createWithNode(
+    m_impl->acceptBtn = Button::createWithNode(
         ButtonSprite::create(
             "Accept",
             font::big,
             themes::getButtonSquareSprite(theme)),
-        [this, cb](auto) {
+        [this](auto) {
             sfx::play(sfx::file::good);
-            if (cb) cb(true);
-            if (auto pl = PlayLayer::get()) {
-                pl->resume();
-            }
+
+            if (m_impl->callback) m_impl->callback(true);
+            if (auto pl = PlayLayer::get()) pl->resume();
+
             removeFromParent();
         });
-    m_acceptBtn->setZOrder(10);
-    m_acceptBtn->setScale(0.75f);
+    m_impl->acceptBtn->setZOrder(10);
+    m_impl->acceptBtn->setScale(0.75f);
 
     auto declineBtn = Button::createWithNode(
         ButtonSprite::create(
             "Decline",
             font::big,
             themes::getButtonSquareSprite(theme)),
-        [this, cb](auto) {
+        [this](auto) {
             sfx::play(sfx::file::bad);
-            if (cb) cb(false);
+
+            if (m_impl->callback) m_impl->callback(false);
+
             removeFromParent();
         });
     declineBtn->setZOrder(10);
     declineBtn->setScale(0.75f);
 
-    m_mainLayer->addChildAtPosition(m_acceptBtn, Anchor::Bottom, {-60.f, 25.f});
+    m_mainLayer->addChildAtPosition(m_impl->acceptBtn, Anchor::Bottom, {-60.f, 25.f});
     m_mainLayer->addChildAtPosition(declineBtn, Anchor::Bottom, {60.f, 25.f});
 
     auto const angle = rng::get(2.f * std::numbers::pi);
-    m_acceptVelocity = ccp(cosf(angle), sinf(angle));
+    m_impl->acceptVelocity = ccp(cosf(angle), sinf(angle));
     scheduleUpdate();
 
-    if (auto acceptBtnSpr = typeinfo_cast<ButtonSprite*>(m_acceptBtn->getDisplayNode())) {
-        m_acceptBtn->setEnabled(false);
+    if (auto acceptBtnSpr = typeinfo_cast<ButtonSprite*>(m_impl->acceptBtn->getDisplayNode())) {
+        m_impl->acceptBtn->setEnabled(false);
         acceptBtnSpr->setOpacity(0);
 
         acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(
@@ -105,57 +120,64 @@ void TermsAndConditions::finishBtnFade(CCNode* sender) {
 };
 
 void TermsAndConditions::update(float dt) {
-    if (!m_acceptBtn) return;
+    if (!m_impl->acceptBtn) return;
 
     CCSize const winSize = CCDirector::sharedDirector()->getWinSize();
-    CCPoint const localPos = m_acceptBtn->getPosition();
+
+    CCPoint const localPos = m_impl->acceptBtn->getPosition();
     CCPoint worldPos = m_mainLayer->convertToWorldSpace(localPos);
-    CCSize const buttonSize = m_acceptBtn->getScaledContentSize();
+
+    CCSize const buttonSize = m_impl->acceptBtn->getScaledContentSize();
 
     CCPoint const mousePos = cocos::getMousePos();
     CCPoint const away = ccpSub(worldPos, mousePos);
+
     float const dist = std::sqrt(away.x * away.x + away.y * away.y);
-    float speed = m_acceptSpeed;
+    float speed = 100.f;  // default speed
 
     // make the mouse (like cheeseworks) to chase the accept button cuz im evil
-    if (dist < m_mouseAvoidDistance && dist > 0.f) {
+    if (dist < 25.f && dist > 0.f) {
         auto normalizedAway = ccp(away.x / dist, away.y / dist);
-        auto currentVelLen = std::sqrt(m_acceptVelocity.x * m_acceptVelocity.x + m_acceptVelocity.y * m_acceptVelocity.y);
+
+        auto currentVelLen = std::sqrt(m_impl->acceptVelocity.x * m_impl->acceptVelocity.x + m_impl->acceptVelocity.y * m_impl->acceptVelocity.y);
         if (currentVelLen > 0.f) {
-            normalizedAway.x += m_acceptVelocity.x / currentVelLen;
-            normalizedAway.y += m_acceptVelocity.y / currentVelLen;
-        }
+            normalizedAway.x += m_impl->acceptVelocity.x / currentVelLen;
+            normalizedAway.y += m_impl->acceptVelocity.y / currentVelLen;
+        };
+
         auto const newLen = std::sqrt(normalizedAway.x * normalizedAway.x + normalizedAway.y * normalizedAway.y);
         if (newLen > 0.f) {
             normalizedAway.x /= newLen;
             normalizedAway.y /= newLen;
-            m_acceptVelocity = normalizedAway;
-        }
-        speed *= m_mouseAvoidMultiplier;
-    }
+            m_impl->acceptVelocity = normalizedAway;
+        };
 
-    worldPos = ccpAdd(worldPos, ccpMult(m_acceptVelocity, speed * dt));
+        // mouse avoid multiplier
+        speed *= 1.75f;
+    };
+
+    worldPos = ccpAdd(worldPos, ccpMult(m_impl->acceptVelocity, speed * dt));
 
     auto const halfW = buttonSize.width / 2.f;
     auto const halfH = buttonSize.height / 2.f;
 
     if (worldPos.x < halfW) {
         worldPos.x = halfW;
-        m_acceptVelocity.x = fabsf(m_acceptVelocity.x);
+        m_impl->acceptVelocity.x = fabsf(m_impl->acceptVelocity.x);
     } else if (worldPos.x > winSize.width - halfW) {
         worldPos.x = winSize.width - halfW;
-        m_acceptVelocity.x = -fabsf(m_acceptVelocity.x);
-    }
+        m_impl->acceptVelocity.x = -fabsf(m_impl->acceptVelocity.x);
+    };
 
     if (worldPos.y < halfH) {
         worldPos.y = halfH;
-        m_acceptVelocity.y = fabsf(m_acceptVelocity.y);
+        m_impl->acceptVelocity.y = fabsf(m_impl->acceptVelocity.y);
     } else if (worldPos.y > winSize.height - halfH) {
         worldPos.y = winSize.height - halfH;
-        m_acceptVelocity.y = -fabsf(m_acceptVelocity.y);
-    }
+        m_impl->acceptVelocity.y = -fabsf(m_impl->acceptVelocity.y);
+    };
 
-    m_acceptBtn->setPosition(m_mainLayer->convertToNodeSpace(worldPos));
+    m_impl->acceptBtn->setPosition(m_mainLayer->convertToNodeSpace(worldPos));
 };
 
 TermsAndConditions* TermsAndConditions::create(Callback&& cb) {

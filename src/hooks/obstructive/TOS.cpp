@@ -54,8 +54,6 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
                 f->currentTos = popup;
 
                 cursor::show();
-
-                //updateTimeWarp(0.125f);
             };
         };
     };
