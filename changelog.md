@@ -1,5 +1,5 @@
 # v1.2.4 
-- Improved functionality of *`Agree To Our Terms!`* option ([#12](https://github.com/CubicCommunity/HorribleMenu/pull/12))
+- Improved functionality of *Agree To Our Terms!* option ([#12](https://github.com/CubicCommunity/HorribleMenu/pull/12))
 - Sound effect for *Charged Leap* option will now only play when leaping at full charge
 - Lowered default chance setting for *Random Achievements* option to `20%`
 - Added license information to Horrible Menu credits pop-up
