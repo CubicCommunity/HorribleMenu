@@ -1,3 +1,6 @@
+# v1.2.5 
+- Fix visual issues with long text labels in *Horrible Options Menu*
+
 # v1.2.4 
 - Improved functionality of *Agree To Our Terms!* option ([#12](https://github.com/CubicCommunity/HorribleMenu/pull/12))
 - Sound effect for *Charged Leap* option will now only play when leaping at full charge

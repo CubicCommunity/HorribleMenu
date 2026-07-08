@@ -183,21 +183,23 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
 
     x += 30.f;
 
+    auto labelWidth = getScaledContentWidth() - 80.f;
+
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(o->getName().c_str(), font::big, getScaledContentWidth() - 40.f, kCCTextAlignmentLeft);
+    auto nameLabel = CCLabelBMFont::create(o->getName().c_str(), font::big);
     nameLabel->setID("name-label");
-    nameLabel->setLineBreakWithoutSpace(true);
+    nameLabel->setScale(0.4f);
+    nameLabel->limitLabelWidth(labelWidth, 0.4f, 0.125f);
     nameLabel->setAnchorPoint({0.f, 0.5f});
     nameLabel->setPosition({x, yCenter});
-    nameLabel->setScale(0.4f);
 
-    auto categoryLabel = CCLabelBMFont::create(o->getCategory().c_str(), font::gold, getScaledContentWidth() - 60.f, kCCTextAlignmentLeft);
+    auto categoryLabel = CCLabelBMFont::create(o->getCategory().c_str(), font::gold);
     categoryLabel->setID("category-label");
-    categoryLabel->setLineBreakWithoutSpace(true);
+    categoryLabel->setScale(0.25f);
+    categoryLabel->limitLabelWidth(labelWidth, 0.25f, 0.125f);
     categoryLabel->setAnchorPoint({0.f, 0.5f});
     categoryLabel->setPosition({x, yCenter + 10.f});
     categoryLabel->setOpacity(200);
-    categoryLabel->setScale(0.25f);
 
     addChild(nameLabel);
     addChild(categoryLabel);
@@ -316,9 +318,8 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     if (devMode) {
         auto str = fmt::format("{} | {} delegate(s)", o->getID(), options::getDelegates(o->getID()));
 
-        auto idLabel = CCLabelBMFont::create(str.c_str(), font::chat, getScaledContentWidth() - 20.f, kCCTextAlignmentLeft);
+        auto idLabel = CCLabelBMFont::create(str.c_str(), font::chat, getScaledContentWidth() - 20.f);
         idLabel->setID("id-label");
-        idLabel->setLineBreakWithoutSpace(true);
         idLabel->setPosition({getScaledContentWidth() - 7.5f, 5.25f});
         idLabel->setAnchorPoint({1, 0.5});
         idLabel->setColor(colors::black);

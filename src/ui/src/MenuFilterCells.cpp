@@ -49,16 +49,12 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     addChild(m_toggler);
 
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(
-        m_category.c_str(),
-        font::gold,
-        getScaledContentWidth() - 35.f,
-        kCCTextAlignmentLeft);
+    auto nameLabel = CCLabelBMFont::create(m_category.c_str(), font::gold);
     nameLabel->setID("name-label");
-    nameLabel->setLineBreakWithoutSpace(true);
-    nameLabel->setAnchorPoint({0.f, 0.5f});
-    nameLabel->setPosition({20.f, getScaledContentHeight() / 2.f});
     nameLabel->setScale(0.375f);
+    nameLabel->limitLabelWidth(getScaledContentWidth() - 35.f, 0.375f, 0.125f);
+    nameLabel->setPosition({20.f, getScaledContentHeight() / 2.f});
+    nameLabel->setAnchorPoint({0.f, 0.5f});
 
     addChild(nameLabel);
 
@@ -68,6 +64,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
 void MenuCategoryFilterCell::onToggle(CCObject* sender) {
     if (auto toggler = typeinfo_cast<CCMenuItemToggler*>(sender)) {
         auto on = !toggler->isOn();
+
         if (m_toggleCallback) m_toggleCallback(m_category, on);
         if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
     };
