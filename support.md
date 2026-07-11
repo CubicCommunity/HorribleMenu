@@ -4,9 +4,6 @@ Here are some links that take you directly to our lead developers' support pages
 ## Cheeseworks...
 **![<3](frame:gj_heartOn_001.png?scale=0.375) [Support me on Ko-fi](https://kofi.cheeseworks.gay/) to make my passion projects possible!**
 
-## ArcticWoof...
-- [Donate via Kofi](https://ko-fi.com/arcticwoof) **:)**
-
 ---
 
 *Thank you for enjoying and supporting our work! <3*
