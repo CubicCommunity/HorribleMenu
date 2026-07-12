@@ -1,3 +1,6 @@
+# v1.2.6 
+- Update credits
+
 # v1.2.5 
 - Fix visual issues with long text labels in *Horrible Options Menu*
 

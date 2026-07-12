@@ -186,6 +186,7 @@ bool MenuCredits::init(ZStringView theme) {
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "**[dankmeme](user:9735891)**: '*[cue](https://github.com/dankmeme01/cue)*' user interface library, '*[asp2](https://github.com/dankmeme01/asp2)*' utility library, '*[arc](https://github.com/dankmeme01/arc)*' async runtime library\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
+        "**[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding\n\n"
         "**[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo, original idea for this mod\n\n"
         "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
         "# ![📖](frame:accountBtn_myLists_001.png?scale=0.5) License & Attribution\n"
