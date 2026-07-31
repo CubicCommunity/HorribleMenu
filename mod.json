@@ -87,6 +87,12 @@
             "description": "Automatically toggle Safe Mode whenever you toggle any options that are marked as cheats.",
             "default": true
         },
+        "safe-mode-indicator": {
+            "type": "bool",
+            "name": "Indicator",
+            "description": "Shows an indicator on the end screen for safe mode being enabled.",
+            "default": true
+        },
         "utils": {
             "type": "button",
             "name": "Disable All Cheats",
