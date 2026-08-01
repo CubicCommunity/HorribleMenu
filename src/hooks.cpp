@@ -129,11 +129,18 @@ class $modify(HMEndLevelLayer, EndLevelLayer) {
 
         if (Mod::get()->getSettingValue<bool>("safe-mode-indicator")) {
             auto isSpriteSecret = rng::fast() <= 5;
-            auto sprite = CCSprite::createWithSpriteFrameName(themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default));
-            sprite->setScale(.4f);
-            sprite->setID("safe-mode-indicator"_spr);
-            sprite->setZOrder(2);
-            m_mainLayer->addChildAtPosition(sprite, Anchor::Center, {165, -105}, false);
+            auto btn = Button::createWithSpriteFrameName(themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default), [](auto) {
+                createQuickPopup(
+                    "Safe Mode",
+                    "<cj>Safe Mode</c> is <cg>enabled</c> and your progress <cr>has not</c> been saved.",
+                    "OK",
+                    nullptr,
+                    nullptr);
+            });
+            btn->setScale(.4f);
+            btn->setID("safe-mode-indicator"_spr);
+            btn->setZOrder(2);
+            m_mainLayer->addChildAtPosition(btn, Anchor::Center, {165, -105}, false);
         };
     };
 };
