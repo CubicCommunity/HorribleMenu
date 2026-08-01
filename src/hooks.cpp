@@ -9,6 +9,7 @@
 #include <Geode/modify/LevelEditorLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/GJGameLevel.hpp>
+#include <Geode/modify/EndLevelLayer.hpp>
 
 using namespace horrible::prelude;
 
@@ -57,6 +58,7 @@ namespace hooks {
     }
 
 $on_game(Loaded) {
+    if (auto om = OptionManager::get()) hooks::toggleSafeModeHooks(om->shouldBeSafeMode());
     listenForSettingChanges<bool>(
         setting::SafeMode,
         [](bool value) {
@@ -116,6 +118,30 @@ class $modify(HMSafePlayLayer, PlayLayer) {
         m_isTestMode = true;
         PlayLayer::levelComplete();
         m_isTestMode = testMode;
+    };
+};
+
+class $modify(HMEndLevelLayer, EndLevelLayer) {
+    HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
+
+    void customSetup() {
+        EndLevelLayer::customSetup();
+
+        if (Mod::get()->getSettingValue<bool>("safe-mode-indicator")) {
+            auto isSpriteSecret = rng::fast() <= 5;
+            auto btn = Button::createWithSpriteFrameName(themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default), [](auto) {
+                createQuickPopup(
+                    "Safe Mode",
+                    "<cj>Safe Mode</c> is <cg>enabled</c> and your progress <cr>has not</c> been saved.",
+                    "OK",
+                    nullptr,
+                    nullptr);
+            });
+            btn->setScale(.4f);
+            btn->setID("safe-mode-indicator"_spr);
+            btn->setZOrder(2);
+            m_mainLayer->addChildAtPosition(btn, Anchor::Center, {165, -105}, false);
+        };
     };
 };
 
