@@ -62,6 +62,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 - **[Geode SDK](https://geode-sdk.org/)**: Created an incredible SDK that made this mod possible!
 - **[RobTop Games](https://www.robtopgames.com/)**: Made [Geometry Dash](https://www.geometrydash.com/)...
 
+[![Contributors](https://contrib.rocks/image?repo=CubicCommunity/HorribleMenu)](https://github.com/CubicCommunity/HorribleMenu/graphs/contributors)
 *and...*
 
 - **[You](../../stargazers)!**: For being there and keeping us motivated to continue this big ole' project.

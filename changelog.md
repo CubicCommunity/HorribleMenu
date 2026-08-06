@@ -1,3 +1,8 @@
+# v1.2.7 
+- Fix an issue with Safe Mode always being active on startup ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
+- Added Safe Mode indicator to level end screen ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
+- Added credits for jumpscare levels' creators
+
 # v1.2.6 
 - Update credits
 
