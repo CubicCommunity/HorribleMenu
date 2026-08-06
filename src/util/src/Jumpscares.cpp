@@ -80,6 +80,6 @@ GJGameLevel* jumpscares::JumpscareLevelManager::getLevel(int id) const noexcept 
 };
 
 jumpscares::JumpscareLevelManager* jumpscares::JumpscareLevelManager::get() noexcept {
-    static auto inst = new (std::nothrow) JumpscareLevelManager();
-    return inst;
+    static JumpscareLevelManager inst;
+    return &inst;
 };
