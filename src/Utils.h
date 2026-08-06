@@ -20,7 +20,7 @@
 
 #include <Geode/binding/FMODAudioEngine.hpp>
 
-// Additional utility methods for Horrible Menu
+// Quick utility methods for Horrible Menu
 namespace horrible {
     // Pointer to this Geode mod
     inline static Mod* mod = geode::Mod::get();
