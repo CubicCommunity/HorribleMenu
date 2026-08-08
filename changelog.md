@@ -1,3 +1,6 @@
+# v1.3.0 
+- Raised minimum Geode loader support to `v5.8.0`
+
 # v1.2.7 
 - Fix an issue with Safe Mode always being active on startup ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
 - Added Safe Mode indicator to level end screen ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
