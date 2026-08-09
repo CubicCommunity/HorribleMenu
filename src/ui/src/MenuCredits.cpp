@@ -1,6 +1,6 @@
 #include "../MenuCredits.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -8,6 +8,51 @@
 
 using namespace geode::prelude;
 using namespace horrible::prelude;
+
+// hardcoded lead devs for this build of horrible menu if web request fails
+static auto const g_defaultDevs = std::to_array<LeadDevIcon>({
+    {
+        .id = "cheeseworks",
+        .name = "Cheeseworks",
+        .account = 6408873,
+        .icon = 28,
+        .color1 = 94,
+        .color2 = 98,
+        .glowColor = 12,
+    },
+});
+
+$on_mod(Loaded) {
+    if (auto cm = CreditsManager::get()) cm->loadLeadDevs();
+};
+
+Result<LeadDevIcon> matjson::Serialize<LeadDevIcon>::fromJson(matjson::Value const& value) {
+    if (!value.isObject()) return Err("Expected an object");
+
+    GEODE_UNWRAP_INTO(std::string id, value["id"].asString());
+    GEODE_UNWRAP_INTO(std::string name, value["name"].asString());
+    GEODE_UNWRAP_INTO(int account, value["account"].asInt());
+    GEODE_UNWRAP_INTO(int icon, value["icon"].asInt());
+    GEODE_UNWRAP_INTO(int color1, value["color1"].asInt());
+    GEODE_UNWRAP_INTO(int color2, value["color2"].asInt());
+    GEODE_UNWRAP_INTO(int glowColor, value["glowColor"].asInt());
+
+    return Ok(LeadDevIcon{std::move(id), std::move(name), account, icon, color1, color2, glowColor});
+};
+
+matjson::Value matjson::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
+    auto obj = matjson::Value();
+
+    obj["id"] = value.id;
+    obj["name"] = value.name;
+    obj["account"] = value.account;
+    obj["icon"] = value.icon;
+    obj["color1"] = value.color1;
+    obj["color2"] = value.color2;
+    obj["glowColor"] = value.glowColor;
+
+    return obj;
+};
 
 bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int color2, int glowColor) {
     if (!CCNode::init()) return false;
@@ -89,21 +134,9 @@ bool MenuCredits::init(ZStringView theme) {
     leadDevContainer->setAnchorPoint({anchor::center});
     leadDevContainer->setLayout(leadDevContainerLayout);
 
-    constexpr LeadDevIcon devs[] = {
-        {
-            "cheeseworks",
-            "Cheeseworks",
-            6408873,
-            28,
-            94,
-            98,
-            12,
-        },
-    };
-
     m_mainLayer->addChild(leadDevContainer, 1);
 
-    for (auto const& dev : devs) {
+    for (auto const& dev : CreditsManager::get()->getLeadDevs()) {
         if (auto player = MenuPlayer::create(dev.name, dev.account, dev.icon, dev.color1, dev.color2, dev.glowColor)) {
             player->setID(dev.id);
             leadDevContainer->addChild(player);
@@ -325,4 +358,52 @@ MenuCredits* MenuCredits::create(ZStringView theme) {
 
     delete ret;
     return nullptr;
+};
+
+void CreditsManager::loadLeadDevs() {
+    log::debug("Requested to fetch data on lead developers");
+
+#define LEAD_DEVS_INTERNAL(container, dev)                        \
+    log::trace("Pushing {} to lead developer list...", dev.name); \
+    container.push_back(dev)
+
+#define LEAD_DEVS(container, array)         \
+    for (auto const& dev : array) {         \
+        LEAD_DEVS_INTERNAL(container, dev); \
+    }
+
+    if (m_leadDevs.size() <= 0) {
+        log::info("Sending web request for lead developer credits");
+
+        async::spawn(
+            web::WebRequest().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
+            [this](web::WebResponse res) {
+                static auto const fallback = [this](std::string_view err = "") {
+                    log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
+                    LEAD_DEVS(m_leadDevs, g_defaultDevs);
+                };
+
+                if (res.error()) return fallback(res.errorMessage());
+
+                auto jsonRes = res.json();
+                if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
+
+                auto json = std::move(jsonRes).unwrap();
+
+                auto arrayRes = json.asArray();
+                if (arrayRes.isErr()) return fallback(std::move(arrayRes).unwrapErr());
+
+                auto array = std::move(arrayRes).unwrap();
+
+                for (auto const& val : array) {
+                    LEAD_DEVS_INTERNAL(m_leadDevs, matjson::Serialize<LeadDevIcon>::fromJson(val).unwrapOrDefault());
+                };
+            });
+    } else {
+        log::error("Lead developer data already populated");
+    };
+};
+
+std::span<const LeadDevIcon> CreditsManager::getLeadDevs() const noexcept {
+    return m_leadDevs;
 };

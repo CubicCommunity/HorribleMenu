@@ -1,6 +1,6 @@
 #include "../Jumpscares.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -77,9 +77,4 @@ GJGameLevel* jumpscares::JumpscareLevelManager::getLevel(int id) const noexcept 
     if (it != m_levels.end()) return it->second.data();
 
     return nullptr;
-};
-
-jumpscares::JumpscareLevelManager* jumpscares::JumpscareLevelManager::get() noexcept {
-    static JumpscareLevelManager inst;
-    return &inst;
 };

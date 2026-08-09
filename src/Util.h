@@ -16,6 +16,7 @@
 
 #include <Geode/ui/Button.hpp>
 
+#include <Geode/utils/web.hpp>
 #include <Geode/utils/cocos.hpp>
 
 #include <Geode/binding/FMODAudioEngine.hpp>

@@ -1,6 +1,6 @@
 #include "../RandomAd.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -38,7 +38,10 @@ bool RandomAd::init() {
             : log::error("Ad sprite failed to load: {}", res.unwrapErr());
     });
 
-    projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
+    std::string url = "https://api.cubicstudios.xyz/breakeode/v1/fetch/random-thumbnail";
+    if (Loader::get()->isModLoaded("prevter.imageplus")) url = fmt::format("{}?webp=1", url);
+
+    projThumb->loadFromUrl(std::move(url), CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
 
     auto playBtnLoading = LoadingSpinner::create(37.5f);

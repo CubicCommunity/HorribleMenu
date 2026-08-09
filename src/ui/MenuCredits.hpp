@@ -1,10 +1,22 @@
 #pragma once
 
-#include <Utils.h>
+#include <Util.h>
+
+#include <util/Base.h>
 
 #include <Geode/Geode.hpp>
 
 namespace horrible {
+    struct LeadDevIcon final {
+        std::string id;
+        std::string name;
+        int account;
+        int icon;
+        int color1;
+        int color2;
+        int glowColor;
+    };
+
     class MenuPlayer final : public cocos2d::CCNode {
     protected:
         bool init(geode::ZStringView name, int account, int icon, int color1, int color2, int glowColor);
@@ -14,16 +26,6 @@ namespace horrible {
     };
 
     class MenuCredits final : public geode::Popup {
-        struct LeadDevIcon final {
-            const char* id;
-            const char* name;
-            int account;
-            int icon;
-            int color1;
-            int color2;
-            int glowColor;
-        };
-
         struct ResourceButton final {
             const char* id;
             const char* label;
@@ -43,4 +45,20 @@ namespace horrible {
 
         static MenuCredits* get() noexcept;
     };
+
+    class CreditsManager final : public base::Singleton<CreditsManager> {
+    private:
+        std::vector<LeadDevIcon> m_leadDevs;
+
+    public:
+        void loadLeadDevs();
+
+        std::span<const LeadDevIcon> getLeadDevs() const noexcept;
+    };
+};
+
+template <>
+struct matjson::Serialize<horrible::LeadDevIcon> final {
+    static geode::Result<horrible::LeadDevIcon> fromJson(matjson::Value const& value);
+    static matjson::Value toJson(horrible::LeadDevIcon const& value);
 };

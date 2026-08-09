@@ -1,5 +1,7 @@
 #pragma once
 
+#include <util/Base.h>
+
 #include <Geode/Geode.hpp>
 
 namespace horrible {
@@ -12,23 +14,11 @@ namespace horrible {
                 void getLevel(int id, geode::CopyableFunction<void(geode::Result<GJGameLevel*>)>&& callback);
             };
 
-            class JumpscareLevelManager final : public MusicDownloadDelegate {
+            class JumpscareLevelManager final : public base::Singleton<JumpscareLevelManager>, MusicDownloadDelegate {
             private:
                 std::unordered_map<int, geode::Ref<GJGameLevel>> m_levels;
 
-            protected:
-                JumpscareLevelManager() = default;
-                ~JumpscareLevelManager() = default;
-
-                JumpscareLevelManager(const JumpscareLevelManager&) = delete;
-                JumpscareLevelManager& operator=(const JumpscareLevelManager&) = delete;
-
-                JumpscareLevelManager(JumpscareLevelManager&&) = delete;
-                JumpscareLevelManager& operator=(JumpscareLevelManager&&) = delete;
-
             public:
-                static JumpscareLevelManager* get() noexcept;
-
                 void saveLevel(GJGameLevel* level);
 
                 GJGameLevel* getLevel(int id) const noexcept;
