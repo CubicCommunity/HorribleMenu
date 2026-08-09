@@ -378,7 +378,7 @@ void CreditsManager::loadLeadDevs() {
         async::spawn(
             web::WebRequest().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
             [this](web::WebResponse res) {
-                static auto const fallback = [this](std::string_view err = "") {
+                auto const fallback = [this](std::string_view err = "") {
                     log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
                     LEAD_DEVS(m_leadDevs, g_defaultDevs);
                 };
