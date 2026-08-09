@@ -361,7 +361,7 @@ MenuCredits* MenuCredits::create(ZStringView theme) {
 };
 
 void CreditsManager::loadLeadDevs() {
-    log::debug("Requested to fetch data on lead developers");
+    log::trace("Requested to fetch data on lead developers");
 
 #define LEAD_DEVS_INTERNAL(container, dev)                        \
     log::trace("Pushing {} to lead developer list...", dev.name); \
@@ -373,7 +373,7 @@ void CreditsManager::loadLeadDevs() {
     }
 
     if (m_leadDevs.size() <= 0) {
-        log::info("Sending web request for lead developer credits");
+        log::debug("Sending web request for lead developer credits");
 
         async::spawn(
             web::WebRequest().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
@@ -395,6 +395,7 @@ void CreditsManager::loadLeadDevs() {
 
                 auto array = std::move(arrayRes).unwrap();
 
+                log::info("Successfully fetched lead developer list");
                 for (auto const& val : array) {
                     LEAD_DEVS_INTERNAL(m_leadDevs, matjson::Serialize<LeadDevIcon>::fromJson(val).unwrapOrDefault());
                 };
