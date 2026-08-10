@@ -22,8 +22,16 @@ static auto const g_defaultDevs = std::to_array<LeadDevIcon>({
     },
 });
 
-$on_mod(Loaded) {
-    if (auto cm = CreditsManager::get()) cm->loadLeadDevs();
+// hardcoded license description for this build of horrible menu if web request fails
+static auto constexpr g_defaultLicense =
+    "The current build of [Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://github.com/CubicCommunity/HorribleMenu/blob/main/LICENSE.md).\n\n"
+    "Third-party assets, API modifications, libraries, and other external resources are credited in the credits interface.";
+
+$on_game(Loaded) {
+    if (auto cm = CreditsManager::get()) {
+        cm->loadLeadDevs();
+        cm->loadLicense();
+    };
 };
 
 Result<LeadDevIcon> matjson::Serialize<LeadDevIcon>::fromJson(matjson::Value const& value) {
@@ -50,6 +58,30 @@ matjson::Value matjson::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value)
     obj["color1"] = value.color1;
     obj["color2"] = value.color2;
     obj["glowColor"] = value.glowColor;
+
+    return obj;
+};
+
+Result<LicenseData> matjson::Serialize<LicenseData>::fromJson(matjson::Value const& value) {
+    if (!value.isObject()) return Err("Expected an object");
+
+    GEODE_UNWRAP_INTO(std::string key, value["key"].asString());
+    GEODE_UNWRAP_INTO(std::string name, value["name"].asString());
+    GEODE_UNWRAP_INTO(std::string spdxID, value["spdx_id"].asString());
+    GEODE_UNWRAP_INTO(std::string url, value["url"].asString());
+    GEODE_UNWRAP_INTO(std::string nodeID, value["node_id"].asString());
+
+    return Ok(LicenseData{std::move(key), std::move(name), std::move(spdxID), std::move(url), std::move(nodeID)});
+};
+
+matjson::Value matjson::Serialize<LicenseData>::toJson(LicenseData const& value) {
+    auto obj = matjson::Value();
+
+    obj["key"] = value.key;
+    obj["name"] = value.name;
+    obj["spdx_id"] = value.spdxID;
+    obj["url"] = value.url;
+    obj["node_id"] = value.nodeID;
 
     return obj;
 };
@@ -194,6 +226,17 @@ bool MenuCredits::init(ZStringView theme) {
                 openChangelogPopup(mod);
             },
         },
+        {
+            "license-btn",
+            "Licensing",
+            [](auto) {
+                MDPopup::create(
+                    "License & Attribution",
+                    CreditsManager::get()->getLicense(),
+                    "OK")
+                    ->show();
+            },
+        },
     });
 
     for (auto& b : resrcBtns) {
@@ -225,10 +268,7 @@ bool MenuCredits::init(ZStringView theme) {
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
         "**[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding\n\n"
         "**[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo, original idea for this mod\n\n"
-        "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
-        "# ![📖](frame:accountBtn_myLists_001.png?scale=0.5) License & Attribution\n"
-        "The current build of [Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://github.com/CubicCommunity/HorribleMenu/blob/main/LICENSE.md).\n\n"
-        "Third-party assets, API modifications, libraries, and other external resources are credited in their respective sections above.",
+        "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days",
         {
             m_mainLayer->getScaledContentWidth() - 55.f,
             140.f,
@@ -363,13 +403,20 @@ MenuCredits* MenuCredits::create(ZStringView theme) {
 void CreditsManager::loadLeadDevs() {
     log::trace("Requested to fetch data on lead developers");
 
-#define LEAD_DEVS_INTERNAL(container, dev)                        \
+#define LEAD_DEVS_INTERNAL(container, devRes)                     \
+    if (devRes.isErr()) {                                         \
+        log::error("{}", std::move(devRes).unwrapErr());          \
+        continue;                                                 \
+    };                                                            \
+                                                                  \
+    auto dev = std::move(devRes).unwrap();                        \
+                                                                  \
     log::trace("Pushing {} to lead developer list...", dev.name); \
-    container.push_back(dev)
+    container.push_back(std::move(dev))
 
-#define LEAD_DEVS(container, array)         \
-    for (auto const& dev : array) {         \
-        LEAD_DEVS_INTERNAL(container, dev); \
+#define LEAD_DEVS(container, array)                                \
+    for (auto const& d : array) {                                  \
+        LEAD_DEVS_INTERNAL(container, Result<LeadDevIcon>(Ok(d))); \
     }
 
     if (m_leadDevs.size() <= 0) {
@@ -397,7 +444,7 @@ void CreditsManager::loadLeadDevs() {
 
                 log::info("Successfully fetched lead developer list");
                 for (auto const& val : array) {
-                    LEAD_DEVS_INTERNAL(m_leadDevs, matjson::Serialize<LeadDevIcon>::fromJson(val).unwrapOrDefault());
+                    LEAD_DEVS_INTERNAL(m_leadDevs, val.as<LeadDevIcon>());
                 };
             });
     } else {
@@ -405,6 +452,47 @@ void CreditsManager::loadLeadDevs() {
     };
 };
 
+void CreditsManager::loadLicense() {
+    log::trace("Requested to fetch data on mod licensing");
+
+    if (m_license.empty()) {
+        log::debug("Sending web request for lead developer credits");
+
+        async::spawn(
+            web::WebRequest().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toNonVString())),
+            [this](web::WebResponse res) {
+                auto const fallback = [this](std::string_view err = "") {
+                    log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
+                    m_license = g_defaultLicense;
+                };
+
+                if (res.error()) return fallback(res.errorMessage());
+
+                auto jsonRes = res.json();
+                if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
+
+                auto json = std::move(jsonRes).unwrap();
+
+                auto licRes = json.as<LicenseData>();
+                if (licRes.isErr()) return fallback(std::move(licRes).unwrapErr());
+
+                auto lic = std::move(licRes).unwrap();
+
+                m_license = fmt::format(
+                    "[Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under [{}]({}).\n\n"
+                    "Third-party assets, API modifications, libraries, and other external resources are credited in their respective sections in the Credits interface.",
+                    lic.name,
+                    lic.url);
+            });
+    } else {
+        log::error("License data already populated");
+    };
+};
+
 std::span<const LeadDevIcon> CreditsManager::getLeadDevs() const noexcept {
     return m_leadDevs;
+};
+
+ZStringView CreditsManager::getLicense() const noexcept {
+    return m_license;
 };
