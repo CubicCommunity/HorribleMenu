@@ -1,5 +1,9 @@
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.8.0`
+- Added floating menu button icon option **Steam Happy**
+- Added floating menu button icon option **Soggy Cat**
+- Data to credit Horrible Menu's lead development team is now fetched remotely
+- Optimized thumbnail loading in *Level Ads* option while [ImagePlus](https://geode-sdk.org/mods/prevter.imageplus) mod is loaded
 
 # v1.2.7 
 - Fix an issue with Safe Mode always being active on startup ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
