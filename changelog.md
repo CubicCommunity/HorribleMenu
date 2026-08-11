@@ -1,5 +1,6 @@
 # v1.3.0 
-- Raised minimum Geode loader support to `v5.8.0`
+- Raised minimum Geode loader support to `v5.9.0`
+- Added user badges via [Badgified](https://geode-sdk.org/mods/dasshu.badgified)
 - Added floating menu button icon option **Steam Happy**
 - Added floating menu button icon option **Soggy Cat**
 - Data to credit Horrible Menu's lead development team is now fetched remotely

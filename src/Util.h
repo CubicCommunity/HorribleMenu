@@ -1,7 +1,6 @@
 #pragma once
 
 #include <horrible/API.h>
-#include <horrible/OptionalAPI.hpp>
 
 #include <util/Include.h>
 #include <util/Macros.h>
