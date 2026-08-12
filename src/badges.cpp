@@ -41,7 +41,7 @@ namespace horrible::badges {
         if (id == lead) return "This user, a member of <cf>[Team Breakeode](https://breakeode.cubicstudios.xyz/)</c>, is a <cy>Lead Developer</c> of ![ico](frame:cubicstudios.horriblemenu/icon.png?scale=0.35) <co>[Horrible Menu](mod:cubicstudios.horriblemenu)</c>. They coordinate development, review contributions, and oversee the overall direction of the mod.";
         if (id == dev) return "This user, a member of <cf>[Team Breakeode](https://breakeode.cubicstudios.xyz/)</c>, is an active <cb>Developer</c> of ![ico](frame:cubicstudios.horriblemenu/icon.png?scale=0.35) <co>[Horrible Menu](mod:cubicstudios.horriblemenu)</c>. They currently help maintain the codebase for the mod.";
         if (id == contributor) return "This user is a <cj>Contributor</c> to ![ico](frame:cubicstudios.horriblemenu/icon.png?scale=0.35) <co>[Horrible Menu](mod:cubicstudios.horriblemenu)</c>. They've assisted development by contributing code to the mod's codebase.";
-        if (id == supporter) return "This user is a <cp>Supporter</c> of ![ico](frame:cubicstudios.horriblemenu/icon.png?scale=0.35) <co>[Horrible Menu](mod:cubicstudios.horriblemenu)</c>. They've subscribed to support Breakeode monthly on their Ko-fi page.";
+        if (id == supporter) return "This user is a <cp>Supporter</c> of ![ico](frame:cubicstudios.horriblemenu/icon.png?scale=0.35) <co>[Horrible Menu](mod:cubicstudios.horriblemenu)</c>. They've subscribed to support Breakeode monthly on their **[Ko-fi page](https://ko-fi.com/breakeode/)**.";
 
         return "No description available for this badge... Sorry!";
     };
