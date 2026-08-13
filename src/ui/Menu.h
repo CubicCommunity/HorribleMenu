@@ -44,6 +44,19 @@ namespace horrible {
         static Menu* get() noexcept;
     };
 
+    class MenuSuggestions final : public geode::Popup {
+    private:
+        static MenuSuggestions* s_inst;
+
+    protected:
+        bool init() override;
+
+    public:
+        static MenuSuggestions* create(geode::ZStringView theme);
+
+        static MenuSuggestions* get() noexcept;
+    };
+
     // For convenience
     namespace menu {
         // Open the Horrible Menu mod option menu

@@ -246,7 +246,7 @@ bool MenuCredits::init(ZStringView theme) {
                 font::gold,
                 themes::getButtonSquareSprite(theme)),
             std::move(b.callback));
-        btn->setID(b.id);
+        btn->setID(std::move(b.id));
         btn->setScale(0.75f);
 
         resrcBtnContainer->addChild(btn);
