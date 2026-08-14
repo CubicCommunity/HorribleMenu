@@ -242,7 +242,7 @@ bool MenuCredits::init(ZStringView theme) {
     for (auto& b : resrcBtns) {
         auto btn = Button::createWithNode(
             ButtonSprite::create(
-                b.label,
+                b.label.c_str(),
                 font::gold,
                 themes::getButtonSquareSprite(theme)),
             std::move(b.callback));

@@ -36,7 +36,7 @@ namespace horrible {
     class MenuCredits final : public geode::Popup {
         struct ResourceButton final {
             std::string id;
-            const char* label;
+            std::string label;
             geode::Button::ButtonCallback callback;
         };
 
