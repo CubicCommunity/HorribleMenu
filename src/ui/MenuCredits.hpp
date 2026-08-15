@@ -69,13 +69,13 @@ namespace horrible {
 };
 
 template <>
-struct matjson::Serialize<horrible::LeadDevIcon> final {
-    static geode::Result<horrible::LeadDevIcon> fromJson(matjson::Value const& value);
-    static matjson::Value toJson(horrible::LeadDevIcon const& value);
+struct horrible::json::Serialize<horrible::LeadDevIcon> final {
+    static geode::Result<horrible::LeadDevIcon> fromJson(horrible::json::Value const& value);
+    static horrible::json::Value toJson(horrible::LeadDevIcon const& value);
 };
 
 template <>
-struct matjson::Serialize<horrible::LicenseData> final {
-    static geode::Result<horrible::LicenseData> fromJson(matjson::Value const& value);
-    static matjson::Value toJson(horrible::LicenseData const& value);
+struct horrible::json::Serialize<horrible::LicenseData> final {
+    static geode::Result<horrible::LicenseData> fromJson(horrible::json::Value const& value);
+    static horrible::json::Value toJson(horrible::LicenseData const& value);
 };

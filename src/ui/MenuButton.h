@@ -1,11 +1,13 @@
 #pragma once
 
+#include <Util.h>
+
 #include <Geode/Geode.hpp>
 
 template <>
-struct matjson::Serialize<cocos2d::CCPoint> final {
-    static geode::Result<cocos2d::CCPoint> fromJson(matjson::Value const& value);
-    static matjson::Value toJson(cocos2d::CCPoint const& value);
+struct horrible::json::Serialize<cocos2d::CCPoint> final {
+    static geode::Result<cocos2d::CCPoint> fromJson(horrible::json::Value const& value);
+    static horrible::json::Value toJson(cocos2d::CCPoint const& value);
 };
 
 namespace horrible {

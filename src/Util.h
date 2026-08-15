@@ -13,12 +13,10 @@
 
 #include <cocos2d.h>
 
-#include <Geode/ui/Button.hpp>
+#include <matjson.hpp>
 
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/cocos.hpp>
-
-#include <Geode/binding/FMODAudioEngine.hpp>
 
 // Quick utility methods for Horrible Menu
 namespace horrible {
@@ -64,7 +62,8 @@ namespace horrible {
         inline constexpr auto chat = "chatFont.fnt";
     };
 
-    namespace fs = asp::fs;  // Shortcut for `asp::fs`
+    namespace json = matjson;  // Shortcut for `matjson`
+    namespace fs = asp::fs;    // Shortcut for `asp::fs`
 
     namespace str {
         using namespace geode::utils::string;

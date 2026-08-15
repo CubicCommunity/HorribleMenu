@@ -102,7 +102,7 @@ namespace horrible::badges {
     };
 
     static void addManualBadge(int id, CCNode* menu, float size = 21.5f) {
-        badges::BadgeManager::get()->getBadge(id, [size, menu = WeakRef(menu)](Result<std::string> badgeRes) {
+        if (auto bm = badges::BadgeManager::get()) bm->getBadge(id, [size, menu = WeakRef(menu)](Result<std::string> badgeRes) {
             if (badgeRes.isErr()) return;
 
             if (auto m = menu.lock()) {

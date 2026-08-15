@@ -10,16 +10,7 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 $on_game(Loaded) {
-    async::spawn(
-        argon::startAuth(),
-        [](Result<std::string> result) {
-            if (result.isErr()) return log::error("Failed to authorize with Argon: {}", std::move(result).unwrapErr());
-
-            if (auto gjam = GJAccountManager::sharedState()) {
-                if (auto as = AuthState::get()) as->setAuthInfo(gjam->m_accountID, gjam->m_uID, gjam->m_username, std::move(result).unwrap());
-                log::info("Authorized {} ({}) with Argon", gjam->m_username, gjam->m_accountID);
-            };
-        });
+    if (auto as = AuthState::get()) as->startAuth([](Result<> res) {if (res.isErr()) log::error("Argon authorization failed: {}", std::move(res).unwrapErr()); });
 };
 
 MenuSuggest* MenuSuggest::s_inst = nullptr;
@@ -39,12 +30,15 @@ bool MenuSuggest::init(ZStringView theme) {
 
     m_topicInput = TextInput::create(mainLayerSize.width - 25.f, "What's your idea?");
     m_topicInput->setID("topic-input");
+    m_topicInput->setMaxCharCount(48);
     m_topicInput->setPosition({mainLayerSize.width / 2.f, (mainLayerSize.height / 2.f) + 60.f});
 
     m_mainLayer->addChild(m_topicInput, 1);
 
     m_descriptionInput = TextInput::create(mainLayerSize.width - 25.f, "Describe your idea in more detail...", "chatFont.fnt");
     m_descriptionInput->setID("description-input");
+    m_descriptionInput->setMaxCharCount(512);
+    m_descriptionInput->setCommonFilter(CommonFilter::Any);
     m_descriptionInput->setContentHeight(m_descriptionInput->getScaledContentHeight() * 1.5f);
     m_descriptionInput->setPosition({mainLayerSize.width / 2.f, (mainLayerSize.height / 2.f) + 26.5f});
 
@@ -76,12 +70,19 @@ bool MenuSuggest::init(ZStringView theme) {
             "goldFont.fnt",
             themes::getButtonSquareSprite(theme),
             0.875f),
-        [this](auto) {
+        [this](Button* sender) {
+            processSuggestion(sender);
         });
     submitBtn->setID("submit-idea-btn");
     submitBtn->setScale(0.75f);
 
     m_mainLayer->addChildAtPosition(submitBtn, Anchor::Bottom);
+
+    m_loading = LoadingSpinner::create(37.5f);
+    m_loading->setVisible(false);
+    m_loading->setPosition(submitBtn->getPosition());
+
+    m_mainLayer->addChild(m_loading, 9);
 
     auto infoBtn = Button::createWithSpriteFrameName(
         "GJ_infoIcon_001.png",
@@ -99,6 +100,75 @@ bool MenuSuggest::init(ZStringView theme) {
     m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
 
     return true;
+};
+
+void MenuSuggest::processSuggestion(Button* sender) {
+    if (m_loading) m_loading->setVisible(true);
+    sender->setVisible((false));
+
+    if (auto as = AuthState::get()) {
+        as->startAuth([as, self = WeakRef(this), btn = WeakRef(sender)](Result<> res) {
+            auto const toggleBack = [btn](Ref<MenuSuggest>& s) {
+                if (auto b = btn.lock()) b->setVisible(true);
+                if (s->m_loading) s->m_loading->setVisible(false);
+            };
+
+            if (res.isErr()) {
+                Notification::create("Log in to send suggestions!", NotificationIcon::Warning)->show();
+                if (auto s = self.lock()) toggleBack(s);
+            };
+
+            if (auto s = self.lock()) {
+                if (s->m_topicInput && s->m_descriptionInput) {
+                    auto const fallback = [&s, &toggleBack](ZStringView err) {
+                        log::error("Suggestion request failed: {}", err);
+                        Notification::create(err, NotificationIcon::Error)->show();
+                        toggleBack(s);
+                    };
+
+                    auto topic = str::trim(s->m_topicInput->getString());
+                    if (topic.empty()) return fallback("Topic field cannot be empty");
+                    if (topic.size() > 48) return fallback("Topic text exceeds 48 characters");
+
+                    auto desc = str::trim(s->m_descriptionInput->getString());
+                    if (desc.empty()) return fallback("Description field cannot be empty");
+                    if (desc.size() > 512) return fallback("Description text exceeds 512 characters");
+
+                    auto reqJson = json::Value();
+                    reqJson["topic"] = topic;
+                    reqJson["description"] = desc;
+
+                    reqJson["account_id"] = as->getAccountID();
+                    reqJson["user_id"] = as->getUserID();
+                    reqJson["username"] = as->getUsername();
+                    reqJson["authtoken"] = as->getToken();
+
+                    reqJson["v"] = Mod::get()->getVersion().toVString();
+
+                    auto req = web::WebRequest()
+                                   .bodyJSON(reqJson);
+
+                    async::spawn(
+                        req.post("https://api.cubicstudios.xyz/breakeode/v1/horrible/suggest"),
+                        [self, topic, toggleBack](web::WebResponse res) {
+                            auto const fallback = [&self, &toggleBack](ZStringView err) {
+                                log::error("Suggestion request failed: {}", err);
+                                Notification::create(err, NotificationIcon::Error)->show();
+                                if (auto s = self.lock()) toggleBack(s);
+                            };
+
+                            if (!res.ok()) return fallback(fmt::format("Request failed ({}: {})", res.code(), res.json().unwrapOrDefault()["error"].asString().unwrapOrDefault()));
+
+                            Notification::create(fmt::format("Sent '{}'!", topic), NotificationIcon::Success)->show();
+                            if (auto s = self.lock()) toggleBack(s);
+                        });
+                };
+            };
+        });
+    } else {
+        sender->setVisible((true));
+        if (m_loading) m_loading->setVisible(false);
+    };
 };
 
 void MenuSuggest::onExit() {
@@ -127,6 +197,16 @@ void AuthState::setAuthInfo(int accountID, int userID, std::string username, std
     m_userID = userID;
     m_username = std::move(username);
     m_token = std::move(token);
+
+    m_authorized = !m_token.empty();
+};
+
+bool AuthState::isAuthorized() const noexcept {
+    return m_authorized;
+};
+
+bool AuthState::isAuthValid() const {
+    return isAuthorized() && (getAccountID() == argon::getGameAccountData().accountId);
 };
 
 int AuthState::getAccountID() const noexcept {
@@ -145,6 +225,27 @@ ZStringView AuthState::getToken() const noexcept {
     return m_token;
 };
 
+void AuthState::startAuth(CopyableFunction<void(Result<>)>&& callback) {
+    if (!argon::signedIn()) return callback(Err("Player is logged out"));
+
+    if (auto as = AuthState::get()) {
+        if (as->isAuthValid()) return callback(Ok());
+
+        async::spawn(
+            argon::startAuth(),
+            [cb = std::move(callback), as](Result<std::string> res) {
+                if (res.isErr()) return cb(res.asErr());
+
+                auto const acc = argon::getGameAccountData();
+
+                as->setAuthInfo(acc.accountId, acc.userId, acc.username, std::move(res).unwrap());
+                log::info("Authorized {} ({}) with Argon", acc.username, acc.accountId);
+
+                return cb(Ok());
+            });
+    };
+};
+
 MenuDiscord* MenuDiscord::s_inst = nullptr;
 
 bool MenuDiscord::init(ZStringView theme) {
@@ -153,7 +254,7 @@ bool MenuDiscord::init(ZStringView theme) {
     if (!Popup::init({330.f, 225.f}, themes::getBackgroundSprite(theme))) return false;
 
     setID("discord"_spr);
-    setTitle("Join the Community");
+    setTitle("Discord Community");
     setCloseButtonSpr(themes::createThemeCircleSprite(btns));
 
     popup::closeBtnID(m_closeBtn);

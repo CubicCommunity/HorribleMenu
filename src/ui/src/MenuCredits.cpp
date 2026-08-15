@@ -32,7 +32,7 @@ $on_game(Loaded) {
     };
 };
 
-Result<LeadDevIcon> matjson::Serialize<LeadDevIcon>::fromJson(matjson::Value const& value) {
+Result<LeadDevIcon> json::Serialize<LeadDevIcon>::fromJson(json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
 
     GEODE_UNWRAP_INTO(std::string id, value["id"].asString());
@@ -46,8 +46,8 @@ Result<LeadDevIcon> matjson::Serialize<LeadDevIcon>::fromJson(matjson::Value con
     return Ok(LeadDevIcon{std::move(id), std::move(name), account, icon, color1, color2, glowColor});
 };
 
-matjson::Value matjson::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
-    auto obj = matjson::Value();
+json::Value json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
+    auto obj = json::Value();
 
     obj["id"] = value.id;
     obj["name"] = value.name;
@@ -60,7 +60,7 @@ matjson::Value matjson::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value)
     return obj;
 };
 
-Result<LicenseData> matjson::Serialize<LicenseData>::fromJson(matjson::Value const& value) {
+Result<LicenseData> json::Serialize<LicenseData>::fromJson(json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
 
     GEODE_UNWRAP_INTO(std::string key, value["key"].asString());
@@ -72,8 +72,8 @@ Result<LicenseData> matjson::Serialize<LicenseData>::fromJson(matjson::Value con
     return Ok(LicenseData{std::move(key), std::move(name), std::move(spdxID), std::move(url), std::move(nodeID)});
 };
 
-matjson::Value matjson::Serialize<LicenseData>::toJson(LicenseData const& value) {
-    auto obj = matjson::Value();
+json::Value json::Serialize<LicenseData>::toJson(LicenseData const& value) {
+    auto obj = json::Value();
 
     obj["key"] = value.key;
     obj["name"] = value.name;

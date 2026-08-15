@@ -14,8 +14,12 @@ namespace horrible {
         geode::TextInput* m_topicInput;
         geode::TextInput* m_descriptionInput;
 
+        geode::LoadingSpinner* m_loading;
+
     protected:
         void onExit() override;
+
+        void processSuggestion(geode::Button* sender);
 
         bool init(geode::ZStringView theme);
 
@@ -27,13 +31,21 @@ namespace horrible {
 
     class AuthState final : public base::Singleton<AuthState> {
     private:
+        bool m_authorized = false;
+
         int m_accountID;
         int m_userID;
         std::string m_username;
         std::string m_token;
 
-    public:
+    protected:
         void setAuthInfo(int accountID, int userID, std::string username, std::string token);
+
+    public:
+        void startAuth(geode::CopyableFunction<void(Result<>)>&& callback);
+
+        bool isAuthorized() const noexcept;
+        bool isAuthValid() const;
 
         int getAccountID() const noexcept;
         int getUserID() const noexcept;

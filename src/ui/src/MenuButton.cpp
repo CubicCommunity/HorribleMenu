@@ -9,7 +9,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-Result<CCPoint> matjson::Serialize<CCPoint>::fromJson(matjson::Value const& value) {
+Result<CCPoint> json::Serialize<CCPoint>::fromJson(json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
 
     GEODE_UNWRAP_INTO(float x, value["x"].asDouble());
@@ -18,8 +18,8 @@ Result<CCPoint> matjson::Serialize<CCPoint>::fromJson(matjson::Value const& valu
     return Ok(CCPoint{x, y});
 };
 
-matjson::Value matjson::Serialize<CCPoint>::toJson(CCPoint const& value) {
-    auto obj = matjson::Value();
+json::Value json::Serialize<CCPoint>::toJson(CCPoint const& value) {
+    auto obj = json::Value();
     obj["x"] = value.x;
     obj["y"] = value.y;
 
