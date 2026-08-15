@@ -14,13 +14,13 @@ bool RandomAd::init() {
 
     setID("ad"_spr);
     setTitle("Sponsored");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
+    setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
 
     popup::closeBtnID(m_closeBtn);
 
-    auto label = CCLabelBMFont::create("Check out this cool level we found!", font::chat);
+    auto label = Label::create("Check out this cool level we found!", font::chat);
     label->setID("message");
-    label->setAlignment(kCCTextAlignmentCenter);
+    label->setAlignment(Label::Alignment::Center);
     label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
     label->setAnchorPoint(anchor::center);
 

@@ -4,8 +4,6 @@
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/ui/GeodeUI.hpp>
-
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
@@ -142,13 +140,13 @@ bool MenuCredits::init(ZStringView theme) {
 
     setID("credits"_spr);
     setTitle("Credits");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, CircleBaseSize::Small));
+    setCloseButtonSpr(themes::createThemeCircleSprite(btns));
 
     popup::closeBtnID(m_closeBtn);
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
-    auto leadDevLabel = CCLabelBMFont::create("Lead Developers", font::big);
+    auto leadDevLabel = Label::create("Lead Developers", font::big);
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);
     leadDevLabel->setAnchorPoint({0, 0.5});
@@ -372,9 +370,8 @@ bool MenuCredits::init(ZStringView theme) {
         });
     infoBtn->setID("info-btn");
     infoBtn->setScale(0.75f);
-    infoBtn->setPosition(m_mainLayer->getScaledContentSize() - 13.75f);
 
-    m_mainLayer->addChild(infoBtn, 9);
+    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
 
     return true;
 };

@@ -2,6 +2,7 @@
 
 #include "../MenuOptionCell.hpp"
 #include "../MenuCredits.hpp"
+#include "../MenuExtras.hpp"
 #include "../MenuFilterCells.hpp"
 
 #include <Util.h>
@@ -114,8 +115,8 @@ struct Menu::Impl final {
         optionList->scrollToTop();
     };
 
-    CCLabelBMFont* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
-        auto label = CCLabelBMFont::create(text.c_str(), font::big);
+    Label* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
+        auto label = Label::create(text.c_str(), font::big);
         label->setID(std::move(id));
         label->setScale(0.375f);
         label->setAnchorPoint(anchor::center);
@@ -137,10 +138,9 @@ void Menu::setupSafeModeNode(bool safeMode) {
 
         m_impl->safeModeContainer->addChild(icon);
 
-        auto label = CCLabelBMFont::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", font::big);
+        auto label = Label::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", font::big);
         label->setScale(0.325f);
         label->setColor(safeMode ? colors::green : colors::red);
-        label->setAlignment(kCCTextAlignmentCenter);
 
         m_impl->safeModeContainer->addChild(label);
 
@@ -250,7 +250,7 @@ bool Menu::init() {
 
     setID("options"_spr);
     setTitle("Horrible Options");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, CircleBaseSize::Small));
+    setCloseButtonSpr(themes::createThemeCircleSprite(btns));
 
     popup::closeBtnID(m_closeBtn);
 
@@ -396,11 +396,11 @@ bool Menu::init() {
 
     m_mainLayer->addChild(filterContainerBg);
 
-    auto filterContainerLabel = CCLabelBMFont::create("Filters", font::gold);
+    auto filterContainerLabel = Label::create("Filters", font::gold);
     filterContainerLabel->setID("filter-container-label");
     filterContainerLabel->setScale(0.375f);
     filterContainerLabel->setAnchorPoint({0.5, 0});
-    filterContainerLabel->setAlignment(kCCTextAlignmentCenter);
+    filterContainerLabel->setAlignment(Label::Alignment::Center);
     filterContainerLabel->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 50.f});
 
     m_mainLayer->addChild(filterContainerLabel);
@@ -490,38 +490,37 @@ bool Menu::init() {
     auto socialContainer = CCNode::create();
     socialContainer->setID("social-container");
     socialContainer->setAnchorPoint({1, 0.5});
-    socialContainer->setPosition({mainLayerSize.width - 7.5f, mainLayerSize.height - 20.f});
+    socialContainer->setPosition({mainLayerSize.width - 8.75f, mainLayerSize.height - 20.f});
     socialContainer->setLayout(socialContainerLayout);
 
     auto socialBtns = std::to_array<SocialBtnData>(
         {
             {
-                "accountBtn_myLists_001.png",
+                "btn_credits.png"_spr,
                 "credits-btn",
                 [this](auto) {
                     if (auto popup = MenuCredits::create(m_impl->theme)) popup->show();
                 },
-                0.55f,
+            },
+            {
+                "btn_ideas.png"_spr,
+                "suggestions-btn",
+                [this](auto) {
+                    if (auto popup = MenuSuggest::create(m_impl->theme)) popup->show();
+                },
             },
             {
                 "gj_discordIcon_001.png",
                 "discord-btn",
-                [](auto) {
-                    createQuickPopup(
-                        "Discord",
-                        "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
-                        "Cancel",
-                        "OK",
-                        [](auto, bool ok) {
-                            if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
-                        });
+                [this](auto) {
+                    if (auto popup = MenuDiscord::create(m_impl->theme)) popup->show();
                 },
             },
             {
-                "geode.loader/gift.png",
+                "btn_kofi.png"_spr,
                 "support-btn",
-                [](auto) {
-                    openSupportPopup(mod);
+                [this](auto) {
+                    if (auto popup = MenuKofi::create(m_impl->theme)) popup->show();
                 },
             },
         });
@@ -530,8 +529,9 @@ bool Menu::init() {
         if (auto btn = Button::createWithSpriteFrameName(
                 socialBtn.sprite,
                 std::move(socialBtn.callback))) {
-            btn->setID(socialBtn.id);
-            btn->setScale(socialBtn.scale);
+            btn->setID(std::move(socialBtn.id));
+
+            cue::rescaleToMatch(btn, 23.75f);
 
             socialContainer->addChild(btn);
         } else {
@@ -591,6 +591,10 @@ bool Menu::init() {
 
 void Menu::onExit() {
     if (auto credits = MenuCredits::get()) credits->removeFromParent();
+    if (auto suggest = MenuSuggest::get()) suggest->removeFromParent();
+    if (auto discord = MenuDiscord::get()) discord->removeFromParent();
+    if (auto kofi = MenuKofi::get()) kofi->removeFromParent();
+
     s_inst = nullptr;
 
     Popup::onExit();

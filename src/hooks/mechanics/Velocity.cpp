@@ -24,7 +24,7 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
         float speed = 0.f;
 
         Ref<ProgressBar> speedMeter = nullptr;
-        Ref<CCLabelBMFont> speedMeterLabel = nullptr;
+        Ref<Label> speedMeterLabel = nullptr;
     };
 
     HORRIBLE_SETUP_INTERFACE_FUNC {
@@ -48,7 +48,7 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
 
         if (auto pl = PlayLayer::get(); pl) {
             if (!f->speedMeterLabel) {
-                f->speedMeterLabel = CCLabelBMFont::create("Speed", font::big);
+                f->speedMeterLabel = Label::create("Speed", font::big);
                 f->speedMeterLabel->setScale(0.375f);
                 f->speedMeterLabel->setColor(colors::gold);
                 f->speedMeterLabel->setAnchorPoint(anchor::center);

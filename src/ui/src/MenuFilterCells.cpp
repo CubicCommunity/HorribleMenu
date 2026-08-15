@@ -49,10 +49,10 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     addChild(m_toggler);
 
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(m_category.c_str(), font::gold);
+    auto nameLabel = Label::create(m_category.c_str(), font::gold);
     nameLabel->setID("name-label");
     nameLabel->setScale(0.375f);
-    nameLabel->limitLabelWidth(getScaledContentWidth() - 35.f, 0.375f, 0.125f);
+    nameLabel->setLimitLabelWidth(getScaledContentWidth() - 35.f, 0.375f, 0.125f);
     nameLabel->setPosition({20.f, getScaledContentHeight() / 2.f});
     nameLabel->setAnchorPoint({0.f, 0.5f});
 
@@ -114,7 +114,7 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
         });
     bg->setColor(color);
 
-    auto tierLabel = CCLabelBMFont::create(label.c_str(), font::big);
+    auto tierLabel = Label::create(label.c_str(), font::big);
     tierLabel->setID("label");
     tierLabel->setScale(0.5f);
     tierLabel->setAnchorPoint(anchor::center);

@@ -11,7 +11,7 @@ struct SpamChallenge::Impl final {
     uint8_t inputCount = 0;
     uint8_t inputTarget = 45;
 
-    CCLabelBMFont* counter = nullptr;
+    Label* counter = nullptr;
     ProgressBar* countdown = nullptr;
 
     float totalTime = 7.5f;
@@ -36,27 +36,28 @@ bool SpamChallenge::init() {
 
     auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-    auto label = CCLabelBMFont::create("Quick! Spam or get sent back!", font::big, getScaledContentWidth() - 1.25f);
+    auto label = Label::create("Quick! Spam or get sent back!", font::big);
     label->setID("label");
-    label->setAlignment(kCCTextAlignmentCenter);
+    label->setMaxWidth(getScaledContentWidth() - 1.25f);
+    label->setAlignment(Label::Alignment::Center);
     label->setPosition({winSize.width / 2.f, winSize.height - 50.f});
     label->setScale(0.875f);
 
     addChild(label, 1);
 
-    auto descLabel = CCLabelBMFont::create("Use your mouse button or tap the screen to increase the count.", font::chat, getScaledContentWidth() - 1.25f);
+    auto descLabel = Label::createRich("Use your <cg>mouse button</c> or <cy>tap the screen</c> to increase the count.", font::chat);
     descLabel->setID("description-label");
-    descLabel->setAlignment(kCCTextAlignmentCenter);
+    descLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
+    descLabel->setAlignment(Label::Alignment::Center);
     descLabel->setPosition({winSize.width / 2.f, 25.f});
     descLabel->setAnchorPoint({0.5, 0});
-    descLabel->setColor(colors::yellow);
 
     addChild(descLabel, 1);
 
-    m_impl->counter = CCLabelBMFont::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), font::gold);
+    m_impl->counter = Label::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), font::gold);
     m_impl->counter->setID("counter");
     m_impl->counter->setScale(2.5f);
-    m_impl->counter->setAlignment(kCCTextAlignmentCenter);
+    m_impl->counter->setAlignment(Label::Alignment::Center);
     m_impl->counter->setPosition({winSize.width / 2.f, (winSize.height / 2.f) - 6.25f});
 
     auto moveUp = CCEaseSineInOut::create(CCMoveBy::create(1.25f, ccp(0, 12.5f)));

@@ -16,22 +16,22 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     setAnchorPoint(anchor::center);
     setVisible(false);
 
-    auto label = CCLabelBMFont::create("No options found :(", font::big);
+    auto label = Label::create("No options found :(", font::big);
     label->setScale(0.5f);
     label->setOpacity(250);
     label->setAnchorPoint({0.5, 0});
-    label->setAlignment(kCCTextAlignmentCenter);
-    label->limitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale() * 0.125f);
+    label->setAlignment(Label::Alignment::Center);
+    label->setLimitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale() * 0.125f);
     label->setPosition(getScaledContentSize() / 2.f);
 
     addChild(label, 1);
 
-    auto labelHint = CCLabelBMFont::create("Try searching other keywords, or change some filters!", font::chat);
+    auto labelHint = Label::create("Try searching other keywords, or change some filters!", font::chat);
     labelHint->setScale(0.625f);
     labelHint->setOpacity(200);
     labelHint->setAnchorPoint({0.5, 1});
-    labelHint->setAlignment(kCCTextAlignmentCenter);
-    labelHint->limitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale() * 0.125f);
+    labelHint->setAlignment(Label::Alignment::Center);
+    labelHint->setLimitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale() * 0.125f);
     labelHint->setPosition(getScaledContentSize() / 2.f);
 
     addChild(labelHint);
@@ -186,17 +186,17 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     auto labelWidth = getScaledContentWidth() - 80.f;
 
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(o->getName().c_str(), font::big);
+    auto nameLabel = Label::create(o->getName().c_str(), font::big);
     nameLabel->setID("name-label");
     nameLabel->setScale(0.4f);
-    nameLabel->limitLabelWidth(labelWidth, 0.4f, 0.125f);
+    nameLabel->setLimitLabelWidth(labelWidth, 0.4f, 0.125f);
     nameLabel->setAnchorPoint({0.f, 0.5f});
     nameLabel->setPosition({x, yCenter});
 
-    auto categoryLabel = CCLabelBMFont::create(o->getCategory().c_str(), font::gold);
+    auto categoryLabel = Label::create(o->getCategory().c_str(), font::gold);
     categoryLabel->setID("category-label");
     categoryLabel->setScale(0.25f);
-    categoryLabel->limitLabelWidth(labelWidth, 0.25f, 0.125f);
+    categoryLabel->setLimitLabelWidth(labelWidth, 0.25f, 0.125f);
     categoryLabel->setAnchorPoint({0.f, 0.5f});
     categoryLabel->setPosition({x, yCenter + 10.f});
     categoryLabel->setOpacity(200);
@@ -286,7 +286,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     newIcon->setID("new-option-icon");
     newIcon->setScale(0.25f);
 
-    auto newLabel = CCLabelBMFont::create("New!", font::big);
+    auto newLabel = Label::create("New!", font::big);
     newLabel->setID("new-option-label");
     newLabel->setScale(0.25f);
     newLabel->setColor(colors::cyan);
@@ -318,13 +318,14 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     if (devMode) {
         auto str = fmt::format("{} | {} delegate(s)", o->getID(), options::getDelegates(o->getID()));
 
-        auto idLabel = CCLabelBMFont::create(str.c_str(), font::chat, getScaledContentWidth() - 20.f);
+        auto idLabel = Label::create(str.c_str(), font::chat);
         idLabel->setID("id-label");
+        idLabel->setScale(0.5f);
+        idLabel->setMaxWidth(getScaledContentWidth() - 20.f);
         idLabel->setPosition({getScaledContentWidth() - 7.5f, 5.25f});
         idLabel->setAnchorPoint({1, 0.5});
         idLabel->setColor(colors::black);
         idLabel->setOpacity(125);
-        idLabel->setScale(0.5f);
 
         addChild(idLabel);
     };

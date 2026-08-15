@@ -1,10 +1,18 @@
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.9.0`
-- Added user badges via [Badgified](https://geode-sdk.org/mods/dasshu.badgified)
+- Added user badges
+  - Added **Horrible Menu Lead Developer** user badge
+  - Added **Horrible Menu Developer** user badge
+  - Added **Horrible Menu Contributor** user badge
+  - Added **Breakeode Supporter** user badge
+- Added feature idea suggestion form menu
+- Reworked Discord community pop-up
+- Added new Ko-fi support pop-up
 - Added floating menu button icon option **Steam Happy**
 - Added floating menu button icon option **Soggy Cat**
 - Data to credit Horrible Menu's lead development team is now fetched remotely
 - Optimized thumbnail loading in *Level Ads* option while [ImagePlus](https://geode-sdk.org/mods/prevter.imageplus) mod is loaded
+- Improved some button textures :)
 
 # v1.2.7 
 - Fix an issue with Safe Mode always being active on startup ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))

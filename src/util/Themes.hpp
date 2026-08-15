@@ -117,6 +117,10 @@ namespace horrible {
                 return colors::white;
             };
 
+            inline constexpr auto createThemeCircleSprite(geode::CircleBaseColor btns) {
+                return geode::CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, geode::CircleBaseSize::Small);
+            };
+
             // Floating button icon options
             namespace icons {
                 inline constexpr auto Default = "Default";

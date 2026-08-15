@@ -30,7 +30,7 @@ bool TermsAndConditions::init(Callback&& cb) {
     setTitle("Terms and Conditions");
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
+    setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
 
     popup::closeBtnID(m_closeBtn);
 

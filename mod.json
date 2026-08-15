@@ -34,6 +34,9 @@
             ],
             "BRKD_HM_badges": [
                 "resources/badges/*.png"
+            ],
+            "BRKD_HM_btns": [
+                "resources/btns/*.png"
             ]
         }
     },

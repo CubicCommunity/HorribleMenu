@@ -14,10 +14,9 @@ namespace horrible {
         };
 
         struct SocialBtnData final {
-            const char* sprite;
-            const char* id;
+            std::string sprite;
+            std::string id;
             Button::ButtonCallback callback;
-            float scale = 0.75f;
         };
 
     private:
@@ -42,19 +41,6 @@ namespace horrible {
         static Menu* create();
 
         static Menu* get() noexcept;
-    };
-
-    class MenuSuggestions final : public geode::Popup {
-    private:
-        static MenuSuggestions* s_inst;
-
-    protected:
-        bool init() override;
-
-    public:
-        static MenuSuggestions* create(geode::ZStringView theme);
-
-        static MenuSuggestions* get() noexcept;
     };
 
     // For convenience

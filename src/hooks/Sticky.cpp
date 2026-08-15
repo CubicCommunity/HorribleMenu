@@ -25,7 +25,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
         float defSpeed = 0.f;
 
-        CCLabelBMFont* clickLabel = nullptr;
+        Label* clickLabel = nullptr;
 
         bool onGround = true;
     };
@@ -42,10 +42,10 @@ class $modify(StickyPlayerObject, PlayerObject) {
         };
 
         if (auto pl = PlayLayer::get(); pl && !f->clickLabel && !m_isSecondPlayer) {
-            f->clickLabel = CCLabelBMFont::create("Press again to un-stick!", font::big, pl->getScaledContentWidth() - 12.5f);
+            f->clickLabel = Label::create("Press again to un-stick!", font::big);
             f->clickLabel->setID("sticky-alert"_spr);
             f->clickLabel->setScale(0.625f);
-            f->clickLabel->setAlignment(kCCTextAlignmentCenter);
+            f->clickLabel->setAlignment(Label::Alignment::Center);
             f->clickLabel->setAnchorPoint({0.5, 0});
             f->clickLabel->setPosition({pl->getScaledContentWidth() / 2.f, 25.f});
             f->clickLabel->setVisible(m_playerSpeed <= 0.f);
@@ -75,11 +75,11 @@ class $modify(StickyPlayerObject, PlayerObject) {
     };
 
     void stickyCol1(CCNode* sender) {
-        if (auto label = typeinfo_cast<CCLabelBMFont*>(sender)) label->setColor(colors::yellow);
+        if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(colors::yellow);
     };
 
     void stickyCol2(CCNode* sender) {
-        if (auto label = typeinfo_cast<CCLabelBMFont*>(sender)) label->setColor(colors::white);
+        if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(colors::white);
     };
 
     bool onGround() {
