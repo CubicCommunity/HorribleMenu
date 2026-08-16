@@ -312,6 +312,32 @@ bool MenuKofi::init(ZStringView theme) {
 
     popup::closeBtnID(m_closeBtn);
 
+    m_bgSprite->setZOrder(-9);
+
+    auto bgClip = CCClippingNode::create(m_bgSprite);
+    bgClip->setZOrder(-2);
+    bgClip->setAnchorPoint(anchor::center);
+    bgClip->setContentSize(m_mainLayer->getScaledContentSize());
+    bgClip->setAlphaThreshold(0.f);
+
+    m_mainLayer->addChildAtPosition(bgClip, Anchor::Center);
+
+    auto bg = cue::RepeatingBackground::create("game_bg_11_001.png", 0.75f, cue::RepeatMode::X, bgClip->getScaledContentSize());
+    bg->setColor({40, 47, 91});
+
+    bgClip->addChild(bg);
+
+    auto border = cue::createBackground(
+        m_bgSprite->getScaledContentSize(),
+        {
+            .opacity = 255,
+            .texture = "GJ_square07.png",
+            .id = "",
+        });
+    border->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+
+    m_mainLayer->addChild(border, -1);
+
     auto popupBtn = Button::createWithSpriteFrameName(
         "geode.loader/gift.png",
         [](auto) {

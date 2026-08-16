@@ -256,13 +256,11 @@ bool Menu::init() {
 
     auto const mainLayerSize = m_mainLayer->getScaledContentSize();
 
-    m_impl->themeBgContainer = CCClippingNode::create();
-    m_impl->themeBgContainer->setID("bg-container");
+    m_impl->themeBgContainer = CCClippingNode::create(m_bgSprite);
     m_impl->themeBgContainer->setAnchorPoint(m_bgSprite->getAnchorPoint());
     m_impl->themeBgContainer->setContentSize(m_bgSprite->getScaledContentSize());
     m_impl->themeBgContainer->setPosition(m_bgSprite->getPosition());
-    m_impl->themeBgContainer->setStencil(m_bgSprite);
-    m_impl->themeBgContainer->setAlphaThreshold(0);
+    m_impl->themeBgContainer->setAlphaThreshold(0.f);
 
     m_mainLayer->addChild(m_impl->themeBgContainer, -8);
 

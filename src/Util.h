@@ -8,6 +8,7 @@
 #include <cue/Util.hpp>
 #include <cue/DropdownNode.hpp>
 #include <cue/PlayerIcon.hpp>
+#include <cue/RepeatingBackground.hpp>
 
 #include <asp/fs.hpp>
 
