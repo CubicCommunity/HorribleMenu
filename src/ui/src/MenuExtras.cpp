@@ -13,7 +13,11 @@ $on_game(Loaded) {
     if (auto as = AuthState::get()) as->startAuth([](Result<> res) {if (res.isErr()) log::error("Argon authorization failed: {}", std::move(res).unwrapErr()); });
 };
 
+static constexpr auto g_suggestWait = 60;
+
 MenuSuggest* MenuSuggest::s_inst = nullptr;
+
+asp::Instant MenuSuggest::s_lastSuggest = asp::Instant();
 
 bool MenuSuggest::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
@@ -71,6 +75,18 @@ bool MenuSuggest::init(ZStringView theme) {
             themes::getButtonSquareSprite(theme),
             0.875f),
         [this](Button* sender) {
+            auto elapsed = asp::Instant::now().durationSince(s_lastSuggest).seconds();
+            if (elapsed < g_suggestWait) {
+                createQuickPopup(
+                    "Slow Down!",
+                    fmt::format("We appreciate your enthusiasm, but you must <co>wait {} seconds before sending your next suggestion</c>.", g_suggestWait - elapsed),
+                    "OK",
+                    nullptr,
+                    nullptr);
+
+                return;
+            };
+
             processSuggestion(sender);
         });
     submitBtn->setID("submit-idea-btn");
@@ -157,7 +173,9 @@ void MenuSuggest::processSuggestion(Button* sender) {
                                 if (auto s = self.lock()) toggleBack(s);
                             };
 
-                            if (!res.ok()) return fallback(fmt::format("Request failed ({}: {})", res.code(), res.json().unwrapOrDefault()["error"].asString().unwrapOrDefault()));
+                            if (!res.ok()) return fallback(fmt::format("Request failed ({}: {})", res.code(), res.errorMessage()));
+
+                            s_lastSuggest = asp::Instant::now();
 
                             Notification::create(fmt::format("Sent '{}'!", topic), NotificationIcon::Success)->show();
                             if (auto s = self.lock()) toggleBack(s);

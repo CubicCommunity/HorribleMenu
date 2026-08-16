@@ -11,6 +11,8 @@ namespace horrible {
     private:
         static MenuSuggest* s_inst;
 
+        static asp::Instant s_lastSuggest;
+
         geode::TextInput* m_topicInput;
         geode::TextInput* m_descriptionInput;
 
