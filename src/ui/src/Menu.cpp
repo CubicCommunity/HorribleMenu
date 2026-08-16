@@ -11,8 +11,6 @@
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/ui/GeodeUI.hpp>
-
 #include <Geode/utils/terminate.hpp>
 
 using namespace geode::prelude;

@@ -127,7 +127,7 @@ class $modify(HMEndLevelLayer, EndLevelLayer) {
     void customSetup() {
         EndLevelLayer::customSetup();
 
-        if (Mod::get()->getSettingValue<bool>("safe-mode-indicator")) {
+        if (mod->getSettingValue<bool>("safe-mode-indicator")) {
             auto isSpriteSecret = rng::fast() <= 5;
             auto btn = Button::createWithSpriteFrameName(themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default), [](auto) {
                 createQuickPopup(

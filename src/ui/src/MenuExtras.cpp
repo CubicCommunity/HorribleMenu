@@ -143,7 +143,7 @@ void MenuSuggest::processSuggestion(Button* sender) {
                     reqJson["username"] = as->getUsername();
                     reqJson["authtoken"] = as->getToken();
 
-                    reqJson["v"] = Mod::get()->getVersion().toVString();
+                    reqJson["v"] = mod->getVersion().toVString();
 
                     auto req = web::WebRequest()
                                    .bodyJSON(reqJson);
@@ -311,6 +311,16 @@ bool MenuKofi::init(ZStringView theme) {
     setCloseButtonSpr(themes::createThemeCircleSprite(btns));
 
     popup::closeBtnID(m_closeBtn);
+
+    auto popupBtn = Button::createWithSpriteFrameName(
+        "geode.loader/gift.png",
+        [](auto) {
+            openSupportPopup(mod);
+        });
+    popupBtn->setID("support-popup-btn");
+    popupBtn->setScale(0.75f);
+
+    m_mainLayer->addChildAtPosition(popupBtn, Anchor::BottomRight, {-17.5f, 17.5f});
 
     auto infoBtn = Button::createWithSpriteFrameName(
         "GJ_infoIcon_001.png",

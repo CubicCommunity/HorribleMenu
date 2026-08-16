@@ -15,6 +15,8 @@
 
 #include <matjson.hpp>
 
+#include <Geode/ui/GeodeUI.hpp>
+
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/cocos.hpp>
 
