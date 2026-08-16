@@ -132,6 +132,8 @@ void MenuSuggest::processSuggestion(Button* sender) {
             if (res.isErr()) {
                 Notification::create("Log in to send suggestions!", NotificationIcon::Warning)->show();
                 if (auto s = self.lock()) toggleBack(s);
+
+                return;
             };
 
             if (auto s = self.lock()) {
@@ -340,10 +342,17 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChildAtPosition(bgClip, Anchor::Center);
 
-    auto bg = cue::RepeatingBackground::create("game_bg_11_001.png", 0.75f, cue::RepeatMode::X, bgClip->getScaledContentSize());
-    bg->setColor({40, 47, 91});
+    auto bg = cue::RepeatingBackground::create("game_bg_11_001.png", 0.75f, cue::RepeatMode::X, m_mainLayer->getScaledContentSize());
+    bg->setColor({59, 65, 103});
+    bg->setSpeed(0.75f);
 
-    bgClip->addChild(bg);
+    bgClip->addChild(bg, -1);
+
+    auto bgGrnd = cue::RepeatingBackground::create("groundSquare_04_001.png", 0.5f, cue::RepeatMode::X, m_mainLayer->getScaledContentSize());
+    bgGrnd->setColor({87, 95, 160});
+    bgGrnd->setSpeed(8.75f);
+
+    bgClip->addChild(bgGrnd);
 
     auto border = cue::createBackground(
         m_bgSprite->getScaledContentSize(),
