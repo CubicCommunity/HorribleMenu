@@ -349,38 +349,6 @@ void AuthState::startAuth(CopyableFunction<void(Result<>)>&& callback) {
 
 MenuDiscord* MenuDiscord::s_inst = nullptr;
 
-bool MenuDiscord::init(ZStringView theme) {
-    auto btns = themes::getCircleBaseColor(theme);
-
-    if (!Popup::init({330.f, 225.f}, themes::getBackgroundSprite(theme))) return false;
-
-    setID("discord"_spr);
-    setTitle("Discord Community");
-    setCloseButtonSpr(themes::createThemeCircleSprite(btns));
-
-    popup::closeBtnID(m_closeBtn);
-
-    setupInterface();
-
-    auto infoBtn = Button::createWithSpriteFrameName(
-        "GJ_infoIcon_001.png",
-        [](auto) {
-            createQuickPopup(
-                "Help",
-                "This is the <cg>Discord community menu</c>. You join <cf>Cubic Studios</c>'s Discord community server to chat with others, or <cc>Breakeode</c>'s Discord server to get help with using <cg>Horrible Menu</c> or suggest ideas.\n\n"
-                "You can also <cy>link your Discord account with your Geometry Dash account</c> in this menu, which is required to receive any <cd>Ko-fi support perks</c>.",
-                "OK",
-                nullptr,
-                nullptr);
-        });
-    infoBtn->setID("info-btn");
-    infoBtn->setScale(0.75f);
-
-    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
-
-    return true;
-};
-
 void MenuDiscord::setupInterface() {
     cue::resetNode(m_discordCell);
     cue::resetNode(m_linkLabel);
@@ -413,7 +381,9 @@ void MenuDiscord::setupInterface() {
                     font::gold,
                     themes::getButtonSquareSprite(mod->getSettingValue<std::string>("theme")),
                     0.875f),
-                [this](Button* sender) {
+                [this, as](Button* sender) {
+                    if (!as->isAuthValid()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show();
+
                     sender->setVisible(false);
 
                     m_loading = LoadingSpinner::create(25.f);
@@ -434,6 +404,38 @@ void MenuDiscord::setupInterface() {
             m_mainLayer->addChild(m_linkBtn, 9);
         };
     };
+};
+
+bool MenuDiscord::init(ZStringView theme) {
+    auto btns = themes::getCircleBaseColor(theme);
+
+    if (!Popup::init({330.f, 225.f}, themes::getBackgroundSprite(theme))) return false;
+
+    setID("discord"_spr);
+    setTitle("Discord Community");
+    setCloseButtonSpr(themes::createThemeCircleSprite(btns));
+
+    popup::closeBtnID(m_closeBtn);
+
+    setupInterface();
+
+    auto infoBtn = Button::createWithSpriteFrameName(
+        "GJ_infoIcon_001.png",
+        [](auto) {
+            createQuickPopup(
+                "Help",
+                "This is the <cg>Discord community menu</c>. You join <cf>Cubic Studios</c>'s Discord community server to chat with others, or <cc>Breakeode</c>'s Discord server to get help with using <cg>Horrible Menu</c> or suggest ideas.\n\n"
+                "You can also <cy>link your Discord account with your Geometry Dash account</c> in this menu, which is required to receive any <cd>Ko-fi support perks</c>.",
+                "OK",
+                nullptr,
+                nullptr);
+        });
+    infoBtn->setID("info-btn");
+    infoBtn->setScale(0.75f);
+
+    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
+
+    return true;
 };
 
 void MenuDiscord::checkDiscordStatus(float) {

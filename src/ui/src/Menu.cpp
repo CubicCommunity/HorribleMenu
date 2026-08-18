@@ -490,7 +490,10 @@ bool Menu::init() {
     socialContainer->setLayout(socialContainerLayout);
 
 #define NOTIFY_INTERNET_IF_OFFLINE \
-    if (!m_impl->hasInternet) return Notification::create("An internet connection is required.")->show()
+    if (!m_impl->hasInternet) return Notification::create("An internet connection is required.", NotificationIcon::Error)->show()
+
+#define NOTIFY_IF_LOGGED_OUT \
+    if (!AuthState::get()->isAuthValid()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show()
 
     auto socialBtns = std::to_array<SocialBtnData>(
         {
@@ -506,6 +509,7 @@ bool Menu::init() {
                 "suggestions-btn",
                 [this](auto) {
                     NOTIFY_INTERNET_IF_OFFLINE;
+                    NOTIFY_IF_LOGGED_OUT;
                     if (auto popup = MenuSuggest::create(m_impl->theme)) popup->show();
                 },
             },
@@ -514,6 +518,7 @@ bool Menu::init() {
                 "discord-btn",
                 [this](auto) {
                     NOTIFY_INTERNET_IF_OFFLINE;
+                    NOTIFY_IF_LOGGED_OUT;
                     if (auto popup = MenuDiscord::create(m_impl->theme)) popup->show();
                 },
             },
@@ -522,6 +527,7 @@ bool Menu::init() {
                 "support-btn",
                 [this](auto) {
                     NOTIFY_INTERNET_IF_OFFLINE;
+                    NOTIFY_IF_LOGGED_OUT;
                     if (auto popup = MenuKofi::create(m_impl->theme)) popup->show();
                 },
             },
