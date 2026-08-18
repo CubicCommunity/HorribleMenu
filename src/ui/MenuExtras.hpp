@@ -48,6 +48,7 @@ namespace horrible {
         std::string m_token;
 
         DiscordLink m_discord;
+        bool m_supporter = false;
 
     protected:
         void setAuthInfo(int accountID, int userID, std::string username, std::string token);
@@ -66,6 +67,7 @@ namespace horrible {
         geode::ZStringView getToken() const noexcept;
 
         geode::Result<DiscordLink> getDiscord() const;
+        bool isSupporter() const noexcept;
     };
 
     class MenuDiscord final : public geode::Popup {
@@ -73,6 +75,7 @@ namespace horrible {
         static MenuDiscord* s_inst;
 
         std::string m_state;
+        asp::Instant m_since;
         TaskHolder<web::WebResponse> m_listener;
 
         geode::LoadingSpinner* m_loading = nullptr;

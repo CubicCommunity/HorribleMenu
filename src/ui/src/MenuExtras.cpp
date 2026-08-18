@@ -26,7 +26,11 @@ Result<DiscordLink> json::Serialize<DiscordLink>::fromJson(json::Value const& va
     GEODE_UNWRAP_INTO(std::string username, value["username"].asString());
     GEODE_UNWRAP_INTO(std::string avatar, value["avatar"].asString());
 
-    return Ok(DiscordLink{std::move(id), std::move(username), std::move(avatar)});
+    return Ok(DiscordLink{
+        std::move(id),
+        std::move(username),
+        std::move(avatar),
+    });
 };
 
 json::Value json::Serialize<DiscordLink>::toJson(DiscordLink const& value) {
@@ -59,7 +63,7 @@ bool MenuSuggest::init(ZStringView theme) {
 
     m_mainLayer->addChild(m_topicInput, 1);
 
-    m_descriptionInput = TextInput::create(mainLayerSize.width - 25.f, "Describe your idea in more detail...", "chatFont.fnt");
+    m_descriptionInput = TextInput::create(mainLayerSize.width - 25.f, "Describe your idea in more detail...", font::chat);
     m_descriptionInput->setID("description-input");
     m_descriptionInput->setMaxCharCount(512);
     m_descriptionInput->setCommonFilter(CommonFilter::Any);
@@ -81,7 +85,7 @@ bool MenuSuggest::init(ZStringView theme) {
         "- **Refrain** from <cy>suggesting existing features from prominent Geode mods</c>, <cr>we want originality</c>!\n"
         "- If your idea <cr>didn't make it to the following feature update</c>, it was **probably omitted**.\n"
         "- You're welcome to **join [Breakeode's Discord server](https://dsc.gg/breakeode)** to <cg>personally bring and check up on your ideas</c>, just <cy>be polite</c> is all!\n"
-        "- <cy>Attempting to spam this form or our API server</c> will likely get you <cr>rate-limited or IP-banned</c>.",
+        "- <cy>Attempting to spam this form or overload our servers</c> will likely get you <cr>rate-limited or IP-banned</c>.",
         {mainLayerSize.width - 25.f, 92.5f});
     instructions->setID("instructions");
     instructions->setAnchorPoint({0.5, 0});
@@ -91,7 +95,7 @@ bool MenuSuggest::init(ZStringView theme) {
     auto submitBtn = Button::createWithNode(
         ButtonSprite::create(
             "Submit",
-            "goldFont.fnt",
+            font::gold,
             themes::getButtonSquareSprite(theme),
             0.875f),
         [this](Button* sender) {
@@ -245,6 +249,20 @@ void AuthState::setDiscordLinkInfo(DiscordLink discord) {
     m_discord = std::move(discord);
 
     m_discordLinked = !m_discord.id.empty();
+
+    if (auto gjam = GJAccountManager::sharedState()) {
+        log::trace("Checking Ko-fi supporter status...");
+
+        auto req = web::WebRequest()
+                       .param("id", gjam->m_accountID);
+
+        async::spawn(
+            req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
+            [this](web::WebResponse res) {
+                if (res.ok()) log::info("User is a supporter of Breakeode");
+                m_supporter = res.ok();
+            });
+    };
 };
 
 bool AuthState::isAuthorized() const noexcept {
@@ -274,6 +292,10 @@ ZStringView AuthState::getToken() const noexcept {
 Result<DiscordLink> AuthState::getDiscord() const {
     if (!m_discordLinked) return Err("Discord account not linked");
     return Ok(m_discord);
+};
+
+bool AuthState::isSupporter() const noexcept {
+    return m_supporter;
 };
 
 void AuthState::startAuth(CopyableFunction<void(Result<>)>&& callback) {
@@ -343,7 +365,7 @@ bool MenuDiscord::init(ZStringView theme) {
         if (discordRes.isOk()) {  // testing, will replace with actual ui later..!
             auto const discord = std::move(discordRes).unwrap();
 
-            auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), "chatFont.fnt");
+            auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), font::chat);
             m_mainLayer->addChildAtPosition(label, Anchor::Center);
         } else {
             log::error("{}", std::move(discordRes).unwrapErr());
@@ -352,6 +374,7 @@ bool MenuDiscord::init(ZStringView theme) {
             m_mainLayer->addChildAtPosition(m_loading, Anchor::Bottom);
 
             m_state = utils::random::generateUUID();
+            m_since = asp::Instant::now();
             web::openLinkInBrowser(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/discord/link/auth?state={}", m_state));
 
             scheduleOnce(schedule_selector(MenuDiscord::checkDiscordStatus), 1.25f);
@@ -380,6 +403,11 @@ bool MenuDiscord::init(ZStringView theme) {
 void MenuDiscord::checkDiscordStatus(float) {
     if (auto as = AuthState::get()) {
         if (!as->isAuthValid()) return unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
+
+        if (asp::Instant::now().durationSince(m_since).seconds() > 15) {
+            Notification::create("Authorization flow timed out", NotificationIcon::Error)->show();
+            return unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
+        };
 
         auto reqJson = json::Value();
         reqJson["account_id"] = as->getAccountID();
@@ -416,7 +444,7 @@ void MenuDiscord::checkDiscordStatus(float) {
 
                     log::info("Successfully authorized as {}", discord.username);
 
-                    auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), "chatFont.fnt");
+                    auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), font::chat);
                     s->m_mainLayer->addChildAtPosition(label, Anchor::Center);
 
                     if (auto as = AuthState::get()) as->setDiscordLinkInfo(std::move(discord));
@@ -425,6 +453,7 @@ void MenuDiscord::checkDiscordStatus(float) {
                     cue::resetNode(s->m_loading);
 
                     s->m_listener.cancel();
+                    s->m_since = asp::Instant();
                     s->m_state.clear();
                 };
             });
@@ -464,7 +493,7 @@ MenuKofi* MenuKofi::s_inst = nullptr;
 bool MenuKofi::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
-    if (!Popup::init({365.f, 240.f}, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init({365.f, 220.f}, themes::getBackgroundSprite(theme))) return false;
 
     setID("kofi"_spr);
     setTitle("Support Breakeode");
@@ -483,14 +512,14 @@ bool MenuKofi::init(ZStringView theme) {
     m_mainLayer->addChildAtPosition(bgClip, Anchor::Center);
 
     auto bg = cue::RepeatingBackground::create("game_bg_11_001.png", 0.75f, cue::RepeatMode::X, m_mainLayer->getScaledContentSize());
-    bg->setColor({59, 65, 103});
+    bg->setColor({48, 53, 86});
     bg->setSpeed(0.75f);
 
     bgClip->addChild(bg, -1);
 
     auto bgGrnd = cue::RepeatingBackground::create("groundSquare_04_001.png", 0.5f, cue::RepeatMode::X, m_mainLayer->getScaledContentSize());
-    bgGrnd->setColor({87, 95, 160});
-    bgGrnd->setSpeed(8.75f);
+    bgGrnd->setColor({74, 82, 137});
+    bgGrnd->setSpeed(12.5f);
 
     bgClip->addChild(bgGrnd);
 
@@ -505,6 +534,82 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChild(border, -1);
 
+    auto infoContainer = NineSlice::create(themes::square);
+    infoContainer->setContentSize({m_mainLayer->getScaledContentWidth() - 25.f, 37.5f});
+    infoContainer->setColor(colors::black);
+
+    auto as = AuthState::get();
+
+    std::string infoLabelTxt = as->isSupporter()
+                                   ? "<cg>Thanks for supporting Breakeode</c>! You can now <cj>press the badge below</c> to see the <cd>Supporter badge</c> on your profile. Feel free to <cb>join Breakeode's Discord server</c> for even more perks."
+                                   : "Mods like <co>Horrible Menu</c> <cc>wouldn't be possible without community support</c>. <cd>Donate to Breakeode on Ko-fi</c> and unlock cool perks such as that cool badge below!\n<cj>Press the badge</c> to get started.";
+
+    auto infoLabel = Label::createRich(std::move(infoLabelTxt), font::chat);
+    infoLabel->setScale(0.625f);
+    infoLabel->setAlignment(Label::Alignment::Center);
+    infoLabel->setMaxWidth((infoContainer->getScaledContentWidth() - 7.5f) / infoLabel->getScale());
+
+    infoContainer->setContentHeight(infoLabel->getScaledContentHeight() + 5.f);
+
+    infoContainer->addChildAtPosition(infoLabel, Anchor::Center);
+
+    m_mainLayer->addChildAtPosition(infoContainer, Anchor::Center, {0.f, 12.5f + infoContainer->getScaledContentHeight()});
+
+    auto supportBtn = Button::createWithSpriteFrameName(
+        "badge_supporter.png"_spr,
+        [](auto) {
+            if (auto as = AuthState::get()) {
+                if (as->isSupporter()) {
+                    ProfilePage::create(as->getAccountID(), false)->show();
+                } else {
+                    createQuickPopup(
+                        "Ko-fi",
+                        "Visit <cc>Breakeode</c>'s <cd>Ko-fi page</c>?",
+                        "Cancel",
+                        "OK",
+                        [](auto, bool ok) {
+                            if (ok) web::openLinkInBrowser("https://ko-fi.com/breakeode");
+                        });
+                };
+            };
+        });
+    supportBtn->setID("support-us-btn");
+    supportBtn->setScale(0.f);
+
+    m_mainLayer->addChildAtPosition(supportBtn, Anchor::Center, {0.f, -17.5f});
+
+    auto discordRes = as->getDiscord();
+
+    if (discordRes.isErr()) {
+        auto linkBtn = Button::createWithNode(
+            ButtonSprite::create(
+                "Link Account",
+                font::gold,
+                themes::getButtonSquareSprite(theme),
+                0.875f),
+            [theme](auto) {
+                MenuDiscord::create(theme)->show();
+            });
+        linkBtn->setID("account-link-btn");
+        linkBtn->setScale(0.875f);
+
+        m_mainLayer->addChildAtPosition(linkBtn, Anchor::Bottom);
+    };
+
+    std::string linkLabelTxt = discordRes.isOk()
+                                   ? fmt::format("Discord account <cj>@{}</c> <cg>authorized & linked</c>!", std::move(discordRes).unwrap().username)
+                                   : "Discord account <cr>not linked</c>, this is <cy>required to receive supporter perks</c>!";
+
+    auto linkLabel = Label::createRich(std::move(linkLabelTxt), font::chat);
+    linkLabel->setScale(0.75f);
+    linkLabel->setAlignment(Label::Alignment::Center);
+
+    m_mainLayer->addChildAtPosition(linkLabel, Anchor::Bottom, {0.f, 37.5f});
+
+    supportBtn->runAction(
+        CCEaseExponentialInOut::create(
+            CCScaleTo::create(0.875f, 1.75f)));
+
     auto popupBtn = Button::createWithSpriteFrameName(
         "geode.loader/gift.png",
         [](auto) {
@@ -515,12 +620,29 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChildAtPosition(popupBtn, Anchor::BottomRight, {-17.5f, 17.5f});
 
+    auto discordBtn = Button::createWithSpriteFrameName(
+        "gj_discordIcon_001.png",
+        [](auto) {
+            createQuickPopup(
+                "Discord",
+                "Join <cc>Breakeode</c>'s <cj>support Discord server</c>?",
+                "Cancel",
+                "OK",
+                [](auto, bool ok) {
+                    if (ok) web::openLinkInBrowser("https://www.dsc.gg/breakeode");
+                });
+        });
+    discordBtn->setID("discord-btn");
+    discordBtn->setScale(0.75f);
+
+    m_mainLayer->addChildAtPosition(discordBtn, Anchor::BottomLeft, {17.5f, 17.5f});
+
     auto infoBtn = Button::createWithSpriteFrameName(
         "GJ_infoIcon_001.png",
         [](auto) {
             createQuickPopup(
                 "Help",
-                "This is the <cg>Ko-fi supporter menu</c>. Here you can find <cp>links to support Breakeode, and the perks for doing so</c>!",
+                "This is the <cg>Ko-fi supporter menu</c>. Here you can find <cd>links to support Breakeode, and the perks for doing so</c>!",
                 "OK",
                 nullptr,
                 nullptr);

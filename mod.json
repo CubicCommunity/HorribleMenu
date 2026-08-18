@@ -86,7 +86,7 @@
         "safe-mode": {
             "type": "bool",
             "name": "Enable",
-            "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active!</cr>",
+            "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active</c>!",
             "default": true,
             "enable-if": "!dyn-safe-mode",
             "enable-if-description": "Disable Automatic Safe Mode to manually change this setting."

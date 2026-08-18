@@ -20,9 +20,7 @@ namespace horrible {
     struct LicenseData final {
         std::string key;
         std::string name;
-        std::string spdxID;
         std::string url;
-        std::string nodeID;
     };
 
     class MenuPlayer final : public cocos2d::CCNode {

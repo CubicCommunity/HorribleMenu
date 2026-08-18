@@ -16,7 +16,7 @@ namespace horrible {
         inline constexpr cocos2d::ccColor3B blue = {0, 122, 255};
         inline constexpr cocos2d::ccColor3B pink = {255, 105, 180};
         inline constexpr cocos2d::ccColor3B gold = {255, 200, 150};
-        inline constexpr cocos2d::ccColor3B black = {0, 0, 0};
+        inline constexpr cocos2d::ccColor3B black = {25, 25, 25};
 
         namespace internal {
 

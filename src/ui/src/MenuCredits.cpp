@@ -43,7 +43,16 @@ Result<LeadDevIcon> json::Serialize<LeadDevIcon>::fromJson(json::Value const& va
     GEODE_UNWRAP_INTO(int color2, value["color2"].asInt());
     GEODE_UNWRAP_INTO(int glowColor, value["glowColor"].asInt());
 
-    return Ok(LeadDevIcon{std::move(id), std::move(name), account, icon, color1, color2, glowColor});
+    return Ok(
+        LeadDevIcon{
+            std::move(id),
+            std::move(name),
+            account,
+            icon,
+            color1,
+            color2,
+            glowColor,
+        });
 };
 
 json::Value json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
@@ -65,11 +74,14 @@ Result<LicenseData> json::Serialize<LicenseData>::fromJson(json::Value const& va
 
     GEODE_UNWRAP_INTO(std::string key, value["key"].asString());
     GEODE_UNWRAP_INTO(std::string name, value["name"].asString());
-    GEODE_UNWRAP_INTO(std::string spdxID, value["spdx_id"].asString());
     GEODE_UNWRAP_INTO(std::string url, value["url"].asString());
-    GEODE_UNWRAP_INTO(std::string nodeID, value["node_id"].asString());
 
-    return Ok(LicenseData{std::move(key), std::move(name), std::move(spdxID), std::move(url), std::move(nodeID)});
+    return Ok(
+        LicenseData{
+            std::move(key),
+            std::move(name),
+            std::move(url),
+        });
 };
 
 json::Value json::Serialize<LicenseData>::toJson(LicenseData const& value) {
@@ -77,9 +89,7 @@ json::Value json::Serialize<LicenseData>::toJson(LicenseData const& value) {
 
     obj["key"] = value.key;
     obj["name"] = value.name;
-    obj["spdx_id"] = value.spdxID;
     obj["url"] = value.url;
-    obj["node_id"] = value.nodeID;
 
     return obj;
 };
@@ -262,7 +272,7 @@ bool MenuCredits::init(ZStringView theme) {
         "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
-        "**[dankmeme](user:9735891)**: '*[cue](https://github.com/dankmeme01/cue)*' user interface library, '*[asp2](https://github.com/dankmeme01/asp2)*' utility library, '*[arc](https://github.com/dankmeme01/arc)*' async runtime library\n\n"
+        "**[dankmeme](user:9735891)**: '*[Argon](https://github.com/GlobedGD/argon)*' user authentication library, '*[cue](https://github.com/dankmeme01/cue)*' user interface library, '*[asp2](https://github.com/dankmeme01/asp2)*' utility library, '*[arc](https://github.com/dankmeme01/arc)*' async runtime library\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
         "**[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding\n\n"
         "**[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo, original idea for this mod\n\n"
@@ -456,7 +466,7 @@ void CreditsManager::loadLicense() {
         log::debug("Sending web request for lead developer credits");
 
         async::spawn(
-            web::WebRequest().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toNonVString())),
+            web::WebRequest().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
             [this](web::WebResponse res) {
                 auto const fallback = [this](std::string_view err = "") {
                     log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);

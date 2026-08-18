@@ -15,7 +15,11 @@ Result<CCPoint> json::Serialize<CCPoint>::fromJson(json::Value const& value) {
     GEODE_UNWRAP_INTO(float x, value["x"].asDouble());
     GEODE_UNWRAP_INTO(float y, value["y"].asDouble());
 
-    return Ok(CCPoint{x, y});
+    return Ok(
+        CCPoint{
+            x,
+            y,
+        });
 };
 
 json::Value json::Serialize<CCPoint>::toJson(CCPoint const& value) {

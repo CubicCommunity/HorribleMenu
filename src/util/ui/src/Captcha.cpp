@@ -68,7 +68,7 @@ bool Captcha::init() {
 
     m_bgSprite->setZOrder(-9);
 
-    auto label = Label::create("You're playing almost too well... Are you sure you're not a robot?", "chatFont.fnt");
+    auto label = Label::create("You're playing almost too well... Are you sure you're not a robot?", font::chat);
     label->setID("message");
     label->setScale(0.75f);
     label->setAlignment(Label::Alignment::Center);
@@ -102,7 +102,7 @@ bool Captcha::init() {
 
     m_mainLayer->addChild(bg);
 
-    auto hintID = Label::create(m_impl->expected.c_str(), "bigFont.fnt");
+    auto hintID = Label::create(m_impl->expected.c_str(), font::big);
     hintID->setID("hint-id");
     hintID->setScale(0.5f);
     hintID->setAnchorPoint(anchor::center);
@@ -112,7 +112,7 @@ bool Captcha::init() {
 
     m_mainLayer->addChild(hintID, 1);
 
-    auto hint = SimpleTextArea::create("Press all the buttons with", "chatFont.fnt", 0.5f, bg->getScaledContentWidth() * 0.875f);
+    auto hint = SimpleTextArea::create("Press all the buttons with", font::chat, 0.5f, bg->getScaledContentWidth() * 0.875f);
     hint->setID("hint");
     hint->setColor(to4B(colors::yellow));
     hint->setAlignment(kCCTextAlignmentCenter);
@@ -123,7 +123,7 @@ bool Captcha::init() {
     auto refreshBtn = Button::createWithNode(
         ButtonSprite::create(
             "Refresh",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
         [this](auto) {
             setupVerifier(m_impl->expected);
