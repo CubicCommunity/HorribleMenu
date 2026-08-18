@@ -489,6 +489,9 @@ bool Menu::init() {
     socialContainer->setPosition({mainLayerSize.width - 8.75f, mainLayerSize.height - 20.f});
     socialContainer->setLayout(socialContainerLayout);
 
+#define NOTIFY_INTERNET_IF_OFFLINE \
+    if (!m_impl->hasInternet) return Notification::create("An internet connection is required.")->show()
+
     auto socialBtns = std::to_array<SocialBtnData>(
         {
             {
@@ -502,6 +505,7 @@ bool Menu::init() {
                 "btn_ideas.png"_spr,
                 "suggestions-btn",
                 [this](auto) {
+                    NOTIFY_INTERNET_IF_OFFLINE;
                     if (auto popup = MenuSuggest::create(m_impl->theme)) popup->show();
                 },
             },
@@ -509,6 +513,7 @@ bool Menu::init() {
                 "gj_discordIcon_001.png",
                 "discord-btn",
                 [this](auto) {
+                    NOTIFY_INTERNET_IF_OFFLINE;
                     if (auto popup = MenuDiscord::create(m_impl->theme)) popup->show();
                 },
             },
@@ -516,6 +521,7 @@ bool Menu::init() {
                 "btn_kofi.png"_spr,
                 "support-btn",
                 [this](auto) {
+                    NOTIFY_INTERNET_IF_OFFLINE;
                     if (auto popup = MenuKofi::create(m_impl->theme)) popup->show();
                 },
             },

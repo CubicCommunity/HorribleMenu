@@ -588,7 +588,7 @@ bool MenuKofi::init(ZStringView theme) {
                 themes::getButtonSquareSprite(theme),
                 0.875f),
             [theme](auto) {
-                MenuDiscord::create(theme)->show();
+                if (auto popup = MenuDiscord::create(theme)) popup->show();
             });
         linkBtn->setID("account-link-btn");
         linkBtn->setScale(0.875f);
