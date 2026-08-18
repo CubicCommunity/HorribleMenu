@@ -480,7 +480,7 @@ bool MenuDiscord::init(ZStringView theme) {
         });
     breakeodeBtn->setID("breakeode-discord-btn");
     breakeodeBtn->setScale(0.625f);
-    breakeodeBtn->setPosition({breakeodeLabel->getPositionX(), breakeodeLabel->getPositionY() - (breakeodeBtn->getScaledContentHeight() + 2.f)});
+    breakeodeBtn->setPosition({breakeodeLabel->getPositionX(), breakeodeLabel->getPositionY() - (breakeodeBtn->getScaledContentHeight() + 2.5f)});
 
     m_mainLayer->addChild(breakeodeBtn, 1);
 
@@ -507,9 +507,9 @@ void MenuDiscord::checkDiscordStatus(float) {
     if (auto as = AuthState::get()) {
         if (!as->isAuthValid()) return unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
 
-        if (asp::Instant::now().durationSince(m_since).seconds() > 15) {
+        if (asp::Instant::now().durationSince(m_since).seconds() > 30) {
             if (m_linkBtn) m_linkBtn->setVisible(true);
-            Notification::create("Authorization flow timed out", NotificationIcon::Error)->show();
+            Notification::create("Authorization flow timed out after 30s", NotificationIcon::Error)->show();
             return unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
         };
 
