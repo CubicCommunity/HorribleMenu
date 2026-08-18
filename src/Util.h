@@ -24,11 +24,11 @@
 // Quick utility methods for Horrible Menu
 namespace horrible {
     // Pointer to this Geode mod
-    inline static Mod* mod = geode::Mod::get();
+    inline static geode::Mod* mod = geode::Mod::get();
 
     namespace mods {
         inline bool isImagePlus() {
-            return Loader::get()->isModLoaded("prevter.imageplus");
+            return geode::Loader::get()->isModLoaded("prevter.imageplus");
         };
     };
 

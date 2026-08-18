@@ -9,7 +9,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-$on_game(Loaded) {
+$on_mod(Loaded) {
     if (auto as = AuthState::get()) as->startAuth([](Result<> res) { if (res.isErr()) log::error("Argon authorization failed: {}", std::move(res).unwrapErr()); });
 };
 
@@ -349,16 +349,21 @@ void AuthState::startAuth(CopyableFunction<void(Result<>)>&& callback) {
 
 MenuDiscord* MenuDiscord::s_inst = nullptr;
 
-void MenuDiscord::setupInterface() {
+void MenuDiscord::setupAuthInterface() {
     cue::resetNode(m_discordCell);
     cue::resetNode(m_linkLabel);
     cue::resetNode(m_linkBtn);
     cue::resetNode(m_loading);
+    cue::resetNode(m_label);
 
     if (auto as = AuthState::get()) {
+        std::string labelTxt;
+
         auto discordRes = as->getDiscord();
         if (discordRes.isOk()) {
             auto const discord = std::move(discordRes).unwrap();
+
+            labelTxt = "Thanks for playing with <co>Horrible Menu</c>!";
 
             m_discordCell = MenuDiscordCell::create(discord);
             m_discordCell->setScale(0.75f);
@@ -374,6 +379,8 @@ void MenuDiscord::setupInterface() {
             m_mainLayer->addChild(m_linkLabel, 1);
         } else {
             log::error("{}", std::move(discordRes).unwrapErr());
+
+            labelTxt = "Your <cb>Discord</c> account is <cr>not yet linked</c>.";
 
             m_linkBtn = Button::createWithNode(
                 ButtonSprite::create(
@@ -403,13 +410,18 @@ void MenuDiscord::setupInterface() {
 
             m_mainLayer->addChild(m_linkBtn, 9);
         };
+
+        m_label = LabelArea::create(std::move(labelTxt), m_mainLayer->getScaledContentWidth() * 0.4f, 0.5f);
+        m_label->setAnchorPoint({1, 0});
+
+        m_mainLayer->addChildAtPosition(m_label, Anchor::BottomRight, {-15.f, 15.f});
     };
 };
 
 bool MenuDiscord::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
-    if (!Popup::init({330.f, 225.f}, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init({300.f, 190.f}, themes::getBackgroundSprite(theme))) return false;
 
     setID("discord"_spr);
     setTitle("Discord Community");
@@ -417,15 +429,68 @@ bool MenuDiscord::init(ZStringView theme) {
 
     popup::closeBtnID(m_closeBtn);
 
-    setupInterface();
+    setupAuthInterface();
+
+    auto cubicLabel = LabelArea::create("Want to join <cg>other gamers and hang out</c>?", m_mainLayer->getScaledContentWidth() * 0.875f, 0.75f);
+    cubicLabel->setID("cubic-studios-discord-label");
+
+    auto breakeodeLabel = LabelArea::create("Need <cy>help or want to suggest ideas</c>?", m_mainLayer->getScaledContentWidth() * 0.875f, 0.75f);
+    breakeodeLabel->setID("breakeode-discord-label");
+
+    m_mainLayer->addChildAtPosition(cubicLabel, Anchor::Center, {0.f, 50.f});
+    m_mainLayer->addChildAtPosition(breakeodeLabel, Anchor::Center, {0.f, 0.f});
+
+    auto cubicBtn = Button::createWithNode(
+        ButtonSprite::create(
+            "Join Cubic Studios",
+            font::big,
+            themes::getButtonSquareSprite(theme),
+            0.875f),
+        [](auto) {
+            createQuickPopup(
+                "Discord",
+                "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
+                "Cancel",
+                "OK",
+                [](auto, bool ok) {
+                    if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
+                });
+        });
+    cubicBtn->setID("cubic-studios-discord-btn");
+    cubicBtn->setScale(0.625f);
+    cubicBtn->setPosition({cubicLabel->getPositionX(), cubicLabel->getPositionY() - (cubicBtn->getScaledContentHeight() + 2.f)});
+
+    m_mainLayer->addChild(cubicBtn, 1);
+
+    auto breakeodeBtn = Button::createWithNode(
+        ButtonSprite::create(
+            "Join Breakeode",
+            font::gold,
+            themes::getButtonSquareSprite(theme),
+            0.875f),
+        [](auto) {
+            createQuickPopup(
+                "Discord",
+                "Join <cc>Breakeode</c>'s <cj>support Discord server</c>?",
+                "Cancel",
+                "OK",
+                [](auto, bool ok) {
+                    if (ok) web::openLinkInBrowser("https://www.dsc.gg/breakeode");
+                });
+        });
+    breakeodeBtn->setID("breakeode-discord-btn");
+    breakeodeBtn->setScale(0.625f);
+    breakeodeBtn->setPosition({breakeodeLabel->getPositionX(), breakeodeLabel->getPositionY() - (breakeodeBtn->getScaledContentHeight() + 2.f)});
+
+    m_mainLayer->addChild(breakeodeBtn, 1);
 
     auto infoBtn = Button::createWithSpriteFrameName(
         "GJ_infoIcon_001.png",
         [](auto) {
             createQuickPopup(
                 "Help",
-                "This is the <cg>Discord community menu</c>. You join <cf>Cubic Studios</c>'s Discord community server to chat with others, or <cc>Breakeode</c>'s Discord server to get help with using <cg>Horrible Menu</c> or suggest ideas.\n\n"
-                "You can also <cy>link your Discord account with your Geometry Dash account</c> in this menu, which is required to receive any <cd>Ko-fi support perks</c>.",
+                "This is the <cb>Discord community menu</c>. You can join <cf>Cubic Studios</c>'s Discord community server to chat with others, or <cc>Breakeode</c>'s Discord server to get help with using <co>Horrible Menu</c> or suggest ideas.\n\n"
+                "You can also <cy>link your Discord account with your Geometry Dash account</c> here, which is <cr>required</c> in order to receive any <cd>Ko-fi support perks</c>.",
                 "OK",
                 nullptr,
                 nullptr);
@@ -490,7 +555,7 @@ void MenuDiscord::checkDiscordStatus(float) {
                     s->m_since = asp::Instant();
                     s->m_state.clear();
 
-                    s->setupInterface();
+                    s->setupAuthInterface();
                 };
             });
     } else {
@@ -524,6 +589,16 @@ MenuDiscord* MenuDiscord::create(ZStringView theme) {
     return nullptr;
 };
 
+std::string MenuDiscordCell::normalizeAvatarURL(std::string url) const {
+    if (!mods::isImagePlus() && str::endsWith(url, "webp")) {
+        str::replaceIP(url, ".webp", ".jpg");
+    } else {
+        url = fmt::format("{}?animated=true", url);  // nitro users lol, shouldnt affect static pfps
+    };
+
+    return url;
+};
+
 bool MenuDiscordCell::init(DiscordLink const& profile) {
     if (!CCNode::init()) return false;
 
@@ -548,6 +623,7 @@ bool MenuDiscordCell::init(DiscordLink const& profile) {
 
     auto icon = LazySprite::create({40.f, 40.f});
     icon->setID("profile-icon");
+    icon->setAutoResize(true);
     icon->setAnchorPoint(anchor::center);
     icon->setLoadCallback([icon = WeakRef(icon)](Result<> res) {
         if (res.isErr()) return log::error("Failed to load Discord profile icon: {}", std::move(res).unwrapErr());
@@ -558,24 +634,23 @@ bool MenuDiscordCell::init(DiscordLink const& profile) {
 
     icon->loadFromUrl(normalizeAvatarURL(profile.avatar));
 
-    auto label = Label::create(fmt::format("@{}", profile.username), font::big);
+    auto label = Button::createWithLabel(
+        fmt::format("@{}", profile.username),
+        font::big,
+        [name = profile.username](auto) {
+            clipboard::write(name);
+            Notification::create("Copied to clipboard", NotificationIcon::Success)->show();
+        });
+    label->setID("copy-username-btn");
     label->setScale(0.625f);
-    label->setAnchorPoint({0, 0.5});
-    label->setPosition({icon->getScaledContentWidth() + 7.5f, getScaledContentHeight() / 2.f});
+
+    cue::rescaleToMatch(label, 147.5f);
+
+    label->setPosition({(label->getScaledContentWidth() * 0.5f) + icon->getScaledContentWidth() + 5.f, getScaledContentHeight() / 2.f});
 
     addChild(label);
 
     return true;
-};
-
-std::string MenuDiscordCell::normalizeAvatarURL(std::string url) const {
-    if (!mods::isImagePlus() && str::endsWith(url, "webp")) {
-        str::replaceIP(url, ".webp", ".jpg");
-    } else {
-        url = fmt::format("{}?animated=true", url);  // nitro users lol, shouldnt affect static pfps
-    };
-
-    return url;
 };
 
 MenuDiscordCell* MenuDiscordCell::create(DiscordLink const& profile) {
@@ -594,7 +669,7 @@ MenuKofi* MenuKofi::s_inst = nullptr;
 bool MenuKofi::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
-    if (!Popup::init({365.f, 220.f}, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init({375.f, 220.f}, themes::getBackgroundSprite(theme))) return false;
 
     setID("kofi"_spr);
     setTitle("Support Breakeode");
@@ -614,7 +689,7 @@ bool MenuKofi::init(ZStringView theme) {
 
     auto bg = cue::RepeatingBackground::create("game_bg_11_001.png", 0.75f, cue::RepeatMode::X, m_mainLayer->getScaledContentSize());
     bg->setColor({48, 53, 86});
-    bg->setSpeed(0.75f);
+    bg->setSpeed(0.5f);
 
     bgClip->addChild(bg, -1);
 
@@ -635,24 +710,14 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChild(border, -1);
 
-    auto infoContainer = NineSlice::create(themes::square);
-    infoContainer->setContentSize({m_mainLayer->getScaledContentWidth() - 25.f, 37.5f});
-    infoContainer->setColor(colors::black);
-
     auto as = AuthState::get();
 
     std::string infoLabelTxt = as->isSupporter()
                                    ? "<cg>Thanks for supporting Breakeode</c>! You can now <cj>press the badge below</c> to see the <cd>Supporter badge</c> on your profile. Feel free to <cb>join Breakeode's Discord server</c> for even more perks."
-                                   : "Mods like <co>Horrible Menu</c> <cc>wouldn't be possible without community support</c>. <cd>Donate to Breakeode on Ko-fi</c> and unlock cool perks such as that cool badge below!\n<cj>Press the badge</c> to get started.";
+                                   : "<co>Horrible Menu</c> <cc>couldn't be made possible without community support</c>. Feel free to <cd>donate through Ko-fi</c> and get cool perks such as the badge below!\n<cj>Press the badge</c> to get started.";
 
-    auto infoLabel = Label::createRich(std::move(infoLabelTxt), font::chat);
-    infoLabel->setScale(0.625f);
-    infoLabel->setAlignment(Label::Alignment::Center);
-    infoLabel->setMaxWidth((infoContainer->getScaledContentWidth() - 7.5f) / infoLabel->getScale());
-
-    infoContainer->setContentHeight(infoLabel->getScaledContentHeight() + 5.f);
-
-    infoContainer->addChildAtPosition(infoLabel, Anchor::Center);
+    auto infoContainer = LabelArea::create(std::move(infoLabelTxt), m_mainLayer->getScaledContentWidth() - 15.f, 0.625f, as->isSupporter() ? colors::gold : colors::purple);
+    infoContainer->setID("kofi-description");
 
     m_mainLayer->addChildAtPosition(infoContainer, Anchor::Center, {0.f, 12.5f + infoContainer->getScaledContentHeight()});
 
@@ -699,13 +764,14 @@ bool MenuKofi::init(ZStringView theme) {
 
     std::string linkLabelTxt = discordRes.isOk()
                                    ? fmt::format("Discord account <cj>@{}</c> <cg>authorized & linked</c>!", std::move(discordRes).unwrap().username)
-                                   : "Discord account <cr>not linked</c>, this is <cy>required to receive supporter perks</c>!";
+                                   : "Discord account <cr>not linked</c>.\nThis is <cy>required to receive supporter perks</c>!";
 
     auto linkLabel = Label::createRich(std::move(linkLabelTxt), font::chat);
     linkLabel->setScale(0.75f);
+    linkLabel->setAnchorPoint({0.5, 1});
     linkLabel->setAlignment(Label::Alignment::Center);
 
-    m_mainLayer->addChildAtPosition(linkLabel, Anchor::Bottom, {0.f, 37.5f});
+    m_mainLayer->addChildAtPosition(linkLabel, Anchor::Bottom, {0.f, 47.5f});
 
     supportBtn->runAction(
         CCEaseExponentialInOut::create(

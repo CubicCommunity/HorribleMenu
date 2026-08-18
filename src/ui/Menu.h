@@ -16,7 +16,7 @@ namespace horrible {
         struct SocialBtnData final {
             std::string sprite;
             std::string id;
-            Button::ButtonCallback callback;
+            geode::Button::ButtonCallback callback;
         };
 
     private:

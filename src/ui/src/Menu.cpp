@@ -518,7 +518,20 @@ bool Menu::init() {
                 "discord-btn",
                 [this](auto) {
                     NOTIFY_INTERNET_IF_OFFLINE;
-                    NOTIFY_IF_LOGGED_OUT;
+
+                    if (!AuthState::get()->isAuthValid()) {
+                        createQuickPopup(
+                            "Discord",
+                            "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
+                            "Cancel",
+                            "OK",
+                            [](auto, bool ok) {
+                                if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
+                            });
+
+                        return;
+                    };
+
                     if (auto popup = MenuDiscord::create(m_impl->theme)) popup->show();
                 },
             },

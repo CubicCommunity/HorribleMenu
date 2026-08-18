@@ -11,6 +11,7 @@
 #include <Geode/modify/GJGameLevel.hpp>
 #include <Geode/modify/EndLevelLayer.hpp>
 
+using namespace geode::prelude;
 using namespace horrible::prelude;
 
 static std::vector<std::weak_ptr<Hook>> g_safeModeHooks;
@@ -129,6 +130,7 @@ class $modify(HMEndLevelLayer, EndLevelLayer) {
 
         if (mod->getSettingValue<bool>("safe-mode-indicator")) {
             auto isSpriteSecret = rng::fast() <= 5;
+
             auto btn = Button::createWithSpriteFrameName(themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default), [](auto) {
                 createQuickPopup(
                     "Safe Mode",
@@ -137,10 +139,11 @@ class $modify(HMEndLevelLayer, EndLevelLayer) {
                     nullptr,
                     nullptr);
             });
-            btn->setScale(.4f);
-            btn->setID("safe-mode-indicator"_spr);
+            btn->setID("safe-mode-indicator-btn"_spr);
             btn->setZOrder(2);
-            m_mainLayer->addChildAtPosition(btn, Anchor::Center, {165, -105}, false);
+            btn->setScale(0.425f);
+
+            m_mainLayer->addChildAtPosition(btn, Anchor::Center, {165.f, -105.f}, false);
         };
     };
 };

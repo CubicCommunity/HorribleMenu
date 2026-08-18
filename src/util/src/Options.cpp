@@ -2,8 +2,10 @@
 
 #include <Util.h>
 
-using namespace horrible;
-using namespace horrible::util;
+#include <Geode/Geode.hpp>
+
+using namespace geode::prelude;
+using namespace horrible::prelude;
 
 std::vector<std::weak_ptr<Option>> options::getAll() noexcept {
     if (auto om = OptionManager::get()) return om->getOptions();

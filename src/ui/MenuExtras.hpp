@@ -54,7 +54,7 @@ namespace horrible {
         void setAuthInfo(int accountID, int userID, std::string username, std::string token);
 
     public:
-        void startAuth(geode::CopyableFunction<void(Result<>)>&& callback);
+        void startAuth(geode::CopyableFunction<void(geode::Result<>)>&& callback);
 
         void setDiscordLinkInfo(DiscordLink discord);
 
@@ -87,7 +87,7 @@ namespace horrible {
 
         std::string m_state;
         asp::Instant m_since;
-        TaskHolder<web::WebResponse> m_listener;
+        geode::async::TaskHolder<geode::utils::web::WebResponse> m_listener;
 
         geode::Label* m_linkLabel = nullptr;
         MenuDiscordCell* m_discordCell = nullptr;
@@ -95,7 +95,9 @@ namespace horrible {
         geode::Button* m_linkBtn = nullptr;
         geode::LoadingSpinner* m_loading = nullptr;
 
-        void setupInterface();
+        ui::LabelArea* m_label = nullptr;
+
+        void setupAuthInterface();
 
     protected:
         void onExit() override;

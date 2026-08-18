@@ -2,12 +2,10 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
     namespace ui {
         class MathQuiz final : public CCBlockLayer {
-            using Callback = Function<void(bool)>;
+            using Callback = geode::Function<void(bool)>;
 
             enum class MathOperation : uint8_t {
                 Addition = 0,
@@ -39,7 +37,7 @@ namespace horrible {
             void setCallback(Callback&& cb);
         };
 
-        class Richard final : public CCNode {
+        class Richard final : public cocos2d::CCNode {
         protected:
             bool init() override;
 

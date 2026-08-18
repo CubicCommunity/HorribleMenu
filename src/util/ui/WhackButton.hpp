@@ -2,12 +2,10 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
     namespace ui {
-        class WhackButton final : public CCNode {
-            using Callback = Function<void(bool)>;
+        class WhackButton final : public cocos2d::CCNode {
+            using Callback = geode::Function<void(bool)>;
 
         private:
             struct Impl;

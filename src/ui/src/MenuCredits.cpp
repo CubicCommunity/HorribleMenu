@@ -25,7 +25,7 @@ static auto constexpr g_defaultLicense =
     "The current build of [Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://github.com/CubicCommunity/HorribleMenu/blob/main/LICENSE.md).\n\n"
     "Third-party assets, API modifications, libraries, and other external resources are credited in the credits interface.";
 
-$on_game(Loaded) {
+$on_mod(Loaded) {
     if (auto cm = CreditsManager::get()) {
         cm->loadLeadDevs();
         cm->loadLicense();

@@ -2,11 +2,9 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
     namespace ui {
-        class RandomAd final : public Popup {
+        class RandomAd final : public geode::Popup {
         protected:
             bool init();
 

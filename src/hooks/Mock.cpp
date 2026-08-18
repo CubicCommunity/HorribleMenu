@@ -54,9 +54,10 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                     log::info("Displaying {}", pngPath);
 
-                    auto ss = LazySprite::create({192.f, 108.f});
+                    auto ss = LazySprite::create({192.f, 108.f}, false);
                     ss->setID("mocked"_spr);
                     ss->setScale(0.25);
+                    ss->setAutoResize(true);
                     ss->setAnchorPoint(anchor::center);
                     ss->setPosition({-192.f, getScaledContentHeight() / 2.f});
 
