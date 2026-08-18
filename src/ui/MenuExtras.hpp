@@ -70,6 +70,17 @@ namespace horrible {
         bool isSupporter() const noexcept;
     };
 
+    class MenuDiscordCell final : public cocos2d::CCNode {
+    private:
+        std::string normalizeAvatarURL(std::string url) const;
+
+    protected:
+        bool init(DiscordLink const& profile);
+
+    public:
+        static MenuDiscordCell* create(DiscordLink const& profile);
+    };
+
     class MenuDiscord final : public geode::Popup {
     private:
         static MenuDiscord* s_inst;
@@ -78,7 +89,13 @@ namespace horrible {
         asp::Instant m_since;
         TaskHolder<web::WebResponse> m_listener;
 
+        geode::Label* m_linkLabel = nullptr;
+        MenuDiscordCell* m_discordCell = nullptr;
+
+        geode::Button* m_linkBtn = nullptr;
         geode::LoadingSpinner* m_loading = nullptr;
+
+        void setupInterface();
 
     protected:
         void onExit() override;

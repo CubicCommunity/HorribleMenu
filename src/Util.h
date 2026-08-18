@@ -26,6 +26,12 @@ namespace horrible {
     // Pointer to this Geode mod
     inline static Mod* mod = geode::Mod::get();
 
+    namespace mods {
+        inline bool isImagePlus() {
+            return Loader::get()->isModLoaded("prevter.imageplus");
+        };
+    };
+
     /**
      * Convert a chance setting number to a cooldown percentage decimal
      *

@@ -360,26 +360,7 @@ bool MenuDiscord::init(ZStringView theme) {
 
     popup::closeBtnID(m_closeBtn);
 
-    if (auto as = AuthState::get()) {
-        auto discordRes = as->getDiscord();
-        if (discordRes.isOk()) {  // testing, will replace with actual ui later..!
-            auto const discord = std::move(discordRes).unwrap();
-
-            auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), font::chat);
-            m_mainLayer->addChildAtPosition(label, Anchor::Center);
-        } else {
-            log::error("{}", std::move(discordRes).unwrapErr());
-
-            m_loading = LoadingSpinner::create(12.5f);
-            m_mainLayer->addChildAtPosition(m_loading, Anchor::Bottom);
-
-            m_state = utils::random::generateUUID();
-            m_since = asp::Instant::now();
-            web::openLinkInBrowser(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/discord/link/auth?state={}", m_state));
-
-            scheduleOnce(schedule_selector(MenuDiscord::checkDiscordStatus), 1.25f);
-        };
-    };
+    setupInterface();
 
     auto infoBtn = Button::createWithSpriteFrameName(
         "GJ_infoIcon_001.png",
@@ -400,11 +381,67 @@ bool MenuDiscord::init(ZStringView theme) {
     return true;
 };
 
+void MenuDiscord::setupInterface() {
+    cue::resetNode(m_discordCell);
+    cue::resetNode(m_linkLabel);
+    cue::resetNode(m_linkBtn);
+    cue::resetNode(m_loading);
+
+    if (auto as = AuthState::get()) {
+        auto discordRes = as->getDiscord();
+        if (discordRes.isOk()) {
+            auto const discord = std::move(discordRes).unwrap();
+
+            m_discordCell = MenuDiscordCell::create(discord);
+            m_discordCell->setScale(0.75f);
+            m_discordCell->setAnchorPoint({0, 0});
+
+            m_mainLayer->addChildAtPosition(m_discordCell, Anchor::BottomLeft, {10.f, 10.f});
+
+            m_linkLabel = Label::create("Playing as...", font::chat);
+            m_linkLabel->setScale(0.75f);
+            m_linkLabel->setAnchorPoint({0, 0});
+            m_linkLabel->setPosition({m_discordCell->getPositionX(), m_discordCell->getPositionY() + m_discordCell->getScaledContentHeight() + 5.f});
+
+            m_mainLayer->addChild(m_linkLabel, 1);
+        } else {
+            log::error("{}", std::move(discordRes).unwrapErr());
+
+            m_linkBtn = Button::createWithNode(
+                ButtonSprite::create(
+                    "Link Account",
+                    font::gold,
+                    themes::getButtonSquareSprite(mod->getSettingValue<std::string>("theme")),
+                    0.875f),
+                [this](Button* sender) {
+                    sender->setVisible(false);
+
+                    m_loading = LoadingSpinner::create(25.f);
+                    m_loading->setPosition(sender->getPosition());
+
+                    m_mainLayer->addChild(m_loading, 9);
+
+                    m_state = utils::random::generateUUID();
+                    m_since = asp::Instant::now();
+                    web::openLinkInBrowser(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/discord/link/auth?state={}", m_state));
+
+                    scheduleOnce(schedule_selector(MenuDiscord::checkDiscordStatus), 1.25f);
+                });
+            m_linkBtn->setID("link-discord-account-btn");
+            m_linkBtn->setScale(0.75f);
+            m_linkBtn->setPosition({75.f, 25.f});
+
+            m_mainLayer->addChild(m_linkBtn, 9);
+        };
+    };
+};
+
 void MenuDiscord::checkDiscordStatus(float) {
     if (auto as = AuthState::get()) {
         if (!as->isAuthValid()) return unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
 
         if (asp::Instant::now().durationSince(m_since).seconds() > 15) {
+            if (m_linkBtn) m_linkBtn->setVisible(true);
             Notification::create("Authorization flow timed out", NotificationIcon::Error)->show();
             return unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
         };
@@ -443,18 +480,15 @@ void MenuDiscord::checkDiscordStatus(float) {
                     auto discord = std::move(discordRes).unwrap();
 
                     log::info("Successfully authorized as {}", discord.username);
-
-                    auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), font::chat);
-                    s->m_mainLayer->addChildAtPosition(label, Anchor::Center);
-
                     if (auto as = AuthState::get()) as->setDiscordLinkInfo(std::move(discord));
 
                     s->unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
-                    cue::resetNode(s->m_loading);
 
                     s->m_listener.cancel();
                     s->m_since = asp::Instant();
                     s->m_state.clear();
+
+                    s->setupInterface();
                 };
             });
     } else {
@@ -481,6 +515,71 @@ MenuDiscord* MenuDiscord::create(ZStringView theme) {
     if (ret->init(theme)) {
         ret->autorelease();
         s_inst = ret;
+        return ret;
+    };
+
+    delete ret;
+    return nullptr;
+};
+
+bool MenuDiscordCell::init(DiscordLink const& profile) {
+    if (!CCNode::init()) return false;
+
+    setContentSize({45.f, 40.f});
+
+    auto square = cue::createBackground(
+        {40.f, 40.f},
+        {
+            .cornerRoundness = 1.25f,
+            .id = "",
+        });
+
+    addChildAtPosition(square, Anchor::Left, {20.f, 0.f});
+
+    auto iconContainer = CCClippingNode::create(square);
+    iconContainer->setAnchorPoint(anchor::center);
+    iconContainer->setPosition(square->getPosition());
+    iconContainer->setContentSize(square->getScaledContentSize());
+    iconContainer->setAlphaThreshold(0.f);
+
+    addChild(iconContainer, 1);
+
+    auto icon = LazySprite::create({40.f, 40.f});
+    icon->setID("profile-icon");
+    icon->setAnchorPoint(anchor::center);
+    icon->setLoadCallback([icon = WeakRef(icon)](Result<> res) {
+        if (res.isErr()) return log::error("Failed to load Discord profile icon: {}", std::move(res).unwrapErr());
+        if (auto i = icon.lock()) cue::rescaleToMatch(i, 40.f);
+    });
+
+    iconContainer->addChildAtPosition(icon, Anchor::Center);
+
+    icon->loadFromUrl(normalizeAvatarURL(profile.avatar));
+
+    auto label = Label::create(fmt::format("@{}", profile.username), font::big);
+    label->setScale(0.625f);
+    label->setAnchorPoint({0, 0.5});
+    label->setPosition({icon->getScaledContentWidth() + 7.5f, getScaledContentHeight() / 2.f});
+
+    addChild(label);
+
+    return true;
+};
+
+std::string MenuDiscordCell::normalizeAvatarURL(std::string url) const {
+    if (!mods::isImagePlus() && str::endsWith(url, "webp")) {
+        str::replaceIP(url, ".webp", ".jpg");
+    } else {
+        url = fmt::format("{}?animated=true", url);  // nitro users lol, shouldnt affect static pfps
+    };
+
+    return url;
+};
+
+MenuDiscordCell* MenuDiscordCell::create(DiscordLink const& profile) {
+    auto ret = new MenuDiscordCell();
+    if (ret->init(profile)) {
+        ret->autorelease();
         return ret;
     };
 

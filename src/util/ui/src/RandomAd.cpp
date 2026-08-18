@@ -39,7 +39,7 @@ bool RandomAd::init() {
     });
 
     std::string url = "https://api.cubicstudios.xyz/breakeode/v1/fetch/random-thumbnail";
-    if (Loader::get()->isModLoaded("prevter.imageplus")) url = fmt::format("{}?webp=1", url);
+    if (mods::isImagePlus()) url = fmt::format("{}?webp=1", url);
 
     projThumb->loadFromUrl(std::move(url), CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
