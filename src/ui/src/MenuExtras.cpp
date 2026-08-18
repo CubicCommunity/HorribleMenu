@@ -344,10 +344,12 @@ bool MenuDiscord::init(ZStringView theme) {
             auto const discord = std::move(discordRes).unwrap();
 
             auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), "chatFont.fnt");
-
             m_mainLayer->addChildAtPosition(label, Anchor::Center);
         } else {
             log::error("{}", std::move(discordRes).unwrapErr());
+
+            m_loading = LoadingSpinner::create(12.5f);
+            m_mainLayer->addChildAtPosition(m_loading, Anchor::Bottom);
 
             m_state = utils::random::generateUUID();
             web::openLinkInBrowser(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/discord/link/auth?state={}", m_state));
@@ -413,10 +415,17 @@ void MenuDiscord::checkDiscordStatus(float) {
                     auto discord = std::move(discordRes).unwrap();
 
                     log::info("Successfully authorized as {}", discord.username);
+
+                    auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), "chatFont.fnt");
+                    s->m_mainLayer->addChildAtPosition(label, Anchor::Center);
+
                     if (auto as = AuthState::get()) as->setDiscordLinkInfo(std::move(discord));
 
                     s->unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
+                    cue::resetNode(s->m_loading);
+
                     s->m_listener.cancel();
+                    s->m_state.clear();
                 };
             });
     } else {

@@ -75,6 +75,8 @@ namespace horrible {
         std::string m_state;
         TaskHolder<web::WebResponse> m_listener;
 
+        geode::LoadingSpinner* m_loading = nullptr;
+
     protected:
         void onExit() override;
 
