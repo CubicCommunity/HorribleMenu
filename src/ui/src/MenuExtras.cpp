@@ -10,7 +10,7 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 $on_game(Loaded) {
-    if (auto as = AuthState::get()) as->startAuth([](Result<> res) {if (res.isErr()) log::error("Argon authorization failed: {}", std::move(res).unwrapErr()); });
+    if (auto as = AuthState::get()) as->startAuth([](Result<> res) { if (res.isErr()) log::error("Argon authorization failed: {}", std::move(res).unwrapErr()); });
 };
 
 static constexpr auto g_suggestWait = 60;
@@ -18,6 +18,26 @@ static constexpr auto g_suggestWait = 60;
 MenuSuggest* MenuSuggest::s_inst = nullptr;
 
 asp::Instant MenuSuggest::s_lastSuggest = asp::Instant();
+
+Result<DiscordLink> json::Serialize<DiscordLink>::fromJson(json::Value const& value) {
+    if (!value.isObject()) return Err("Expected an object");
+
+    GEODE_UNWRAP_INTO(std::string id, value["id"].asString());
+    GEODE_UNWRAP_INTO(std::string username, value["username"].asString());
+    GEODE_UNWRAP_INTO(std::string avatar, value["avatar"].asString());
+
+    return Ok(DiscordLink{std::move(id), std::move(username), std::move(avatar)});
+};
+
+json::Value json::Serialize<DiscordLink>::toJson(DiscordLink const& value) {
+    auto obj = json::Value();
+
+    obj["id"] = value.id;
+    obj["username"] = value.username;
+    obj["avatar"] = value.avatar;
+
+    return obj;
+};
 
 bool MenuSuggest::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
@@ -175,7 +195,7 @@ void MenuSuggest::processSuggestion(Button* sender) {
                                 if (auto s = self.lock()) toggleBack(s);
                             };
 
-                            if (!res.ok()) return fallback(fmt::format("Request failed ({}: {})", res.code(), res.errorMessage()));
+                            if (res.error()) return fallback(fmt::format("Request failed ({}: {})", res.code(), res.errorMessage()));
 
                             s_lastSuggest = asp::Instant::now();
 
@@ -221,6 +241,12 @@ void AuthState::setAuthInfo(int accountID, int userID, std::string username, std
     m_authorized = !m_token.empty();
 };
 
+void AuthState::setDiscordLinkInfo(DiscordLink discord) {
+    m_discord = std::move(discord);
+
+    m_discordLinked = !m_discord.id.empty();
+};
+
 bool AuthState::isAuthorized() const noexcept {
     return m_authorized;
 };
@@ -245,23 +271,56 @@ ZStringView AuthState::getToken() const noexcept {
     return m_token;
 };
 
+Result<DiscordLink> AuthState::getDiscord() const {
+    if (!m_discordLinked) return Err("Discord account not linked");
+    return Ok(m_discord);
+};
+
 void AuthState::startAuth(CopyableFunction<void(Result<>)>&& callback) {
     if (!argon::signedIn()) return callback(Err("Player is logged out"));
 
-    if (auto as = AuthState::get()) {
-        if (as->isAuthValid()) return callback(Ok());
+    if (isAuthValid()) return callback(Ok());
+
+    async::spawn(
+        argon::startAuth(),
+        [this, cb = std::move(callback)](Result<std::string> res) {
+            if (res.isErr()) return cb(res.asErr());
+
+            auto const acc = argon::getGameAccountData();
+
+            setAuthInfo(acc.accountId, acc.userId, acc.username, std::move(res).unwrap());
+            log::info("Authorized {} ({}) with Argon", acc.username, acc.accountId);
+
+            return cb(Ok());
+        });
+
+    if (auto gjam = GJAccountManager::sharedState()) {
+        auto req = web::WebRequest()
+                       .param("id", gjam->m_accountID);
 
         async::spawn(
-            argon::startAuth(),
-            [cb = std::move(callback), as](Result<std::string> res) {
-                if (res.isErr()) return cb(res.asErr());
+            req.get("https://api.cubicstudios.xyz/breakeode/v1/discord"),
+            [this](web::WebResponse res) {
+                auto const fallback = [](std::string_view err = "") {
+                    log::error("Discord link web request failed ({})", err);
+                };
 
-                auto const acc = argon::getGameAccountData();
+                if (res.error()) return fallback(res.errorMessage());
 
-                as->setAuthInfo(acc.accountId, acc.userId, acc.username, std::move(res).unwrap());
-                log::info("Authorized {} ({}) with Argon", acc.username, acc.accountId);
+                auto jsonRes = res.json();
+                if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
 
-                return cb(Ok());
+                auto json = std::move(jsonRes).unwrap();
+
+                auto discordRes = json.as<DiscordLink>();
+                if (discordRes.isErr()) return fallback(std::move(discordRes).unwrapErr());
+
+                setDiscordLinkInfo(std::move(discordRes).unwrap());
+
+                auto discordLinkRes = getDiscord();
+                if (discordLinkRes.isErr()) return fallback(std::move(discordLinkRes).unwrapErr());
+
+                log::info("Authorized as Discord user {}", std::move(discordLinkRes).unwrap().username);
             });
     };
 };
@@ -278,6 +337,24 @@ bool MenuDiscord::init(ZStringView theme) {
     setCloseButtonSpr(themes::createThemeCircleSprite(btns));
 
     popup::closeBtnID(m_closeBtn);
+
+    if (auto as = AuthState::get()) {
+        auto discordRes = as->getDiscord();
+        if (discordRes.isOk()) {  // testing, will replace with actual ui later..!
+            auto const discord = std::move(discordRes).unwrap();
+
+            auto label = Label::createRich(fmt::format("Authorized as <cg>@{}</c>", discord.username), "chatFont.fnt");
+
+            m_mainLayer->addChildAtPosition(label, Anchor::Center);
+        } else {
+            log::error("{}", std::move(discordRes).unwrapErr());
+
+            m_state = utils::random::generateUUID();
+            web::openLinkInBrowser(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/discord/link/auth?state={}", m_state));
+
+            scheduleOnce(schedule_selector(MenuDiscord::checkDiscordStatus), 1.25f);
+        };
+    };
 
     auto infoBtn = Button::createWithSpriteFrameName(
         "GJ_infoIcon_001.png",
@@ -298,8 +375,62 @@ bool MenuDiscord::init(ZStringView theme) {
     return true;
 };
 
+void MenuDiscord::checkDiscordStatus(float) {
+    if (auto as = AuthState::get()) {
+        if (!as->isAuthValid()) return unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
+
+        auto reqJson = json::Value();
+        reqJson["account_id"] = as->getAccountID();
+        reqJson["user_id"] = as->getUserID();
+        reqJson["username"] = as->getUsername();
+        reqJson["authtoken"] = as->getToken();
+        reqJson["state"] = m_state;
+
+        auto req = web::WebRequest()
+                       .bodyJSON(reqJson);
+
+        log::debug("Checking endpoint for Discord link status...");
+
+        m_listener.spawn(
+            req.post("https://api.cubicstudios.xyz/breakeode/v1/discord/link/check"),
+            [self = WeakRef(this)](web::WebResponse res) {
+                if (auto s = self.lock()) {
+                    auto const fallback = [&s](std::string_view err = "") {
+                        log::error("Discord link web request failed ({}), trying again in 1.25s", err);
+                        s->scheduleOnce(schedule_selector(MenuDiscord::checkDiscordStatus), 1.25f);
+                    };
+
+                    if (res.error()) return fallback(res.errorMessage());
+
+                    auto jsonRes = res.json();
+                    if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
+
+                    auto json = std::move(jsonRes).unwrap();
+
+                    auto discordRes = json.as<DiscordLink>();
+                    if (discordRes.isErr()) return fallback(std::move(discordRes).unwrapErr());
+
+                    auto discord = std::move(discordRes).unwrap();
+
+                    log::info("Successfully authorized as {}", discord.username);
+                    if (auto as = AuthState::get()) as->setDiscordLinkInfo(std::move(discord));
+
+                    s->unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
+                    s->m_listener.cancel();
+                };
+            });
+    } else {
+        unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
+    };
+};
+
 void MenuDiscord::onExit() {
     s_inst = nullptr;
+
+    if (m_listener.isPending()) log::trace("Cancelling Discord link tasks");
+    unschedule(schedule_selector(MenuDiscord::checkDiscordStatus));
+    m_listener.cancel();
+
     Popup::onExit();
 };
 

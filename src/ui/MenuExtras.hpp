@@ -31,20 +31,31 @@ namespace horrible {
         static MenuSuggest* get() noexcept;
     };
 
+    struct DiscordLink final {
+        std::string id;
+        std::string username;
+        std::string avatar;
+    };
+
     class AuthState final : public base::Singleton<AuthState> {
     private:
         bool m_authorized = false;
+        bool m_discordLinked = false;
 
         int m_accountID;
         int m_userID;
         std::string m_username;
         std::string m_token;
 
+        DiscordLink m_discord;
+
     protected:
         void setAuthInfo(int accountID, int userID, std::string username, std::string token);
 
     public:
         void startAuth(geode::CopyableFunction<void(Result<>)>&& callback);
+
+        void setDiscordLinkInfo(DiscordLink discord);
 
         bool isAuthorized() const noexcept;
         bool isAuthValid() const;
@@ -53,14 +64,21 @@ namespace horrible {
         int getUserID() const noexcept;
         geode::ZStringView getUsername() const noexcept;
         geode::ZStringView getToken() const noexcept;
+
+        geode::Result<DiscordLink> getDiscord() const;
     };
 
     class MenuDiscord final : public geode::Popup {
     private:
         static MenuDiscord* s_inst;
 
+        std::string m_state;
+        TaskHolder<web::WebResponse> m_listener;
+
     protected:
         void onExit() override;
+
+        void checkDiscordStatus(float);
 
         bool init(geode::ZStringView theme);
 
@@ -84,4 +102,10 @@ namespace horrible {
 
         static MenuKofi* get() noexcept;
     };
+};
+
+template <>
+struct horrible::json::Serialize<horrible::DiscordLink> final {
+    static geode::Result<horrible::DiscordLink> fromJson(horrible::json::Value const& value);
+    static horrible::json::Value toJson(horrible::DiscordLink const& value);
 };
