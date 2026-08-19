@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -25,9 +25,21 @@ class $modify(SpamPlayLayer, PlayLayer) {
         Ref<SpamChallenge> currentSpam = nullptr;
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            cue::resetNode(m_fields->currentSpam);
+
+            unschedule(schedule_selector(SpamPlayLayer::doSpam));
+
+            return;
+        };
+
+        nextSpam();
+    };
+
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        nextSpam();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void resetLevelFromStart() {
@@ -94,3 +106,5 @@ class $modify(SpamPlayLayer, PlayLayer) {
         });
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, SpamPlayLayer);

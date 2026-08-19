@@ -2,10 +2,12 @@
 <h1><a href="https://geode-sdk.org/mods/cubicstudios.horriblemenu"><img src="logo.png" width="25" alt="The mod's logo." /></a> Horrible Menu</h1>
 <h6>A plethora of ways to ruin your experience...</h6>
 
-![Mod Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=version)
-![Downloads](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=downloads)
-![Geometry Dash Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=gd_version)
-![Geode Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=geode_version)
+[![Mod Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=version)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+[![Downloads](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=downloads)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+[![Geometry Dash Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=gd_version)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+[![Geode Version](https://api.geode-sdk.org/v1/mods/cubicstudios.horriblemenu/status_badge?stat=geode_version)](https://geode-sdk.org/mods/cubicstudios.horriblemenu)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/breakeode)
 </div>
 
 ## About
@@ -20,7 +22,7 @@ When pressing `\` or by pressing the floating *<img src="resources/icon.png" wid
 > *You can customize any keybinds in this mod through its settings.*
 
 ### Safe Mode
-By default, this mod implements its own safe mode system to prevent making accidental progression in levels while this mod is active. Remember, **using this mod may count as cheating**! You can also disable this in the mod's settings while you're not actively using any troll options.
+By default, this mod implements its own anti-cheat system to prevent making accidental progression in levels while this mod is active. Remember, **using this mod may count as cheating**! You can also disable this in the mod's settings while you're not actively using any troll options.
 
 > [!WARNING]
 > *Please keep in mind that certain game settings and hacks from mod menus may interfere with some parts of this mod's functionality.*
@@ -59,13 +61,10 @@ class $modify(MyPlayLayer, PlayLayer) {
 ---
 
 #### Thanks
-- **[Cheeseworks](https://www.github.com/BlueWitherer/)**: Internals, API/DX, UI/UX, options' features, mod branding
-- **[ArcticWoof](https://www.github.com/DumbCaveSpider/)**: UI, options' features, Horrible Menu logo
-
-*as well as...*
-
 - **[Geode SDK](https://geode-sdk.org/)**: Created an incredible SDK that made this mod possible!
-- **[RobTop Games](https://www.robtopgames.com/)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
+- **[RobTop Games](https://www.robtopgames.com/)**: Made [Geometry Dash](https://www.geometrydash.com/)...
+
+[![Contributors](https://contrib.rocks/image?repo=CubicCommunity/HorribleMenu)](https://github.com/CubicCommunity/HorribleMenu/graphs/contributors)
 
 *and...*
 

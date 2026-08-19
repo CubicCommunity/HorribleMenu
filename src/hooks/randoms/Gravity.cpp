@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -26,6 +26,8 @@ class $modify(GravityPlayerObject, PlayerObject) {
     };
 
     void updateJump(float p0) {
+        if (!m_gameLayer) return PlayerObject::updateJump(p0);
+
         auto f = m_fields.self();
 
         auto newGrav = std::round(rng::pc() * (2.5f) * 100.f) / 100.f;

@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -19,13 +19,23 @@ static auto const o = Option::create(THIS_ID)
 class $modify(BlinkingIconPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(BlinkingIconPlayLayer::blink));
+
+            return;
+        };
+
         nextBlink();
     };
 
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
+    };
+
     void nextBlink() {
-        auto delay = rng::get(2.f, 1.f);
+        auto delay = rng::get(1.25f, 0.875f);
         log::trace("scheduling blink in {}s", delay);
 
         scheduleOnce(schedule_selector(BlinkingIconPlayLayer::blink), delay);
@@ -40,3 +50,5 @@ class $modify(BlinkingIconPlayLayer, PlayLayer) {
         nextBlink();
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, BlinkingIconPlayLayer);

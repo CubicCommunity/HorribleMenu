@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -28,9 +28,18 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         float defSpeed = 0.f;
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(CaptchaPlayLayer::doCaptcha));
+
+            return;
+        };
+
+        nextCaptcha();
+    };
+
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        nextCaptcha();
 
         m_fields->defSpeed = m_player1->m_playerSpeed;
     };
@@ -108,3 +117,5 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         });
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, CaptchaPlayLayer);

@@ -42,7 +42,7 @@ suggested by {their preferred name}
 Keep includes clean, make sure your IDE isn't configured to automatically add them, or things start to look messy!
 ```cpp
 // Include internal utility headers
-#include <Utils.h>
+#include <Util.h>
 
 // Include Geode headers
 #include <Geode/Geode.hpp>

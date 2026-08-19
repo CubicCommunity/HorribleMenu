@@ -1,5 +1,5 @@
 {
-    "geode": "5.4.0",
+    "geode": "5.9.0",
     "gd": {
         "win": "2.2081",
         "android": "2.2081",
@@ -8,11 +8,10 @@
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
-    "version": "1.2.1",
+    "version": "1.2.7",
     "developers": [
         "Team Breakeode",
-        "Cheeseworks",
-        "ArcticWoof"
+        "Cheeseworks"
     ],
     "description": "A plethora of ways to ruin your experience...",
     "links": {
@@ -32,6 +31,12 @@
         "spritesheets": {
             "BRKD_HM_icons": [
                 "resources/*.png"
+            ],
+            "BRKD_HM_badges": [
+                "resources/badges/*.png"
+            ],
+            "BRKD_HM_btns": [
+                "resources/btns/*.png"
             ]
         }
     },
@@ -43,6 +48,10 @@
     "dependencies": {
         "cheeseworks.moddevbranding": {
             "version": ">=2.0.0",
+            "required": false
+        },
+        "dasshu.badgified": {
+            "version": ">=1.0.0",
             "required": false
         }
     },
@@ -77,7 +86,7 @@
         "safe-mode": {
             "type": "bool",
             "name": "Enable",
-            "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active!</cr>",
+            "description": "Prevent accidentally saving progress made in levels while using this mod's features. <co>We recommend keeping this enabled while this mod is active</c>!",
             "default": true,
             "enable-if": "!dyn-safe-mode",
             "enable-if-description": "Disable Automatic Safe Mode to manually change this setting."
@@ -88,6 +97,12 @@
             "description": "Automatically toggle Safe Mode whenever you toggle any options that are marked as cheats.",
             "default": true
         },
+        "safe-mode-indicator": {
+            "type": "bool",
+            "name": "Indicator",
+            "description": "Shows an indicator on the end screen for safe mode being enabled.",
+            "default": true
+        },
         "utils": {
             "type": "button",
             "name": "Disable All Cheats",
@@ -95,7 +110,7 @@
                 "copy-list": "Copy Enabled Options",
                 "disable-cheats": "Disable Cheats"
             },
-            "description": "Quickly disable every option that is <cr>marked as cheating</c>. <cg>Feel free to do this if *Automatic Safe Mode* is enabled and you're not sure what's triggering it.</c>\n\n> ![**(i)**](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*When reaching support, be sure to copy your currently enabled options list beforehand.*</c>"
+            "description": "Quickly disable every option that is <cr>marked as cheating</c>. <cg>Feel free to do this if *Automatic Safe Mode* is enabled and you're not sure what's triggering it.</c>\n\n> ![**(i)**](frame:GJ_infoIcon_001.png?scale=0.425) <cj>*Before reaching support, be sure to keep a copy of your currently enabled options list.*</c>"
         },
         "ui": {
             "type": "title",
@@ -128,7 +143,7 @@
         "theme-background": {
             "type": "file",
             "name": "Menu Theme Background",
-            "description": "Local image file to use as a semi-transparent background image for the <cg>Horrible Options</c> menu interface. <co>Selected image will be stretched to fit the menu window's size.</c>\n\n> ![**(o)**](frame:collaborationIcon_001.png) <cg>*To load animated images, first install [ImagePlus](mod:prevter.imageplus).*</c>\n\n<mod:prevter.imageplus>",
+            "description": "Local image file to use as a semi-transparent background image for the <cg>Horrible Options</c> menu interface. <co>Selected image will be stretched to fit the menu window's size.</c>\n\n> ![**(o)**](frame:collaborationIcon_001.png?scale=0.95) <cg>*To load animated images, first install [ImagePlus](mod:prevter.imageplus).*</c>\n\n<mod:prevter.imageplus>",
             "default": "",
             "control": {
                 "dialog": "open",
@@ -176,6 +191,8 @@
                 "Pride",
                 "Trans Pride",
                 "Breakeode",
+                "Steam Happy",
+                "Soggy Cat",
                 "Crying Skull",
                 "The Yellow One",
                 ":3",
@@ -447,7 +464,7 @@
             "type": "int",
             "name": "Achievement Sound Chance",
             "description": "<cc>Random Achievements</c> - Chance of the achievement sound playing.",
-            "default": 25,
+            "default": 20,
             "min": 0,
             "max": 100,
             "control": {
@@ -498,7 +515,7 @@
             "type": "int",
             "name": "No Jump Chance",
             "description": "<cc>Randomly Don't Jump</c> - Chance of your jump input not registering.",
-            "default": 50,
+            "default": 30,
             "min": 0,
             "max": 100,
             "control": {

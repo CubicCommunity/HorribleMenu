@@ -1,6 +1,6 @@
 #include "../RandomAd.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -14,13 +14,13 @@ bool RandomAd::init() {
 
     setID("ad"_spr);
     setTitle("Sponsored");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
+    setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
 
     popup::closeBtnID(m_closeBtn);
 
-    auto label = CCLabelBMFont::create("Check out this cool level we found!", font::chat);
+    auto label = Label::create("Check out this cool level we found!", font::chat);
     label->setID("message");
-    label->setAlignment(kCCTextAlignmentCenter);
+    label->setAlignment(Label::Alignment::Center);
     label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
     label->setAnchorPoint(anchor::center);
 
@@ -38,7 +38,10 @@ bool RandomAd::init() {
             : log::error("Ad sprite failed to load: {}", res.unwrapErr());
     });
 
-    projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/fetch/random-thumbnail", CCImage::kFmtUnKnown, true);
+    std::string url = "https://api.cubicstudios.xyz/breakeode/v1/fetch/random-thumbnail";
+    if (mods::isImagePlus()) url = fmt::format("{}?webp=1", url);
+
+    projThumb->loadFromUrl(std::move(url), CCImage::kFmtUnKnown, true);
     if (projThumb) m_mainLayer->addChild(projThumb);
 
     auto playBtnLoading = LoadingSpinner::create(37.5f);
@@ -56,10 +59,10 @@ bool RandomAd::init() {
             if (auto load = loading.lock()) load->setVisible(true);
 
             if (auto pl = PlayLayer::get()) {
-                if (pl->m_level->m_levelID == jumpscares::level::congregation) return removeFromParent();
+                if (pl->m_level->m_levelID == HORRIBLE_JUMPSCARES_CONGREG) return removeFromParent();
 
                 log::info("Switching from ad to Congregation jumpscare");
-                jumpscares::switchLevel(jumpscares::level::congregation, false, false);
+                jumpscares::switchLevel(HORRIBLE_JUMPSCARES_CONGREG, false, false);
             } else {
                 log::error("Player not in a level");
             };

@@ -1,6 +1,6 @@
 #include "../Captcha.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -59,7 +59,7 @@ bool Captcha::init() {
     setTitle("Woah there!");
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, themes::getCircleBaseColor(theme)));
+    setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
 
     popup::closeBtnID(m_closeBtn);
 
@@ -68,10 +68,10 @@ bool Captcha::init() {
 
     m_bgSprite->setZOrder(-9);
 
-    auto label = CCLabelBMFont::create("You're playing almost too well... Are you sure you're not a robot?", "chatFont.fnt");
+    auto label = Label::create("You're playing almost too well... Are you sure you're not a robot?", font::chat);
     label->setID("message");
     label->setScale(0.75f);
-    label->setAlignment(kCCTextAlignmentCenter);
+    label->setAlignment(Label::Alignment::Center);
     label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
     label->setAnchorPoint(anchor::center);
 
@@ -102,17 +102,17 @@ bool Captcha::init() {
 
     m_mainLayer->addChild(bg);
 
-    auto hintID = CCLabelBMFont::create(m_impl->expected.c_str(), "bigFont.fnt");
+    auto hintID = Label::create(m_impl->expected.c_str(), font::big);
     hintID->setID("hint-id");
     hintID->setScale(0.5f);
     hintID->setAnchorPoint(anchor::center);
-    hintID->setAlignment(kCCTextAlignmentCenter);
-    hintID->limitLabelWidth(bg->getScaledContentWidth() * 0.875f, 0.5f, 0.125f);
+    hintID->setAlignment(Label::Alignment::Center);
+    hintID->setLimitLabelWidth(bg->getScaledContentWidth() * 0.875f, 0.5f, 0.125f);
     hintID->setPosition({m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() + (m_impl->verifier->getScaledContentHeight() / 2.f) + 12.5f});
 
     m_mainLayer->addChild(hintID, 1);
 
-    auto hint = SimpleTextArea::create("Press all the buttons with", "chatFont.fnt", 0.5f, bg->getScaledContentWidth() * 0.875f);
+    auto hint = SimpleTextArea::create("Press all the buttons with", font::chat, 0.5f, bg->getScaledContentWidth() * 0.875f);
     hint->setID("hint");
     hint->setColor(to4B(colors::yellow));
     hint->setAlignment(kCCTextAlignmentCenter);
@@ -123,7 +123,7 @@ bool Captcha::init() {
     auto refreshBtn = Button::createWithNode(
         ButtonSprite::create(
             "Refresh",
-            "bigFont.fnt",
+            font::big,
             themes::getButtonSquareSprite(theme)),
         [this](auto) {
             setupVerifier(m_impl->expected);

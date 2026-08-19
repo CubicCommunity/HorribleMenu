@@ -14,9 +14,10 @@ namespace horrible {
         inline constexpr cocos2d::ccColor3B green = {100, 255, 100};
         inline constexpr cocos2d::ccColor3B cyan = {10, 175, 255};
         inline constexpr cocos2d::ccColor3B blue = {0, 122, 255};
-        inline constexpr cocos2d::ccColor3B pink = {255, 105, 180};
+        inline constexpr cocos2d::ccColor3B pink = {233, 89, 161};
+        inline constexpr cocos2d::ccColor3B purple = {106, 25, 200};
         inline constexpr cocos2d::ccColor3B gold = {255, 200, 150};
-        inline constexpr cocos2d::ccColor3B black = {0, 0, 0};
+        inline constexpr cocos2d::ccColor3B black = {25, 25, 25};
 
         namespace internal {
 
@@ -117,6 +118,10 @@ namespace horrible {
                 return colors::white;
             };
 
+            inline constexpr auto createThemeCircleSprite(geode::CircleBaseColor btns) {
+                return geode::CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, geode::CircleBaseSize::Small);
+            };
+
             // Floating button icon options
             namespace icons {
                 inline constexpr auto Default = "Default";
@@ -124,6 +129,8 @@ namespace horrible {
                 inline constexpr auto Pride = "Pride";
                 inline constexpr auto TransPride = "Trans Pride";
                 inline constexpr auto Breakeode = "Breakeode";
+                inline constexpr auto SteamHappy = "Steam Happy";
+                inline constexpr auto SoggyCat = "Soggy Cat";
                 inline constexpr auto CryingSkull = "Crying Skull";
                 inline constexpr auto TheYellowOne = "The Yellow One";
                 inline constexpr auto ColonThree = ":3";
@@ -138,6 +145,8 @@ namespace horrible {
                 if (icon == icons::Pride) return "icon_pride.png"_spr;
                 if (icon == icons::TransPride) return "icon_transpride.png"_spr;
                 if (icon == icons::Breakeode) return "icon_breakeode.png"_spr;
+                if (icon == icons::SteamHappy) return "icon_steam.png"_spr;
+                if (icon == icons::SoggyCat) return "icon_soggy.png"_spr;
                 if (icon == icons::CryingSkull) return "icon_skull.png"_spr;
                 if (icon == icons::TheYellowOne) return "icon_yellow.png"_spr;
                 if (icon == icons::ColonThree) return "icon_colonthree.png"_spr;

@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <ranges>
 
@@ -39,37 +39,37 @@ static auto const oTidal = Option::create(THIS_ID_TIDAL)
                                ->setOnline(true)
                                ->autoRegister();
 
-static StringMap<bool> g_jsMap;
-static std::vector<std::weak_ptr<Hook>> g_jsHookVector;
+static utils::StringSet g_jsSet;
+static std::vector<std::weak_ptr<Hook>> g_jsHooks;
 
 namespace js_internal {
     static constexpr auto getLevelInfo(std::string_view id) noexcept {
-        if (id == THIS_ID_GRIEF) return jumpscares::level::grief;
-        if (id == THIS_ID_CONGREG) return jumpscares::level::congregation;
-        if (id == THIS_ID_TIDAL) return jumpscares::level::tidal;
+        if (id == THIS_ID_GRIEF) return HORRIBLE_JUMPSCARES_GRIEF;
+        if (id == THIS_ID_CONGREG) return HORRIBLE_JUMPSCARES_CONGREG;
+        if (id == THIS_ID_TIDAL) return HORRIBLE_JUMPSCARES_TIDAL;
 
-        return jumpscares::level::grief;
+        return HORRIBLE_JUMPSCARES_GRIEF;
     };
 
     static void toggleHooks(bool on) {
-        log::trace("Toggling all jumpscare hooks {}", on ? "ON" : "OFF");
+        log::trace("Toggling all jumpscare hooks {}", str::isOnOff(on));
 
-        for (auto& hook : g_jsHookVector) {
+        for (auto& hook : g_jsHooks) {
             if (auto h = hook.lock()) (void)h->toggle(on);
         };
     };
 
     static void toggleOption(ZStringView id, bool on) {
-        auto size = g_jsMap.size();
+        auto size = g_jsSet.size();
 
-        if (on) g_jsMap[id] = on;
+        if (on) g_jsSet.insert(id);
 
         if (!on) {
-            if (auto it = g_jsMap.find(id); it != g_jsMap.end()) g_jsMap.erase(it);
+            if (auto it = g_jsSet.find(id); it != g_jsSet.end()) g_jsSet.erase(it);
         };
 
-        if (size == 0 && g_jsMap.size() > 0) toggleHooks(true);
-        if (size > 0 && g_jsMap.size() == 0) toggleHooks(false);
+        if (size == 0 && g_jsSet.size() > 0) toggleHooks(true);
+        if (size > 0 && g_jsSet.size() == 0) toggleHooks(false);
     };
 };
 
@@ -98,13 +98,13 @@ $on_mod(Loaded) {
 };
 
 static void tryJumpscare(bool useReplay) {
-    for (auto const& js : g_jsMap) {
-        if (rng::fast() <= options::getChance(js.first)) {
-            auto const level = js_internal::getLevelInfo(js.first);
+    for (auto const& js : g_jsSet) {
+        if (rng::fast() <= options::getChance(js)) {
+            auto const level = js_internal::getLevelInfo(js);
 
             log::debug("jumpscare for {} triggered!", level);
             return jumpscares::switchLevel(level, false, useReplay, [level]() {
-                if (level == jumpscares::level::tidal) Notification::create("Wait, this isn't Tidal Wave...")->show();
+                if (level == HORRIBLE_JUMPSCARES_TIDAL) Notification::create("Wait, this isn't Tidal Wave...")->show();
             });
         };
     };
@@ -115,8 +115,8 @@ class $modify(ForceLevelsPlayLayer, PlayLayer) {
         utils::StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
 
         for (auto const& hook : hooks | std::views::values) {
-            hook->setAutoEnable(g_jsMap.size() > 0);
-            g_jsHookVector.push_back(hook);
+            hook->setAutoEnable(g_jsSet.size() > 0);
+            g_jsHooks.push_back(hook);
         };
     };
 

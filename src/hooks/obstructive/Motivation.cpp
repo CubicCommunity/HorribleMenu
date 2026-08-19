@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -16,7 +16,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setSillyTier(SillyTier::Low)
                           ->autoRegister();
 
-static constexpr auto g_msgs = std::to_array<const char*>({
+static constexpr auto g_msgs = std::to_array({
     "Surprised you haven't quit already.",
     "OW! I hit my knee on my desk.",
     "mrrp meow :3",
@@ -127,9 +127,10 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
     void showMessage(float) {
         if (!m_hasCompletedLevel) {
-            auto label = CCLabelBMFont::create(g_msgs[rng::get(g_msgs.size())], font::big, getScaledContentWidth() - 12.5f);
+            auto label = Label::create(g_msgs[rng::get(g_msgs.size())], font::big);
+            label->setMaxWidth(getScaledContentWidth() - 12.5f);
             label->setAnchorPoint({0.5, 0});
-            label->setAlignment(kCCTextAlignmentCenter);
+            label->setAlignment(Label::Alignment::Center);
             label->setPosition({getScaledContentWidth() / 2.f, -label->getScaledContentHeight()});
 
             auto action = CCSequence::create(

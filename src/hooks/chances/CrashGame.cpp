@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -33,7 +33,7 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
             log::warn("ur game crash hehehehehehehe");
 
             PlayLayer::destroyPlayer(p0, p1);
-            game::exit(true);  // saves data
+            game::exit(true);  // saves data mrrp
         };
 
         PlayLayer::destroyPlayer(p0, p1);

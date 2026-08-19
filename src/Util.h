@@ -1,41 +1,36 @@
 #pragma once
 
 #include <horrible/API.h>
-#include <horrible/OptionalAPI.hpp>
 
-#include <util/Cursor.hpp>
-#include <util/Jumpscares.hpp>
-#include <util/Options.hpp>
-#include <util/Random.hpp>
-#include <util/Themes.hpp>
-
-#include <util/ui/Captcha.hpp>
-#include <util/ui/MathQuiz.hpp>
-#include <util/ui/RandomAd.hpp>
-#include <util/ui/SpamChallenge.hpp>
-#include <util/ui/TermsAndConditions.hpp>
-#include <util/ui/WhackButton.hpp>
+#include <util/Include.h>
+#include <util/Macros.h>
 
 #include <cue/Util.hpp>
 #include <cue/DropdownNode.hpp>
 #include <cue/PlayerIcon.hpp>
+#include <cue/RepeatingBackground.hpp>
 
 #include <asp/fs.hpp>
 
 #include <cocos2d.h>
 
-#include <Geode/ui/Button.hpp>
+#include <matjson.hpp>
 
+#include <Geode/ui/GeodeUI.hpp>
+
+#include <Geode/utils/web.hpp>
 #include <Geode/utils/cocos.hpp>
 
-#include <Geode/binding/FMODAudioEngine.hpp>
-
-#define HIGHEST_Z cocos2d::CCScene::get()->getHighestChildZ() + 1
-
-// Additional utility methods for Horrible Menu
+// Quick utility methods for Horrible Menu
 namespace horrible {
     // Pointer to this Geode mod
-    inline static Mod* mod = geode::Mod::get();
+    inline static geode::Mod* mod = geode::Mod::get();
+
+    namespace mods {
+        inline bool isImagePlus() {
+            return geode::Loader::get()->isModLoaded("prevter.imageplus");
+        };
+    };
 
     /**
      * Convert a chance setting number to a cooldown percentage decimal
@@ -76,8 +71,16 @@ namespace horrible {
         inline constexpr auto chat = "chatFont.fnt";
     };
 
-    namespace fs = asp::fs;                // Shortcut for `asp::fs`
-    namespace str = geode::utils::string;  // Shortcut for `geode::utils::string`
+    namespace json = matjson;  // Shortcut for `matjson`
+    namespace fs = asp::fs;    // Shortcut for `asp::fs`
+
+    namespace str {
+        using namespace geode::utils::string;
+
+        inline constexpr auto isOnOff(bool on) {
+            return on ? "ON" : "OFF";
+        };
+    };
 
     namespace popup {
         inline void closeBtnID(CCMenuItemSpriteExtra* btn) {

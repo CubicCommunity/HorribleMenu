@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 // #include <Geode/Geode.hpp>
 
@@ -62,7 +62,7 @@ static auto const o = Option::create(THIS_ID)
 
 //                 // hide UI
 //                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(id_spr))) bar->setVisible(false);
-//                 if (auto lbl = typeinfo_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
+//                 if (auto lbl = typeinfo_cast<Label*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
 
@@ -80,7 +80,7 @@ static auto const o = Option::create(THIS_ID)
 //                 s_pendingPlayer2 = nullptr;
 
 //                 if (auto bar = typeinfo_cast<ProgressBar*>(pl->getChildByID(id_spr))) bar->setVisible(false);
-//                 if (auto lbl = typeinfo_cast<CCLabelBMFont*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
+//                 if (auto lbl = typeinfo_cast<Label*>(pl->getChildByID("parry_label"_spr))) lbl->setVisible(false);
 
 //                 s_activeParryPlayer = nullptr;
 
@@ -98,7 +98,7 @@ static auto const o = Option::create(THIS_ID)
 //         bool enabled = options::isEnabled(THIS_ID);
 
 //         ProgressBar* m_parryBar = nullptr;
-//         CCLabelBMFont* m_parryLabel = nullptr;
+//         Label* m_parryLabel = nullptr;
 //     };
 
 //     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
@@ -117,7 +117,7 @@ static auto const o = Option::create(THIS_ID)
 //         };
 
 //         if (!m_fields->m_parryLabel) {
-//             m_fields->m_parryLabel = CCLabelBMFont::create("PARRY", font::big);
+//             m_fields->m_parryLabel = Label::create("PARRY", font::big);
 //             m_fields->m_parryLabel->setColor(colors::yellow);
 //             m_fields->m_parryLabel->setScale(0.35f);
 //             m_fields->m_parryLabel->setAnchorPoint({ 0.5f, 0.5f });

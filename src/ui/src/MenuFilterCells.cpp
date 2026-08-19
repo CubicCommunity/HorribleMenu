@@ -1,6 +1,6 @@
 #include "../MenuFilterCells.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -15,7 +15,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     if (!CCMenu::init()) return false;
 
     // lol
-    setID(str::join(str::split(str::filter(str::toLower(m_category), filterId), " "), "-"));
+    setID(str::join(asp::iter::split(str::filter(str::toLower(m_category), filterId), " ").collect(), "-"));
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 
@@ -49,16 +49,12 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     addChild(m_toggler);
 
     // name of the joke
-    auto nameLabel = CCLabelBMFont::create(
-        m_category.c_str(),
-        font::gold,
-        getScaledContentWidth() - 35.f,
-        kCCTextAlignmentLeft);
+    auto nameLabel = Label::create(m_category.c_str(), font::gold);
     nameLabel->setID("name-label");
-    nameLabel->setLineBreakWithoutSpace(true);
-    nameLabel->setAnchorPoint({0.f, 0.5f});
-    nameLabel->setPosition({20.f, getScaledContentHeight() / 2.f});
     nameLabel->setScale(0.375f);
+    nameLabel->setLimitLabelWidth(getScaledContentWidth() - 35.f, 0.375f, 0.125f);
+    nameLabel->setPosition({20.f, getScaledContentHeight() / 2.f});
+    nameLabel->setAnchorPoint({0.f, 0.5f});
 
     addChild(nameLabel);
 
@@ -68,6 +64,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
 void MenuCategoryFilterCell::onToggle(CCObject* sender) {
     if (auto toggler = typeinfo_cast<CCMenuItemToggler*>(sender)) {
         auto on = !toggler->isOn();
+
         if (m_toggleCallback) m_toggleCallback(m_category, on);
         if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
     };
@@ -117,7 +114,7 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
         });
     bg->setColor(color);
 
-    auto tierLabel = CCLabelBMFont::create(label.c_str(), font::big);
+    auto tierLabel = Label::create(label.c_str(), font::big);
     tierLabel->setID("label");
     tierLabel->setScale(0.5f);
     tierLabel->setAnchorPoint(anchor::center);

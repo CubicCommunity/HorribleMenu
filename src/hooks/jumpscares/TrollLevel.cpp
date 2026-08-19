@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -18,14 +18,12 @@ static auto const o = Option::create(THIS_ID)
                           ->autoRegister();
 
 namespace js_internal {
-    static constexpr auto id = 57436521;
-
     static void saveTrollLevel() {
-        jumpscares::coro::getLevel(id, [](Result<GJGameLevel*> result) {
+        jumpscares::coro::getLevel(HORRIBLE_JUMPSCARES_TROLL, [](Result<GJGameLevel*> result) {
             if (result.isOk()) {
                 if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(std::move(result).unwrap());
             } else if (result.isErr()) {
-                log::error("Failed to get level {}: {}", id, result.unwrapErr());
+                log::error("Failed to get level {}: {}", HORRIBLE_JUMPSCARES_TROLL, result.unwrapErr());
             };
         });
     };
@@ -58,7 +56,7 @@ class $modify(TrollLevelPlayLayer, PlayLayer) {
     bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (auto jm = jumpscares::JumpscareLevelManager::get()) {
             if (rng::chance(m_fields->chance)) {
-                if (auto lvl = jm->getLevel(js_internal::id)) return PlayLayer::init(lvl, useReplay, dontCreateObjects);
+                if (auto lvl = jm->getLevel(HORRIBLE_JUMPSCARES_TROLL)) return PlayLayer::init(lvl, useReplay, dontCreateObjects);
             };
         };
 

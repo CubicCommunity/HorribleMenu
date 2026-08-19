@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -24,15 +24,20 @@ class $modify(HealthPlayLayer, PlayLayer) {
         float health = 100.f;
 
         ProgressBar* healthBar = nullptr;
-        CCLabelBMFont* healthLabel = nullptr;
+        Label* healthLabel = nullptr;
     };
 
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
-
+    HORRIBLE_SETUP_INTERFACE_FUNC {
         auto f = m_fields.self();
 
-        f->health = 100.f;
+        if (!on) {
+            cue::resetNode(f->healthBar);
+            cue::resetNode(f->healthLabel);
+
+            f->health = 100.f;
+
+            return;
+        };
 
         if (!f->healthBar) {
             f->healthBar = ProgressBar::create();
@@ -47,9 +52,9 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
         f->healthBar->updateProgress(f->health);
 
-        auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->health));
+        auto const hp = fmt::format("HP\n{}%", static_cast<uint8_t>(f->health));
         if (!f->healthLabel) {
-            f->healthLabel = CCLabelBMFont::create(hp.c_str(), font::big);
+            f->healthLabel = Label::create(hp.c_str(), font::big);
             f->healthLabel->setColor(colors::red);
             f->healthLabel->setAnchorPoint({0.f, 1.f});
             f->healthLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->healthBar->getScaledContentWidth() / 2.f) - 1.25f});
@@ -61,13 +66,21 @@ class $modify(HealthPlayLayer, PlayLayer) {
         };
     };
 
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
+
+        m_fields->health = 100.f;
+
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
+    };
+
     void resetHealth() {
         auto f = m_fields.self();
 
         f->health = 100.f;
 
         if (f->healthLabel) {
-            auto const hp = fmt::format("HP\n{}%", static_cast<int>(f->health));
+            auto const hp = fmt::format("HP\n{}%", static_cast<uint8_t>(f->health));
             f->healthLabel->setString(hp.c_str());
         };
 
@@ -106,3 +119,5 @@ class $modify(HealthPlayLayer, PlayLayer) {
         };
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, HealthPlayLayer);

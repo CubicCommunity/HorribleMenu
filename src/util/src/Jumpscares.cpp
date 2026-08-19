@@ -1,13 +1,13 @@
 #include "../Jumpscares.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 using namespace horrible::util;
 
-void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay, geode::CopyableFunction<void()>&& callback) {
+void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay, CopyableFunction<void()>&& callback) {
     if (auto pl = PlayLayer::get()) {
         if (pl->m_level->m_levelID == level) return;
     };
@@ -54,11 +54,9 @@ void jumpscares::coro::getLevel(int id, CopyableFunction<void(Result<GJGameLevel
             };
 
             auto dict = CCDictionary::create();
-            auto splits = asp::iter::split(resStr, ":")
-                              .mapCast<std::string>()
-                              .collect();
+            auto splits = asp::iter::split(resStr, ":").collect();
 
-            for (size_t i = 0; i + 1 < splits.size(); i += 2) dict->setObject(CCString::create(splits[i + 1]), splits[i]);
+            for (size_t i = 0; i + 1 < splits.size(); i += 2) dict->setObject(CCString::create(std::string{splits[i + 1]}), std::string{splits[i]});
             cb(Ok(GJGameLevel::create(dict, false)));
         });
 };
@@ -79,9 +77,4 @@ GJGameLevel* jumpscares::JumpscareLevelManager::getLevel(int id) const noexcept 
     if (it != m_levels.end()) return it->second.data();
 
     return nullptr;
-};
-
-jumpscares::JumpscareLevelManager* jumpscares::JumpscareLevelManager::get() noexcept {
-    static auto inst = new (std::nothrow) JumpscareLevelManager();
-    return inst;
 };

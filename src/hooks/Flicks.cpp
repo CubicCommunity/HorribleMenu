@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -45,10 +45,10 @@ class $modify(FlicksPlayLayer, PlayLayer) {
             queueInMainThread([opt]() {
                 if (auto o = opt.lock()) {
                     o->isEnabled() ? o->disable() : o->enable();
-                    log::warn("Flicked option {} {} due to flicks", o->getID(), o->isEnabled() ? "ON" : "OFF");
+                    log::warn("Flicked option {} {} due to flicks", o->getID(), str::isOnOff(o->isEnabled()));
 
                     sfx::play(sfx::file::bad);
-                    Notification::create(fmt::format("Flicked {} ({}) {}", o->getName(), o->getCategory(), o->isEnabled() ? "ON" : "OFF").c_str(), NotificationIcon::Warning, 0.5f)->show();
+                    Notification::create(fmt::format("Flicked {} ({}) {}", o->getName(), o->getCategory(), str::isOnOff(o->isEnabled())).c_str(), NotificationIcon::Warning, 0.5f)->show();
                 };
             });
         };

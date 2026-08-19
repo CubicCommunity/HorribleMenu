@@ -2,7 +2,7 @@
 
 #include <numbers>
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -18,7 +18,7 @@ struct MathQuiz::Impl final {
     MathOperation operation = MathOperation::Addition;
 
     int8_t correctAnswer = 0;
-    std::vector<int8_t> answers;  // 4 answer options
+    asp::SmallVec<int8_t, 4> answers;  // 4 answer options
 
     ProgressBar* countdown = nullptr;
     CCMenu* answerMenu = nullptr;
@@ -128,18 +128,20 @@ bool MathQuiz::init() {
 
         problemText = fmt::format("{} {} {}", m_impl->numFirst, operation, m_impl->numSecond);
 
-        auto equalsLabel = CCLabelBMFont::create("= ?", font::gold, getScaledContentWidth() - 1.25f);
+        auto equalsLabel = Label::create("= ?", font::gold);
         equalsLabel->setID("equals-label");
-        equalsLabel->setAlignment(kCCTextAlignmentCenter);
+        equalsLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
+        equalsLabel->setAlignment(Label::Alignment::Center);
         equalsLabel->setPosition({winSize.width / 2.f, winSize.height - 100.f});
 
         addChild(equalsLabel);
     };
 
     // reuse winSize declared above
-    auto problemLabel = CCLabelBMFont::create(problemText.c_str(), font::big, getScaledContentWidth() - 1.25f);
+    auto problemLabel = Label::create(problemText.c_str(), font::big);
     problemLabel->setID("problem-label");
-    problemLabel->setAlignment(kCCTextAlignmentCenter);
+    problemLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
+    problemLabel->setAlignment(Label::Alignment::Center);
     problemLabel->setPosition({winSize.width / 2.f, winSize.height - 60.f});
     problemLabel->setScale(m_impl->operation == MathOperation::Geometry ? 0.5f : 0.925f);
 
@@ -225,12 +227,12 @@ bool MathQuiz::init() {
 
                 auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-                auto feedbackLabel = CCLabelBMFont::create(correct ? "Correct!" : "Incorrect!", font::gold);
+                auto feedbackLabel = Label::create(correct ? "Correct!" : "Incorrect!", font::gold);
                 feedbackLabel->setID("feedback-label");
                 feedbackLabel->setScale(0.125f);
                 feedbackLabel->setColor(correct ? colors::green : colors::red);
                 feedbackLabel->setAnchorPoint(anchor::center);
-                feedbackLabel->setAlignment(kCCTextAlignmentCenter);
+                feedbackLabel->setAlignment(Label::Alignment::Center);
                 feedbackLabel->setPosition(winSize / 2.f);
 
                 addChild(feedbackLabel, 9);
@@ -306,11 +308,11 @@ void MathQuiz::update(float dt) {
 
         if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
 
-        auto feedbackLabel = CCLabelBMFont::create("Time's Up!", font::gold);
+        auto feedbackLabel = Label::create("Time's Up!", font::gold);
         feedbackLabel->setID("feedback-label");
         feedbackLabel->setColor(colors::red);
         feedbackLabel->setAnchorPoint(anchor::center);
-        feedbackLabel->setAlignment(kCCTextAlignmentCenter);
+        feedbackLabel->setAlignment(Label::Alignment::Center);
         feedbackLabel->setPosition(winSize / 2.f);
         feedbackLabel->setScale(0.1f);
 

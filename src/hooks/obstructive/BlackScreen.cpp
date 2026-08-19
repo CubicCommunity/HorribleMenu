@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -19,14 +19,19 @@ static auto const o = Option::create(THIS_ID)
 class $modify(BlackScreenPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(BlackScreenPlayLayer::showBlackScreen));
+
+            return;
+        };
+
+        scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), rng::get(3.75f));
+    };
+
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-
-        // random delay between 0 and 5 seconds
-        auto delay = rng::get(5.f);
-        log::debug("Black screen will appear after {} seconds", delay);
-
-        scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void showBlackScreen(float) {
@@ -52,9 +57,11 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
     void removeBlackScreen(CCNode* sender) {
         cue::resetNode(sender);
 
-        auto delay = rng::get(3.75f);
+        auto delay = rng::get(2.5f);
         log::debug("Black screen will appear again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, BlackScreenPlayLayer);

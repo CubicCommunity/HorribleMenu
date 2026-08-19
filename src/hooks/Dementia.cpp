@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -24,7 +24,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
     struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
-        int lastMusicTime = 0;  // last music time in milliseconds
+        unsigned int lastMusicTime = 0;  // last music time in milliseconds
 
         float lastX = 0.f;  // last recorded X position
         float lastY = 0.f;  // last recorded Y position

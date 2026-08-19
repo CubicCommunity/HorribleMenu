@@ -12,7 +12,7 @@ When <cf>pressing `\` on your keyboard</c> or by <cl>pressing the floating *![Ho
 > ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*You can customize any keybinds in this mod through its settings.*</c>
 
 ### Safe Mode
-By default, this mod implements its own safe mode system to prevent making accidental progression in levels while this mod is active. Remember, <cr>**using this mod may count as cheating**</c>! You can also disable this in the mod's settings while you're not actively using any troll options.
+By default, this mod implements its own anti-cheat system to prevent making accidental progression in levels while this mod is active. Remember, <cr>**using this mod may count as cheating**</c>! You can also disable this in the mod's settings while you're not actively using any troll options.
 
 > ![⚠️](frame:geode.loader/info-warning.png?scale=0.375) <cy>*Please keep in mind that certain game settings and hacks from mod menus may interfere with some parts of this mod's functionality.*</c>
 
@@ -61,13 +61,8 @@ Projects like *Horrible Menu* are carried by community support and hype. If you'
 ---
 
 #### Thanks
-- **[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding
-- **[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo
-
-*as well as...*
-
 - **[Geode SDK](mod:geode.loader)**: Created an incredible SDK that made this mod possible!
-- **[RobTop Games](user:71)**: Made [Geometry Dash](https://youtu.be/k90y6PIzIaE)...
+- **[RobTop Games](user:71)**: Made [Geometry Dash](https://www.geometrydash.com/)...
 
 *and...*
 

@@ -301,8 +301,8 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed
 };
 
 OptionManager* OptionManager::get() noexcept {
-    static auto inst = new (std::nothrow) OptionManager();
-    return inst;
+    static OptionManager inst;
+    return &inst;
 };
 
 void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>> const& hooks) {

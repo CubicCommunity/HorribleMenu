@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -27,6 +27,8 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
     };
 
     bool pushButton(PlayerButton p0) {
+        if (!m_gameLayer) return PlayerObject::pushButton(p0);
+
         auto f = m_fields.self();
 
         if (p0 == PlayerButton::Jump) {

@@ -1,13 +1,98 @@
 #include "../MenuCredits.hpp"
 
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/ui/GeodeUI.hpp>
-
 using namespace geode::prelude;
 using namespace horrible::prelude;
+
+// hardcoded lead devs for this build of horrible menu if web request fails
+static auto const g_defaultDevs = std::to_array<LeadDevIcon>({
+    {
+        .id = "cheeseworks",
+        .name = "Cheeseworks",
+        .account = 6408873,
+        .icon = 28,
+        .color1 = 94,
+        .color2 = 98,
+        .glowColor = 12,
+    },
+});
+
+// hardcoded license description for this build of horrible menu if web request fails
+static auto constexpr g_defaultLicense =
+    "The current build of [Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://github.com/CubicCommunity/HorribleMenu/blob/main/LICENSE.md).\n\n"
+    "Third-party assets, API modifications, libraries, and other external resources are credited in the credits interface.";
+
+$on_mod(Loaded) {
+    if (auto cm = CreditsManager::get()) {
+        cm->loadLeadDevs();
+        cm->loadLicense();
+    };
+};
+
+Result<LeadDevIcon> json::Serialize<LeadDevIcon>::fromJson(json::Value const& value) {
+    if (!value.isObject()) return Err("Expected an object");
+
+    GEODE_UNWRAP_INTO(std::string id, value["id"].asString());
+    GEODE_UNWRAP_INTO(std::string name, value["name"].asString());
+    GEODE_UNWRAP_INTO(int account, value["account"].asInt());
+    GEODE_UNWRAP_INTO(int icon, value["icon"].asInt());
+    GEODE_UNWRAP_INTO(int color1, value["color1"].asInt());
+    GEODE_UNWRAP_INTO(int color2, value["color2"].asInt());
+    GEODE_UNWRAP_INTO(int glowColor, value["glowColor"].asInt());
+
+    return Ok(
+        LeadDevIcon{
+            std::move(id),
+            std::move(name),
+            account,
+            icon,
+            color1,
+            color2,
+            glowColor,
+        });
+};
+
+json::Value json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
+    auto obj = json::Value();
+
+    obj["id"] = value.id;
+    obj["name"] = value.name;
+    obj["account"] = value.account;
+    obj["icon"] = value.icon;
+    obj["color1"] = value.color1;
+    obj["color2"] = value.color2;
+    obj["glowColor"] = value.glowColor;
+
+    return obj;
+};
+
+Result<LicenseData> json::Serialize<LicenseData>::fromJson(json::Value const& value) {
+    if (!value.isObject()) return Err("Expected an object");
+
+    GEODE_UNWRAP_INTO(std::string key, value["key"].asString());
+    GEODE_UNWRAP_INTO(std::string name, value["name"].asString());
+    GEODE_UNWRAP_INTO(std::string url, value["url"].asString());
+
+    return Ok(
+        LicenseData{
+            std::move(key),
+            std::move(name),
+            std::move(url),
+        });
+};
+
+json::Value json::Serialize<LicenseData>::toJson(LicenseData const& value) {
+    auto obj = json::Value();
+
+    obj["key"] = value.key;
+    obj["name"] = value.name;
+    obj["url"] = value.url;
+
+    return obj;
+};
 
 bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int color2, int glowColor) {
     if (!CCNode::init()) return false;
@@ -65,17 +150,17 @@ bool MenuCredits::init(ZStringView theme) {
 
     setID("credits"_spr);
     setTitle("Credits");
-    setCloseButtonSpr(CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, CircleBaseSize::Small));
+    setCloseButtonSpr(themes::createThemeCircleSprite(btns));
 
     popup::closeBtnID(m_closeBtn);
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
-    auto leadDevLabel = CCLabelBMFont::create("Lead Developers", font::big);
+    auto leadDevLabel = Label::create("Lead Developers", font::big);
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);
-    leadDevLabel->setAnchorPoint(anchor::center);
-    leadDevLabel->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 91.25f});
+    leadDevLabel->setAnchorPoint({0, 0.5});
+    leadDevLabel->setPosition({30.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 91.25f});
 
     m_mainLayer->addChild(leadDevLabel);
 
@@ -86,34 +171,12 @@ bool MenuCredits::init(ZStringView theme) {
 
     auto leadDevContainer = CCNode::create();
     leadDevContainer->setID("lead-dev-container");
-    leadDevContainer->setAnchorPoint(anchor::center);
-    leadDevContainer->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, leadDevLabel->getPositionY() - 35.f});
+    leadDevContainer->setAnchorPoint({anchor::center});
     leadDevContainer->setLayout(leadDevContainerLayout);
-
-    constexpr LeadDevIcon devs[] = {
-        {
-            "cheeseworks",
-            "Cheeseworks",
-            6408873,
-            28,
-            94,
-            98,
-            12,
-        },
-        {
-            "arcticwoof",
-            "ArcticWoof",
-            7689052,
-            290,
-            83,
-            12,
-            3,
-        },
-    };
 
     m_mainLayer->addChild(leadDevContainer, 1);
 
-    for (auto const& dev : devs) {
+    for (auto const& dev : CreditsManager::get()->getLeadDevs()) {
         if (auto player = MenuPlayer::create(dev.name, dev.account, dev.icon, dev.color1, dev.color2, dev.glowColor)) {
             player->setID(dev.id);
             leadDevContainer->addChild(player);
@@ -122,25 +185,99 @@ bool MenuCredits::init(ZStringView theme) {
 
     leadDevContainer->updateLayout();
 
+    leadDevContainer->setPosition({2.5f + leadDevLabel->getPositionX() + (leadDevContainer->getScaledContentWidth() / 2.f), leadDevLabel->getPositionY() - 35.f});
+
     auto leadDevContainerBg = cue::createBackground(
         {leadDevContainer->getScaledContentWidth() + 10.f, leadDevContainer->getScaledContentHeight() + 6.25f},
         {
             .zOrder = 0,
-            .id = "lead-dev-container-bg",
+            .id = "",
         });
     leadDevContainerBg->setPosition(leadDevContainer->getPosition());
 
     m_mainLayer->addChild(leadDevContainerBg);
 
+    auto resrcBtnContainerLayout = RowLayout::create()
+                                       ->setGap(2.5f)
+                                       ->setAutoScale(false)
+                                       ->setGrowCrossAxis(true);
+
+    auto resrcBtnContainer = CCNode::create();
+    resrcBtnContainer->setID("resources-container");
+    resrcBtnContainer->setAnchorPoint({0, 0.5});
+    resrcBtnContainer->setContentSize({m_mainLayer->getScaledContentWidth() - 198.75f, leadDevContainer->getScaledContentHeight()});
+    resrcBtnContainer->setPosition({leadDevContainer->getPositionX() + (leadDevContainerBg->getScaledContentWidth() / 2.f) + 8.75f, leadDevContainer->getPositionY()});
+    resrcBtnContainer->setLayout(resrcBtnContainerLayout);
+
+    m_mainLayer->addChild(resrcBtnContainer, 9);
+
+    auto resrcBtns = std::to_array<ResourceButton>({
+        {
+            "breakeode-support-btn",
+            "Need Help?",
+            [](auto) {
+                createQuickPopup(
+                    "Breakeode Support",
+                    "If <cg>Horrible Menu</c> <cy>is causing issues</c>, you may reach out to the <cl>Breakeode</c> development team by <cy>creating a support ticket in the Discord server</c>. If you have any other questions, feel free to ask!\n\n"
+                    "Would you like to join <cl>Breakeode</c>'s <cj>support Discord server</c>?",
+                    "Cancel",
+                    "OK",
+                    [](auto, bool ok) {
+                        if (ok) web::openLinkInBrowser("https://dsc.gg/breakeode");
+                    });
+            },
+        },
+        {
+            "changelog-btn",
+            "What's New?",
+            [](auto) {
+                openChangelogPopup(mod);
+            },
+        },
+        {
+            "license-btn",
+            "Licensing",
+            [](auto) {
+                MDPopup::create(
+                    "License & Attribution",
+                    CreditsManager::get()->getLicense(),
+                    "OK")
+                    ->show();
+            },
+        },
+    });
+
+    for (auto& b : resrcBtns) {
+        auto btn = Button::createWithNode(
+            ButtonSprite::create(
+                b.label.c_str(),
+                font::gold,
+                themes::getButtonSquareSprite(theme)),
+            std::move(b.callback));
+        btn->setID(std::move(b.id));
+        btn->setScale(0.75f);
+
+        resrcBtnContainer->addChild(btn);
+    };
+
+    resrcBtnContainer->updateLayout();
+
     auto creditsMd = MDTextArea::create(
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
+        "**[Geode Team](mod:geode.loader)**: '*[Geode SDK](https://github.com/geode-sdk/geode)*' Geometry Dash modding framework\n\n"
+        "**[Presta](user:540196)**: '*[Congregation](level:68668045)*' jumpscare level\n\n"
+        "**[IcEDCave](user:1504161)**: '*Grief*' jumpscare level\n\n"
+        "**[sink](user:5871590)**: '*[Tidal Wave](level:93733469)*' jumpscare level\n\n"
+        "**[jackaezie](user:9456524)**: '*[YOUVE BEEN TROLLED](level:57436521)*' jumpscare level\n\n"
         "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
-        "**[dankmeme](user:9735891)**: '*[cue](https://github.com/dankmeme01/cue)*' user interface library\n\n"
+        "**[dankmeme](user:9735891)**: '*[Argon](https://github.com/GlobedGD/argon)*' user authentication library, '*[cue](https://github.com/dankmeme01/cue)*' user interface library, '*[asp2](https://github.com/dankmeme01/asp2)*' utility library, '*[arc](https://github.com/dankmeme01/arc)*' async runtime library\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
+        "**[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding\n\n"
+        "**[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo, original idea for this mod\n\n"
         "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
-        "**[ArcticWoof](user:7689052)**: Original idea for this mod\n\n",
+        "**[Talindrusk](user:30689066)**: Codebase contributions, playtesting",
         {
             m_mainLayer->getScaledContentWidth() - 55.f,
             140.f,
@@ -158,7 +295,7 @@ bool MenuCredits::init(ZStringView theme) {
         [](auto) {
             createQuickPopup(
                 "Breakeode",
-                "Visit <cr>Breakeode</c>'s official website?",
+                "Visit <cl>Breakeode</c>'s official website?",
                 "Cancel",
                 "OK",
                 [](auto, bool ok) {
@@ -244,9 +381,8 @@ bool MenuCredits::init(ZStringView theme) {
         });
     infoBtn->setID("info-btn");
     infoBtn->setScale(0.75f);
-    infoBtn->setPosition(m_mainLayer->getScaledContentSize() - 13.75f);
 
-    m_mainLayer->addChild(infoBtn, 9);
+    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
 
     return true;
 };
@@ -270,4 +406,101 @@ MenuCredits* MenuCredits::create(ZStringView theme) {
 
     delete ret;
     return nullptr;
+};
+
+void CreditsManager::loadLeadDevs() {
+    log::trace("Requested to fetch data on lead developers");
+
+#define LEAD_DEVS_INTERNAL(container, devRes)                     \
+    if (devRes.isErr()) {                                         \
+        log::error("{}", std::move(devRes).unwrapErr());          \
+        continue;                                                 \
+    };                                                            \
+                                                                  \
+    auto dev = std::move(devRes).unwrap();                        \
+                                                                  \
+    log::trace("Pushing {} to lead developer list...", dev.name); \
+    container.push_back(std::move(dev))
+
+#define LEAD_DEVS(container, array)                                \
+    for (auto const& d : array) {                                  \
+        LEAD_DEVS_INTERNAL(container, Result<LeadDevIcon>(Ok(d))); \
+    }
+
+    if (m_leadDevs.size() <= 0) {
+        log::debug("Sending web request for lead developer credits");
+
+        async::spawn(
+            web::WebRequest().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
+            [this](web::WebResponse res) {
+                auto const fallback = [this](std::string_view err = "") {
+                    log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
+                    LEAD_DEVS(m_leadDevs, g_defaultDevs);
+                };
+
+                if (res.error()) return fallback(res.errorMessage());
+
+                auto jsonRes = res.json();
+                if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
+
+                auto json = std::move(jsonRes).unwrap();
+
+                auto arrayRes = json.asArray();
+                if (arrayRes.isErr()) return fallback(std::move(arrayRes).unwrapErr());
+
+                auto array = std::move(arrayRes).unwrap();
+
+                log::info("Successfully fetched lead developer list");
+                for (auto const& val : array) {
+                    LEAD_DEVS_INTERNAL(m_leadDevs, val.as<LeadDevIcon>());
+                };
+            });
+    } else {
+        log::error("Lead developer data already populated");
+    };
+};
+
+void CreditsManager::loadLicense() {
+    log::trace("Requested to fetch data on mod licensing");
+
+    if (m_license.empty()) {
+        log::debug("Sending web request for lead developer credits");
+
+        async::spawn(
+            web::WebRequest().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
+            [this](web::WebResponse res) {
+                auto const fallback = [this](std::string_view err = "") {
+                    log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
+                    m_license = g_defaultLicense;
+                };
+
+                if (res.error()) return fallback(res.errorMessage());
+
+                auto jsonRes = res.json();
+                if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
+
+                auto json = std::move(jsonRes).unwrap();
+
+                auto licRes = json.as<LicenseData>();
+                if (licRes.isErr()) return fallback(std::move(licRes).unwrapErr());
+
+                auto lic = std::move(licRes).unwrap();
+
+                m_license = fmt::format(
+                    "[Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under [{}]({}).\n\n"
+                    "Third-party assets, API modifications, libraries, and other external resources are credited in their respective sections in the Credits interface.",
+                    lic.name,
+                    lic.url);
+            });
+    } else {
+        log::error("License data already populated");
+    };
+};
+
+std::span<const LeadDevIcon> CreditsManager::getLeadDevs() const noexcept {
+    return m_leadDevs;
+};
+
+ZStringView CreditsManager::getLicense() const noexcept {
+    return m_license;
 };

@@ -4,12 +4,10 @@
 
 #include <Geode/ui/Button.hpp>
 
-using namespace geode::prelude;
-
 namespace horrible {
     namespace ui {
-        class Captcha final : public Popup {
-            using Callback = Function<void(bool)>;
+        class Captcha final : public geode::Popup {
+            using Callback = geode::Function<void(bool)>;
 
         private:
             struct Impl;
@@ -34,8 +32,8 @@ namespace horrible {
             void setCallback(Callback&& cb);
         };
 
-        class RobotVerifier final : public CCNode {
-            using Callback = Function<void(bool)>;
+        class RobotVerifier final : public cocos2d::CCNode {
+            using Callback = geode::Function<void(bool)>;
 
         private:
             std::string m_expected = "";

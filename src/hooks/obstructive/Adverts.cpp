@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -24,16 +24,27 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         Ref<RandomAd> ad = nullptr;
     };
 
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(AdvertsPlayLayer::showAd));
+
+            return;
+        };
+
         cursor::show();
         nextAd();
+    };
+
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void nextAd() {
         auto delay = rng::get(15.f, 5.f);
         log::trace("scheduling ad in {}s", delay);
 
+        unschedule(schedule_selector(AdvertsPlayLayer::showAd));
         scheduleOnce(schedule_selector(AdvertsPlayLayer::showAd), delay);
     };
 
@@ -52,3 +63,5 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         });
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, AdvertsPlayLayer);

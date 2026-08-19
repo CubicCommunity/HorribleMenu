@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -27,29 +27,45 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         Ref<ProgressBar> chargeMeter = nullptr;
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        auto f = m_fields.self();
+
+        if (!on) {
+            cue::resetNode(f->chargeMeter);
+
+            unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
+            unschedule(schedule_selector(LeapGJBaseGameLayer::decharge));
+
+            f->charge = 0.f;
+
+            m_player1->m_playerSpeed = f->speed;
+            m_player2->m_playerSpeed = f->speed;
+
+            return;
+        };
+
+        f->speed = m_player1->m_playerSpeed;
+
+        if (auto pl = PlayLayer::get(); pl && !f->chargeMeter) {
+            f->chargeMeter = ProgressBar::create();
+            f->chargeMeter->setID("charge-meter"_spr);
+            f->chargeMeter->setFillColor(colors::red);
+            f->chargeMeter->setAnchorPoint(anchor::center);
+            f->chargeMeter->setPosition({pl->m_uiLayer->getScaledContentWidth() / 2.f, 25.f});
+            f->chargeMeter->setScale(0.625f);
+
+            pl->m_uiLayer->addChild(f->chargeMeter, HIGHEST_Z);
+
+            f->chargeMeter->updateProgress(0.f);
+            f->chargeMeter->setVisible(false);
+        };
+    };
+
     bool init() {
         if (!GJBaseGameLayer::init()) return false;
 
         queueInMainThread([self = WeakRef(this)]() {
-            if (auto s = self.lock()) {
-                auto f = s->m_fields.self();
-
-                f->speed = s->m_player1->m_playerSpeed;
-
-                if (auto pl = PlayLayer::get()) {
-                    f->chargeMeter = ProgressBar::create();
-                    f->chargeMeter->setID("charge-meter"_spr);
-                    f->chargeMeter->setFillColor(colors::red);
-                    f->chargeMeter->setAnchorPoint(anchor::center);
-                    f->chargeMeter->setPosition({pl->m_uiLayer->getScaledContentWidth() / 2.f, 25.f});
-                    f->chargeMeter->setScale(0.625f);
-
-                    pl->m_uiLayer->addChild(f->chargeMeter, HIGHEST_Z);
-
-                    f->chargeMeter->updateProgress(0.f);
-                    f->chargeMeter->setVisible(false);
-                };
-            };
+            if (auto s = self.lock()) s->HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
         });
 
         return true;
@@ -63,7 +79,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         if (down) {
             f->charge = 0.f;
 
-            schedule(schedule_selector(LeapGJBaseGameLayer::chargeUp), 0.125f);
+            schedule(schedule_selector(LeapGJBaseGameLayer::chargeUp), 0.1f);
             if (f->chargeMeter) f->chargeMeter->setVisible(true);
         } else {
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
@@ -83,18 +99,18 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
 
             auto pct = f->charge / 100.f;
 
-            auto newSpeed = (f->speed * 3.f) * pct;
+            auto newSpeed = (f->speed * 2.5f) * pct;
             auto boostHeight = 16.25f * pct;
 
             m_player1->m_playerSpeed = newSpeed;
             m_player2->m_playerSpeed = newSpeed;
 
-            if (onGround(m_player1)) m_player1->boostPlayer(boostHeight);
-            if (onGround(m_player2)) m_player2->boostPlayer(boostHeight);
+            if (onGround(m_player1)) m_player1->boostPlayer(boostHeight * (m_player1->m_isUpsideDown ? -1.f : 1.f));
+            if (onGround(m_player2)) m_player2->boostPlayer(boostHeight * (m_player2->m_isUpsideDown ? -1.f : 1.f));
 
             GJBaseGameLayer::handleButton(true, button, isPlayer1);
 
-            sfx::play(sfx::file::pop);
+            if (f->charge >= 100.f) sfx::play(sfx::file::pop);
 
             schedule(schedule_selector(LeapGJBaseGameLayer::decharge));
 
@@ -123,7 +139,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
         };
 
-        f->charge += 16.25f;
+        f->charge += 20.f;
 
         if (f->chargeMeter) {
             f->chargeMeter->updateProgress(f->charge);
@@ -183,4 +199,12 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         player->m_isOnGround3 = onGround;
         player->m_isOnGround4 = onGround;
     };
+};
+
+$on_mod(Loaded) {
+    listenForHorribleOptionChanges(
+        THIS_ID,
+        [](HorribleOptionSave data) {
+            if (auto gjbgl = GJBaseGameLayer::get()) modify_cast<LeapGJBaseGameLayer*>(gjbgl)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
+        });
 };

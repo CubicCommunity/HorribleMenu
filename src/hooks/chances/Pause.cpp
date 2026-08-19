@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -17,21 +17,31 @@ static auto const o = Option::create(THIS_ID)
                           ->setCheating(true)
                           ->autoRegister();
 
-class $modify(PausePlayerObject, PlayLayer) {
+class $modify(PausePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
     };
 
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(PausePlayLayer::pause));
+
+            return;
+        };
+
+        nextPause();
+    };
+
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-        nextPause();
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void nextPause() {
         log::trace("scheduling pause");
-        scheduleOnce(schedule_selector(PausePlayerObject::pause), rng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
+        scheduleOnce(schedule_selector(PausePlayLayer::pause), rng::get(15.f, 3.f) * chanceToDelayPct(m_fields->chance));
     };
 
     void pause(float) {
@@ -39,3 +49,5 @@ class $modify(PausePlayerObject, PlayLayer) {
         pauseGame(true);
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, PausePlayLayer);

@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -19,8 +19,18 @@ static auto const o = Option::create(THIS_ID)
 class $modify(EarthquakePlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
-    void setupHasCompleted() {
+    HORRIBLE_SETUP_INTERFACE_FUNC {
+        if (!on) {
+            unschedule(schedule_selector(EarthquakePlayLayer::nextQuake));
+            unschedule(schedule_selector(EarthquakePlayLayer::quake));
+
+            return;
+        };
+
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
+    };
+
+    void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
     };
 
@@ -36,3 +46,5 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
     };
 };
+
+HORRIBLE_TOGGLE_MODIFY(PlayLayer, EarthquakePlayLayer);

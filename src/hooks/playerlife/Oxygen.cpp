@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <Util.h>
 
 #include <Geode/Geode.hpp>
 
@@ -8,6 +8,8 @@ using namespace geode::prelude;
 using namespace horrible::prelude;
 
 #define THIS_ID "oxygen"
+
+static constexpr auto g_healthID = "health";
 
 static auto const o = Option::create(THIS_ID)
                           ->setName("Oxygen Level")
@@ -20,24 +22,27 @@ class $modify(OxygenPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields final {
-        bool withHealth = options::isEnabled("health");
-
         float oxygenLevel = 50.f;
-        bool oxygenActive = false;
 
         ProgressBar* oxygenBar = nullptr;
-        CCLabelBMFont* oxygenLabel = nullptr;
+        Label* oxygenLabel = nullptr;
     };
 
-    void setupHasCompleted() {
-        PlayLayer::setupHasCompleted();
-
+    HORRIBLE_SETUP_INTERFACE_FUNC {
         auto f = m_fields.self();
 
-        f->oxygenActive = true;
-        f->oxygenLevel = 50.f;
+        if (!on) {
+            cue::resetNode(f->oxygenBar);
+            cue::resetNode(f->oxygenLabel);
 
-        schedule(schedule_selector(OxygenPlayLayer::decreaseOxygen), 0.1f);
+            unschedule(schedule_selector(OxygenPlayLayer::decreaseOxygen));
+
+            f->oxygenLevel = 50.f;
+
+            return;
+        };
+
+        schedule(schedule_selector(OxygenPlayLayer::decreaseOxygen), 0.125f);
 
         if (!f->oxygenBar) {
             f->oxygenBar = ProgressBar::create();
@@ -52,11 +57,9 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
         f->oxygenBar->updateProgress(f->oxygenLevel);
 
-        if (f->withHealth) f->oxygenBar->setPositionX(f->oxygenBar->getPositionX() + 25.f);
-
-        auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->oxygenLevel));
+        auto const o2 = fmt::format("o2\n{}%", static_cast<uint8_t>(f->oxygenLevel));
         if (!f->oxygenLabel) {
-            f->oxygenLabel = CCLabelBMFont::create(o2.c_str(), font::big);
+            f->oxygenLabel = Label::create(o2.c_str(), font::big);
             f->oxygenLabel->setColor(colors::cyan);
             f->oxygenLabel->setAnchorPoint({0.f, 1.f});
             f->oxygenLabel->setPosition({2.f, (getScaledContentHeight() / 2.f) - (f->oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
@@ -67,7 +70,22 @@ class $modify(OxygenPlayLayer, PlayLayer) {
             f->oxygenLabel->setString(o2.c_str());
         };
 
-        f->oxygenLabel->setPosition({f->oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
+        reposOxygenBar(options::isEnabled(g_healthID));
+    };
+
+    void reposOxygenBar(bool healthOn) {
+        auto f = m_fields.self();
+
+        if (f->oxygenBar) f->oxygenBar->setPositionX(10.f + (healthOn ? 25.f : 0.f));
+        if (f->oxygenLabel) f->oxygenLabel->setPosition({f->oxygenBar->getPositionX() + 2.f - 10.f, (getScaledContentHeight() / 2.f) - (f->oxygenBar->getScaledContentWidth() / 2.f) - 1.25f});
+    };
+
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
+
+        m_fields->oxygenLevel = 50.f;
+
+        HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
     };
 
     void decreaseOxygen(float dt) {
@@ -82,13 +100,13 @@ class $modify(OxygenPlayLayer, PlayLayer) {
             f->oxygenLevel += 3.75f * dt;
         } else {
             f->oxygenLevel -= 2.5f * dt;
-            if (!m_player1->m_isOnGround) f->oxygenLevel -= 0.875f * dt;
+            if (!m_player1->m_isOnGround) f->oxygenLevel -= 0.5f * dt;
         };
 
         if (f->oxygenLevel > 100.f) f->oxygenLevel = 100.f;
         if (f->oxygenLevel < 0.f) f->oxygenLevel = 0.f;
 
-        auto const o2 = fmt::format("o2\n{}%", static_cast<int>(f->oxygenLevel));
+        auto const o2 = fmt::format("o2\n{}%", static_cast<uint8_t>(f->oxygenLevel));
         f->oxygenLabel->setString(o2.c_str());
 
         f->oxygenBar->updateProgress(f->oxygenLevel);
@@ -112,4 +130,14 @@ class $modify(OxygenPlayLayer, PlayLayer) {
         resetOxygenLevel();
         PlayLayer::resetLevel();
     };
+};
+
+$on_mod(Loaded) {
+    HORRIBLE_MODIFY_EVENT_HANDLER(PlayLayer, OxygenPlayLayer);
+
+    listenForHorribleOptionChanges(
+        g_healthID,
+        [](HorribleOptionSave data) {
+            if (auto pl = PlayLayer::get()) modify_cast<OxygenPlayLayer*>(pl)->reposOxygenBar(data.enabled);
+        });
 };

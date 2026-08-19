@@ -2,13 +2,23 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/ui/Button.hpp>
+
 namespace horrible {
     namespace ui {
         class TermsAndConditions final : public geode::Popup {
-            using Callback = geode::CopyableFunction<void(bool)>;
+            using Callback = geode::Function<void(bool)>;
+
+        private:
+            struct Impl;
+            std::unique_ptr<Impl> m_impl;
 
         protected:
+            TermsAndConditions();
+            ~TermsAndConditions();
+
             void finishBtnFade(cocos2d::CCNode* sender);
+            void update(float dt) override;
 
             bool init(Callback&& cb);
 

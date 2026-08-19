@@ -1,5 +1,54 @@
+# v1.3.0 
+- Raised minimum Geode loader support to `v5.9.0`
+- Added user badges
+  - Added **Horrible Menu Lead Developer** user badge
+  - Added **Horrible Menu Developer** user badge
+  - Added **Horrible Menu Contributor** user badge
+  - Added **Breakeode Supporter** user badge
+- Added feature idea suggestion form menu
+- Reworked Discord community pop-up
+- Added new Ko-fi support pop-up
+- Added floating menu button icon option **Steam Happy**
+- Added floating menu button icon option **Soggy Cat**
+- Data to credit Horrible Menu's lead development team is now fetched remotely
+- Optimized thumbnail loading in *Level Ads* option while [ImagePlus](https://geode-sdk.org/mods/prevter.imageplus) mod is loaded
+- Improved some button textures :)
+- Internal tweaks
+
+# v1.2.7 
+- Fix an issue with Safe Mode always being active on startup ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
+- Added Safe Mode indicator to level end screen ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
+- Added credits for jumpscare levels' creators
+
+# v1.2.6 
+- Update credits
+
+# v1.2.5 
+- Fix visual issues with long text labels in *Horrible Options Menu*
+
+# v1.2.4 
+- Improved functionality of *Agree To Our Terms!* option ([#12](https://github.com/CubicCommunity/HorribleMenu/pull/12))
+- Sound effect for *Charged Leap* option will now only play when leaping at full charge
+- Lowered default chance setting for *Random Achievements* option to `20%`
+- Added license information to Horrible Menu credits pop-up
+- Internal tweaks
+
+# v1.2.3 
+- Rework game modification internals to allow safer option toggling mid-level
+  - This should reduce crash issues with *Flicks* option
+- Fix jump boost not working for *Ending Gamble*, *Charged Leap*, and *Super Jump* options while the player's gravity is upside-down
+- Lowered cooldown range for *Blinking Icon* option
+- Several tweaks
+
 # v1.2.2 
+- Tweaked charge-up flow for *Charged Leap* option
+- Decreased speed multiplier for *Charged Leap* option by `16.7%`
+- Fix issue with *Randomly Don't Jump* option
+- Lowered default chance setting for *Randomly Don't Jump* option to `30%`
 - Fix visual bug with fading color progress bars
+- Added some helpful buttons to the Horrible Menu credits pop-up!
+  - **Breakeode has opened [a support Discord server](https://dsc.gg/breakeode)** for players to report bugs or look for help with using this mod!
+- Other tweaks
 
 # v1.2.1 
 - Raised *Inversed Inputs* option Silly Tier to **Medium**
