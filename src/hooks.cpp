@@ -60,6 +60,7 @@ namespace horrible::hooks {
 
 $on_game(Loaded) {
     if (auto om = OptionManager::get()) hooks::toggleSafeModeHooks(om->shouldBeSafeMode());
+
     listenForSettingChanges<bool>(
         setting::SafeMode,
         [](bool value) {

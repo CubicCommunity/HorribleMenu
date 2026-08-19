@@ -277,7 +277,7 @@ bool MenuCredits::init(ZStringView theme) {
         "**[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding\n\n"
         "**[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo, original idea for this mod\n\n"
         "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
-        "**[talindrusk](user:30689066)**: Codebase contributions, playtesting",
+        "**[Talindrusk](user:30689066)**: Codebase contributions, playtesting",
         {
             m_mainLayer->getScaledContentWidth() - 55.f,
             140.f,

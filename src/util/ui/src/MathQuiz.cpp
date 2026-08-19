@@ -18,7 +18,7 @@ struct MathQuiz::Impl final {
     MathOperation operation = MathOperation::Addition;
 
     int8_t correctAnswer = 0;
-    std::vector<int8_t> answers;  // 4 answer options
+    asp::SmallVec<int8_t, 4> answers;  // 4 answer options
 
     ProgressBar* countdown = nullptr;
     CCMenu* answerMenu = nullptr;

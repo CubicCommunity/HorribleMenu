@@ -47,7 +47,7 @@ struct Menu::Impl final {
 
     cue::DropdownNode* sillyFilterDropdown = nullptr;
 
-    std::vector<WeakRef<MenuCategoryFilterCell>> categoryItems;
+    std::vector<Ref<MenuCategoryFilterCell>> categoryItems;
 
     void filterOptions(std::vector<std::weak_ptr<Option>>&& optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
         optionList->m_contentLayer->removeAllChildren();
@@ -308,10 +308,8 @@ bool Menu::init() {
                 if (enabled) {
                     m_impl->selectedCategory = category;
 
-                    for (auto const& item : m_impl->categoryItems) {
-                        if (auto cat = item.lock()) {
-                            if (cat->getCategory() != category) cat->setToggled(false);
-                        };
+                    for (auto const& cat : m_impl->categoryItems) {
+                        if (cat->getCategory() != category) cat->setToggled(false);
                     };
                 } else if (m_impl->selectedCategory == category) {
                     m_impl->selectedCategory = "";
@@ -461,8 +459,8 @@ bool Menu::init() {
                         m_impl->selectedTier = SillyTier::None;
                         m_impl->selectedCategory = "";
 
-                        for (auto const& category : m_impl->categoryItems) {
-                            if (auto cat = category.lock()) cat->setToggled(false);
+                        for (auto const& cat : m_impl->categoryItems) {
+                            cat->setToggled(false);
                         };
 
                         m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);

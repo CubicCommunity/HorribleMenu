@@ -13,6 +13,7 @@
 - Data to credit Horrible Menu's lead development team is now fetched remotely
 - Optimized thumbnail loading in *Level Ads* option while [ImagePlus](https://geode-sdk.org/mods/prevter.imageplus) mod is loaded
 - Improved some button textures :)
+- Internal tweaks
 
 # v1.2.7 
 - Fix an issue with Safe Mode always being active on startup ([#15](https://github.com/CubicCommunity/HorribleMenu/pull/15))
