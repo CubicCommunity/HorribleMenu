@@ -177,7 +177,7 @@ bool MathQuiz::init() {
         };
     };
 
-    utils::random::shuffle(m_impl->answers);
+    rng::internal::shuffle(m_impl->answers);
 
     // richard floating lol
     if (auto richard = Richard::create()) {

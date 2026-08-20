@@ -398,7 +398,7 @@ void MenuDiscord::setupAuthInterface() {
 
                     m_mainLayer->addChild(m_loading, 9);
 
-                    m_state = utils::random::generateUUID();
+                    m_state = rng::internal::generateUUID();
                     m_since = asp::Instant::now();
                     web::openLinkInBrowser(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/discord/link/auth?state={}", m_state));
 
