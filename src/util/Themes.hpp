@@ -131,6 +131,7 @@ namespace horrible {
                 inline constexpr auto Breakeode = "Breakeode";
                 inline constexpr auto SteamHappy = "Steam Happy";
                 inline constexpr auto SoggyCat = "Soggy Cat";
+                inline constexpr auto Erymanthus = "erymanthus";
                 inline constexpr auto CryingSkull = "Crying Skull";
                 inline constexpr auto TheYellowOne = "The Yellow One";
                 inline constexpr auto ColonThree = ":3";
@@ -147,6 +148,7 @@ namespace horrible {
                 if (icon == icons::Breakeode) return "icon_breakeode.png"_spr;
                 if (icon == icons::SteamHappy) return "icon_steam.png"_spr;
                 if (icon == icons::SoggyCat) return "icon_soggy.png"_spr;
+                if (icon == icons::Erymanthus) return "icon_eri.png"_spr;
                 if (icon == icons::CryingSkull) return "icon_skull.png"_spr;
                 if (icon == icons::TheYellowOne) return "icon_yellow.png"_spr;
                 if (icon == icons::ColonThree) return "icon_colonthree.png"_spr;
