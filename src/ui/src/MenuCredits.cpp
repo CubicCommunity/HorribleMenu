@@ -200,13 +200,15 @@ bool MenuCredits::init(ZStringView theme) {
     auto resrcBtnContainerLayout = RowLayout::create()
                                        ->setGap(2.5f)
                                        ->setAutoScale(false)
+                                       ->setAxisAlignment(AxisAlignment::Even)
+                                       ->setCrossAxisAlignment(AxisAlignment::Even)
                                        ->setGrowCrossAxis(true);
 
     auto resrcBtnContainer = CCNode::create();
     resrcBtnContainer->setID("resources-container");
     resrcBtnContainer->setAnchorPoint({0, 0.5});
-    resrcBtnContainer->setContentSize({m_mainLayer->getScaledContentWidth() - 198.75f, leadDevContainer->getScaledContentHeight()});
-    resrcBtnContainer->setPosition({leadDevContainer->getPositionX() + (leadDevContainerBg->getScaledContentWidth() / 2.f) + 8.75f, leadDevContainer->getPositionY()});
+    resrcBtnContainer->setContentSize({(m_mainLayer->getScaledContentWidth() - leadDevContainerBg->getScaledContentWidth()) - 60.f, leadDevContainer->getScaledContentHeight()});
+    resrcBtnContainer->setPosition({leadDevContainer->getPositionX() + (leadDevContainerBg->getScaledContentWidth() / 2.f) + 5.f, leadDevContainer->getPositionY()});
     resrcBtnContainer->setLayout(resrcBtnContainerLayout);
 
     m_mainLayer->addChild(resrcBtnContainer, 9);
@@ -255,7 +257,7 @@ bool MenuCredits::init(ZStringView theme) {
                 themes::getButtonSquareSprite(theme)),
             std::move(b.callback));
         btn->setID(std::move(b.id));
-        btn->setScale(0.75f);
+        btn->setScale(0.625f);
 
         resrcBtnContainer->addChild(btn);
     };
