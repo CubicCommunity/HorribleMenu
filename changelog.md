@@ -10,6 +10,7 @@
 - Added new Ko-fi support pop-up
 - Added floating menu button icon option **Steam Happy**
 - Added floating menu button icon option **Soggy Cat**
+- Added floating menu button icon option **erymanthus**
 - Data to credit Horrible Menu's lead development team is now fetched remotely
 - Optimized thumbnail loading in *Level Ads* option while [ImagePlus](https://geode-sdk.org/mods/prevter.imageplus) mod is loaded
 - Improved some button textures :)
