@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Captcha.hpp"
+#include "InputMeter.hpp"
 #include "JumpHealthMeter.hpp"
 #include "LabelArea.hpp"
 #include "MathQuiz.hpp"

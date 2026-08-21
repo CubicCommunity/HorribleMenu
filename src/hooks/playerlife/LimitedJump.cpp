@@ -31,7 +31,7 @@ class $modify(LimitedJumpGJBaseGameLayer, GJBaseGameLayer) {
 
         if (auto pl = PlayLayer::get()) {
             f->jumpMeter = JumpHealthMeter::create([this, meter = f->jumpMeter]() {
-                if (auto pl = PlayLayer::get()) pl->destroyPlayer(m_player1, nullptr);
+                if (auto pl = PlayLayer::get()) pl->destroyPlayer(pl->m_player1, nullptr);
             });
             f->jumpMeter->setID("jump-energy-meter"_spr);
             f->jumpMeter->setZOrder(HIGHEST_Z);

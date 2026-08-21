@@ -7,9 +7,11 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
+#define PACE_RANGES 50.f, 25.f
+
 struct JumpHealthMeter::Impl final {
     uint8_t jumps = rng::get(15, 7);
-    float pace = rng::get(50.f, 25.f);
+    float pace = rng::get(PACE_RANGES);
 
     Label* healthLabel = nullptr;
     ProgressBar* healthMeter = nullptr;
@@ -36,6 +38,7 @@ bool JumpHealthMeter::init(Callback&& cb) {
 
     if (!CCNode::init()) return false;
 
+    setAnchorPoint(anchor::center);
     setContentSize({150.f, 27.5f});
 
     m_impl->healthMeter = ProgressBar::create();
@@ -71,7 +74,7 @@ void JumpHealthMeter::update(float dt) {
             m_impl->updateLabel();
             m_impl->healthMeter->updateProgress(0.f);
 
-            m_impl->pace = rng::get(50.f, 25.f);
+            m_impl->pace = rng::get(PACE_RANGES);
         };
     };
 };
