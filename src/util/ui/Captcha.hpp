@@ -2,8 +2,6 @@
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/ui/Button.hpp>
-
 namespace horrible {
     namespace ui {
         class Captcha final : public geode::Popup {
