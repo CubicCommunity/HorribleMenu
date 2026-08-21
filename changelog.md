@@ -1,13 +1,18 @@
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.9.0`
-- Added user badges
+- Added new *Player Life* option **Limited Jump Energy**
+- Added new *Obstructive* option **da real floating button**
+- Added new *Misc* option **Input Roulette**
+- Added Discord to GD account linking feature
+- Added in-game user badges
   - Added **Horrible Menu Lead Developer** user badge
   - Added **Horrible Menu Developer** user badge
   - Added **Horrible Menu Contributor** user badge
   - Added **Breakeode Supporter** user badge
-- Added feature idea suggestion form menu
+- Added feature suggestion form pop-up
 - Reworked Discord community pop-up
-- Added new Ko-fi support pop-up
+  - Added Discord account link menu
+- Added new Ko-fi supporter pop-up
 - Added floating menu button icon option **Steam Happy**
 - Added floating menu button icon option **Soggy Cat**
 - Added floating menu button icon option **erymanthus**

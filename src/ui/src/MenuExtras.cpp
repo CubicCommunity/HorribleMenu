@@ -79,13 +79,13 @@ bool MenuSuggest::init(ZStringView theme) {
 
     auto instructions = MDTextArea::create(
         "# BEFORE You Send...\n\n"
-        "Here are some general guidelines regarding our etiquette and what to expect from this feature!\n\n"
+        "Here are some general guidelines regarding our etiquette and what to expect from this form!\n\n"
         "- <cg>Breakeode receives every idea you send</c>. **Refrain** from <cr>spamming them</c>!\n"
         "- Provide <cy>as much detail as you can</c> about your idea to give developers **a clear idea** and therefore <cg>credit you</c>!\n"
         "- **Refrain** from <cy>suggesting existing features from prominent Geode mods</c>, <cr>we want originality</c>!\n"
         "- If your idea <cr>didn't make it to the following feature update</c>, it was **probably omitted**.\n"
         "- You're welcome to **join [Breakeode's Discord server](https://dsc.gg/breakeode)** to <cg>personally bring and check up on your ideas</c>, just <cy>be polite</c> is all!\n"
-        "- <cy>Attempting to spam this form or overload our servers</c> will likely get you <cr>rate-limited or IP-banned</c>.",
+        "- <cy>Attempting to overload Cubic's servers</c> will likely get you <cr>rate-limited or IP-banned</c>.",
         {mainLayerSize.width - 25.f, 92.5f});
     instructions->setID("instructions");
     instructions->setAnchorPoint({0.5, 0});
@@ -129,7 +129,7 @@ bool MenuSuggest::init(ZStringView theme) {
         [](auto) {
             createQuickPopup(
                 "Help",
-                "This is the <cg>idea suggestion form</c>. You can use it to <cy>send Breakeode your feature ideas for Horrible Menu</c>. Be sure to <cr>read the guidelines before submitting any ideas</c>.",
+                "This is the <cg>feature suggestion form</c>. You can use it to <cy>send Breakeode your feature ideas for Horrible Menu</c>. Be sure to <cr>read the guidelines below before submitting any ideas</c>.",
                 "OK",
                 nullptr,
                 nullptr);
