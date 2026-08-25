@@ -40,7 +40,7 @@ class $modify(FlippedPlayLayer, PlayLayer) {
 
     void nextFlip() {
         log::trace("scheduling flip");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(10.f, 2.5f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(10.f, 2.5f) * rng::chanceToDelayPct(m_fields->chance));
     };
 
     void flip(float) {

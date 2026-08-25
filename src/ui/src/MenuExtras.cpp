@@ -124,20 +124,9 @@ bool MenuSuggest::init(ZStringView theme) {
 
     m_mainLayer->addChild(m_loading, 9);
 
-    auto infoBtn = Button::createWithSpriteFrameName(
-        "GJ_infoIcon_001.png",
-        [](auto) {
-            createQuickPopup(
-                "Help",
-                "This is the <cg>feature suggestion form</c>. You can use it to <cy>send Breakeode your feature ideas for Horrible Menu</c>. Be sure to <cr>read the guidelines below before submitting any ideas</c>.",
-                "OK",
-                nullptr,
-                nullptr);
-        });
-    infoBtn->setID("info-btn");
-    infoBtn->setScale(0.75f);
-
-    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
+    popup::addHelpButton(
+        m_mainLayer,
+        "This is the <cg>feature suggestion form</c>. You can use it to <cy>send Breakeode your feature ideas for Horrible Menu</c>. Be sure to <cr>read the guidelines below before submitting any ideas</c>.");
 
     return true;
 };
@@ -484,21 +473,10 @@ bool MenuDiscord::init(ZStringView theme) {
 
     m_mainLayer->addChild(breakeodeBtn, 1);
 
-    auto infoBtn = Button::createWithSpriteFrameName(
-        "GJ_infoIcon_001.png",
-        [](auto) {
-            createQuickPopup(
-                "Help",
-                "This is the <cb>Discord community menu</c>. You can join <cf>Cubic Studios</c>'s Discord community server to chat with others, or <cc>Breakeode</c>'s Discord server to get help with using <co>Horrible Menu</c> or suggest ideas.\n\n"
-                "You can also <cy>link your Discord account with your Geometry Dash account</c> here, which is <cr>required</c> in order to receive any <cd>Ko-fi support perks</c>.",
-                "OK",
-                nullptr,
-                nullptr);
-        });
-    infoBtn->setID("info-btn");
-    infoBtn->setScale(0.75f);
-
-    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
+    popup::addHelpButton(
+        m_mainLayer,
+        "This is the <cb>Discord community menu</c>. You can join <cf>Cubic Studios</c>'s Discord community server to chat with others, or <cc>Breakeode</c>'s Discord server to get help with using <co>Horrible Menu</c> or suggest ideas.\n\n"
+        "You can also <cy>link your Discord account with your Geometry Dash account</c> here, which is <cr>required</c> in order to receive any <cd>Ko-fi support perks</c>.");
 
     return true;
 };
@@ -804,20 +782,9 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChildAtPosition(discordBtn, Anchor::BottomLeft, {17.5f, 17.5f});
 
-    auto infoBtn = Button::createWithSpriteFrameName(
-        "GJ_infoIcon_001.png",
-        [](auto) {
-            createQuickPopup(
-                "Help",
-                "This is the <cg>Ko-fi supporter menu</c>. Here you can find <cd>links to support Breakeode, and the perks for doing so</c>!",
-                "OK",
-                nullptr,
-                nullptr);
-        });
-    infoBtn->setID("info-btn");
-    infoBtn->setScale(0.75f);
-
-    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
+    popup::addHelpButton(
+        m_mainLayer,
+        "This is the <cg>Ko-fi supporter menu</c>. Here you can find <cd>links to support Breakeode, and the perks for doing so</c>!");
 
     return true;
 };

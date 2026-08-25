@@ -1,3 +1,6 @@
+# v1.3.1 
+- Internal tweaks
+
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.9.0`
 - Added new *Player Life* option **Limited Jump Energy**

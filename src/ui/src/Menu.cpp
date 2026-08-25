@@ -143,7 +143,7 @@ void Menu::setupSafeModeNode(bool safeMode) {
         m_impl->safeModeContainer->addChild(label);
 
         auto infoBtn = Button::createWithSpriteFrameName(
-            "GJ_infoIcon_001.png",
+            themes::info,
             [safeMode](auto) {
                 createQuickPopup(
                     "Safe Mode",

@@ -369,23 +369,11 @@ bool MenuCredits::init(ZStringView theme) {
         m_mainLayer->addChild(integrationsBtn, 9);
     };
 
-    auto infoBtn = Button::createWithSpriteFrameName(
-        "GJ_infoIcon_001.png",
-        [this](auto) {
-            createQuickPopup(
-                "Help",
-                "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n"
-                "<co>If we missed anyone, let us know by opening an issue about it on our GitHub repository!</c>\n\n"
-                "<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>",
-                "OK",
-                nullptr,
-                365.f,
-                nullptr);
-        });
-    infoBtn->setID("info-btn");
-    infoBtn->setScale(0.75f);
-
-    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-13.75f, -13.75f});
+    popup::addHelpButton(
+        m_mainLayer,
+        "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n"
+        "<co>If we missed anyone, let us know by opening an issue about it on our GitHub repository!</c>\n\n"
+        "<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>");
 
     return true;
 };

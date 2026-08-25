@@ -49,6 +49,7 @@ namespace horrible {
         namespace themes {
             inline constexpr auto square = "geode.loader/white-square.png";
             inline constexpr auto close = "geode.loader/close.png";
+            inline constexpr auto info = "GJ_infoIcon_001.png";
 
             // Theme options
             namespace enums {

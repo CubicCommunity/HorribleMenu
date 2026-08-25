@@ -63,7 +63,7 @@ class $modify(MathPlayLayer, PlayLayer) {
         log::trace("scheduling math quiz");
 
         unschedule(schedule_selector(MathPlayLayer::doQuiz));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), rng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), rng::get(30.f, 5.f) * rng::chanceToDelayPct(m_fields->chance));
     };
 
     void doQuiz(float) {

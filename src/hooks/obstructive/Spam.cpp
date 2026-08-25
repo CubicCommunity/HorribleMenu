@@ -72,7 +72,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
         log::trace("scheduling spam challenge");
 
         unschedule(schedule_selector(SpamPlayLayer::doSpam));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), rng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), rng::get(30.f, 5.f) * rng::chanceToDelayPct(m_fields->chance));
     };
 
     void doSpam(float) {

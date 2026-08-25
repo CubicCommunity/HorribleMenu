@@ -32,18 +32,6 @@ namespace horrible {
         };
     };
 
-    /**
-     * Convert a chance setting number to a cooldown percentage decimal
-     *
-     * @param chance The chance setting number
-     */
-    inline constexpr float chanceToDelayPct(uint8_t chance = 50) noexcept {
-        if (chance <= 0) chance = 0;
-        if (chance > 100) chance = 100;
-
-        return 1.f - (static_cast<float>(chance) / 100.f);
-    };
-
     // For convenience
     namespace sfx {
         namespace file {
@@ -86,6 +74,8 @@ namespace horrible {
         inline void closeBtnID(CCMenuItemSpriteExtra* btn) {
             if (btn) btn->setID("close-btn");  // xd
         };
+
+        geode::Button* addHelpButton(cocos2d::CCNode* to, std::string content, bool useMarkdown = false, float btnScale = 0.75f, cocos2d::CCPoint const& offset = {-13.75f, -13.75f});
     };
 
     // For convenience

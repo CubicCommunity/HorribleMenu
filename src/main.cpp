@@ -118,3 +118,34 @@ $on_game(TexturesLoaded) {
     if (!g_loadedOnce) return;  // trigger the button setup to match graphics quality !!!
     if (auto fb = MenuButton::get()) fb->setTheme(mod->getSettingValue<std::string>("theme"));
 };
+
+// i didn't wanna inline this in Util.h for reasons...
+Button* popup::addHelpButton(CCNode* to, std::string content, bool useMarkdown, float btnScale, CCPoint const& offset) {
+    auto infoBtn = Button::createWithSpriteFrameName(
+        themes::info,
+        [content = std::move(content), useMarkdown](auto) {
+            if (useMarkdown) {
+                MDPopup::create(
+                    true,
+                    "Help",
+                    content,
+                    "OK",
+                    nullptr,
+                    nullptr)
+                    ->show();
+            } else {
+                createQuickPopup(
+                    "Help",
+                    content,
+                    "OK",
+                    nullptr,
+                    nullptr);
+            };
+        });
+    infoBtn->setID("info-btn");
+    infoBtn->setScale(btnScale);
+    infoBtn->setZOrder(HIGHEST_Z);
+
+    to->addChildAtPosition(infoBtn, Anchor::TopRight, offset, false);
+    return infoBtn;
+};

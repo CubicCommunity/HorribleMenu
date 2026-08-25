@@ -135,7 +135,7 @@ bool Captcha::init() {
     m_mainLayer->addChild(refreshBtn, 1);
 
     auto infoBtn = Button::createWithSpriteFrameName(
-        "GJ_infoIcon_001.png",
+        themes::info,
         [this](auto) {
             unscheduleUpdate();
 

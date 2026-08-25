@@ -95,7 +95,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
 
     void nextWhack() {
         log::trace("scheduling new whack btn");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), rng::get(12.5f, 1.25f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), rng::get(12.5f, 1.25f) * rng::chanceToDelayPct(m_fields->chance));
     };
 
     void doWhack(float) {

@@ -46,6 +46,18 @@ namespace horrible {
                 auto factor = std::powf(10.f, precision);
                 return std::round(get(1.f) * factor) / factor;
             };
+
+            /**
+             * Convert a chance setting number to a cooldown percentage decimal
+             *
+             * @param chance The chance setting number
+             */
+            inline constexpr float chanceToDelayPct(uint8_t chance = 50) noexcept {
+                if (chance <= 0) chance = 0;
+                if (chance > 100) chance = 100;
+
+                return 1.f - (static_cast<float>(chance) / 100.f);
+            };
         };
     };
 };

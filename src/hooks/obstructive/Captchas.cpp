@@ -78,7 +78,7 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         log::trace("scheduling captcha");
 
         unschedule(schedule_selector(CaptchaPlayLayer::doCaptcha));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(CaptchaPlayLayer::doCaptcha), rng::get(30.f, 5.f) * chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(CaptchaPlayLayer::doCaptcha), rng::get(30.f, 5.f) * rng::chanceToDelayPct(m_fields->chance));
     };
 
     void doCaptcha(float) {
