@@ -400,7 +400,9 @@ void MenuDiscord::setupAuthInterface() {
             m_mainLayer->addChild(m_linkBtn, 9);
         };
 
-        m_label = LabelArea::create(std::move(labelTxt), m_mainLayer->getScaledContentWidth() * 0.4f, 0.5f);
+        m_label = BoxedLabel::create(std::move(labelTxt), font::chat, m_mainLayer->getScaledContentWidth() * 0.4f);
+        m_label->setTextScale(0.5f);
+        m_label->lockBGWidth(true);
         m_label->setAnchorPoint({1, 0});
 
         m_mainLayer->addChildAtPosition(m_label, Anchor::BottomRight, {-15.f, 15.f});
@@ -420,11 +422,15 @@ bool MenuDiscord::init(ZStringView theme) {
 
     setupAuthInterface();
 
-    auto cubicLabel = LabelArea::create("Want to join <cg>other gamers and hang out</c>?", m_mainLayer->getScaledContentWidth() * 0.875f, 0.75f);
+    auto cubicLabel = BoxedLabel::create("Want to join <cg>other gamers and hang out</c>?", font::chat, m_mainLayer->getScaledContentWidth() * 0.875f);
     cubicLabel->setID("cubic-studios-discord-label");
+    cubicLabel->lockBGWidth(true);
+    cubicLabel->setTextScale(0.75f);
 
-    auto breakeodeLabel = LabelArea::create("Need <cy>help or want to suggest ideas</c>?", m_mainLayer->getScaledContentWidth() * 0.875f, 0.75f);
+    auto breakeodeLabel = BoxedLabel::create("Need <cy>help or want to suggest ideas</c>?", font::chat, m_mainLayer->getScaledContentWidth() * 0.875f);
     breakeodeLabel->setID("breakeode-discord-label");
+    breakeodeLabel->lockBGWidth(true);
+    breakeodeLabel->setTextScale(0.75f);
 
     m_mainLayer->addChildAtPosition(cubicLabel, Anchor::Center, {0.f, 50.f});
     m_mainLayer->addChildAtPosition(breakeodeLabel, Anchor::Center, {0.f, 0.f});
@@ -694,8 +700,12 @@ bool MenuKofi::init(ZStringView theme) {
                                    ? "<cg>Thanks for supporting Breakeode</c>! You can now <cj>press the badge below</c> to see the <cd>Supporter badge</c> on your profile. Feel free to <cb>join Breakeode's Discord server</c> for even more perks."
                                    : "<co>Horrible Menu</c> <cc>couldn't be made possible without community support</c>. Feel free to <cd>donate through Ko-fi</c> and get cool perks such as the badge below!\n<cj>Press the badge</c> to get started.";
 
-    auto infoContainer = LabelArea::create(std::move(infoLabelTxt), m_mainLayer->getScaledContentWidth() - 15.f, 0.625f, as->isSupporter() ? colors::gold : colors::purple);
+    auto infoContainer = BoxedLabel::create(std::move(infoLabelTxt), font::chat, m_mainLayer->getScaledContentWidth() - 15.f);
     infoContainer->setID("kofi-description");
+    infoContainer->setBGOpacity(125);
+    infoContainer->lockBGWidth(true);
+    infoContainer->setTextScale(0.625f);
+    infoContainer->setBGColor(as->isSupporter() ? colors::gold : colors::purple);
 
     m_mainLayer->addChildAtPosition(infoContainer, Anchor::Center, {0.f, 12.5f + infoContainer->getScaledContentHeight()});
 

@@ -95,7 +95,7 @@ namespace horrible {
         geode::Button* m_linkBtn = nullptr;
         geode::LoadingSpinner* m_loading = nullptr;
 
-        ui::LabelArea* m_label = nullptr;
+        geode::BoxedLabel* m_label = nullptr;
 
         void setupAuthInterface();
 
