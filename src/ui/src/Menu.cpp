@@ -604,11 +604,18 @@ bool Menu::init() {
     return true;
 };
 
+void Menu::onEnter() {
+    Popup::onEnter();
+    s_inst = this;
+};
+
 void Menu::onExit() {
-    if (auto credits = MenuCredits::get()) credits->removeFromParent();
-    if (auto suggest = MenuSuggest::get()) suggest->removeFromParent();
-    if (auto discord = MenuDiscord::get()) discord->removeFromParent();
-    if (auto kofi = MenuKofi::get()) kofi->removeFromParent();
+    if (auto scene = CCScene::get()) {
+        if (auto credits = scene->getChildByType<MenuCredits>()) credits->removeFromParent();
+        if (auto suggest = scene->getChildByType<MenuSuggest>()) suggest->removeFromParent();
+        if (auto discord = scene->getChildByType<MenuDiscord>()) discord->removeFromParent();
+        if (auto kofi = scene->getChildByType<MenuKofi>()) kofi->removeFromParent();
+    };
 
     s_inst = nullptr;
 
@@ -623,7 +630,6 @@ Menu* Menu::create() {
     auto ret = new Menu();
     if (ret->init()) {
         ret->autorelease();
-        s_inst = ret;
         return ret;
     };
 

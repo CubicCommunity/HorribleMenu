@@ -38,18 +38,11 @@ namespace horrible {
             geode::Button::ButtonCallback callback;
         };
 
-    private:
-        static MenuCredits* s_inst;
-
     protected:
-        void onExit() override;
-
         bool init(geode::ZStringView theme);
 
     public:
         static MenuCredits* create(geode::ZStringView theme);
-
-        static MenuCredits* get() noexcept;
     };
 
     class CreditsManager final : public base::Singleton<CreditsManager> {

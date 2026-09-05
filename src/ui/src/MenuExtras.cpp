@@ -21,8 +21,6 @@ $on_mod(Loaded) {
         });
 };
 
-MenuSuggest* MenuSuggest::s_inst = nullptr;
-
 asp::Instant MenuSuggest::s_lastSuggest = asp::Instant();
 
 bool MenuSuggest::init(ZStringView theme) {
@@ -185,20 +183,10 @@ void MenuSuggest::processSuggestion(Button* sender) {
         });
 };
 
-void MenuSuggest::onExit() {
-    s_inst = nullptr;
-    Popup::onExit();
-};
-
-MenuSuggest* MenuSuggest::get() noexcept {
-    return s_inst;
-};
-
 MenuSuggest* MenuSuggest::create(ZStringView theme) {
     auto ret = new MenuSuggest();
     if (ret->init(theme)) {
         ret->autorelease();
-        s_inst = ret;
         return ret;
     };
 
@@ -210,6 +198,8 @@ void SupporterState::validateSupporter(Callback&& cb) {
     if (!gdc::isLinked()) {
         m_supporter = false;
         return cb(Err("Player is signed out or not linked with Discord"));
+    } else {
+        if (m_supporter) return cb(Ok());
     };
 
     if (auto gjam = GJAccountManager::sharedState()) {
@@ -221,10 +211,14 @@ void SupporterState::validateSupporter(Callback&& cb) {
         async::spawn(
             req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
             [this, cb = std::move(cb)](web::WebResponse res) {
-                if (res.ok()) log::info("User is a supporter of Breakeode");
-                m_supporter = res.ok();
+                if (res.ok()) {
+                    log::info("User is a supporter of Breakeode");
+                    m_supporter = res.ok();
 
-                return cb(Ok());
+                    return cb(Ok());
+                };
+
+                return cb(Err("User is not a Breakeode supporter"));
             });
     };
 };
@@ -232,8 +226,6 @@ void SupporterState::validateSupporter(Callback&& cb) {
 bool SupporterState::isSupporter() const noexcept {
     return m_supporter;
 };
-
-MenuDiscord* MenuDiscord::s_inst = nullptr;
 
 void MenuDiscord::setupAuthInterface() {
     cue::resetNode(m_discordCell);
@@ -388,15 +380,10 @@ bool MenuDiscord::init(ZStringView theme) {
     return true;
 };
 
-MenuDiscord* MenuDiscord::get() noexcept {
-    return s_inst;
-};
-
 MenuDiscord* MenuDiscord::create(ZStringView theme) {
     auto ret = new MenuDiscord();
     if (ret->init(theme)) {
         ret->autorelease();
-        s_inst = ret;
         return ret;
     };
 
@@ -479,8 +466,6 @@ MenuDiscordCell* MenuDiscordCell::create(gdc::DiscordLink const& profile) {
     return nullptr;
 };
 
-MenuKofi* MenuKofi::s_inst = nullptr;
-
 bool MenuKofi::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
@@ -525,16 +510,29 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChild(border, -1);
 
-    auto as = SupporterState::get();
+    if (auto as = SupporterState::get()) {
+        m_loading = LoadingSpinner::create(37.5f);
+        m_loading->setZOrder(9);
 
-    std::string infoLabelTxt = as->isSupporter()
-                                   ? "<cg>Thanks for supporting Breakeode</c>! You can now <cj>press the badge below</c> to see the <cd>Supporter badge</c> on your profile. Feel free to <cb>join Breakeode's Discord server</c> for even more perks."
-                                   : "<co>Horrible Menu</c> <cc>couldn't be made possible without community support</c>. Feel free to <cd>donate through Ko-fi</c> and get cool perks such as the badge below!\n<cj>Press the badge</c> to get started.";
+        m_mainLayer->addChildAtPosition(m_loading, Anchor::Center);
 
-    auto infoContainer = LabelArea::create(std::move(infoLabelTxt), m_mainLayer->getScaledContentWidth() - 15.f, 0.625f, as->isSupporter() ? colors::gold : colors::purple);
-    infoContainer->setID("kofi-description");
+        as->validateSupporter([self = WeakRef(this)](Result<> res) {
+            if (auto s = self.lock()) {
+                std::string infoLabelTxt = res.isOk()
+                                               ? "<cg>Thanks for supporting Breakeode</c>! You can now <cj>press the badge below</c> to see the <cd>Supporter badge</c> on your profile. Feel free to <cb>join Breakeode's Discord server</c> for even more perks."
+                                               : "<co>Horrible Menu</c> <cc>couldn't be made possible without community support</c>. Feel free to <cd>donate through Ko-fi</c> and get cool perks such as the badge below!\n<cj>Press the badge</c> to get started.";
 
-    m_mainLayer->addChildAtPosition(infoContainer, Anchor::Center, {0.f, 12.5f + infoContainer->getScaledContentHeight()});
+                s->m_infoContainer = LabelArea::create(std::move(infoLabelTxt), s->m_mainLayer->getScaledContentWidth() - 15.f, 0.625f, res.isOk() ? colors::black : colors::purple);
+                s->m_infoContainer->setID("kofi-description");
+
+                s->m_mainLayer->addChildAtPosition(s->m_infoContainer, Anchor::Center, {0.f, 12.5f + s->m_infoContainer->getScaledContentHeight()});
+
+                if (res.isErr()) log::error("Supporter validation failed: {}", std::move(res).unwrapErr());
+
+                cue::resetNode(s->m_loading);
+            };
+        });
+    };
 
     auto supportBtn = Button::createWithSpriteFrameName(
         "badge_supporter.png"_spr,
@@ -555,14 +553,18 @@ bool MenuKofi::init(ZStringView theme) {
             };
         });
     supportBtn->setID("support-us-btn");
+    supportBtn->setScaleMultiplier(1.125f);
     supportBtn->setScale(0.f);
 
     m_mainLayer->addChildAtPosition(supportBtn, Anchor::Center, {0.f, -17.5f});
 
+    m_linkLoading = LoadingSpinner::create(25.f);
+    m_mainLayer->addChildAtPosition(m_linkLoading, Anchor::Bottom, {0.f, 32.5f});
+
     gdc::getLink([self = WeakRef(this), theme = std::string{theme}](Result<gdc::DiscordLink> res) {
         if (auto s = self.lock()) {
             if (res.isErr()) {
-                auto linkBtn = Button::createWithNode(
+                s->m_linkBtn = Button::createWithNode(
                     ButtonSprite::create(
                         "Link Account",
                         font::gold,
@@ -571,22 +573,24 @@ bool MenuKofi::init(ZStringView theme) {
                     [theme](auto) {
                         if (auto popup = MenuDiscord::create(theme)) popup->show();
                     });
-                linkBtn->setID("account-link-btn");
-                linkBtn->setScale(0.875f);
+                s->m_linkBtn->setID("account-link-btn");
+                s->m_linkBtn->setScale(0.875f);
 
-                s->m_mainLayer->addChildAtPosition(linkBtn, Anchor::Bottom);
+                s->m_mainLayer->addChildAtPosition(s->m_linkBtn, Anchor::Bottom);
             };
 
             std::string linkLabelTxt = res.isOk()
                                            ? fmt::format("Discord account <cj>@{}</c> <cg>authorized & linked</c>!", std::move(res).unwrap().username)
                                            : "Discord account <cr>not linked</c>.\nThis is <cy>required to receive supporter perks</c>!";
 
-            auto linkLabel = Label::createRich(std::move(linkLabelTxt), font::chat);
-            linkLabel->setScale(0.75f);
-            linkLabel->setAnchorPoint({0.5, 1});
-            linkLabel->setAlignment(Label::Alignment::Center);
+            s->m_linkLabel = Label::createRich(std::move(linkLabelTxt), font::chat);
+            s->m_linkLabel->setScale(0.75f);
+            s->m_linkLabel->setAnchorPoint({0.5, 1});
+            s->m_linkLabel->setAlignment(Label::Alignment::Center);
 
-            s->m_mainLayer->addChildAtPosition(linkLabel, Anchor::Bottom, {0.f, 47.5f});
+            s->m_mainLayer->addChildAtPosition(s->m_linkLabel, Anchor::Bottom, {0.f, 47.5f});
+
+            cue::resetNode(s->m_linkLoading);
         };
     });
 
@@ -628,20 +632,10 @@ bool MenuKofi::init(ZStringView theme) {
     return true;
 };
 
-void MenuKofi::onExit() {
-    s_inst = nullptr;
-    Popup::onExit();
-};
-
-MenuKofi* MenuKofi::get() noexcept {
-    return s_inst;
-};
-
 MenuKofi* MenuKofi::create(ZStringView theme) {
     auto ret = new MenuKofi();
     if (ret->init(theme)) {
         ret->autorelease();
-        s_inst = ret;
         return ret;
     };
 

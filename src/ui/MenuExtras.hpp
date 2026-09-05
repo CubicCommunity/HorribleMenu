@@ -11,8 +11,6 @@
 namespace horrible {
     class MenuSuggest final : public geode::Popup {
     private:
-        static MenuSuggest* s_inst;
-
         static asp::Instant s_lastSuggest;
 
         geode::TextInput* m_topicInput;
@@ -21,16 +19,12 @@ namespace horrible {
         geode::LoadingSpinner* m_loading;
 
     protected:
-        void onExit() override;
-
         void processSuggestion(geode::Button* sender);
 
         bool init(geode::ZStringView theme);
 
     public:
         static MenuSuggest* create(geode::ZStringView theme);
-
-        static MenuSuggest* get() noexcept;
     };
 
     class SupporterState final : public base::Singleton<SupporterState> {
@@ -58,8 +52,6 @@ namespace horrible {
 
     class MenuDiscord final : public geode::Popup {
     private:
-        static MenuDiscord* s_inst;
-
         geode::Label* m_linkLabel = nullptr;
         MenuDiscordCell* m_discordCell = nullptr;
 
@@ -75,22 +67,21 @@ namespace horrible {
 
     public:
         static MenuDiscord* create(geode::ZStringView theme);
-
-        static MenuDiscord* get() noexcept;
     };
 
     class MenuKofi final : public geode::Popup {
     private:
-        static MenuKofi* s_inst;
+        ui::LabelArea* m_infoContainer = nullptr;
+        geode::LoadingSpinner* m_loading = nullptr;
+
+        geode::Button* m_linkBtn = nullptr;
+        geode::Label* m_linkLabel = nullptr;
+        geode::LoadingSpinner* m_linkLoading = nullptr;
 
     protected:
-        void onExit() override;
-
         bool init(geode::ZStringView theme);
 
     public:
         static MenuKofi* create(geode::ZStringView theme);
-
-        static MenuKofi* get() noexcept;
     };
 };

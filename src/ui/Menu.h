@@ -33,6 +33,7 @@ namespace horrible {
         Menu();
         ~Menu();
 
+        void onEnter() override;
         void onExit() override;
 
         bool init() override;
