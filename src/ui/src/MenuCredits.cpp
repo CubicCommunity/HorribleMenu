@@ -141,8 +141,6 @@ MenuPlayer* MenuPlayer::create(ZStringView name, int account, int icon, int colo
     return nullptr;
 };
 
-MenuCredits* MenuCredits::s_inst = nullptr;
-
 bool MenuCredits::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
@@ -378,20 +376,10 @@ bool MenuCredits::init(ZStringView theme) {
     return true;
 };
 
-void MenuCredits::onExit() {
-    s_inst = nullptr;
-    Popup::onExit();
-};
-
-MenuCredits* MenuCredits::get() noexcept {
-    return s_inst;
-};
-
 MenuCredits* MenuCredits::create(ZStringView theme) {
     auto ret = new MenuCredits();
     if (ret->init(theme)) {
         ret->autorelease();
-        s_inst = ret;
         return ret;
     };
 

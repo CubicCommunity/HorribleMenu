@@ -61,46 +61,40 @@ class $modify(MockMenuLayer, MenuLayer) {
                     ss->setAnchorPoint(anchor::center);
                     ss->setPosition({-192.f, getScaledContentHeight() / 2.f});
 
-                    ss->setLoadCallback([self = WeakRef(this), screenshot = WeakRef(ss), percent](Result<> res) {
+                    ss->setLoadCallback([this, ss, percent](Result<> res) {
                         if (res.isOk()) {
-                            if (auto s = self.lock()) {
-                                log::info("Sprite loaded successfully from save dir PNG");
+                            log::info("Sprite loaded successfully from save dir PNG");
 
-                                if (auto ss = screenshot.lock()) {
-                                    auto const percLabelText = fmt::format("{}%", percent);
+                            auto const percLabelText = fmt::format("{}%", percent);
 
-                                    auto percLabel = Label::create(percLabelText.c_str(), font::big);
-                                    percLabel->setID("percentage");
-                                    percLabel->setPosition(ss->getScaledContentSize() / 2.f);
-                                    percLabel->ignoreAnchorPointForPosition(false);
-                                    percLabel->setAnchorPoint({0, 0});
-                                    percLabel->setScale(2.5);
+                            auto percLabel = Label::create(percLabelText.c_str(), font::big);
+                            percLabel->setID("percentage");
+                            percLabel->setPosition(ss->getScaledContentSize() / 2.f);
+                            percLabel->ignoreAnchorPointForPosition(false);
+                            percLabel->setAnchorPoint({0, 0});
+                            percLabel->setScale(2.5);
 
-                                    ss->addChild(percLabel);
+                            ss->addChild(percLabel);
 
-                                    auto rA = rng::pc();
-                                    auto rB = rng::pc();
+                            auto rA = rng::pc();
+                            auto rB = rng::pc();
 
-                                    float yA = s->getScaledContentHeight() * rB;  // starting height pos
-                                    float yB = s->getScaledContentHeight() * rA;  // ending height pos
+                            float yA = getScaledContentHeight() * rB;  // starting height pos
+                            float yB = getScaledContentHeight() * rA;  // ending height pos
 
-                                    ss->setPositionY(s->getScaledContentHeight() * yA);
-                                    ss->setRotation(360.f * (yA * yB));  // random rotation
+                            ss->setPositionY(getScaledContentHeight() * yA);
+                            ss->setRotation(360.f * (yA * yB));  // random rotation
 
-                                    auto move = CCEaseIn::create(CCMoveTo::create(10.f, {s->getScaledContentWidth() + 192.f, s->getScaledContentHeight() * yB}), 1.f);
-                                    auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
+                            auto move = CCEaseIn::create(CCMoveTo::create(10.f, {getScaledContentWidth() + 192.f, getScaledContentHeight() * yB}), 1.f);
+                            auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
 
-                                    auto action = CCSpawn::createWithTwoActions(move, rotate);
-                                    ss->runAction(action);
+                            auto action = CCSpawn::createWithTwoActions(move, rotate);
+                            ss->runAction(action);
 
-                                    log::info("Animated sprite successfully");
-                                } else {
-                                    log::error("Mocked sprite was destroyed before load callback");
-                                };
-                            };
+                            log::info("Animated sprite successfully");
                         } else {
                             log::error("Sprite failed to load: {}", res.unwrapErr());
-                            if (auto ss = screenshot.lock()) ss->removeFromParent();
+                            ss->removeFromParent();
                         };
                     });
 

@@ -13,23 +13,27 @@ bool LabelArea::init(std::string text, float width, float scale, cocos2d::ccColo
     setAnchorPoint(anchor::center);
     setContentWidth(width);
 
-    auto textLabel = Label::createRich(std::move(text), font::chat);
-    textLabel->setZOrder(1);
-    textLabel->setScale(scale);
-    textLabel->setAlignment(Label::Alignment::Center);
-    textLabel->setMaxWidth((getScaledContentWidth() - 8.75f) / scale);
+    m_textLabel = Label::createRich(std::move(text), font::chat);
+    m_textLabel->setZOrder(1);
+    m_textLabel->setScale(scale);
+    m_textLabel->setAlignment(Label::Alignment::Center);
+    m_textLabel->setMaxWidth((getScaledContentWidth() - 8.75f) / scale);
 
-    setContentHeight(textLabel->getScaledContentHeight() + 5.f);
+    setContentHeight(m_textLabel->getScaledContentHeight() + 5.f);
 
     auto textContainer = NineSlice::create(themes::square);
     textContainer->setColor(bgColor);
     textContainer->setContentSize(getScaledContentSize());
 
-    textContainer->addChildAtPosition(textLabel, Anchor::Center, {}, false);
+    textContainer->addChildAtPosition(m_textLabel, Anchor::Center, {}, false);
 
     addChildAtPosition(textContainer, Anchor::Center, {}, false);
 
     return true;
+};
+
+void LabelArea::setText(std::string text) {
+    m_textLabel->setRichText(std::move(text));
 };
 
 LabelArea* LabelArea::create(std::string text, float width, float scale, cocos2d::ccColor3B const& bgColor) {

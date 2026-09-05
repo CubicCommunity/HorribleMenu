@@ -172,24 +172,20 @@ void Menu::setupImageBackground(fs::path const& path) {
             m_impl->themeBackground->setID("theme-bg");
             m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
-            m_impl->themeBackground->setLoadCallback([self = WeakRef(this), themeBg = WeakRef(m_impl->themeBackground)](Result<> res) {
-                if (auto s = self.lock()) {
-                    if (auto bg = themeBg.lock()) {
-                        if (res.isOk()) {
-                            cue::rescaleToMatch(bg, s->m_bgSprite, true);
-                            bg->setOpacity(100);
+            m_impl->themeBackground->setLoadCallback([this, themeBg = WeakRef(m_impl->themeBackground)](Result<> res) {
+                if (auto bg = themeBg.lock()) {
+                    if (res.isOk()) {
+                        cue::rescaleToMatch(bg, m_bgSprite, true);
+                        bg->setOpacity(100);
 
-                            log::debug("Successfully loaded theme background");
-                        } else if (res.isErr()) {
-                            log::error("Failed to load theme background: {}", res.unwrapErr());
-                        } else {
-                            log::error("Failed to load theme background for an unknown reason");
-                        };
+                        log::debug("Successfully loaded theme background");
+                    } else if (res.isErr()) {
+                        log::error("Failed to load theme background: {}", res.unwrapErr());
                     } else {
-                        log::error("Theme background sprite was destroyed before load callback");
+                        log::error("Failed to load theme background for an unknown reason");
                     };
                 } else {
-                    log::error("Menu was destroyed before theme background load callback");
+                    log::error("Theme background sprite was destroyed before load callback");
                 };
             });
 
@@ -491,7 +487,7 @@ bool Menu::init() {
     if (!m_impl->hasInternet) return Notification::create("An internet connection is required.", NotificationIcon::Error)->show()
 
 #define NOTIFY_IF_LOGGED_OUT \
-    if (!AuthState::get()->isAuthValid()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show()
+    if (!argon::signedIn()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show()
 
     auto socialBtns = std::to_array<SocialBtnData>(
         {
@@ -517,7 +513,7 @@ bool Menu::init() {
                 [this](auto) {
                     NOTIFY_INTERNET_IF_OFFLINE;
 
-                    if (!AuthState::get()->isAuthValid()) {
+                    if (!argon::signedIn()) {
                         createQuickPopup(
                             "Discord",
                             "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
@@ -608,11 +604,18 @@ bool Menu::init() {
     return true;
 };
 
+void Menu::onEnter() {
+    Popup::onEnter();
+    s_inst = this;
+};
+
 void Menu::onExit() {
-    if (auto credits = MenuCredits::get()) credits->removeFromParent();
-    if (auto suggest = MenuSuggest::get()) suggest->removeFromParent();
-    if (auto discord = MenuDiscord::get()) discord->removeFromParent();
-    if (auto kofi = MenuKofi::get()) kofi->removeFromParent();
+    if (auto scene = CCScene::get()) {
+        if (auto credits = scene->getChildByType<MenuCredits>()) credits->removeFromParent();
+        if (auto suggest = scene->getChildByType<MenuSuggest>()) suggest->removeFromParent();
+        if (auto discord = scene->getChildByType<MenuDiscord>()) discord->removeFromParent();
+        if (auto kofi = scene->getChildByType<MenuKofi>()) kofi->removeFromParent();
+    };
 
     s_inst = nullptr;
 
@@ -627,7 +630,6 @@ Menu* Menu::create() {
     auto ret = new Menu();
     if (ret->init()) {
         ret->autorelease();
-        s_inst = ret;
         return ret;
     };
 
