@@ -277,7 +277,7 @@ void MenuDiscord::setupAuthInterface() {
             [this, hideBtns](auto) {
                 hideBtns();
 
-                gdc::startLink([self = WeakRef(this)](Result<gdc::DiscordLink> res) {
+                gdc::startLinkAsync([self = WeakRef(this)](gdc::LinkResult res) {
                     if (res.isErr()) return log::error("{}", std::move(res).unwrapErr());
 
                     auto discord = std::move(res).unwrap();
@@ -315,7 +315,7 @@ bool MenuDiscord::init(ZStringView theme) {
 
     setupAuthInterface();
 
-    if (!gdc::isLinked()) gdc::getLink([self = WeakRef(this)](auto) {
+    if (!gdc::isLinked()) gdc::getLinkAsync([self = WeakRef(this)](auto) {
         if (auto s = self.lock()) s->setupAuthInterface();
     });
 
@@ -561,7 +561,7 @@ bool MenuKofi::init(ZStringView theme) {
     m_linkLoading = LoadingSpinner::create(25.f);
     m_mainLayer->addChildAtPosition(m_linkLoading, Anchor::Bottom, {0.f, 32.5f});
 
-    gdc::getLink([self = WeakRef(this), theme = std::string{theme}](Result<gdc::DiscordLink> res) {
+    gdc::getLinkAsync([self = WeakRef(this), theme = std::string{theme}](gdc::LinkResult res) {
         if (auto s = self.lock()) {
             if (res.isErr()) {
                 s->m_linkBtn = Button::createWithNode(
