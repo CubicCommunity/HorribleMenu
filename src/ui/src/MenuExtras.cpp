@@ -272,6 +272,8 @@ void MenuDiscord::setupAuthInterface() {
 
             m_loading = LoadingSpinner::create(25.f);
             m_loading->setPosition(m_linkBtn->getPosition());
+
+            m_mainLayer->addChild(m_loading, 9);
         };
 
         m_linkBtn = Button::createWithNode(
@@ -282,8 +284,6 @@ void MenuDiscord::setupAuthInterface() {
                 0.875f),
             [this, hideBtns](auto) {
                 hideBtns();
-
-                m_mainLayer->addChild(m_loading, 9);
 
                 gdc::startLink([self = WeakRef(this)](Result<gdc::DiscordLink> res) {
                     if (res.isErr()) return log::error("{}", std::move(res).unwrapErr());
@@ -301,7 +301,7 @@ void MenuDiscord::setupAuthInterface() {
 
         m_mainLayer->addChild(m_linkBtn, 9);
 
-        if (gdc::isLinkOngoing()) hideBtns();
+        if (gdc::isLinkOngoing() || !gdc::isLinked()) hideBtns();
     };
 
     m_label = LabelArea::create(std::move(labelTxt), m_mainLayer->getScaledContentWidth() * 0.4f, 0.5f);
@@ -322,6 +322,10 @@ bool MenuDiscord::init(ZStringView theme) {
     popup::closeBtnID(m_closeBtn);
 
     setupAuthInterface();
+
+    if (!gdc::isLinked()) gdc::getLink([self = WeakRef(this)](auto) {
+        if (auto s = self.lock()) s->setupAuthInterface();
+    });
 
     auto cubicLabel = LabelArea::create("Want to join <cg>other gamers and hang out</c>?", m_mainLayer->getScaledContentWidth() * 0.875f, 0.75f);
     cubicLabel->setID("cubic-studios-discord-label");
@@ -436,9 +440,9 @@ bool MenuDiscordCell::init(gdc::DiscordLink const& profile) {
     icon->setID("profile-icon");
     icon->setAutoResize(true);
     icon->setAnchorPoint(anchor::center);
-    icon->setLoadCallback([icon = WeakRef(icon)](Result<> res) {
+    icon->setLoadCallback([icon](Result<> res) {
         if (res.isErr()) return log::error("Failed to load Discord profile icon: {}", std::move(res).unwrapErr());
-        if (auto i = icon.lock()) cue::rescaleToMatch(i, 40.f);
+        cue::rescaleToMatch(icon, 40.f);
     });
 
     iconContainer->addChildAtPosition(icon, Anchor::Center);
@@ -555,34 +559,36 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChildAtPosition(supportBtn, Anchor::Center, {0.f, -17.5f});
 
-    auto discordRes = gdc::getDiscordLink();
+    gdc::getLink([self = WeakRef(this), theme = std::string{theme}](Result<gdc::DiscordLink> res) {
+        if (auto s = self.lock()) {
+            if (res.isErr()) {
+                auto linkBtn = Button::createWithNode(
+                    ButtonSprite::create(
+                        "Link Account",
+                        font::gold,
+                        themes::getButtonSquareSprite(theme),
+                        0.875f),
+                    [theme](auto) {
+                        if (auto popup = MenuDiscord::create(theme)) popup->show();
+                    });
+                linkBtn->setID("account-link-btn");
+                linkBtn->setScale(0.875f);
 
-    if (discordRes.isErr()) {
-        auto linkBtn = Button::createWithNode(
-            ButtonSprite::create(
-                "Link Account",
-                font::gold,
-                themes::getButtonSquareSprite(theme),
-                0.875f),
-            [theme](auto) {
-                if (auto popup = MenuDiscord::create(theme)) popup->show();
-            });
-        linkBtn->setID("account-link-btn");
-        linkBtn->setScale(0.875f);
+                s->m_mainLayer->addChildAtPosition(linkBtn, Anchor::Bottom);
+            };
 
-        m_mainLayer->addChildAtPosition(linkBtn, Anchor::Bottom);
-    };
+            std::string linkLabelTxt = res.isOk()
+                                           ? fmt::format("Discord account <cj>@{}</c> <cg>authorized & linked</c>!", std::move(res).unwrap().username)
+                                           : "Discord account <cr>not linked</c>.\nThis is <cy>required to receive supporter perks</c>!";
 
-    std::string linkLabelTxt = discordRes.isOk()
-                                   ? fmt::format("Discord account <cj>@{}</c> <cg>authorized & linked</c>!", std::move(discordRes).unwrap().username)
-                                   : "Discord account <cr>not linked</c>.\nThis is <cy>required to receive supporter perks</c>!";
+            auto linkLabel = Label::createRich(std::move(linkLabelTxt), font::chat);
+            linkLabel->setScale(0.75f);
+            linkLabel->setAnchorPoint({0.5, 1});
+            linkLabel->setAlignment(Label::Alignment::Center);
 
-    auto linkLabel = Label::createRich(std::move(linkLabelTxt), font::chat);
-    linkLabel->setScale(0.75f);
-    linkLabel->setAnchorPoint({0.5, 1});
-    linkLabel->setAlignment(Label::Alignment::Center);
-
-    m_mainLayer->addChildAtPosition(linkLabel, Anchor::Bottom, {0.f, 47.5f});
+            s->m_mainLayer->addChildAtPosition(linkLabel, Anchor::Bottom, {0.f, 47.5f});
+        };
+    });
 
     supportBtn->runAction(
         CCEaseExponentialInOut::create(

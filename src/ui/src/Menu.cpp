@@ -172,24 +172,20 @@ void Menu::setupImageBackground(fs::path const& path) {
             m_impl->themeBackground->setID("theme-bg");
             m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
 
-            m_impl->themeBackground->setLoadCallback([self = WeakRef(this), themeBg = WeakRef(m_impl->themeBackground)](Result<> res) {
-                if (auto s = self.lock()) {
-                    if (auto bg = themeBg.lock()) {
-                        if (res.isOk()) {
-                            cue::rescaleToMatch(bg, s->m_bgSprite, true);
-                            bg->setOpacity(100);
+            m_impl->themeBackground->setLoadCallback([this, themeBg = WeakRef(m_impl->themeBackground)](Result<> res) {
+                if (auto bg = themeBg.lock()) {
+                    if (res.isOk()) {
+                        cue::rescaleToMatch(bg, m_bgSprite, true);
+                        bg->setOpacity(100);
 
-                            log::debug("Successfully loaded theme background");
-                        } else if (res.isErr()) {
-                            log::error("Failed to load theme background: {}", res.unwrapErr());
-                        } else {
-                            log::error("Failed to load theme background for an unknown reason");
-                        };
+                        log::debug("Successfully loaded theme background");
+                    } else if (res.isErr()) {
+                        log::error("Failed to load theme background: {}", res.unwrapErr());
                     } else {
-                        log::error("Theme background sprite was destroyed before load callback");
+                        log::error("Failed to load theme background for an unknown reason");
                     };
                 } else {
-                    log::error("Menu was destroyed before theme background load callback");
+                    log::error("Theme background sprite was destroyed before load callback");
                 };
             });
 
