@@ -1,4 +1,5 @@
 # v1.3.1 
+- Enhanced Discord authorization flow using [gdcord](https://github.com/CubicCommunity/gdcord) library
 - Internal tweaks
 
 # v1.3.0 

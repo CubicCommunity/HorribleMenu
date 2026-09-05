@@ -8,7 +8,7 @@ else()
 endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(HorribleMenu VERSION 1.3.0)
+project(HorribleMenu VERSION 1.3.1)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
@@ -26,5 +26,5 @@ add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 setup_geode_mod(${PROJECT_NAME})
 
 CPMAddPackage("gh:dankmeme01/cue#main")
-CPMAddPackage("gh:CubicCommunity/gdcord#main")
+CPMAddPackage("gh:CubicCommunity/gdcord@1.0.0")
 target_link_libraries(${PROJECT_NAME} cue gdcord)
