@@ -13,6 +13,14 @@ using namespace horrible::prelude;
 
 static constexpr auto g_suggestWait = 60;
 
+$on_mod(Loaded) {
+    if (auto ss = SupporterState::get()) ss->validateSupporter(
+        [](Result<> res) {
+            if (res.isErr()) return log::error("Supporter state check failed: {}", std::move(res).unwrapErr());
+            log::info("User is a Ko-fi supporter!");
+        });
+};
+
 MenuSuggest* MenuSuggest::s_inst = nullptr;
 
 asp::Instant MenuSuggest::s_lastSuggest = asp::Instant();
@@ -198,10 +206,11 @@ MenuSuggest* MenuSuggest::create(ZStringView theme) {
     return nullptr;
 };
 
-void AuthState::setDiscordLinkInfo(gdc::DiscordLink discord) {
-    m_discord = std::move(discord);
-
-    m_discordLinked = !m_discord.id.empty();
+void SupporterState::validateSupporter(Callback&& cb) {
+    if (!gdc::isLinked()) {
+        m_supporter = false;
+        return cb(Err("Player is signed out or not linked with Discord"));
+    };
 
     if (auto gjam = GJAccountManager::sharedState()) {
         log::trace("Checking Ko-fi supporter status...");
@@ -211,19 +220,16 @@ void AuthState::setDiscordLinkInfo(gdc::DiscordLink discord) {
 
         async::spawn(
             req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
-            [this](web::WebResponse res) {
+            [this, cb = std::move(cb)](web::WebResponse res) {
                 if (res.ok()) log::info("User is a supporter of Breakeode");
                 m_supporter = res.ok();
+
+                return cb(Ok());
             });
     };
 };
 
-Result<gdc::DiscordLink> AuthState::getDiscord() const {
-    if (!m_discordLinked) return Err("Discord account not linked");
-    return Ok(m_discord);
-};
-
-bool AuthState::isSupporter() const noexcept {
+bool SupporterState::isSupporter() const noexcept {
     return m_supporter;
 };
 
@@ -236,67 +242,72 @@ void MenuDiscord::setupAuthInterface() {
     cue::resetNode(m_loading);
     cue::resetNode(m_label);
 
-    if (auto as = AuthState::get()) {
-        std::string labelTxt;
+    std::string labelTxt;
 
-        auto discordRes = as->getDiscord();
-        if (discordRes.isOk()) {
-            auto const discord = std::move(discordRes).unwrap();
+    auto discordRes = gdc::getDiscordLink();
+    if (discordRes.isOk()) {
+        auto const discord = std::move(discordRes).unwrap();
 
-            labelTxt = "Thanks for playing with <co>Horrible Menu</c>!";
+        labelTxt = "Thanks for playing with <co>Horrible Menu</c>!";
 
-            m_discordCell = MenuDiscordCell::create(discord);
-            m_discordCell->setScale(0.75f);
-            m_discordCell->setAnchorPoint({0, 0});
+        m_discordCell = MenuDiscordCell::create(discord);
+        m_discordCell->setScale(0.75f);
+        m_discordCell->setAnchorPoint({0, 0});
 
-            m_mainLayer->addChildAtPosition(m_discordCell, Anchor::BottomLeft, {10.f, 10.f});
+        m_mainLayer->addChildAtPosition(m_discordCell, Anchor::BottomLeft, {10.f, 10.f});
 
-            m_linkLabel = Label::create("Playing as...", font::chat);
-            m_linkLabel->setScale(0.75f);
-            m_linkLabel->setAnchorPoint({0, 0});
-            m_linkLabel->setPosition({m_discordCell->getPositionX(), m_discordCell->getPositionY() + m_discordCell->getScaledContentHeight() + 5.f});
+        m_linkLabel = Label::create("Playing as...", font::chat);
+        m_linkLabel->setScale(0.75f);
+        m_linkLabel->setAnchorPoint({0, 0});
+        m_linkLabel->setPosition({m_discordCell->getPositionX(), m_discordCell->getPositionY() + m_discordCell->getScaledContentHeight() + 5.f});
 
-            m_mainLayer->addChild(m_linkLabel, 1);
-        } else {
-            log::error("{}", std::move(discordRes).unwrapErr());
+        m_mainLayer->addChild(m_linkLabel, 1);
+    } else {
+        log::error("{}", std::move(discordRes).unwrapErr());
 
-            labelTxt = "Your <cb>Discord</c> account is <cr>not yet linked</c>.";
+        labelTxt = "Your <cb>Discord</c> account is <cr>not yet linked</c>.";
 
-            m_linkBtn = Button::createWithNode(
-                ButtonSprite::create(
-                    "Link Account",
-                    font::gold,
-                    themes::getButtonSquareSprite(mod->getSettingValue<std::string>("theme")),
-                    0.875f),
-                [this, as](Button* sender) {
-                    m_loading = LoadingSpinner::create(25.f);
-                    m_loading->setPosition(sender->getPosition());
+        auto const hideBtns = [this]() {
+            m_linkBtn->setVisible(false);
 
-                    m_mainLayer->addChild(m_loading, 9);
-
-                    gdc::startLink([self = WeakRef(this)](Result<gdc::DiscordLink> res) {
-                        if (res.isErr()) return log::error("{}", std::move(res).unwrapErr());
-
-                        auto discord = std::move(res).unwrap();
-
-                        log::info("Successfully authorized as {}", discord.username);
-                        if (auto as = AuthState::get()) as->setDiscordLinkInfo(std::move(discord));
-
-                        if (auto s = self.lock()) s->setupAuthInterface();
-                    });
-                });
-            m_linkBtn->setID("link-discord-account-btn");
-            m_linkBtn->setScale(0.75f);
-            m_linkBtn->setPosition({75.f, 25.f});
-
-            m_mainLayer->addChild(m_linkBtn, 9);
+            m_loading = LoadingSpinner::create(25.f);
+            m_loading->setPosition(m_linkBtn->getPosition());
         };
 
-        m_label = LabelArea::create(std::move(labelTxt), m_mainLayer->getScaledContentWidth() * 0.4f, 0.5f);
-        m_label->setAnchorPoint({1, 0});
+        m_linkBtn = Button::createWithNode(
+            ButtonSprite::create(
+                "Link Account",
+                font::gold,
+                themes::getButtonSquareSprite(mod->getSettingValue<std::string>("theme")),
+                0.875f),
+            [this, hideBtns](auto) {
+                hideBtns();
 
-        m_mainLayer->addChildAtPosition(m_label, Anchor::BottomRight, {-15.f, 15.f});
+                m_mainLayer->addChild(m_loading, 9);
+
+                gdc::startLink([self = WeakRef(this)](Result<gdc::DiscordLink> res) {
+                    if (res.isErr()) return log::error("{}", std::move(res).unwrapErr());
+
+                    auto discord = std::move(res).unwrap();
+
+                    log::info("Successfully authorized as {}", std::move(discord).username);
+
+                    if (auto s = self.lock()) s->setupAuthInterface();
+                });
+            });
+        m_linkBtn->setID("link-discord-account-btn");
+        m_linkBtn->setScale(0.75f);
+        m_linkBtn->setPosition({75.f, 25.f});
+
+        m_mainLayer->addChild(m_linkBtn, 9);
+
+        if (gdc::isLinkOngoing()) hideBtns();
     };
+
+    m_label = LabelArea::create(std::move(labelTxt), m_mainLayer->getScaledContentWidth() * 0.4f, 0.5f);
+    m_label->setAnchorPoint({1, 0});
+
+    m_mainLayer->addChildAtPosition(m_label, Anchor::BottomRight, {-15.f, 15.f});
 };
 
 bool MenuDiscord::init(ZStringView theme) {
@@ -510,7 +521,7 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChild(border, -1);
 
-    auto as = AuthState::get();
+    auto as = SupporterState::get();
 
     std::string infoLabelTxt = as->isSupporter()
                                    ? "<cg>Thanks for supporting Breakeode</c>! You can now <cj>press the badge below</c> to see the <cd>Supporter badge</c> on your profile. Feel free to <cb>join Breakeode's Discord server</c> for even more perks."
@@ -524,7 +535,7 @@ bool MenuKofi::init(ZStringView theme) {
     auto supportBtn = Button::createWithSpriteFrameName(
         "badge_supporter.png"_spr,
         [](auto) {
-            if (auto as = AuthState::get()) {
+            if (auto as = SupporterState::get()) {
                 if (as->isSupporter()) {
                     ProfilePage::create(argon::getGameAccountData().accountId, false)->show();
                 } else {
@@ -544,7 +555,7 @@ bool MenuKofi::init(ZStringView theme) {
 
     m_mainLayer->addChildAtPosition(supportBtn, Anchor::Center, {0.f, -17.5f});
 
-    auto discordRes = as->getDiscord();
+    auto discordRes = gdc::getDiscordLink();
 
     if (discordRes.isErr()) {
         auto linkBtn = Button::createWithNode(

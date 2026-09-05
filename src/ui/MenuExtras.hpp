@@ -33,17 +33,15 @@ namespace horrible {
         static MenuSuggest* get() noexcept;
     };
 
-    class AuthState final : public base::Singleton<AuthState> {
-    private:
-        bool m_discordLinked = false;
+    class SupporterState final : public base::Singleton<SupporterState> {
+        using Callback = geode::CopyableFunction<void(geode::Result<>)>;
 
-        gdc::DiscordLink m_discord;
+    private:
         bool m_supporter = false;
 
     public:
-        void setDiscordLinkInfo(gdc::DiscordLink discord);
+        void validateSupporter(Callback&& cb);
 
-        geode::Result<gdc::DiscordLink> getDiscord() const;
         bool isSupporter() const noexcept;
     };
 
