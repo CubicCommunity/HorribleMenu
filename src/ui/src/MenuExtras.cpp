@@ -227,7 +227,7 @@ bool SupporterState::isSupporter() const noexcept {
     return m_supporter;
 };
 
-void MenuDiscord::setupAuthInterface() {
+void MenuDiscord::setupAuthInterface(bool forceHide) {
     cue::resetNode(m_discordCell);
     cue::resetNode(m_linkLabel);
     cue::resetNode(m_linkBtn);
@@ -235,6 +235,9 @@ void MenuDiscord::setupAuthInterface() {
     cue::resetNode(m_label);
 
     std::string labelTxt;
+
+    m_label = LabelArea::create("<cc>Loading...</c>\nPlease sit tight!", m_mainLayer->getScaledContentWidth() * 0.4f, 0.5f);
+    m_label->setAnchorPoint({1, 0});
 
     auto discordRes = gdc::getDiscordLink();
     if (discordRes.isOk()) {
@@ -261,6 +264,7 @@ void MenuDiscord::setupAuthInterface() {
 
         auto const hideBtns = [this]() {
             m_linkBtn->setVisible(false);
+            m_label->setVisible(false);
 
             m_loading = LoadingSpinner::create(25.f);
             m_loading->setPosition(m_linkBtn->getPosition());
@@ -293,11 +297,10 @@ void MenuDiscord::setupAuthInterface() {
 
         m_mainLayer->addChild(m_linkBtn, 9);
 
-        if (gdc::isLinkOngoing() || !gdc::isLinked()) hideBtns();
+        if (gdc::isLinkOngoing() || (forceHide && !gdc::isLinked())) hideBtns();
     };
 
-    m_label = LabelArea::create(std::move(labelTxt), m_mainLayer->getScaledContentWidth() * 0.4f, 0.5f);
-    m_label->setAnchorPoint({1, 0});
+    m_label->setText(std::move(labelTxt));
 
     m_mainLayer->addChildAtPosition(m_label, Anchor::BottomRight, {-15.f, 15.f});
 };
@@ -313,8 +316,7 @@ bool MenuDiscord::init(ZStringView theme) {
 
     popup::closeBtnID(m_closeBtn);
 
-    setupAuthInterface();
-
+    setupAuthInterface(true);
     if (!gdc::isLinked()) gdc::getLinkAsync([self = WeakRef(this)](auto) {
         if (auto s = self.lock()) s->setupAuthInterface();
     });
@@ -511,7 +513,7 @@ bool MenuKofi::init(ZStringView theme) {
     m_mainLayer->addChild(border, -1);
 
     if (auto as = SupporterState::get()) {
-        m_loading = LoadingSpinner::create(37.5f);
+        m_loading = LoadingSpinner::create(42.5f);
         m_loading->setZOrder(9);
 
         m_mainLayer->addChildAtPosition(m_loading, Anchor::Center);

@@ -60,7 +60,7 @@ namespace horrible {
 
         ui::LabelArea* m_label = nullptr;
 
-        void setupAuthInterface();
+        void setupAuthInterface(bool forceHide = false);
 
     protected:
         bool init(geode::ZStringView theme);
