@@ -4,6 +4,8 @@
 
 #include <util/Base.h>
 
+#include <gdcord/gdc.h>
+
 #include <Geode/Geode.hpp>
 
 namespace horrible {
@@ -31,42 +33,17 @@ namespace horrible {
         static MenuSuggest* get() noexcept;
     };
 
-    struct DiscordLink final {
-        std::string id;
-        std::string username;
-        std::string avatar;
-    };
-
     class AuthState final : public base::Singleton<AuthState> {
     private:
-        bool m_authorized = false;
         bool m_discordLinked = false;
 
-        int m_accountID;
-        int m_userID;
-        std::string m_username;
-        std::string m_token;
-
-        DiscordLink m_discord;
+        gdc::DiscordLink m_discord;
         bool m_supporter = false;
 
-    protected:
-        void setAuthInfo(int accountID, int userID, std::string username, std::string token);
-
     public:
-        void startAuth(geode::CopyableFunction<void(geode::Result<>)>&& callback);
+        void setDiscordLinkInfo(gdc::DiscordLink discord);
 
-        void setDiscordLinkInfo(DiscordLink discord);
-
-        bool isAuthorized() const noexcept;
-        bool isAuthValid() const;
-
-        int getAccountID() const noexcept;
-        int getUserID() const noexcept;
-        geode::ZStringView getUsername() const noexcept;
-        geode::ZStringView getToken() const noexcept;
-
-        geode::Result<DiscordLink> getDiscord() const;
+        geode::Result<gdc::DiscordLink> getDiscord() const;
         bool isSupporter() const noexcept;
     };
 
@@ -75,19 +52,15 @@ namespace horrible {
         std::string normalizeAvatarURL(std::string url) const;
 
     protected:
-        bool init(DiscordLink const& profile);
+        bool init(gdc::DiscordLink const& profile);
 
     public:
-        static MenuDiscordCell* create(DiscordLink const& profile);
+        static MenuDiscordCell* create(gdc::DiscordLink const& profile);
     };
 
     class MenuDiscord final : public geode::Popup {
     private:
         static MenuDiscord* s_inst;
-
-        std::string m_state;
-        asp::Instant m_since;
-        geode::async::TaskHolder<geode::utils::web::WebResponse> m_listener;
 
         geode::Label* m_linkLabel = nullptr;
         MenuDiscordCell* m_discordCell = nullptr;
@@ -100,10 +73,6 @@ namespace horrible {
         void setupAuthInterface();
 
     protected:
-        void onExit() override;
-
-        void checkDiscordStatus(float);
-
         bool init(geode::ZStringView theme);
 
     public:
@@ -126,10 +95,4 @@ namespace horrible {
 
         static MenuKofi* get() noexcept;
     };
-};
-
-template <>
-struct horrible::json::Serialize<horrible::DiscordLink> final {
-    static geode::Result<horrible::DiscordLink> fromJson(horrible::json::Value const& value);
-    static horrible::json::Value toJson(horrible::DiscordLink const& value);
 };

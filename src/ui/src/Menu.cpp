@@ -491,7 +491,7 @@ bool Menu::init() {
     if (!m_impl->hasInternet) return Notification::create("An internet connection is required.", NotificationIcon::Error)->show()
 
 #define NOTIFY_IF_LOGGED_OUT \
-    if (!AuthState::get()->isAuthValid()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show()
+    if (!argon::signedIn()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show()
 
     auto socialBtns = std::to_array<SocialBtnData>(
         {
@@ -517,7 +517,7 @@ bool Menu::init() {
                 [this](auto) {
                     NOTIFY_INTERNET_IF_OFFLINE;
 
-                    if (!AuthState::get()->isAuthValid()) {
+                    if (!argon::signedIn()) {
                         createQuickPopup(
                             "Discord",
                             "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
