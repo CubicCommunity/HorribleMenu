@@ -409,7 +409,7 @@ void CreditsManager::loadLeadDevs() {
     if (m_leadDevs.size() <= 0) {
         log::debug("Sending web request for lead developer credits");
 
-        async::spawn(
+        m_creditsTask.spawn(
             web::WebRequest().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
             [this](web::WebResponse res) {
                 auto const fallback = [this](std::string_view err = "") {
@@ -445,7 +445,7 @@ void CreditsManager::loadLicense() {
     if (m_license.empty()) {
         log::debug("Sending web request for lead developer credits");
 
-        async::spawn(
+        m_licenseTask.spawn(
             web::WebRequest().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
             [this](web::WebResponse res) {
                 auto const fallback = [this](std::string_view err = "") {

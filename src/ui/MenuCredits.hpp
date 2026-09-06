@@ -50,6 +50,9 @@ namespace horrible {
         std::vector<LeadDevIcon> m_leadDevs;
         std::string m_license;
 
+        geode::async::TaskHolder<geode::utils::web::WebResponse> m_creditsTask;
+        geode::async::TaskHolder<geode::utils::web::WebResponse> m_licenseTask;
+
     public:
         void loadLeadDevs();
         void loadLicense();

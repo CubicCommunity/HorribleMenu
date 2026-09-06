@@ -115,7 +115,7 @@ void MenuSuggest::processSuggestion(Button* sender) {
     if (m_loading) m_loading->setVisible(true);
     sender->setVisible((false));
 
-    async::spawn(
+    m_authTask.spawn(
         argon::startAuth(),
         [self = WeakRef(this), btn = WeakRef(sender)](Result<std::string> res) {
             auto const toggleBack = [btn](Ref<MenuSuggest>& s) {
@@ -162,7 +162,7 @@ void MenuSuggest::processSuggestion(Button* sender) {
                     auto req = web::WebRequest()
                                    .bodyJSON(reqJson);
 
-                    async::spawn(
+                    s->m_sendTask.spawn(
                         req.post("https://api.cubicstudios.xyz/breakeode/v1/horrible/suggest"),
                         [self, topic, toggleBack](web::WebResponse res) {
                             auto const fallback = [&self, &toggleBack](ZStringView err) {
@@ -208,7 +208,7 @@ void SupporterState::validateSupporter(Callback&& cb) {
         auto req = web::WebRequest()
                        .param("id", gjam->m_accountID);
 
-        async::spawn(
+        m_task.spawn(
             req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
             [this, cb = std::move(cb)](web::WebResponse res) {
                 if (res.ok()) {

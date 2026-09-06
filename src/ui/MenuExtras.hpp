@@ -18,6 +18,9 @@ namespace horrible {
 
         geode::LoadingSpinner* m_loading;
 
+        geode::async::TaskHolder<geode::Result<std::string>> m_authTask;
+        geode::async::TaskHolder<geode::utils::web::WebResponse> m_sendTask;
+
     protected:
         void processSuggestion(geode::Button* sender);
 
@@ -32,6 +35,8 @@ namespace horrible {
 
     private:
         bool m_supporter = false;
+
+        geode::async::TaskHolder<geode::utils::web::WebResponse> m_task;
 
     public:
         void validateSupporter(Callback&& cb);
