@@ -11,7 +11,9 @@ namespace horrible {
             void switchLevel(int level, bool dontCreateObjects, bool useReplay, geode::CopyableFunction<void()>&& callback = nullptr);
 
             namespace coro {
-                void getLevel(int id, geode::CopyableFunction<void(geode::Result<GJGameLevel*>)>&& callback);
+                using LevelResult = geode::Result<GJGameLevel*>;
+                using LevelFuture = arc::Future<LevelResult>;
+                LevelFuture getLevel(int id);
             };
 
             class JumpscareLevelManager final : public base::Singleton<JumpscareLevelManager>, MusicDownloadDelegate {

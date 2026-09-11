@@ -19,20 +19,20 @@ static auto const o = Option::create(THIS_ID)
 
 namespace js_internal {
     static void saveTrollLevel() {
-        jumpscares::coro::getLevel(HORRIBLE_JUMPSCARES_TROLL, [](Result<GJGameLevel*> result) {
-            if (result.isOk()) {
-                if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(std::move(result).unwrap());
-            } else if (result.isErr()) {
-                log::error("Failed to get level {}: {}", HORRIBLE_JUMPSCARES_TROLL, result.unwrapErr());
-            };
-        });
+        async::spawn(
+            jumpscares::coro::getLevel(HORRIBLE_JUMPSCARES_TROLL),
+            [](jumpscares::coro::LevelResult result) {
+                if (result.isOk()) {
+                    if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(std::move(result).unwrap());
+                } else if (result.isErr()) {
+                    log::error("Failed to get level {}: {}", HORRIBLE_JUMPSCARES_TROLL, result.unwrapErr());
+                };
+            });
     };
 
     static void switchToTrollLevel(GJGameLevel* level, bool dontCreateObjects, bool useReplay) {
         log::warn("Switching to {} level ({})", level->m_levelName, level->m_levelID.value());
-
-        auto scene = PlayLayer::scene(level, useReplay, dontCreateObjects);
-        CCDirector::sharedDirector()->replaceScene(scene);
+        CCDirector::sharedDirector()->replaceScene(PlayLayer::scene(level, useReplay, dontCreateObjects));
     };
 };
 

@@ -392,7 +392,7 @@ void CreditsManager::loadLeadDevs() {
 
 #define LEAD_DEVS_INTERNAL(container, devRes)                     \
     if (devRes.isErr()) {                                         \
-        log::error("{}", std::move(devRes).unwrapErr());          \
+        log::error("{}", devRes.unwrapErr());                     \
         continue;                                                 \
     };                                                            \
                                                                   \
@@ -410,7 +410,7 @@ void CreditsManager::loadLeadDevs() {
         log::debug("Sending web request for lead developer credits");
 
         m_creditsTask.spawn(
-            web::WebRequest().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
+            request::base().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
             [this](web::WebResponse res) {
                 auto const fallback = [this](std::string_view err = "") {
                     log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
@@ -446,7 +446,7 @@ void CreditsManager::loadLicense() {
         log::debug("Sending web request for lead developer credits");
 
         m_licenseTask.spawn(
-            web::WebRequest().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
+            request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
             [this](web::WebResponse res) {
                 auto const fallback = [this](std::string_view err = "") {
                     log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);

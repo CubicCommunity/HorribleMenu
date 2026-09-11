@@ -16,7 +16,7 @@ static constexpr auto g_suggestWait = 60;
 $on_mod(Loaded) {
     if (auto ss = SupporterState::get()) ss->validateSupporter(
         [](Result<> res) {
-            if (res.isErr()) return log::error("Supporter state check failed: {}", std::move(res).unwrapErr());
+            if (res.isErr()) return log::error("Supporter state check failed: {}", res.unwrapErr());
             log::info("User is a Ko-fi supporter!");
         });
 };
@@ -159,7 +159,7 @@ void MenuSuggest::processSuggestion(Button* sender) {
 
                     reqJson["v"] = mod->getVersion().toVString();
 
-                    auto req = web::WebRequest()
+                    auto req = request::base()
                                    .bodyJSON(reqJson);
 
                     s->m_sendTask.spawn(
@@ -205,7 +205,7 @@ void SupporterState::validateSupporter(Callback&& cb) {
     if (auto gjam = GJAccountManager::sharedState()) {
         log::trace("Checking Ko-fi supporter status...");
 
-        auto req = web::WebRequest()
+        auto req = request::base()
                        .param("id", gjam->m_accountID);
 
         m_task.spawn(
@@ -282,7 +282,7 @@ void MenuDiscord::setupAuthInterface(bool forceHide) {
                 hideBtns();
 
                 gdc::startLinkAsync([self = WeakRef(this)](gdc::LinkResult res) {
-                    if (res.isErr()) return log::error("{}", std::move(res).unwrapErr());
+                    if (res.isErr()) return log::error("{}", res.unwrapErr());
 
                     auto discord = std::move(res).unwrap();
 
@@ -430,7 +430,7 @@ bool MenuDiscordCell::init(gdc::DiscordLink const& profile) {
     icon->setAutoResize(true);
     icon->setAnchorPoint(anchor::center);
     icon->setLoadCallback([icon](Result<> res) {
-        if (res.isErr()) return log::error("Failed to load Discord profile icon: {}", std::move(res).unwrapErr());
+        if (res.isErr()) return log::error("Failed to load Discord profile icon: {}", res.unwrapErr());
         cue::rescaleToMatch(icon, 40.f);
     });
 
@@ -529,7 +529,7 @@ bool MenuKofi::init(ZStringView theme) {
 
                 s->m_mainLayer->addChildAtPosition(s->m_infoContainer, Anchor::Center, {0.f, 12.5f + s->m_infoContainer->getScaledContentHeight()});
 
-                if (res.isErr()) log::error("Supporter validation failed: {}", std::move(res).unwrapErr());
+                if (res.isErr()) log::error("Supporter validation failed: {}", res.unwrapErr());
 
                 cue::resetNode(s->m_loading);
             };

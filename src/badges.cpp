@@ -46,86 +46,99 @@ namespace horrible::badges {
         return "No description available for this badge... Sorry!";
     };
 
+    using BadgeResult = Result<std::string>;
+    using BadgeFuture = arc::Future<BadgeResult>;
+
     class BadgeManager final : public base::Singleton<BadgeManager> {
     private:
-        std::unordered_map<int, std::string> m_badges;
+        asp::Mutex<std::unordered_map<int, std::string>> m_badges;
 
     public:
-        void getBadge(int accountID, CopyableFunction<void(Result<std::string>)>&& callback) {
-            if (auto it = m_badges.find(accountID); it != m_badges.end()) return callback(Ok(it->second));
+        BadgeFuture fetchBadge(int accountID) {
+            {
+                auto badges = m_badges.lock();
+                if (auto it = badges->find(accountID); it != badges->end()) co_return Ok(it->second);
+            };
 
-            async::spawn(
-                web::WebRequest().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/badges/user?id={}", accountID)),
-                [this, accountID, cb = std::move(callback)](web::WebResponse res) {
-                    auto const fallback = [this, &cb](std::string_view err = "") {
-                        log::error("Badges web request failed ({})", err);
-                        return cb(Err(err));
-                    };
+            auto res = co_await request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/badges/user?id={}", accountID));
 
-                    if (res.error()) return fallback(res.errorMessage());
+            auto const fallback = [this](std::string err = "") {
+                log::error("Badges web request failed ({})", err);
+                return Err(std::move(err));
+            };
 
-                    auto jsonRes = res.json();
-                    if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
+            if (res.error()) co_return fallback(std::string{res.errorMessage()});
 
-                    auto json = std::move(jsonRes).unwrap();
+            auto jsonRes = res.json();
+            if (jsonRes.isErr()) co_return fallback(std::move(jsonRes).unwrapErr());
 
-                    auto badgeRes = json["badge"].asString();
-                    if (badgeRes.isErr()) return fallback(std::move(badgeRes).unwrapErr());
+            auto json = std::move(jsonRes).unwrap();
 
-                    auto badge = std::move(badgeRes).unwrap();
-                    m_badges[accountID] = badge;
+            auto badgeRes = json["badge"].asString();
+            if (badgeRes.isErr()) co_return fallback(std::move(badgeRes).unwrapErr());
 
-                    return cb(Ok(std::move(badge)));
-                });
+            auto badge = std::move(badgeRes).unwrap();
+
+            {
+                auto badges = m_badges.lock();
+                (*badges)[accountID] = badge;
+            };
+
+            co_return Ok(std::move(badge));
         };
 
-        void addBadge(Badge const& badge, Ref<CCNode> const& target, Result<std::string> badgeRes) {
-            if (badgeRes.isErr()) return;
-            if (!target) return;
+        void addBadge(Badge const& badge, BadgeResult badgeRes) {
+            if (badgeRes.isErr()) return log::error("Couldn't show badge: {}", badgeRes.unwrapErr());
+
+            if (!badge.user) return log::error("Badge user data is missing");
+            if (!badge.target) return log::error("Badge target node is missing");
 
             auto const id = std::move(badgeRes).unwrap();
             log::debug("Comparing retrieved badge {} with {}", id, badge.badgeID);
-            if (fmt::format("{}"_spr, id) != badge.badgeID) return;
+            if (fmt::format("{}"_spr, id) != badge.badgeID) return log::error("Mismatching badge IDs");
 
             showBadge(badge, CCSprite::createWithSpriteFrameName(getSpriteForBadge(id)));
         };
     };
 
-    static void handleBadge(Badge const& badge) {
+    static arc::Future<> handleBadge(Badge badge) {
         log::trace("Showing badge for {}", badge.user->m_userName);
 
-        if (auto bm = BadgeManager::get()) bm->getBadge(
-            badge.user->m_accountID,
-            [bm, badge, &target = badge.target](Result<std::string> res) {
-                bm->addBadge(badge, target, std::move(res));
+        if (auto bm = BadgeManager::get()) {
+            auto res = co_await bm->fetchBadge(badge.user->m_accountID);
+            co_await async::waitForMainThread([bm, b = std::move(badge), r = std::move(res)]() {
+                bm->addBadge(b, std::move(r));
             });
+        };
     };
 
     static void addManualBadge(int id, CCNode* menu, float size = 21.5f) {
-        if (auto bm = badges::BadgeManager::get()) bm->getBadge(id, [size, menu = WeakRef(menu)](Result<std::string> badgeRes) {
-            if (badgeRes.isErr()) return;
+        if (auto bm = badges::BadgeManager::get()) async::spawn(
+            bm->fetchBadge(id),
+            [size, menu = WeakRef(menu)](BadgeResult badgeRes) {
+                if (badgeRes.isErr()) return;
 
-            if (auto m = menu.lock()) {
-                auto const id = std::move(badgeRes).unwrap();
+                if (auto m = menu.lock()) {
+                    auto const id = std::move(badgeRes).unwrap();
 
-                auto badgeSpr = CCSprite::createWithSpriteFrameName(badges::getSpriteForBadge(id));
-                cue::rescaleToMatch(badgeSpr, size);
+                    auto badgeSpr = CCSprite::createWithSpriteFrameName(badges::getSpriteForBadge(id));
+                    cue::rescaleToMatch(badgeSpr, size);
 
-                auto badge = CCMenuItemExt::createSpriteExtra(
-                    badgeSpr,
-                    [id](auto) {
-                        MDPopup::create(
-                            "Horrible Menu",
-                            badges::getDescForBadge(id),
-                            "OK")
-                            ->show();
-                    });
-                badge->setID(fmt::format("horrible-menu-{}-badge", id));
+                    auto badge = CCMenuItemExt::createSpriteExtra(
+                        badgeSpr,
+                        [id](auto) {
+                            MDPopup::create(
+                                "Horrible Menu",
+                                badges::getDescForBadge(id),
+                                "OK")
+                                ->show();
+                        });
+                    badge->setID(fmt::format("horrible-menu-{}-badge", id));
 
-                m->addChild(badge);
-                m->updateLayout();
-            };
-        });
+                    m->addChild(badge);
+                    m->updateLayout();
+                };
+            });
     };
 };
 
@@ -156,7 +169,7 @@ $on_game(ModsLoaded) {
             "Horrible Menu Lead Developer",
             badges::getDescForBadge(badges::lead),
             [](Badge const& badge) {
-                badges::handleBadge(badge);
+                async::spawn(badges::handleBadge(badge));
             });
 
         registerBadge(
@@ -164,7 +177,7 @@ $on_game(ModsLoaded) {
             "Horrible Menu Developer",
             badges::getDescForBadge(badges::dev),
             [](Badge const& badge) {
-                badges::handleBadge(badge);
+                async::spawn(badges::handleBadge(badge));
             });
 
         registerBadge(
@@ -172,7 +185,7 @@ $on_game(ModsLoaded) {
             "Horrible Menu Contributor",
             badges::getDescForBadge(badges::contributor),
             [](Badge const& badge) {
-                badges::handleBadge(badge);
+                async::spawn(badges::handleBadge(badge));
             });
 
         registerBadge(
@@ -180,7 +193,7 @@ $on_game(ModsLoaded) {
             "Breakeode Supporter",
             badges::getDescForBadge(badges::supporter),
             [](Badge const& badge) {
-                badges::handleBadge(badge);
+                async::spawn(badges::handleBadge(badge));
             });
     };
 

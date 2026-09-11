@@ -101,6 +101,20 @@ namespace horrible {
         inline constexpr cocos2d::CCPoint center = {0.5f, 0.5f};
     };
 
+    namespace request {
+        inline auto base() {
+            auto loader = geode::Loader::get();
+
+            return geode::utils::web::WebRequest()
+                .userAgent(fmt::format("gdcord/v{} ({}, Geode {}, GD {})",
+                    mod->getVersion().toNonVString(false),
+                    geode::utils::platform::getString(),
+                    loader->getVersion(),
+                    loader->getGameVersion()))
+                .timeout(std::chrono::seconds(15));
+        };
+    };
+
     // All namespace includes
     namespace prelude {
         using namespace ::horrible;

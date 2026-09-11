@@ -1,5 +1,7 @@
 #include "../Jumpscares.hpp"
 
+#include <argon/argon.hpp>
+
 #include <Util.h>
 
 #include <Geode/Geode.hpp>
@@ -12,53 +14,73 @@ void jumpscares::switchLevel(int level, bool dontCreateObjects, bool useReplay, 
         if (pl->m_level->m_levelID == level) return;
     };
 
-    coro::getLevel(level, [level, dontCreateObjects, useReplay, cb = std::move(callback)](Result<GJGameLevel*> result) {
-        if (result.isOk()) {
-            auto lvl = std::move(result).unwrap();
+    async::spawn(
+        coro::getLevel(level),
+        [level, dontCreateObjects, useReplay, cb = std::move(callback)](coro::LevelResult result) {
+            if (result.isOk()) {
+                auto lvl = std::move(result).unwrap();
 
-            if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(lvl);
+                if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(lvl);
 
-            log::warn("Switching to {} level ({})", lvl->m_levelName, lvl->m_levelID.value());
+                log::warn("Switching to {} level ({})", lvl->m_levelName, lvl->m_levelID.value());
+                CCDirector::sharedDirector()->replaceScene(PlayLayer::scene(lvl, useReplay, dontCreateObjects));
 
-            auto scene = PlayLayer::scene(lvl, useReplay, dontCreateObjects);
-            CCDirector::sharedDirector()->replaceScene(scene);
-
-            if (cb) cb();
-        } else if (result.isErr()) {
-            log::error("Failed to get level {}: {}", level, result.unwrapErr());
-        };
-    });
+                if (cb) cb();
+            } else if (result.isErr()) {
+                log::error("Failed to get level {}: {}", level, result.unwrapErr());
+            };
+        });
 };
 
-void jumpscares::coro::getLevel(int id, CopyableFunction<void(Result<GJGameLevel*>)>&& callback) {
-    if (auto jm = jumpscares::JumpscareLevelManager::get()) {
-        log::trace("Checking cache for level {}...", id);
-        if (auto lvl = jm->getLevel(id)) return callback(Ok(lvl));
-        log::debug("Level {} not found in cache, fetching...", id);
-    };
+jumpscares::coro::LevelFuture jumpscares::coro::getLevel(int id) {
+    auto cache = *co_await async::waitForMainThread<LevelResult>([id]() -> LevelResult {
+        if (auto jm = jumpscares::JumpscareLevelManager::get()) {
+            log::trace("Checking cache for level {}...", id);
+            if (auto lvl = jm->getLevel(id)) return Ok(lvl);
 
-    auto req = web::WebRequest()
-                   .bodyString(fmt::format("secret=Wmfd2893gb7&levelID={}", id))
-                   .userAgent("");
+            log::debug("Level {} not found in cache, fetching...", id);
+            return Err("Level not found in cache");
+        };
+
+        return Err("Unknown error");
+    });
+    if (cache.isOk()) co_return cache;
+
+    auto auth = *co_await async::waitForMainThread<std::string>([]() {
+        if (argon::signedIn()) {
+            auto const acc = argon::getGameAccountData();
+            return fmt::format("&accountID={}&gjp2={}", acc.accountId, acc.gjp2);
+        };
+
+        return std::string{};
+    });
+
+    auto req = request::base()
+                   .bodyString(fmt::format("secret=Wmfd2893gb7&levelID={}{}", id, auth))
+                   .userAgent("");  // robby why do you hate user agents and not ai agents
 
     log::trace("Preparing web request for level {} download", id);
 
-    async::spawn(
-        req.post("https://www.boomlings.com/database/downloadGJLevel22.php"),
-        [cb = std::move(callback)](web::WebResponse res) {  // copyable has const () operator woohoo!
-            auto const resStr = res.string().unwrapOrDefault();
+    auto res = co_await req.post("https://www.boomlings.com/database/downloadGJLevel22.php");
 
-            if (res.error() || resStr == "-1") {
-                log::error("Error getting level data: {}", resStr);
-                return cb(Err("An error occurred while fetching level data"));
-            };
+    auto strRes = res.string();
+    if (strRes.isErr()) co_return Err(std::move(strRes).unwrapErr());
 
-            auto dict = CCDictionary::create();
-            auto splits = asp::iter::split(resStr, ":").collect();
+    auto str = std::move(strRes).unwrap();
 
-            for (size_t i = 0; i + 1 < splits.size(); i += 2) dict->setObject(CCString::create(std::string{splits[i + 1]}), std::string{splits[i]});
-            cb(Ok(GJGameLevel::create(dict, false)));
-        });
+    if (res.error() || str == "-1") {
+        log::error("Error getting level data: {}", str);
+        co_return Err("An error occurred while fetching level data");
+    };
+
+    auto result = *co_await async::waitForMainThread<LevelResult>([lvl = std::move(str)]() -> LevelResult {
+        auto dict = CCDictionary::create();
+        auto splits = asp::iter::split(lvl, ":").collect();
+
+        for (size_t i = 0; i + 1 < splits.size(); i += 2) dict->setObject(CCString::create(std::string{splits[i + 1]}), std::string{splits[i]});
+        return Ok(GJGameLevel::create(dict, false));
+    });
+    co_return result;
 };
 
 void jumpscares::JumpscareLevelManager::saveLevel(GJGameLevel* level) {
