@@ -3,8 +3,8 @@
 - Option *Parry Obstacles* is no longer in development
 - Enhanced Discord authorization flow internally ([#18](https://github.com/CubicCommunity/HorribleMenu/pull/18))
   - Horrible Menu now uses [gdcord](https://github.com/CubicCommunity/gdcord) library
-- Fix potential crashes
-- Internal tweaks
+- Fix some potential crashes
+- Internal optimizations
 
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.9.0`

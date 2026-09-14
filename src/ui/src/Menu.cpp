@@ -88,7 +88,7 @@ struct Menu::Impl final {
                 if (auto o = oRef.lock()) {
                     if (auto modOption = MenuOptionCell::create(
                             {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
-                            std::move(oRef),
+                            std::move(o),
                             theme,
                             devMode,
                             hasInternet)) {
@@ -407,14 +407,14 @@ bool Menu::init() {
 
     m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), m_impl->sillyFilterDropdown->getPositionY() + 8.75f}), 1);
 
-    auto filterHint = SimpleTextArea::create(
+    auto filterHint = Label::create(
         "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
-        font::chat,
-        0.5f);
+        font::chat);
     filterHint->setID("filter-hint");
+    filterHint->setScale(0.5f);
     filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
-    filterHint->setWidth(categoryListBg->getScaledContentWidth());
-    filterHint->setAlignment(kCCTextAlignmentCenter);
+    filterHint->setMaxWidth(categoryListBg->getScaledContentWidth());
+    filterHint->setAlignment(Label::Alignment::Center);
 
     m_mainLayer->addChild(filterHint, 1);
 

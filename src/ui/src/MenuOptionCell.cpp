@@ -53,7 +53,7 @@ MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos)
 struct MenuOptionCell::Impl final {
     bool compatible = false;  // If this option is compatible with the current platform
 
-    std::weak_ptr<Option> option;  // A view into the option value :)
+    std::shared_ptr<Option> option;  // A view into the option value :)
 
     bool hasInternet = false;  // would rather call doWeHaveInternet once
 
@@ -64,26 +64,22 @@ struct MenuOptionCell::Impl final {
 
     // Save the current state of the toggler as the option state
     void saveTogglerState() {
-        if (auto o = option.lock()) {
-            auto saved = options::get(o->getID());
-            if (toggler) options::set(o->getID(), toggler->isToggled(), saved.pin, saved.viewed);
-        };
+        auto saved = options::get(option->getID());
+        if (toggler) options::set(option->getID(), toggler->isToggled(), saved.pin, saved.viewed);
 
         hideNewLabel();
     };
 
     // Notify the user if this option is not compatible for their current platform
     void notifyIncompats() {
-        if (auto o = option.lock()) {
-            if (compatible) {
-                if (!(o->isOnline() ? hasInternet : true)) {  // woah evil gay ternaries !!!
-                    log::warn("Option {} requires a working internet connection to function", o->getID());
-                    Notification::create(fmt::format("{} needs internet to work properly", o->getName()), NotificationIcon::Warning, 2.5f)->show();
-                };
-            } else {
-                log::warn("Option {} is unavailable for platform {}", o->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
-                Notification::create(fmt::format("{} is not available for {}", o->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
+        if (compatible) {
+            if (!(option->isOnline() ? hasInternet : true)) {  // woah evil gay ternaries !!!
+                log::warn("Option {} requires a working internet connection to function", option->getID());
+                Notification::create(fmt::format("{} needs internet to work properly", option->getName()), NotificationIcon::Warning, 2.5f)->show();
             };
+        } else {
+            log::warn("Option {} is unavailable for platform {}", option->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
+            Notification::create(fmt::format("{} is not available for {}", option->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
         };
     };
 
@@ -128,14 +124,12 @@ struct MenuOptionCell::Impl final {
 MenuOptionCell::MenuOptionCell() : m_impl(std::make_unique<Impl>()) {};
 MenuOptionCell::~MenuOptionCell() {};
 
-bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+bool MenuOptionCell::init(CCSize const& size, std::shared_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
     m_impl->option = std::move(option);
     m_impl->hasInternet = hasInternet;
 
-    auto o = m_impl->option.lock();
-
     // check for compatibility
-    for (auto const& p : o->getSupportedPlatforms()) {
+    for (auto const& p : m_impl->option->getSupportedPlatforms()) {
         if (p & GEODE_PLATFORM_TARGET) {
             m_impl->compatible = true;
             break;
@@ -144,7 +138,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
 
     if (!CCMenu::init()) return false;
 
-    setID(o->getID());
+    setID(m_impl->option->getID());
     setContentSize(size);
     setAnchorPoint({0.5, 1});
 
@@ -157,7 +151,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
             .cornerRoundness = -0.125f,
             .texture = themes::square,
         });
-    bg->setColor(m_impl->getTierColor(o->getSillyTier()));
+    bg->setColor(m_impl->getTierColor(m_impl->option->getSillyTier()));
 
     // Horizontal layout: [toggle] [name] [info]
     float yCenter = getScaledContentHeight() / 2.f;
@@ -177,7 +171,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     m_impl->toggler->setScale(0.875f);
 
     // Set toggler state based on saved mod option value
-    m_impl->toggler->toggle(options::isEnabled(o->getID()));
+    m_impl->toggler->toggle(options::isEnabled(m_impl->option->getID()));
 
     addChild(m_impl->toggler);
 
@@ -186,14 +180,14 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     auto labelWidth = getScaledContentWidth() - 80.f;
 
     // name of the joke
-    auto nameLabel = Label::create(o->getName().c_str(), font::big);
+    auto nameLabel = Label::create(m_impl->option->getName().c_str(), font::big);
     nameLabel->setID("name-label");
     nameLabel->setScale(0.4f);
     nameLabel->setLimitLabelWidth(labelWidth, 0.4f, 0.125f);
     nameLabel->setAnchorPoint({0.f, 0.5f});
     nameLabel->setPosition({x, yCenter});
 
-    auto categoryLabel = Label::create(o->getCategory().c_str(), font::gold);
+    auto categoryLabel = Label::create(m_impl->option->getCategory().c_str(), font::gold);
     categoryLabel->setID("category-label");
     categoryLabel->setScale(0.25f);
     categoryLabel->setLimitLabelWidth(labelWidth, 0.25f, 0.125f);
@@ -219,28 +213,26 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
 
     addChild(menu);
 
-    auto onlineCompat = (o->isOnline() ? m_impl->hasInternet : true);
+    auto onlineCompat = (m_impl->option->isOnline() ? m_impl->hasInternet : true);
 
     // info button
     auto infoBtn = Button::createWithSpriteFrameName(
         (m_impl->compatible) ? (onlineCompat ? themes::info : "geode.loader/info-warning.png") : "geode.loader/info-alert.png",
         [this](auto) {
-            if (auto o = m_impl->option.lock()) {
-                auto formatDesc = fmt::format("{}\n\n{}{}{}", (o->getDescription().size() > 0) ? o->getDescription() : "<cc>No description provided.</c>", o->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(o->getSillyTier(), m_impl->compatible), o->isCheating() ? "\n<ca>Cheat Option</c>" : "");
+            auto formatDesc = fmt::format("{}\n\n{}{}{}", (m_impl->option->getDescription().size() > 0) ? m_impl->option->getDescription() : "<cc>No description provided.</c>", m_impl->option->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(m_impl->option->getSillyTier(), m_impl->compatible), m_impl->option->isCheating() ? "\n<ca>Cheat Option</c>" : "");
 
-                createQuickPopup(
-                    o->getName().c_str(),
-                    std::move(formatDesc),
-                    "OK",
-                    nullptr,
-                    375.f,
-                    nullptr);
+            createQuickPopup(
+                m_impl->option->getName().c_str(),
+                std::move(formatDesc),
+                "OK",
+                nullptr,
+                375.f,
+                nullptr);
 
-                auto saved = options::get(o->getID());
-                if (!saved.viewed) {
-                    options::set(o->getID(), saved.enabled, saved.pin, true);
-                    m_impl->hideNewLabel();
-                };
+            auto saved = options::get(m_impl->option->getID());
+            if (!saved.viewed) {
+                options::set(m_impl->option->getID(), saved.enabled, saved.pin, true);
+                m_impl->hideNewLabel();
             };
 
             m_impl->notifyIncompats();
@@ -263,7 +255,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(MenuOptionCell::onPin));
     pinBtn->setID("pin-btn");
 
-    pinBtn->toggle(options::isPinned(o->getID()));
+    pinBtn->toggle(options::isPinned(m_impl->option->getID()));
 
     menu->addChild(pinBtn);
 
@@ -296,7 +288,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
 
     m_impl->newContainer->updateLayout();
 
-    m_impl->newContainer->setVisible(!options::isViewed(o->getID()));
+    m_impl->newContainer->setVisible(!options::isViewed(m_impl->option->getID()));
     m_impl->newContainer->setScale(0.75f);
 
     if (!m_impl->compatible) {
@@ -316,7 +308,7 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     };
 
     if (devMode) {
-        auto str = fmt::format("{} ({}) | {} delegate(s)", o->getID(), o->getIDHash(), options::getDelegates(o->getID()));
+        auto str = fmt::format("{} ({}) | {} delegate(s)", m_impl->option->getID(), m_impl->option->getIDHash(), options::getDelegates(m_impl->option->getID()));
 
         auto idLabel = Label::create(str.c_str(), font::chat);
         idLabel->setID("id-label");
@@ -338,17 +330,15 @@ void MenuOptionCell::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
         auto now = !m_impl->toggler->isToggled();
 
-        if (auto o = m_impl->option.lock()) {
-            auto saved = options::get(o->getID());
-            options::set(o->getID(), now, saved.pin, true);
+        auto saved = options::get(m_impl->option->getID());
+        options::set(m_impl->option->getID(), now, saved.pin, true);
 
-            if (o->isRestartRequired()) {
-                Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
-                log::warn("Restart required to apply option {}", o->getID());
-            };
-
-            log::info("Option {} now set to {}", o->getName(), now ? "enabled" : "disabled");
+        if (m_impl->option->isRestartRequired()) {
+            Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
+            log::warn("Restart required to apply option {}", m_impl->option->getID());
         };
+
+        log::info("Option {} now set to {}", m_impl->option->getName(), now ? "enabled" : "disabled");
 
         m_impl->hideNewLabel();
     } else if (m_impl->toggler) {
@@ -360,7 +350,7 @@ void MenuOptionCell::onToggle(CCObject*) {
 
 void MenuOptionCell::onPin(CCObject* sender) {
     if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
-        if (auto o = m_impl->option.lock()) options::set(o->getID(), options::isEnabled(o->getID()), !pinBtn->isToggled(), true);
+        options::set(m_impl->option->getID(), options::isEnabled(m_impl->option->getID()), !pinBtn->isToggled(), true);
 
         if (m_impl->pinCallback) m_impl->pinCallback();
         m_impl->hideNewLabel();
@@ -371,7 +361,7 @@ void MenuOptionCell::setPinCallback(Callback&& callback) {
     m_impl->pinCallback = std::move(callback);
 };
 
-std::weak_ptr<Option> const& MenuOptionCell::getOption() const noexcept {
+std::shared_ptr<Option> const& MenuOptionCell::getOption() const noexcept {
     return m_impl->option;
 };
 
@@ -379,7 +369,7 @@ bool MenuOptionCell::isCompatible() const noexcept {
     return m_impl->compatible;
 };
 
-MenuOptionCell* MenuOptionCell::create(CCSize const& size, std::weak_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+MenuOptionCell* MenuOptionCell::create(CCSize const& size, std::shared_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
     auto ret = new MenuOptionCell();
     if (ret->init(size, std::move(option), theme, devMode, hasInternet)) {
         ret->autorelease();
