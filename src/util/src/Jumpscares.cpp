@@ -95,8 +95,6 @@ void jumpscares::JumpscareLevelManager::saveLevel(GJGameLevel* level) {
 };
 
 GJGameLevel* jumpscares::JumpscareLevelManager::getLevel(int id) const noexcept {
-    auto it = m_levels.find(id);
-    if (it != m_levels.end()) return it->second.data();
-
+    if (auto const it = m_levels.find(id); it != m_levels.end()) return it->second.data();
     return nullptr;
 };

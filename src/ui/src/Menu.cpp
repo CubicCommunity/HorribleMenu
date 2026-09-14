@@ -606,6 +606,7 @@ bool Menu::init() {
 
 void Menu::onEnter() {
     Popup::onEnter();
+    MenuEvent().send(this, true);
     s_inst = this;
 };
 
@@ -616,6 +617,8 @@ void Menu::onExit() {
         if (auto discord = scene->getChildByType<MenuDiscord>()) discord->removeFromParent();
         if (auto kofi = scene->getChildByType<MenuKofi>()) kofi->removeFromParent();
     };
+
+    MenuEvent().send(nullptr, false);
 
     s_inst = nullptr;
 

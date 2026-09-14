@@ -65,7 +65,7 @@ namespace js_internal {
         if (on) g_jsSet.insert(id);
 
         if (!on) {
-            if (auto it = g_jsSet.find(id); it != g_jsSet.end()) g_jsSet.erase(it);
+            if (auto const it = g_jsSet.find(id); it != g_jsSet.end()) g_jsSet.erase(it);
         };
 
         if (size == 0 && g_jsSet.size() > 0) toggleHooks(true);

@@ -34,11 +34,13 @@ namespace horrible {
         geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Map of registered options
         std::vector<std::string> m_categories;                       // Array of auto-registered categories
 
-        std::unordered_map<std::string_view, std::weak_ptr<Option>> m_enabledCheats;  // Map of currently enabled cheat options, used for dynamic safe mode
+        std::unordered_map<uint64_t, asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs
+
+        std::unordered_set<uint64_t> m_enabledCheats;  // Map of currently enabled cheat options, used for dynamic safe mode
 
         geode::utils::StringMap<const geode::Mod* const> m_integrations;  // Map of auto-registered external mods using this API
 
-        std::unordered_map<std::string_view, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_map<uint64_t, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
 
     protected:
         OptionManager() = default;
@@ -169,6 +171,16 @@ namespace horrible {
          * @returns A result possibly containing the option object
          */
         [[nodiscard]] std::weak_ptr<Option> getOptionInfo(geode::ZStringView id) const noexcept;
+        [[nodiscard]] std::weak_ptr<Option> getOptionInfo(uint64_t id) const noexcept;
+
+        /**
+         * Returns the string ID of an option via hash ID lookup
+         *
+         * @param id The hash ID of the option to get
+         *
+         * @returns A result possibly containing the option's string ID
+         */
+        [[nodiscard]] geode::Result<asp::BoxedString> getOptionIDForHash(uint64_t id) const noexcept;
 
         /**
          * Returns the amount of delegate callbacks registered for an option
@@ -178,6 +190,7 @@ namespace horrible {
          * @returns The amount of callbacks registered for this option
          */
         [[nodiscard]] size_t getDelegateCount(std::string_view id) const noexcept;
+        [[nodiscard]] size_t getDelegateCount(uint64_t id) const noexcept;
 
         /**
          * Check if Safe Mode should be enabled based on the current state of options and settings
@@ -203,6 +216,7 @@ namespace horrible {
          * @param viewed If this option was already viewed by the user
          */
         void setOption(geode::ZStringView id, bool enable, bool pin = false, bool viewed = true);
+        void setOption(uint64_t id, bool enable, bool pin = false, bool viewed = true);
 
         /**
          * Upsert a new hook delegate
@@ -211,6 +225,7 @@ namespace horrible {
          * @param callback The hook callback to register for this option's delegate
          */
         void addDelegate(geode::ZStringView id, Callback&& callback);
+        void addDelegate(uint64_t id, Callback&& callback);
 
         /**
          * Returns a reference to the array of all registered categories

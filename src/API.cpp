@@ -28,7 +28,7 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
     return obj;
 };
 
-Option::Option(std::string id, const Mod* integration) : m_id(std::move(id)), m_integration(integration) {};
+Option::Option(std::string id, const Mod* integration) : m_hashCode(fnv1aHash(id)), m_id(std::move(id)), m_integration(integration) {};
 
 std::shared_ptr<Option> Option::setName(std::string name) {
     m_name = std::move(name);
@@ -76,7 +76,7 @@ std::shared_ptr<Option> Option::setCheating(bool isCheat) {
 };
 
 ZStringView Option::getID() const noexcept {
-    return m_id;
+    return m_id.c_str();
 };
 
 ZStringView Option::getName() const noexcept {
@@ -117,6 +117,14 @@ bool Option::isCheating() const noexcept {
 
 const Mod* Option::getIntegration() const noexcept {
     return m_integration;
+};
+
+asp::BoxedString Option::getIDShared() const noexcept {
+    return m_id;
+};
+
+uint64_t Option::getIDHash() const noexcept {
+    return m_hashCode;
 };
 
 bool Option::isEnabled() const& {
@@ -180,17 +188,23 @@ void OptionManager::registerOption(std::shared_ptr<Option> option) {
         auto cheats = m_enabledCheats.size();
 
         if (option->isCheating()) {
-            if (isEnabled(id)) m_enabledCheats.emplace(option->getID(), option);
+            if (isEnabled(id)) m_enabledCheats.emplace(option->getIDHash());
         };
 
         m_options.emplace(std::move(id), option);
         log::debug("Registered option {} of category {}", option->getID(), option->getCategory());
+
+        m_optHashes.emplace(option->getIDHash(), option->getIDShared());
 
         if (cheats == 0 && m_enabledCheats.size() > cheats) (void)OptionCheatingEvent().send(true);
     };
 };
 
 void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
+    if (auto opt = getOptionInfo(id).lock()) addDelegate(opt->getIDHash(), std::move(callback));
+};
+
+void OptionManager::addDelegate(uint64_t id, Callback&& callback) {
     auto& thisDelegate = m_delegates[id];
     thisDelegate.push_back(std::move(callback));
 };
@@ -248,12 +262,27 @@ HorribleOptionSave OptionManager::getOption(ZStringView id) const {
 };
 
 std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const noexcept {
-    if (auto it = m_options.find(id); it != m_options.end()) return it->second;
+    if (auto const it = m_options.find(id); it != m_options.end()) return it->second;
     return std::weak_ptr<Option>();
 };
 
+std::weak_ptr<Option> OptionManager::getOptionInfo(uint64_t id) const noexcept {
+    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return getOptionInfo(it->second.c_str());
+    return std::weak_ptr<Option>();
+};
+
+geode::Result<asp::BoxedString> OptionManager::getOptionIDForHash(uint64_t id) const noexcept {
+    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return Ok(it->second);
+    return Err("No string ID found for this hash ID");
+};
+
 size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
-    if (auto it = m_delegates.find(id); it != m_delegates.end()) return it->second.size();
+    if (auto opt = getOptionInfo(std::string{id}).lock()) return getDelegateCount(opt->getIDHash());
+    return 0;
+};
+
+size_t OptionManager::getDelegateCount(uint64_t id) const noexcept {
+    if (auto const it = m_delegates.find(id); it != m_delegates.end()) return it->second.size();
     return 0;
 };
 
@@ -267,7 +296,11 @@ void OptionManager::toggleOption(ZStringView id, bool enable) {
 };
 
 void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed) {
-    auto it = m_delegates.find(id);
+    if (auto opt = getOptionInfo(id).lock()) setOption(opt->getIDHash(), enable, pin, viewed);
+};
+
+void OptionManager::setOption(uint64_t id, bool enable, bool pin, bool viewed) {
+    auto const it = m_delegates.find(id);
     if (it != m_delegates.end()) {
         for (auto& cb : it->second) cb(enable);
     };
@@ -278,25 +311,33 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed
 
     auto const save = HorribleOptionSave{enable, pin, viewed};
 
-    (void)Mod::get()->setSavedValue(id, save);
-    (void)OptionEvent(id).send(save);
+    auto idStrRes = getOptionIDForHash(id);
+    if (idStrRes.isOk()) {
+        auto const idStr = idStrRes.unwrap();
 
-    if (auto it = m_enabledCheats.find(id); it != m_enabledCheats.end()) {
+        (void)Mod::get()->setSavedValue(idStr.c_str(), save);
+        (void)OptionEvent(idStr.c_str()).send(save);
+    };
+
+    if (auto const it = m_enabledCheats.find(id); it != m_enabledCheats.end()) {
         if (!enable) m_enabledCheats.erase(it);
     } else if (enable) {
         if (auto o = getOptionInfo(id).lock()) {
             if (o->isCheating()) {
                 log::debug("Enabled cheat option {}, adding to enabled cheats map", id);
-                m_enabledCheats.emplace(id, o);
+                m_enabledCheats.emplace(id);
             };
         };
     };
 
-    auto cheatsNow = m_enabledCheats.size();
+    if (idStrRes.isOk()) {
+        auto cheatsNow = m_enabledCheats.size();
+        auto const idStr = std::move(idStrRes).unwrap();
 
-    if (isCheating(id) && cheats != cheatsNow) {
-        if (cheats == 0 && cheatsNow > 0) (void)OptionCheatingEvent().send(true);
-        if (cheats > 0 && cheatsNow == 0) (void)OptionCheatingEvent().send(false);
+        if (isCheating(idStr.c_str()) && cheats != cheatsNow) {
+            if (cheats == 0 && cheatsNow > 0) (void)OptionCheatingEvent().send(true);
+            if (cheats > 0 && cheatsNow == 0) (void)OptionCheatingEvent().send(false);
+        };
     };
 };
 

@@ -2,6 +2,8 @@
 
 #include "DLL.hpp"
 
+#include <asp/ptr/BoxedString.hpp>
+
 #include <Geode/utils/ZStringView.hpp>
 
 #include <Geode/loader/Mod.hpp>
@@ -30,7 +32,7 @@ namespace horrible {
     // Metadata for a horrible option
     struct BRKD_HORRIBLE_API_DLL Option final : std::enable_shared_from_this<Option> {
     private:
-        std::string m_id = "id"_spr;                          // Unique ID of the option
+        asp::BoxedString m_id = "id"_spr;                     // Unique ID of the option
         std::string m_name = "Example Option";                // Name of the option
         std::string m_description = "";                       // Description of the option
         std::string m_category = "Uncategorized";             // Name of the category this option should be under
@@ -42,15 +44,14 @@ namespace horrible {
         bool m_isCheating = false;                            // If the option counts as cheating and will trigger dynamic safe mode
         const geode::Mod* const m_integration = nullptr;      // External mod that registered this option
 
+        uint64_t m_hashCode = 0;
+
     public:
         Option(std::string id, const geode::Mod* integration = geode::Mod::get());
 
-        /**
-         * Create a new option metadata object
-         *
-         * @param id Unique ID for this option
-         * @param integration Pointer to the mod this option is being registered from, do NOT change!
-         */
+        /// Create a new option metadata object
+        /// @param id Unique ID for this option
+        /// @param integration Pointer to the mod this option is being registered from
         static std::shared_ptr<Option> create(std::string id, const geode::Mod* integration = geode::Mod::get());
 
         std::shared_ptr<Option> setName(std::string name);
@@ -76,6 +77,9 @@ namespace horrible {
         [[nodiscard]] std::span<const Platform> getSupportedPlatforms() const noexcept;
         [[nodiscard]] bool isCheating() const noexcept;
         [[nodiscard]] const geode::Mod* getIntegration() const noexcept;
+
+        [[nodiscard]] asp::BoxedString getIDShared() const noexcept;
+        [[nodiscard]] uint64_t getIDHash() const noexcept;
 
         void enable() &;
         void disable() &;

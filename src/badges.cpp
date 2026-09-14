@@ -57,7 +57,7 @@ namespace horrible::badges {
         BadgeFuture fetchBadge(int accountID) {
             {
                 auto badges = m_badges.lock();
-                if (auto it = badges->find(accountID); it != badges->end()) co_return Ok(it->second);
+                if (auto const it = badges->find(accountID); it != badges->end()) co_return Ok(it->second);
             };
 
             auto res = co_await request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/badges/user?id={}", accountID));

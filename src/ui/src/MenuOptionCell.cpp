@@ -316,14 +316,15 @@ bool MenuOptionCell::init(CCSize const& size, std::weak_ptr<Option> option, ZStr
     };
 
     if (devMode) {
-        auto str = fmt::format("{} | {} delegate(s)", o->getID(), options::getDelegates(o->getID()));
+        auto str = fmt::format("{} ({}) | {} delegate(s)", o->getID(), o->getIDHash(), options::getDelegates(o->getID()));
 
         auto idLabel = Label::create(str.c_str(), font::chat);
         idLabel->setID("id-label");
-        idLabel->setScale(0.5f);
-        idLabel->setMaxWidth(getScaledContentWidth() - 20.f);
-        idLabel->setPosition({getScaledContentWidth() - 7.5f, 5.25f});
-        idLabel->setAnchorPoint({1, 0.5});
+        idLabel->setScale(0.375f);
+        idLabel->setAlignment(Label::Alignment::Right);
+        idLabel->setLimitLabelWidth(getScaledContentWidth() - 65.f);
+        idLabel->setPosition({getScaledContentWidth() - 2.5f, 2.5f});
+        idLabel->setAnchorPoint({1, 0});
         idLabel->setColor(colors::black);
         idLabel->setOpacity(125);
 

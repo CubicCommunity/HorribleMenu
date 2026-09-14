@@ -4,6 +4,7 @@
 
 #include <Geode/loader/Event.hpp>
 
+#include <Geode/utils/cocos.hpp>
 #include <Geode/utils/function.hpp>
 
 namespace horrible {
@@ -14,6 +15,10 @@ namespace horrible {
     };
 
     struct OptionCheatingEvent final : public geode::Event<OptionEvent, bool(bool)> {
+        using Event::Event;
+    };
+
+    struct MenuEvent final : geode::Event<MenuEvent, bool(geode::Ref<geode::Popup>, bool)> {
         using Event::Event;
     };
 
