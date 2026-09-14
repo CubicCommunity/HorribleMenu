@@ -48,7 +48,7 @@ namespace horrible {
          *
          * @param name Name of the audio file
          */
-        inline void play(const char* file) {
+        inline void play(geode::ZStringView file) {
             if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
         };
     };

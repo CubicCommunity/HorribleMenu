@@ -1,5 +1,7 @@
 # v1.3.1 
-- Enhanced Discord authorization flow using [gdcord](https://github.com/CubicCommunity/gdcord) library
+- Enhanced Discord authorization flow internally
+  - Horrible Menu now uses [gdcord](https://github.com/CubicCommunity/gdcord) library
+- Fix potential crashes
 - Internal tweaks
 
 # v1.3.0 
