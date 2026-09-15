@@ -7,7 +7,7 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-#define PACE_RANGES 250.f, 175.f
+#define PACE_RANGES 265.f, 150.f
 
 struct InputMeter::Impl final {
     float chance = 0.f;

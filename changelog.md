@@ -1,6 +1,7 @@
 # v1.4.0 
 - Raised minimum Geode loader support to `v5.10.0`
 - Option *Parry Obstacles* is no longer in development
+- Adjusted randomization pacing for *Input Roulette* option
 - Enhanced Discord authorization flow internally ([#18](https://github.com/CubicCommunity/HorribleMenu/pull/18))
   - Horrible Menu now uses [gdcord](https://github.com/CubicCommunity/gdcord) library
 - Fix some potential crashes
