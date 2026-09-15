@@ -13,7 +13,7 @@
 using namespace geode::prelude;
 using namespace horrible;
 
-$on_mod(Loaded) {
+$on_game(Loaded) {
     if (auto ss = SupporterState::get()) ss->validateSupporter(
         [](Result<> res) {
             if (res.isErr()) return log::error("Supporter state check failed: {}", res.unwrapErr());
@@ -399,7 +399,7 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
             [id, allHooks = std::move(allHooks)](bool value) {
                 for (auto const& hook : allHooks) {
                     if (auto const h = hook.lock()) {
-                        log::trace("Toggling {} hook '{}' {}...", id, h->getDisplayName(), value ? "ON" : "OFF");
+                        log::trace("Toggling {} hook '{}' {}...", id, h->getDisplayName(), str::isOnOff(value));
                         (void)h->toggle(value);
                     };
                 };

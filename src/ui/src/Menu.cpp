@@ -412,9 +412,9 @@ bool Menu::init() {
         font::chat);
     filterHint->setID("filter-hint");
     filterHint->setScale(0.5f);
-    filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
-    filterHint->setMaxWidth(categoryListBg->getScaledContentWidth());
     filterHint->setAlignment(Label::Alignment::Center);
+    filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
+    filterHint->setMaxWidth(categoryListBg->getScaledContentWidth() * 2.f);  // ????? label what r u doing
 
     m_mainLayer->addChild(filterHint, 1);
 
