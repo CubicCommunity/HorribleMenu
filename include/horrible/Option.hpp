@@ -35,9 +35,9 @@ namespace horrible {
     // Metadata for a horrible option
     struct BRKD_HORRIBLE_API_DLL Option final : std::enable_shared_from_this<Option> {
     private:
-        asp::BoxedString m_id = "id"_spr;                     // Unique ID of the option
+        asp::BoxedString const m_id;                          // Unique ID of the option
         std::string m_name = "Example Option";                // Name of the option
-        std::string m_description = "";                       // Description of the option
+        std::string m_description;                            // Description of the option
         std::string m_category = "Uncategorized";             // Name of the category this option should be under
         SillyTier m_silly = SillyTier::None;                  // How silly the option is
         bool m_default = false;                               // Default toggle state for this option

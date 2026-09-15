@@ -34,7 +34,7 @@ namespace horrible {
         geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Map of registered options
         std::vector<std::string> m_categories;                       // Array of auto-registered categories
 
-        std::unordered_map<uint64_t, asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs
+        std::unordered_map<uint64_t, asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs to their string IDs
         std::unordered_map<uint64_t, OptionSave> m_saveCache;        // Map of cached states
 
         geode::utils::StringMap<const geode::Mod* const> m_integrations;  // Map of auto-registered external mods using this API
