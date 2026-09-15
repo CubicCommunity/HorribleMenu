@@ -117,6 +117,7 @@ namespace horrible {
          * @returns Boolean of the current value
          */
         [[nodiscard]] bool isEnabled(geode::ZStringView id) const;
+        [[nodiscard]] bool isEnabled(uint64_t id) const;
 
         /**
          * Quickly check the pin state of an option
@@ -126,6 +127,7 @@ namespace horrible {
          * @returns Boolean of the current value
          */
         [[nodiscard]] bool isPinned(geode::ZStringView id) const;
+        [[nodiscard]] bool isPinned(uint64_t id) const;
 
         /**
          * Quickly check the viewed state of an option
@@ -135,6 +137,7 @@ namespace horrible {
          * @returns Boolean of the current value
          */
         [[nodiscard]] bool isViewed(geode::ZStringView id) const;
+        [[nodiscard]] bool isViewed(uint64_t id) const;
 
         /**
          * Quickly check if an option is a cheat option
@@ -162,6 +165,7 @@ namespace horrible {
          * @returns The current save
          */
         [[nodiscard]] HorribleOptionSave getOption(geode::ZStringView id) const;
+        [[nodiscard]] HorribleOptionSave getOption(uint64_t id) const;
 
         /**
          * Returns the data of an option
@@ -206,6 +210,7 @@ namespace horrible {
          * @param enable Boolean to toggle to
          */
         void toggleOption(geode::ZStringView id, bool enable);
+        void toggleOption(uint64_t id, bool enable);
 
         /**
          * Set the state of an option

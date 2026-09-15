@@ -239,11 +239,23 @@ bool OptionManager::isEnabled(ZStringView id) const {
     return getOption(id).enabled;
 };
 
+bool OptionManager::isEnabled(uint64_t id) const {
+    return getOption(id).enabled;
+};
+
 bool OptionManager::isPinned(ZStringView id) const {
     return getOption(id).pin;
 };
 
+bool OptionManager::isPinned(uint64_t id) const {
+    return getOption(id).pin;
+};
+
 bool OptionManager::isViewed(ZStringView id) const {
+    return getOption(id).viewed;
+};
+
+bool OptionManager::isViewed(uint64_t id) const {
     return getOption(id).viewed;
 };
 
@@ -259,6 +271,11 @@ bool OptionManager::getDefaultToggleState(ZStringView id) const noexcept {
 
 HorribleOptionSave OptionManager::getOption(ZStringView id) const {
     return Mod::get()->getSavedValue<HorribleOptionSave>(id, HorribleOptionSave{getDefaultToggleState(id)});
+};
+
+HorribleOptionSave OptionManager::getOption(uint64_t id) const {
+    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return Mod::get()->getSavedValue<HorribleOptionSave>(it->second, HorribleOptionSave{getDefaultToggleState(it->second.c_str())});
+    return {};
 };
 
 std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const noexcept {
@@ -292,6 +309,10 @@ bool OptionManager::shouldBeSafeMode() const noexcept {
 };
 
 void OptionManager::toggleOption(ZStringView id, bool enable) {
+    setOption(id, enable, isPinned(id));
+};
+
+void OptionManager::toggleOption(uint64_t id, bool enable) {
     setOption(id, enable, isPinned(id));
 };
 
