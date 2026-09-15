@@ -146,7 +146,7 @@ namespace horrible::badges {
 
 namespace horrible::hooks {
     static void setup(auto& self) {
-        utils::StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
+        StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
 
         auto loader = Loader::get();
         auto enable = loader->isModLoaded("geode.node-ids") && !loader->isModLoaded("dasshu.badgified");

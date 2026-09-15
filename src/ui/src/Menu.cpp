@@ -573,6 +573,30 @@ bool Menu::init() {
     setupSafeModeNode(m_impl->safeMode);
     setupImageBackground(mod->getSettingValue<fs::path>("theme-background"));
 
+    auto loader = Loader::get();
+
+    auto debLabel = Label::create(
+        m_impl->devMode
+            ? fmt::format("{} ({}) {} ({}, Geode {}, GD {})",
+                  mod->getName(),
+                  mod->getID(),
+                  mod->getVersion().toVString(),
+                  platform::getString(),
+                  loader->getVersion(),
+                  loader->getGameVersion())
+            : fmt::format("{} {} ",
+                  mod->getName(),
+                  mod->getVersion().toVString()),
+        "chatFont.fnt");
+    debLabel->setID("debug-label");
+    debLabel->setScale(m_impl->devMode ? 0.5f : 0.375f);
+    debLabel->setAlignment(Label::Alignment::Center);
+    debLabel->setLimitLabelWidth(getScaledContentWidth() - 8.75f);
+    debLabel->setOpacity(m_impl->devMode ? 200 : 100);
+    debLabel->setAnchorPoint({0.5, 0});
+
+    addChildAtPosition(debLabel, Anchor::Bottom, {0.f, m_impl->devMode ? 4.25f : 7.5f}, false);
+
     addEventListener(
         SettingChangedEvent(mod, setting::SafeMode),
         [this](std::shared_ptr<SettingV3> setting) {

@@ -19,7 +19,7 @@ static std::vector<std::weak_ptr<Hook>> g_floatingBtnHooks;
 
 namespace horrible::hooks {
     static void setup(auto& self, std::vector<std::weak_ptr<Hook>>& hookVector, std::string_view settingID) {
-        utils::StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
+        StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
         auto enable = Mod::get()->getSettingValue<bool>(settingID);
 
         for (auto& hook : hooks | std::views::values) {

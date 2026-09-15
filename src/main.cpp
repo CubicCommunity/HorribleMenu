@@ -84,7 +84,7 @@ $on_game(Loaded) {
                 if (list.empty()) {
                     Notification::create("No options enabled", NotificationIcon::Error)->show();
                 } else {
-                    utils::clipboard::write(list);
+                    clipboard::write(list);
                     Notification::create("Copied list to clipboard", NotificationIcon::Success)->show();
                 };
             } else if (buttonKey == "disable-cheats") {

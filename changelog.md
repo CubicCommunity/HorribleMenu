@@ -4,6 +4,7 @@
 - Adjusted randomization pacing for *Input Roulette* option
 - Enhanced Discord authorization flow internally ([#18](https://github.com/CubicCommunity/HorribleMenu/pull/18))
   - Horrible Menu now uses [gdcord](https://github.com/CubicCommunity/gdcord) library
+- Added version debug label to *Horrible Options Menu* interface
 - Fix some potential crashes
 - Internal optimizations
 

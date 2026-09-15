@@ -39,7 +39,7 @@ static auto const oTidal = Option::create(THIS_ID_TIDAL)
                                ->setOnline(true)
                                ->autoRegister();
 
-static utils::StringSet g_jsSet;
+static StringSet g_jsSet;
 static std::vector<std::weak_ptr<Hook>> g_jsHooks;
 
 namespace js_internal {
@@ -112,7 +112,7 @@ static void tryJumpscare(bool useReplay) {
 
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
     static void onModify(auto& self) {  // should auto disable when no jumpscare options are on
-        utils::StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
+        StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
 
         for (auto const& hook : hooks | std::views::values) {
             hook->setAutoEnable(g_jsSet.size() > 0);

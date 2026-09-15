@@ -382,7 +382,7 @@ OptionManager* OptionManager::get() noexcept {
     return &inst;
 };
 
-void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Hook>> const& hooks) {
+void horrible::delegateHooks(ZStringView id, StringMap<std::shared_ptr<Hook>> const& hooks) {
     if (auto om = OptionManager::get()) {
         auto value = om->isEnabled(id);
 

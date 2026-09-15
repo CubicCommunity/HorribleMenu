@@ -108,8 +108,8 @@ namespace horrible {
             auto loader = geode::Loader::get();
 
             return geode::utils::web::WebRequest()
-                .userAgent(fmt::format("gdcord/v{} ({}, Geode {}, GD {})",
-                    mod->getVersion().toNonVString(false),
+                .userAgent(fmt::format("HorribleMenu/{} ({}, Geode {}, GD {})",
+                    mod->getVersion().toVString(false),
                     geode::utils::platform::getString(),
                     loader->getVersion(),
                     loader->getGameVersion()))

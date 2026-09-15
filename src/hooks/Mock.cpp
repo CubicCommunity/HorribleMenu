@@ -145,11 +145,11 @@ class $modify(MockPlayLayer, PlayLayer) {
                         auto mockConfigUnwr = mockConfig.unwrapOr(json::Value());
 
                         // overwrite this field (or add it) with the percent
-                        mockConfigUnwr[utils::numToString(id)] = percentage;
+                        mockConfigUnwr[numToString(id)] = percentage;
 
                         toWrite = mockConfigUnwr;
                     } else {
-                        toWrite = json::makeObject({{utils::numToString(id), percentage}});
+                        toWrite = json::makeObject({{numToString(id), percentage}});
                     };
 
                     if (!toWrite.isNull()) {
@@ -186,7 +186,7 @@ class $modify(MockPlayLayer, PlayLayer) {
         if (mockConfig.isOk()) {
             log::trace("Clearing mock record for {}", id);
             auto mockConfigUnwr = mockConfig.unwrapOr(json::Value());
-            mockConfigUnwr[utils::numToString(id)].clear();
+            mockConfigUnwr[numToString(id)].clear();
 
             auto const mockJson = file::writeToJson(mockConfigPath, mockConfigUnwr);
 
