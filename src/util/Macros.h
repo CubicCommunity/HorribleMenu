@@ -1,5 +1,7 @@
 #pragma once
 
+#include <horrible/API.h>
+
 #define HIGHEST_Z cocos2d::CCScene::get()->getHighestChildZ() + 1
 
 #define HORRIBLE_SETUP_INTERFACE_FUNC_NAME hmSetupInterface
@@ -9,7 +11,7 @@
 #define HORRIBLE_MODIFY_EVENT_HANDLER(Base, Derived)                                                                           \
     horrible::listenForHorribleOptionChanges(                                                                                  \
         THIS_ID,                                                                                                               \
-        [](HorribleOptionSave data) {                                                                                          \
+        [](horrible::OptionSave data) {                                                                                        \
             if (auto b = Base::get()) geode::cast::modify_cast<Derived*>(b)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled); \
         })
 

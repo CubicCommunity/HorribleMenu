@@ -41,7 +41,7 @@ $on_mod(Loaded) {
 
     listenForHorribleOptionChanges(
         THIS_ID,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             if (data.enabled) js_internal::saveTrollLevel();
         });
 };

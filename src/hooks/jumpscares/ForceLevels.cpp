@@ -80,19 +80,19 @@ $on_mod(Loaded) {
 
     listenForHorribleOptionChanges(
         THIS_ID_GRIEF,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             js_internal::toggleOption(THIS_ID_GRIEF, data.enabled);
         });
 
     listenForHorribleOptionChanges(
         THIS_ID_CONGREG,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             js_internal::toggleOption(THIS_ID_CONGREG, data.enabled);
         });
 
     listenForHorribleOptionChanges(
         THIS_ID_TIDAL,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             js_internal::toggleOption(THIS_ID_TIDAL, data.enabled);
         });
 };

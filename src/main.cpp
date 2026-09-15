@@ -60,7 +60,7 @@ $on_game(Loaded) {
         });
 
     listenForAllHorribleOptionChanges(
-        [](std::string_view id, HorribleOptionSave data) {
+        [](std::string_view id, OptionSave data) {
             log::trace("Global options listener detected {} being {}, {}, {}", id, data.enabled ? "enabled" : "disabled", data.pin ? "pinned" : "unpinned", data.viewed ? "viewed" : "not viewed yet");
         });
 

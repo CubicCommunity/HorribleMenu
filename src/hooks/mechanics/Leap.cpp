@@ -204,7 +204,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
 $on_mod(Loaded) {
     listenForHorribleOptionChanges(
         THIS_ID,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             if (auto gjbgl = GJBaseGameLayer::get()) modify_cast<LeapGJBaseGameLayer*>(gjbgl)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
         });
 };

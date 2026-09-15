@@ -18,6 +18,9 @@ struct HorribleOptionSave final {
 
 // Container for Horrible Menu API
 namespace horrible {
+    // Alias for `HorribleOptionSave`
+    using OptionSave = HorribleOptionSave;
+
     // Alias for `geode::PlatformID`
     using Platform = geode::PlatformID;
 

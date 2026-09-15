@@ -35,12 +35,12 @@ namespace horrible {
         std::vector<std::string> m_categories;                       // Array of auto-registered categories
 
         std::unordered_map<uint64_t, asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs
-
-        std::unordered_set<uint64_t> m_enabledCheats;  // Map of currently enabled cheat options, used for dynamic safe mode
+        std::unordered_map<uint64_t, OptionSave> m_saveCache;        // Map of cached states
 
         geode::utils::StringMap<const geode::Mod* const> m_integrations;  // Map of auto-registered external mods using this API
 
         std::unordered_map<uint64_t, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_set<uint64_t> m_enabledCheats;                     // Map of currently enabled cheat options, used for dynamic safe mode
 
     protected:
         OptionManager() = default;
@@ -164,8 +164,8 @@ namespace horrible {
          *
          * @returns The current save
          */
-        [[nodiscard]] HorribleOptionSave getOption(geode::ZStringView id) const;
-        [[nodiscard]] HorribleOptionSave getOption(uint64_t id) const;
+        [[nodiscard]] OptionSave getOption(geode::ZStringView id) const;
+        [[nodiscard]] OptionSave getOption(uint64_t id) const;
 
         /**
          * Returns the data of an option
@@ -265,8 +265,10 @@ namespace horrible {
         if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
     }
 
+#define HORRIBLE_DELEGATE_HOOKS_FUNC(optID) horrible::delegateHooks(optID, self.m_hooks)
+
 // Delegate hooks to OptionManager for dynamic toggling
-#define HORRIBLE_DELEGATE_HOOKS(optID)                \
-    static void onModify(auto& self) {                \
-        horrible::delegateHooks(optID, self.m_hooks); \
+#define HORRIBLE_DELEGATE_HOOKS(optID)       \
+    static void onModify(auto& self) {       \
+        HORRIBLE_DELEGATE_HOOKS_FUNC(optID); \
     }

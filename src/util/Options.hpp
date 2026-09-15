@@ -58,7 +58,7 @@ namespace horrible {
              *
              * @returns The current save
              */
-            HorribleOptionSave get(geode::ZStringView id);
+            OptionSave get(geode::ZStringView id);
 
             /**
              * Set the toggle state of an option

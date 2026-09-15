@@ -137,7 +137,7 @@ $on_mod(Loaded) {
 
     listenForHorribleOptionChanges(
         g_healthID,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             if (auto pl = PlayLayer::get()) modify_cast<OxygenPlayLayer*>(pl)->reposOxygenBar(data.enabled);
         });
 };

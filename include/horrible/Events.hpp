@@ -9,7 +9,7 @@
 
 namespace horrible {
     // Event for option toggles
-    class OptionEvent final : public geode::ThreadSafeGlobalEvent<OptionEvent, bool(std::string_view, HorribleOptionSave), bool(HorribleOptionSave), std::string> {
+    class OptionEvent final : public geode::ThreadSafeGlobalEvent<OptionEvent, bool(std::string_view, OptionSave), bool(OptionSave), std::string> {
     public:
         using ThreadSafeGlobalEvent::ThreadSafeGlobalEvent;
     };
@@ -22,11 +22,11 @@ namespace horrible {
         using Event::Event;
     };
 
-    inline geode::ListenerHandle* listenForHorribleOptionChanges(std::string id, geode::CopyableFunction<void(HorribleOptionSave)>&& callback) {
+    inline geode::ListenerHandle* listenForHorribleOptionChanges(std::string id, geode::CopyableFunction<void(OptionSave)>&& callback) {
         return OptionEvent(std::move(id)).listen(std::move(callback)).leak();
     };
 
-    inline geode::ListenerHandle* listenForAllHorribleOptionChanges(geode::CopyableFunction<void(std::string_view, HorribleOptionSave)>&& callback) {
+    inline geode::ListenerHandle* listenForAllHorribleOptionChanges(geode::CopyableFunction<void(std::string_view, OptionSave)>&& callback) {
         return OptionEvent().listen(std::move(callback)).leak();
     };
 };

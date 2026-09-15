@@ -281,12 +281,17 @@ bool OptionManager::getDefaultToggleState(ZStringView id) const noexcept {
     return false;
 };
 
-HorribleOptionSave OptionManager::getOption(ZStringView id) const {
-    return Mod::get()->getSavedValue<HorribleOptionSave>(id, HorribleOptionSave{getDefaultToggleState(id)});
+OptionSave OptionManager::getOption(ZStringView id) const {
+    if (auto opt = getOptionInfo(id).lock()) {
+        if (auto const it = m_saveCache.find(opt->getIDHash()); it != m_saveCache.end()) return it->second;
+    };
+
+    return mod->getSavedValue<OptionSave>(id, OptionSave{getDefaultToggleState(id)});
 };
 
-HorribleOptionSave OptionManager::getOption(uint64_t id) const {
-    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return Mod::get()->getSavedValue<HorribleOptionSave>(it->second, HorribleOptionSave{getDefaultToggleState(it->second.c_str())});
+OptionSave OptionManager::getOption(uint64_t id) const {
+    if (auto const it = m_saveCache.find(id); it != m_saveCache.end()) return it->second;
+    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return mod->getSavedValue<OptionSave>(it->second, OptionSave{getDefaultToggleState(it->second.c_str())});
     return {};
 };
 
@@ -316,8 +321,8 @@ size_t OptionManager::getDelegateCount(uint64_t id) const noexcept {
 };
 
 bool OptionManager::shouldBeSafeMode() const noexcept {
-    if (Mod::get()->getSettingValue<bool>("dyn-safe-mode")) return isCheatEnabled();
-    return Mod::get()->getSettingValue<bool>("safe-mode");
+    if (mod->getSettingValue<bool>("dyn-safe-mode")) return isCheatEnabled();
+    return mod->getSettingValue<bool>("safe-mode");
 };
 
 void OptionManager::toggleOption(ZStringView id, bool enable) {
@@ -339,9 +344,13 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed
 
         auto cheats = m_enabledCheats.size();
 
-        auto const save = HorribleOptionSave{enable, pin, viewed};
+        auto const save = OptionSave{enable, pin, viewed};
 
-        (void)Mod::get()->setSavedValue(id, save);
+        queueInMainThread([id = std::string{id}, save]() {
+            (void)mod->setSavedValue(id, save);
+        });
+
+        m_saveCache[opt->getIDHash()] = save;
         (void)OptionEvent(id).send(save);
 
         if (auto const it = m_enabledCheats.find(opt->getIDHash()); it != m_enabledCheats.end()) {
@@ -438,7 +447,10 @@ void SupporterState::validateSupporter(Callback&& cb) {
     m_gdcTask.spawn(
         gdc::getLink(),
         [this, cb = std::move(cb)](gdc::LinkResult res) {
-            if (res.isErr()) return log::error("Couldn't get Discord link to check Ko-fi status: {}", res.unwrapErr());
+            if (res.isErr()) {
+                log::error("Couldn't get Discord link to check Ko-fi status: {}", res.unwrapErr());
+                return cb(std::move(res).asErr());
+            };
 
             if (auto gjam = GJAccountManager::sharedState()) {
                 log::trace("Checking Ko-fi supporter status...");

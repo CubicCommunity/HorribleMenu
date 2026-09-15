@@ -129,7 +129,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
 $on_mod(Loaded) {
     listenForHorribleOptionChanges(
         THIS_ID,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             if (auto pl = PlayLayer::get()) modify_cast<StickyPlayerObject*>(pl->m_player1)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
         });
 };

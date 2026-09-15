@@ -99,7 +99,7 @@ class $modify(MathPlayLayer, PlayLayer) {
 $on_mod(Loaded) {
     listenForHorribleOptionChanges(
         THIS_ID,
-        [](HorribleOptionSave data) {
+        [](OptionSave data) {
             if (auto pl = PlayLayer::get()) modify_cast<MathPlayLayer*>(pl)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
         });
 };

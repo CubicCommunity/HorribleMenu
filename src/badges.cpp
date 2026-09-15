@@ -54,11 +54,13 @@ namespace horrible::badges {
         asp::Mutex<std::unordered_map<int, std::string>> m_badges;
 
     public:
-        BadgeFuture fetchBadge(int accountID) {
+        BadgeFuture fetchBadge(int accountID, bool request = true) {
             {
                 auto badges = m_badges.lock();
                 if (auto const it = badges->find(accountID); it != badges->end()) co_return Ok(it->second);
             };
+
+            if (!request) co_return Err("Badge not found in cache");
 
             auto res = co_await request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/badges/user?id={}", accountID));
 
@@ -105,16 +107,16 @@ namespace horrible::badges {
         log::trace("Showing badge for {}", badge.user->m_userName);
 
         if (auto bm = BadgeManager::get()) {
-            auto res = co_await bm->fetchBadge(badge.user->m_accountID);
+            auto res = co_await bm->fetchBadge(badge.user->m_accountID, badge.location != Location::Comment);
             co_await async::waitForMainThread([bm, b = std::move(badge), r = std::move(res)]() {
                 bm->addBadge(b, std::move(r));
             });
         };
     };
 
-    static void addManualBadge(int id, CCNode* menu, float size = 21.5f) {
+    static void addManualBadge(int id, CCNode* menu, bool request = true, float size = 21.5f) {
         if (auto bm = badges::BadgeManager::get()) async::spawn(
-            bm->fetchBadge(id),
+            bm->fetchBadge(id, request),
             [size, menu = WeakRef(menu)](BadgeResult badgeRes) {
                 if (badgeRes.isErr()) return;
 
@@ -228,6 +230,6 @@ class $modify(HMCommentCell, CommentCell) {
     void loadFromComment(GJComment* comment) {
         CommentCell::loadFromComment(comment);
 
-        if (auto menu = m_mainLayer->querySelector("main-menu > user-menu > username-menu")) badges::addManualBadge(comment->m_accountID, menu, 15.f);
+        if (auto menu = m_mainLayer->querySelector("main-menu > user-menu > username-menu")) badges::addManualBadge(comment->m_accountID, menu, false, 15.f);
     };
 };
