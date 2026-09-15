@@ -282,16 +282,14 @@ bool OptionManager::getDefaultToggleState(ZStringView id) const noexcept {
 };
 
 OptionSave OptionManager::getOption(ZStringView id) const {
-    if (auto opt = getOptionInfo(id).lock()) {
-        if (auto const it = m_saveCache.find(opt->getIDHash()); it != m_saveCache.end()) return it->second;
-    };
-
+    if (auto opt = getOptionInfo(id).lock()) return getOption(opt->getIDHash());
     return mod->getSavedValue<OptionSave>(id, OptionSave{getDefaultToggleState(id)});
 };
 
 OptionSave OptionManager::getOption(uint64_t id) const {
     if (auto const it = m_saveCache.find(id); it != m_saveCache.end()) return it->second;
     if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return mod->getSavedValue<OptionSave>(it->second, OptionSave{getDefaultToggleState(it->second.c_str())});
+
     return {};
 };
 
