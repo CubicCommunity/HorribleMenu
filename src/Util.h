@@ -5,6 +5,8 @@
 #include <util/Include.h>
 #include <util/Macros.h>
 
+#include <gdcord/gdc.h>
+
 #include <cue/Util.hpp>
 #include <cue/DropdownNode.hpp>
 #include <cue/PlayerIcon.hpp>
@@ -121,6 +123,7 @@ namespace horrible {
     private:
         bool m_supporter = false;
 
+        geode::async::TaskHolder<gdc::LinkResult> m_gdcTask;
         geode::async::TaskHolder<geode::utils::web::WebResponse> m_task;
 
     public:

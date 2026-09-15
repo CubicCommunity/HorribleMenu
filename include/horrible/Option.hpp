@@ -44,7 +44,7 @@ namespace horrible {
         bool m_isCheating = false;                            // If the option counts as cheating and will trigger dynamic safe mode
         const geode::Mod* const m_integration = nullptr;      // External mod that registered this option
 
-        uint64_t m_hashCode = 0;
+        uint64_t m_idHash = 0;  // FNV-1a-hashed unique ID of the option
 
     public:
         Option(std::string id, const geode::Mod* integration = geode::Mod::get());

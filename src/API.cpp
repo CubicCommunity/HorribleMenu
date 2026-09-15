@@ -40,7 +40,7 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
     return obj;
 };
 
-Option::Option(std::string id, const Mod* integration) : m_hashCode(fnv1aHash(id)), m_id(std::move(id)), m_integration(integration) {};
+Option::Option(std::string id, const Mod* integration) : m_idHash(fnv1aHash(id)), m_id(std::move(id)), m_integration(integration) {};
 
 std::shared_ptr<Option> Option::setName(std::string name) {
     m_name = std::move(name);
@@ -136,7 +136,7 @@ asp::BoxedString Option::getIDShared() const noexcept {
 };
 
 uint64_t Option::getIDHash() const noexcept {
-    return m_hashCode;
+    return m_idHash;
 };
 
 bool Option::isEnabled() const& {
@@ -329,49 +329,45 @@ void OptionManager::toggleOption(uint64_t id, bool enable) {
 };
 
 void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed) {
-    if (auto opt = getOptionInfo(id).lock()) setOption(opt->getIDHash(), enable, pin, viewed);
-};
+    if (auto opt = getOptionInfo(id).lock()) {
+        auto const it = m_delegates.find(opt->getIDHash());
+        if (it != m_delegates.end()) {
+            for (auto& cb : it->second) cb(enable);
+        };
 
-void OptionManager::setOption(uint64_t id, bool enable, bool pin, bool viewed) {
-    auto const it = m_delegates.find(id);
-    if (it != m_delegates.end()) {
-        for (auto& cb : it->second) cb(enable);
-    };
+        log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
 
-    log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
+        auto cheats = m_enabledCheats.size();
 
-    auto cheats = m_enabledCheats.size();
+        auto const save = HorribleOptionSave{enable, pin, viewed};
 
-    auto const save = HorribleOptionSave{enable, pin, viewed};
+        (void)Mod::get()->setSavedValue(id, save);
+        (void)OptionEvent(id).send(save);
 
-    auto idStrRes = getOptionIDForHash(id);
-    if (idStrRes.isOk()) {
-        auto const idStr = idStrRes.unwrap();
-
-        (void)Mod::get()->setSavedValue(idStr.c_str(), save);
-        (void)OptionEvent(idStr.c_str()).send(save);
-    };
-
-    if (auto const it = m_enabledCheats.find(id); it != m_enabledCheats.end()) {
-        if (!enable) m_enabledCheats.erase(it);
-    } else if (enable) {
-        if (auto o = getOptionInfo(id).lock()) {
-            if (o->isCheating()) {
-                log::debug("Enabled cheat option {}, adding to enabled cheats map", id);
-                m_enabledCheats.emplace(id);
+        if (auto const it = m_enabledCheats.find(opt->getIDHash()); it != m_enabledCheats.end()) {
+            if (!enable) m_enabledCheats.erase(it);
+        } else if (enable) {
+            if (auto o = getOptionInfo(id).lock()) {
+                if (o->isCheating()) {
+                    log::debug("Enabled cheat option {}, adding to enabled cheats map", id);
+                    m_enabledCheats.emplace(opt->getIDHash());
+                };
             };
         };
-    };
 
-    if (idStrRes.isOk()) {
         auto cheatsNow = m_enabledCheats.size();
-        auto const idStr = std::move(idStrRes).unwrap();
 
-        if (isCheating(idStr.c_str()) && cheats != cheatsNow) {
+        if (isCheating(id) && cheats != cheatsNow) {
             if (cheats == 0 && cheatsNow > 0) (void)OptionCheatingEvent().send(true);
             if (cheats > 0 && cheatsNow == 0) (void)OptionCheatingEvent().send(false);
         };
+    } else {
+        log::error("Option '{}' not found", id);
     };
+};
+
+void OptionManager::setOption(uint64_t id, bool enable, bool pin, bool viewed) {
+    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) setOption(it->second.c_str(), enable, pin, viewed);
 };
 
 OptionManager* OptionManager::get() noexcept {
@@ -439,32 +435,31 @@ Result<bool> OptionManagerV2::isEnabled(ZStringView id) {
 };
 
 void SupporterState::validateSupporter(Callback&& cb) {
-    if (!gdc::isLinked()) {
-        m_supporter = false;
-        return cb(Err("Player is signed out or not linked with Discord"));
-    } else {
-        if (m_supporter) return cb(Ok());
-    };
+    m_gdcTask.spawn(
+        gdc::getLink(),
+        [this, cb = std::move(cb)](gdc::LinkResult res) {
+            if (res.isErr()) return log::error("Couldn't get Discord link to check Ko-fi status: {}", res.unwrapErr());
 
-    if (auto gjam = GJAccountManager::sharedState()) {
-        log::trace("Checking Ko-fi supporter status...");
+            if (auto gjam = GJAccountManager::sharedState()) {
+                log::trace("Checking Ko-fi supporter status...");
 
-        auto req = request::base()
-                       .param("id", gjam->m_accountID);
+                auto req = request::base()
+                               .param("id", gjam->m_accountID);
 
-        m_task.spawn(
-            req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
-            [this, cb = std::move(cb)](web::WebResponse res) {
-                if (res.ok()) {
-                    log::info("User is a supporter of Breakeode");
-                    m_supporter = res.ok();
+                m_task.spawn(
+                    req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
+                    [this, cb = std::move(cb)](web::WebResponse res) {
+                        if (res.ok()) {
+                            log::info("User is a supporter of Breakeode");
+                            m_supporter = res.ok();
 
-                    return cb(Ok());
-                };
+                            return cb(Ok());
+                        };
 
-                return cb(Err("User is not a Breakeode supporter"));
-            });
-    };
+                        return cb(Err("User is not a Breakeode supporter"));
+                    });
+            };
+        });
 };
 
 bool SupporterState::isSupporter() const noexcept {
