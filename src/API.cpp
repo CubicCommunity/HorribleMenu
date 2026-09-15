@@ -2,12 +2,24 @@
 #include <horrible/API.h>
 #include <horrible/OptionalAPI.hpp>
 
+#include <Util.h>
+
+#include <gdcord/gdc.h>
+
 #include <ranges>
 
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 using namespace horrible;
+
+$on_mod(Loaded) {
+    if (auto ss = SupporterState::get()) ss->validateSupporter(
+        [](Result<> res) {
+            if (res.isErr()) return log::error("Supporter state check failed: {}", res.unwrapErr());
+            log::info("User is a Ko-fi supporter!");
+        });
+};
 
 Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matjson::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
@@ -155,7 +167,7 @@ std::shared_ptr<Option> Option::create(std::string id, const Mod* integration) {
 };
 
 void OptionManager::registerCategory(std::string category) {
-    if (!utils::string::containsAny(category, getCategories())) m_categories.push_back(std::move(category));
+    if (!str::containsAny(category, getCategories())) m_categories.push_back(std::move(category));
 };
 
 void OptionManager::registerMod(const Mod* mod) {
@@ -394,6 +406,11 @@ void horrible::delegateHooks(ZStringView id, utils::StringMap<std::shared_ptr<Ho
     };
 };
 
+bool horrible::isSupporter() noexcept {
+    if (auto ss = SupporterState::get()) return ss->isSupporter();
+    return false;
+};
+
 void OptionManagerV2::registerOption(OptionV2 const& option) {
     if (auto om = OptionManager::get()) {
         auto opt = Option::create(option.id, option.getIntegration())
@@ -419,4 +436,37 @@ void OptionManagerV2::toggleOption(ZStringView id, bool enable) {
 Result<bool> OptionManagerV2::isEnabled(ZStringView id) {
     if (auto om = OptionManager::get()) return Ok(om->isEnabled(id));
     return Err("Failed to get OptionManager");
+};
+
+void SupporterState::validateSupporter(Callback&& cb) {
+    if (!gdc::isLinked()) {
+        m_supporter = false;
+        return cb(Err("Player is signed out or not linked with Discord"));
+    } else {
+        if (m_supporter) return cb(Ok());
+    };
+
+    if (auto gjam = GJAccountManager::sharedState()) {
+        log::trace("Checking Ko-fi supporter status...");
+
+        auto req = request::base()
+                       .param("id", gjam->m_accountID);
+
+        m_task.spawn(
+            req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
+            [this, cb = std::move(cb)](web::WebResponse res) {
+                if (res.ok()) {
+                    log::info("User is a supporter of Breakeode");
+                    m_supporter = res.ok();
+
+                    return cb(Ok());
+                };
+
+                return cb(Err("User is not a Breakeode supporter"));
+            });
+    };
+};
+
+bool SupporterState::isSupporter() const noexcept {
+    return m_supporter;
 };

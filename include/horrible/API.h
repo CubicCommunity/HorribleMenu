@@ -254,6 +254,9 @@ namespace horrible {
      * @param hooks The map of hooks to delegate
      */
     BRKD_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>> const& hooks);
+
+    /// Get whether the current user supports Breakeode on Ko-fi
+    BRKD_HORRIBLE_API_DLL bool isSupporter() noexcept;
 };
 
 // Statically register an option

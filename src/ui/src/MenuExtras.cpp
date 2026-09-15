@@ -13,14 +13,6 @@ using namespace horrible::prelude;
 
 static constexpr auto g_suggestWait = 60;
 
-$on_mod(Loaded) {
-    if (auto ss = SupporterState::get()) ss->validateSupporter(
-        [](Result<> res) {
-            if (res.isErr()) return log::error("Supporter state check failed: {}", res.unwrapErr());
-            log::info("User is a Ko-fi supporter!");
-        });
-};
-
 asp::Instant MenuSuggest::s_lastSuggest = asp::Instant();
 
 bool MenuSuggest::init(ZStringView theme) {
@@ -192,39 +184,6 @@ MenuSuggest* MenuSuggest::create(ZStringView theme) {
 
     delete ret;
     return nullptr;
-};
-
-void SupporterState::validateSupporter(Callback&& cb) {
-    if (!gdc::isLinked()) {
-        m_supporter = false;
-        return cb(Err("Player is signed out or not linked with Discord"));
-    } else {
-        if (m_supporter) return cb(Ok());
-    };
-
-    if (auto gjam = GJAccountManager::sharedState()) {
-        log::trace("Checking Ko-fi supporter status...");
-
-        auto req = request::base()
-                       .param("id", gjam->m_accountID);
-
-        m_task.spawn(
-            req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
-            [this, cb = std::move(cb)](web::WebResponse res) {
-                if (res.ok()) {
-                    log::info("User is a supporter of Breakeode");
-                    m_supporter = res.ok();
-
-                    return cb(Ok());
-                };
-
-                return cb(Err("User is not a Breakeode supporter"));
-            });
-    };
-};
-
-bool SupporterState::isSupporter() const noexcept {
-    return m_supporter;
 };
 
 void MenuDiscord::setupAuthInterface(bool forceHide) {
