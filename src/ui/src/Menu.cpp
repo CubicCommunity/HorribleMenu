@@ -591,7 +591,6 @@ bool Menu::init() {
     debLabel->setID("debug-label");
     debLabel->setScale(m_impl->devMode ? 0.5f : 0.375f);
     debLabel->setAlignment(Label::Alignment::Center);
-    debLabel->setLimitLabelWidth(getScaledContentWidth() - 8.75f);
     debLabel->setOpacity(m_impl->devMode ? 200 : 100);
     debLabel->setAnchorPoint({0.5, 0});
 
