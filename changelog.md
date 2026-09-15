@@ -8,6 +8,8 @@
 - Fix some potential crashes
 - Internal optimizations
 
+**Note:** *This update focuses on API additions for mod developers to work more easily with Horrible Menu's architecture. While no new options were added to Horrible Menu directly for players, we hope this update makes it easier for developers to make their own add-on mods to Horrible Menu with even more insane features for you!*
+
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.9.0`
 - Added new *Player Life* option **Limited Jump Energy**
