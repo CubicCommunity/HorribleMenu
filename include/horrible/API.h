@@ -23,6 +23,9 @@ struct matjson::Serialize<HorribleOptionSave> final {
 
 // Container for Horrible Menu API functions
 namespace horrible {
+    template <class T>
+    using HashedMapU64 = std::unordered_map<uint64_t, T>;
+
     // Option manager for Horrible Menu
     class BRKD_HORRIBLE_API_DLL OptionManager final {
         friend class Option;
@@ -31,16 +34,17 @@ namespace horrible {
         using Callback = geode::Function<void(bool)>;
 
     private:
-        geode::utils::StringMap<std::shared_ptr<Option>> m_options;  // Map of registered options
-        std::vector<std::string> m_categories;                       // Array of auto-registered categories
+        geode::utils::StringMap<SharedOption> m_options;  // Map of registered options
+        std::vector<std::string> m_categories;            // Array of auto-registered categories
 
-        std::unordered_map<uint64_t, asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs to their string IDs
-        std::unordered_map<uint64_t, OptionSave> m_saveCache;        // Map of cached states
+        geode::utils::StringMap<std::vector<SharedOption>> m_categoryMap;  // Map of options bound to category name
+        geode::utils::StringMap<const geode::Mod* const> m_integrations;   // Map of auto-registered external mods using this API
 
-        geode::utils::StringMap<const geode::Mod* const> m_integrations;  // Map of auto-registered external mods using this API
+        HashedMapU64<asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs to their string IDs
+        HashedMapU64<OptionSave> m_saveCache;        // Map of cached states
 
-        std::unordered_map<uint64_t, std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
-        std::unordered_set<uint64_t> m_enabledCheats;                     // Map of currently enabled cheat options, used for dynamic safe mode
+        HashedMapU64<std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_set<uint64_t> m_enabledCheats;     // Map of currently enabled cheat options, used for dynamic safe mode
 
     protected:
         OptionManager() = default;
@@ -52,207 +56,131 @@ namespace horrible {
         OptionManager(OptionManager&&) = delete;
         OptionManager& operator=(OptionManager&&) = delete;
 
-        /**
-         * Register a category if not already registered
-         *
-         * @param category Name of the category
-         */
-        void registerCategory(std::string category);
+        /// Register a category if not already registered
+        /// @param category Name of the category
+        void registerCategory(std::string category, SharedOption option);
 
-        /**
-         * Register an external Geode mod as an integration if not already registered
-         *
-         * @param category Pointer to the mod
-         */
+        /// Register an external Geode mod as an integration if not already registered
+        /// @param category Pointer to the mod
         void registerMod(const geode::Mod*);
 
-        /**
-         * Check if an option already exists
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns Whether this option already exists or not
-         */
+        /// Check if an option already exists
+        /// @param id The ID of the option to check
+        /// @returns Whether this option already exists or not
         bool doesOptionExist(geode::ZStringView id) const noexcept;
 
-        /**
-         * Check if an external Geode mod has already been registered in the list of integrations
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns Whether this option already exists or not
-         */
+        /// Check if an external Geode mod has already been registered in the list of integrations
+        /// @param id The ID of the option to check
+        /// @returns Whether this option already exists or not
         bool isModRegistered(geode::ZStringView id) const noexcept;
 
     public:
         // Get option manager singleton
         static OptionManager* get() noexcept;
 
-        /**
-         * Register a new option
-         *
-         * @param option Constructed option object
-         */
-        void registerOption(std::shared_ptr<Option> option);
+        /// Register a new option
+        /// @param option Constructed option object
+        void registerOption(SharedOption option);
 
-        /**
-         * Check if a cheat option is currently enabled
-         *
-         * @returns Whether cheating is on
-         */
+        /// Check if a cheat option is currently enabled
+        /// @returns Whether cheating is on
         bool isCheatEnabled() const noexcept;
 
-        /**
-         * Returns a reference to the array of all registered options
-         *
-         * @returns An array of every registered option, main and external
-         */
-        [[nodiscard]] std::vector<std::weak_ptr<Option>> getOptions() const;
+        /// Returns a reference to the array of all registered options
+        /// @returns An array of every registered option, main and external
+        /// @deprecated Will be replaced with `OptionManager::getAllOptions` in GD 2.209x ports
+        [[nodiscard]] [[deprecated("Use OptionManager::getAllOptions instead")]] std::vector<std::weak_ptr<Option>> getOptions() const;
+        [[nodiscard]] geode::utils::StringMap<SharedOption> const& getAllOptions() const noexcept;
 
-        /**
-         * Quickly check the toggle state of an option
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns Boolean of the current value
-         */
+        /// Quickly check the toggle state of an option
+        /// @param id The ID of the option to check
+        /// @returns Boolean of the current value
         [[nodiscard]] bool isEnabled(geode::ZStringView id) const;
         [[nodiscard]] bool isEnabled(uint64_t id) const;
 
-        /**
-         * Quickly check the pin state of an option
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns Boolean of the current value
-         */
+        /// Quickly check the pin state of an option
+        /// @param id The ID of the option to check
+        /// @returns Boolean of the current value
         [[nodiscard]] bool isPinned(geode::ZStringView id) const;
         [[nodiscard]] bool isPinned(uint64_t id) const;
 
-        /**
-         * Quickly check the viewed state of an option
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns Boolean of the current value
-         */
+        /// Quickly check the viewed state of an option
+        /// @param id The ID of the option to check
+        /// @returns Boolean of the current value
         [[nodiscard]] bool isViewed(geode::ZStringView id) const;
         [[nodiscard]] bool isViewed(uint64_t id) const;
 
-        /**
-         * Quickly check if an option is a cheat option
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns Boolean of whether this option is a cheat or not
-         */
+        /// Quickly check if an option is a cheat option
+        /// @param id The ID of the option to check
+        /// @returns Boolean of whether this option is a cheat or not
         [[nodiscard]] bool isCheating(geode::ZStringView id) const;
 
-        /**
-         * Quickly check the default toggle state of an option
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns Boolean of the default value
-         */
+        /// Quickly check the default toggle state of an option
+        /// @param id The ID of the option to check
+        /// @returns Boolean of the default value
         [[nodiscard]] bool getDefaultToggleState(geode::ZStringView id) const noexcept;
 
-        /**
-         * Get the saved data of an option
-         *
-         * @param id The ID of the option to check
-         *
-         * @returns The current save
-         */
+        /// Get the saved data of an option
+        /// @param id The ID of the option to check
+        /// @returns The current save
         [[nodiscard]] OptionSave getOption(geode::ZStringView id) const;
         [[nodiscard]] OptionSave getOption(uint64_t id) const;
 
-        /**
-         * Returns the data of an option
-         *
-         * @param id The ID of the option to get
-         *
-         * @returns A result possibly containing the option object
-         */
+        /// Returns the data of an option
+        /// @param id The ID of the option to get
+        /// @returns A result possibly containing the option object
         [[nodiscard]] std::weak_ptr<Option> getOptionInfo(geode::ZStringView id) const noexcept;
         [[nodiscard]] std::weak_ptr<Option> getOptionInfo(uint64_t id) const noexcept;
 
-        /**
-         * Returns the string ID of an option via hash ID lookup
-         *
-         * @param id The hash ID of the option to get
-         *
-         * @returns A result possibly containing the option's string ID
-         */
+        /// Returns the string ID of an option via hash ID lookup
+        /// @param id The hash ID of the option to get
+        /// @returns A result possibly containing the option's string ID
         [[nodiscard]] geode::Result<asp::BoxedString> getOptionIDForHash(uint64_t id) const noexcept;
 
-        /**
-         * Returns the amount of delegate callbacks registered for an option
-         *
-         * @param id The ID of the option whose callbacks to check
-         *
-         * @returns The amount of callbacks registered for this option
-         */
+        /// Returns the amount of delegate callbacks registered for an option
+        /// @param id The ID of the option whose callbacks to check
+        /// @returns The amount of callbacks registered for this option
         [[nodiscard]] size_t getDelegateCount(std::string_view id) const noexcept;
         [[nodiscard]] size_t getDelegateCount(uint64_t id) const noexcept;
 
-        /**
-         * Check if Safe Mode should be enabled based on the current state of options and settings
-         *
-         * @returns Whether Safe Mode should be enabled or not
-         */
+        /// Check if Safe Mode should be enabled based on the current state of options and settings
+        /// @returns Whether Safe Mode should be enabled or not
         [[nodiscard]] bool shouldBeSafeMode() const noexcept;
 
-        /**
-         * Set the toggle state of an option
-         *
-         * @param id The ID of the option to toggle
-         * @param enable Boolean to toggle to
-         */
+        /// Set the toggle state of an option
+        /// @param id The ID of the option to toggle
+        /// @param enable Boolean to toggle to
         void toggleOption(geode::ZStringView id, bool enable);
         void toggleOption(uint64_t id, bool enable);
 
-        /**
-         * Set the state of an option
-         *
-         * @param id The ID of the option to toggle
-         * @param enable Boolean to toggle to
-         * @param pin If this option is pinned by the user
-         * @param viewed If this option was already viewed by the user
-         */
+        /// Set the state of an option
+        /// @param id The ID of the option to toggle
+        /// @param enable Boolean to toggle to
+        /// @param pin If this option is pinned by the user
+        /// @param viewed If this option was already viewed by the user
         void setOption(geode::ZStringView id, bool enable, bool pin = false, bool viewed = true);
         void setOption(uint64_t id, bool enable, bool pin = false, bool viewed = true);
 
-        /**
-         * Upsert a new hook delegate
-         *
-         * @param id The ID of the option to set the delegate for
-         * @param callback The hook callback to register for this option's delegate
-         */
+        /// Upsert a new hook delegate
+        /// @param id The ID of the option to set the delegate for
+        /// @param callback The hook callback to register for this option's delegate
         void addDelegate(geode::ZStringView id, Callback&& callback);
         void addDelegate(uint64_t id, Callback&& callback);
 
-        /**
-         * Returns a reference to the array of all registered categories
-         *
-         * @returns An array of every category name
-         */
-        [[nodiscard]] std::span<const std::string> getCategories() const noexcept;
+        /// Returns a reference to the array of all registered categories
+        /// @returns An array of every category name
+        /// @deprecated Will be replaced with `OptionManager::getAllCategories` in GD 2.209x ports
+        [[nodiscard]] [[deprecated("Use OptionManager::getAllCategories instead")]] std::span<const std::string> getCategories() const noexcept;
+        [[nodiscard]] geode::utils::StringMap<std::vector<SharedOption>> const& getAllCategories() const noexcept;
 
-        /**
-         * Returns an array of all registered Geode mod integrations
-         *
-         * @returns An array of every Geode mod integration
-         */
+        /// Returns an array of all registered Geode mod integrations
+        /// @returns An array of every Geode mod integration
         [[nodiscard]] std::vector<const geode::Mod*> getMods() const;
     };
 
-    /**
-     * Delegate hooks to OptionManager for dynamic toggling
-     *
-     * @param id The ID of the option to delegate for
-     * @param hooks The map of hooks to delegate
-     */
+    /// Delegate hooks to OptionManager for dynamic toggling
+    /// @param id The ID of the option to delegate for
+    /// @param hooks The map of hooks to delegate
     BRKD_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>> const& hooks);
 
     /// Get whether the current user supports Breakeode on Ko-fi

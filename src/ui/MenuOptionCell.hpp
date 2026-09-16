@@ -27,14 +27,14 @@ namespace horrible {
         void onToggle(cocos2d::CCObject*);
         void onPin(cocos2d::CCObject* sender);
 
-        bool init(cocos2d::CCSize const& size, std::shared_ptr<Option> option, geode::ZStringView theme, bool devMode, bool hasInternet);
+        bool init(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme, bool devMode, bool hasInternet);
 
     public:
-        static MenuOptionCell* create(cocos2d::CCSize const& size, std::shared_ptr<Option> option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
+        static MenuOptionCell* create(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
 
         void setPinCallback(Callback&& callback);
 
-        std::shared_ptr<Option> const& getOption() const noexcept;
+        SharedOption const& getOption() const noexcept;
         bool isCompatible() const noexcept;
     };
 };

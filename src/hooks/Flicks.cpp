@@ -21,7 +21,7 @@ class $modify(FlicksPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields final {
-        std::vector<std::weak_ptr<Option>> options = OptionManager::get()->getOptions();
+        std::vector<SharedOption> options = options::getAll();
 
         bool firstTime = true;
     };
@@ -36,22 +36,18 @@ class $modify(FlicksPlayLayer, PlayLayer) {
             return;
         };
 
-        if (f->options.empty()) return;
+        if (f->options.empty()) return log::error("No options found for Flicks");
 
-        auto opt = f->options[rng::get(f->options.size() - 1)];
-        if (auto o = opt.lock()) {
-            if (o->getID() == THIS_ID || !platformCompat(o->getSupportedPlatforms())) return Notification::create("Whoops! Missed an option!", NotificationIcon::Warning, 0.25f)->show();
+        auto o = f->options[rng::get(f->options.size() - 1)];
+        if (o->getID() == THIS_ID || !platformCompat(o->getSupportedPlatforms())) return Notification::create("Whoops! Missed an option!", NotificationIcon::Warning, 0.25f)->show();
 
-            queueInMainThread([opt]() {
-                if (auto o = opt.lock()) {
-                    o->isEnabled() ? o->disable() : o->enable();
-                    log::warn("Flicked option {} {} due to flicks", o->getID(), str::isOnOff(o->isEnabled()));
+        queueInMainThread([o]() {
+            o->isEnabled() ? o->disable() : o->enable();
+            log::warn("Flicked option {} {} due to flicks", o->getID(), str::isOnOff(o->isEnabled()));
 
-                    sfx::play(sfx::file::bad);
-                    Notification::create(fmt::format("Flicked {} ({}) {}", o->getName(), o->getCategory(), str::isOnOff(o->isEnabled())).c_str(), NotificationIcon::Warning, 0.5f)->show();
-                };
-            });
-        };
+            sfx::play(sfx::file::bad);
+            Notification::create(fmt::format("Flicked {} ({}) {}", o->getName(), o->getCategory(), str::isOnOff(o->isEnabled())).c_str(), NotificationIcon::Warning, 0.5f)->show();
+        });
     };
 
     bool platformCompat(std::span<const Platform> plats) {

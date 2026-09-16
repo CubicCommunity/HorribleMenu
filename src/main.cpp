@@ -75,10 +75,8 @@ $on_game(Loaded) {
             if (buttonKey == "copy-list") {
                 std::string list = "";
 
-                for (auto const& option : OptionManager::get()->getOptions()) {
-                    if (auto o = option.lock()) {
-                        if (o->isEnabled()) list = fmt::format("{}{} | {}\n", list, o->isCheating() ? "!" : " ", o->getID());
-                    };
+                for (auto const& [id, o] : OptionManager::get()->getAllOptions()) {
+                    if (o->isEnabled()) list = fmt::format("{}{} | {}\n", list, o->isCheating() ? "!" : " ", id);
                 };
 
                 if (list.empty()) {
@@ -95,10 +93,8 @@ $on_game(Loaded) {
                     "Yes",
                     [](auto, bool ok) {
                         if (ok) {
-                            for (auto const& option : OptionManager::get()->getOptions()) {
-                                if (auto o = option.lock()) {
-                                    if (o->isCheating() && o->isEnabled()) o->disable();
-                                };
+                            for (auto const& [id, o] : OptionManager::get()->getAllOptions()) {
+                                if (o->isCheating() && o->isEnabled()) o->disable();
                             };
 
                             Notification::create("Disabled all cheats", NotificationIcon::Success)->show();

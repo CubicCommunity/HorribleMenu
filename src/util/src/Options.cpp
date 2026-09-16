@@ -7,8 +7,18 @@
 using namespace geode::prelude;
 using namespace horrible::prelude;
 
-std::vector<std::weak_ptr<Option>> options::getAll() noexcept {
-    if (auto om = OptionManager::get()) return om->getOptions();
+std::vector<SharedOption> options::getAll() {
+    if (auto om = OptionManager::get()) {
+        auto opts = om->getAllOptions();
+
+        std::vector<SharedOption> out;
+        out.reserve(opts.size());
+
+        for (auto const& [id, opt] : opts) out.push_back(opt);
+
+        return out;
+    };
+
     return {};
 };
 
@@ -45,8 +55,17 @@ size_t options::getDelegates(std::string_view id) noexcept {
     return 0;
 };
 
-std::span<const std::string> options::getAllCategories() noexcept {
-    if (auto om = OptionManager::get()) return om->getCategories();
+std::vector<std::string> options::getAllCategories() {
+    if (auto om = OptionManager::get()) {
+        auto opts = om->getAllCategories();
+
+        std::vector<std::string> out;
+        out.reserve(opts.size());
+
+        for (auto const& [id, cat] : opts) out.push_back(id);
+
+        return out;
+    };
     return {};
 };
 

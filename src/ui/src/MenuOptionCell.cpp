@@ -53,7 +53,7 @@ MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos)
 struct MenuOptionCell::Impl final {
     bool compatible = false;  // If this option is compatible with the current platform
 
-    std::shared_ptr<Option> option;  // A view into the option value :)
+    SharedOption option;  // A view into the option value :)
 
     bool hasInternet = false;  // would rather call doWeHaveInternet once
 
@@ -124,7 +124,7 @@ struct MenuOptionCell::Impl final {
 MenuOptionCell::MenuOptionCell() : m_impl(std::make_unique<Impl>()) {};
 MenuOptionCell::~MenuOptionCell() {};
 
-bool MenuOptionCell::init(CCSize const& size, std::shared_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet) {
     m_impl->option = std::move(option);
     m_impl->hasInternet = hasInternet;
 
@@ -361,7 +361,7 @@ void MenuOptionCell::setPinCallback(Callback&& callback) {
     m_impl->pinCallback = std::move(callback);
 };
 
-std::shared_ptr<Option> const& MenuOptionCell::getOption() const noexcept {
+SharedOption const& MenuOptionCell::getOption() const noexcept {
     return m_impl->option;
 };
 
@@ -369,7 +369,7 @@ bool MenuOptionCell::isCompatible() const noexcept {
     return m_impl->compatible;
 };
 
-MenuOptionCell* MenuOptionCell::create(CCSize const& size, std::shared_ptr<Option> option, ZStringView theme, bool devMode, bool hasInternet) {
+MenuOptionCell* MenuOptionCell::create(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet) {
     auto ret = new MenuOptionCell();
     if (ret->init(size, std::move(option), theme, devMode, hasInternet)) {
         ret->autorelease();

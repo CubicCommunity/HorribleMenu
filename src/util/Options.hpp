@@ -13,7 +13,7 @@ namespace horrible {
              *
              * @returns An array of every registered option, main and external
              */
-            std::vector<std::weak_ptr<Option>> getAll() noexcept;
+            std::vector<SharedOption> getAll();
 
             /**
              * Returns the toggle state of an option
@@ -84,7 +84,7 @@ namespace horrible {
              *
              * @returns An array of every registered option category, main and external
              */
-            std::span<const std::string> getAllCategories() noexcept;
+            std::vector<std::string> getAllCategories();
 
             /**
              * Returns if a category exists or not

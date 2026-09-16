@@ -49,32 +49,28 @@ struct Menu::Impl final {
 
     std::vector<Ref<MenuCategoryFilterCell>> categoryItems;
 
-    void filterOptions(std::vector<std::weak_ptr<Option>>&& optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
+    void filterOptions(std::vector<SharedOption>&& optList, SillyTier tier = SillyTier::None, ZStringView category = "") {
         optionList->m_contentLayer->removeAllChildren();
 
         auto useCategory = !category.empty() && options::doesCategoryExist(category);
         auto searchLower = str::toLower(searchText);
 
         auto list = asp::iter::consume(optList)
-                        .filter([this, tier, category, useCategory, search = std::move(searchLower)](std::weak_ptr<Option> const& opt) {
-                            if (auto o = opt.lock()) {
-                                auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
-                                auto categoryMatches = !useCategory || (o->getCategory() == category);
+                        .filter([this, tier, category, useCategory, search = std::move(searchLower)](SharedOption const& o) {
+                            auto tierMatches = tier == SillyTier::None || tier == o->getSillyTier();
+                            auto categoryMatches = !useCategory || (o->getCategory() == category);
 
-                                auto searchMatches = true;
-                                if (!search.empty()) searchMatches = str::contains(str::toLower(o->getName()), search) || str::contains(str::toLower(o->getID()), search) || str::contains(str::toLower(o->getCategory()), search);
+                            auto searchMatches = true;
+                            if (!search.empty()) searchMatches = str::contains(str::toLower(o->getName()), search) || str::contains(str::toLower(o->getID()), search) || str::contains(str::toLower(o->getCategory()), search);
 
-                                auto onlineCompat = o->isOnline() ? hasInternet || !hideIfOffline : true;
+                            auto onlineCompat = o->isOnline() ? hasInternet || !hideIfOffline : true;
 
-                                return tierMatches && categoryMatches && searchMatches && onlineCompat;
-                            };
-
-                            return false;
+                            return tierMatches && categoryMatches && searchMatches && onlineCompat;
                         })
                         .collect();
 
         std::sort(list.begin(), list.end(), [](auto const& a, auto const& b) -> bool {
-            if (auto optA = a.lock(), optB = b.lock(); optA && optB) return options::isPinned(optA->getID()) > options::isPinned(optB->getID());
+            return options::isPinned(a->getID()) > options::isPinned(b->getID());
             return false;
         });
 
@@ -84,24 +80,22 @@ struct Menu::Impl final {
         optionList->setVisible(!empty);
 
         if (!empty) {
-            for (auto& oRef : list) {
-                if (auto o = oRef.lock()) {
-                    if (auto modOption = MenuOptionCell::create(
-                            {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
-                            std::move(o),
-                            theme,
-                            devMode,
-                            hasInternet)) {
-                        if (modOption->isCompatible() || showIncompatible) {
-                            modOption->setPinCallback([this]() {
-                                filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
-                            });
+            for (auto& o : list) {
+                if (auto modOption = MenuOptionCell::create(
+                        {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
+                        o,
+                        theme,
+                        devMode,
+                        hasInternet)) {
+                    if (modOption->isCompatible() || showIncompatible) {
+                        modOption->setPinCallback([this]() {
+                            filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
+                        });
 
-                            optionList->m_contentLayer->addChild(modOption);
-                        } else {
-                            log::error("{} is incompatible with the current platform", o->getID());
-                            cue::resetNode(modOption);
-                        };
+                        optionList->m_contentLayer->addChild(modOption);
+                    } else {
+                        log::error("{} is incompatible with the current platform", o->getID());
+                        cue::resetNode(modOption);
                     };
                 };
             };

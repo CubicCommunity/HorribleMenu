@@ -34,6 +34,9 @@ namespace horrible {
 
     // Metadata for a horrible option
     struct BRKD_HORRIBLE_API_DLL Option final : std::enable_shared_from_this<Option> {
+        // Alias for `std::shared_ptr<Option>`
+        using SharedSelf = std::shared_ptr<Option>;
+
     private:
         asp::BoxedString const m_id;                          // Unique ID of the option
         std::string m_name = "Example Option";                // Name of the option
@@ -55,19 +58,19 @@ namespace horrible {
         /// Create a new option metadata object
         /// @param id Unique ID for this option
         /// @param integration Pointer to the mod this option is being registered from
-        static std::shared_ptr<Option> create(std::string id, const geode::Mod* integration = geode::Mod::get());
+        static SharedSelf create(std::string id, const geode::Mod* integration = geode::Mod::get());
 
-        std::shared_ptr<Option> setName(std::string name);
-        std::shared_ptr<Option> setDescription(std::string description);
-        std::shared_ptr<Option> setCategory(std::string category);
-        std::shared_ptr<Option> setSillyTier(SillyTier tier);
-        std::shared_ptr<Option> setDefaultToggleState(bool state);
-        std::shared_ptr<Option> setOnline(bool online);
-        std::shared_ptr<Option> setRequiresRestart(bool required);
-        std::shared_ptr<Option> setSupportedPlatforms(std::vector<Platform> platforms);
-        std::shared_ptr<Option> setCheating(bool cheat);
+        SharedSelf setName(std::string name);
+        SharedSelf setDescription(std::string description);
+        SharedSelf setCategory(std::string category);
+        SharedSelf setSillyTier(SillyTier tier);
+        SharedSelf setDefaultToggleState(bool state);
+        SharedSelf setOnline(bool online);
+        SharedSelf setRequiresRestart(bool required);
+        SharedSelf setSupportedPlatforms(std::vector<Platform> platforms);
+        SharedSelf setCheating(bool cheat);
 
-        std::shared_ptr<Option> autoRegister();
+        SharedSelf autoRegister();
 
         [[nodiscard]] geode::ZStringView getID() const noexcept;
         [[nodiscard]] geode::ZStringView getName() const noexcept;
@@ -90,4 +93,7 @@ namespace horrible {
         [[nodiscard]] bool isEnabled() const&;
         [[nodiscard]] bool isPinned() const&;
     };
+
+    // Alias for `std::shared_ptr<Option>`
+    using SharedOption = Option::SharedSelf;
 };

@@ -22,12 +22,10 @@ void placeboEffect() {
     if (rng::fast() <= 1) {  // 1% chance :trol:
         log::warn("Placebo effect activated! Toggling all options...");
 
-        for (auto const& option : options::getAll()) {
-            if (auto o = option.lock()) {
-                auto saved = options::get(o->getID());
-                log::debug("Placebo {} option {}", saved.enabled ? "enabled" : "disabled", o->getID());
-                options::set(o->getID(), !saved.enabled, saved.pin, saved.viewed);
-            };
+        for (auto const& o : options::getAll()) {
+            auto saved = options::get(o->getID());
+            log::debug("Placebo {} option {}", saved.enabled ? "enabled" : "disabled", o->getID());
+            options::set(o->getID(), !saved.enabled, saved.pin, saved.viewed);
         };
     } else {
         log::trace("Placebo effect did not activate");

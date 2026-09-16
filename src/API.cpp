@@ -42,47 +42,47 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
 
 Option::Option(std::string id, const Mod* integration) : m_idHash(fnv1aHash(id)), m_id(std::move(id)), m_integration(integration) {};
 
-std::shared_ptr<Option> Option::setName(std::string name) {
+Option::SharedSelf Option::setName(std::string name) {
     m_name = std::move(name);
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setDescription(std::string description) {
+Option::SharedSelf Option::setDescription(std::string description) {
     m_description = std::move(description);
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setCategory(std::string category) {
+Option::SharedSelf Option::setCategory(std::string category) {
     m_category = std::move(category);
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setSillyTier(SillyTier tier) {
+Option::SharedSelf Option::setSillyTier(SillyTier tier) {
     m_silly = tier;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setDefaultToggleState(bool state) {
+Option::SharedSelf Option::setDefaultToggleState(bool state) {
     m_default = state;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setOnline(bool online) {
+Option::SharedSelf Option::setOnline(bool online) {
     m_online = online;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setRequiresRestart(bool required) {
+Option::SharedSelf Option::setRequiresRestart(bool required) {
     m_restart = required;
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setSupportedPlatforms(std::vector<Platform> platforms) {
+Option::SharedSelf Option::setSupportedPlatforms(std::vector<Platform> platforms) {
     m_platforms = std::move(platforms);
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::setCheating(bool isCheat) {
+Option::SharedSelf Option::setCheating(bool isCheat) {
     m_isCheating = isCheat;
     return shared_from_this();
 };
@@ -157,17 +157,26 @@ void Option::disable() & {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
 };
 
-std::shared_ptr<Option> Option::autoRegister() {
+Option::SharedSelf Option::autoRegister() {
     if (auto om = OptionManager::get()) om->registerOption(shared_from_this());
     return shared_from_this();
 };
 
-std::shared_ptr<Option> Option::create(std::string id, const Mod* integration) {
+Option::SharedSelf Option::create(std::string id, const Mod* integration) {
     return std::make_shared<Option>(std::move(id), integration);
 };
 
-void OptionManager::registerCategory(std::string category) {
-    if (!str::containsAny(category, getCategories())) m_categories.push_back(std::move(category));
+void OptionManager::registerCategory(std::string category, SharedOption option) {
+    auto it = m_categoryMap.find(category);
+
+    if (it != m_categoryMap.end()) {
+        auto& list = m_categoryMap[category];
+        list.push_back(option);
+    } else {
+        m_categoryMap[category] = {};
+    };
+
+    if (!str::containsAny(category, m_categories)) m_categories.push_back(std::move(category));
 };
 
 void OptionManager::registerMod(const Mod* mod) {
@@ -188,11 +197,11 @@ bool OptionManager::isModRegistered(ZStringView id) const noexcept {
     return m_integrations.find(id) != m_integrations.end();
 };
 
-void OptionManager::registerOption(std::shared_ptr<Option> option) {
+void OptionManager::registerOption(SharedOption option) {
     if (doesOptionExist(option->getID())) {
         log::error("Could not register option '{}' ({}) because it already exists!", option->getName(), option->getID());
     } else {
-        registerCategory(option->getCategory());
+        registerCategory(option->getCategory(), option);
         registerMod(option->getIntegration());
 
         std::string id = option->getID();
@@ -234,8 +243,16 @@ std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const {
     return out;
 };
 
+geode::utils::StringMap<SharedOption> const& OptionManager::getAllOptions() const noexcept {
+    return m_options;
+};
+
 std::span<const std::string> OptionManager::getCategories() const noexcept {
     return m_categories;
+};
+
+geode::utils::StringMap<std::vector<SharedOption>> const& OptionManager::getAllCategories() const noexcept {
+    return m_categoryMap;
 };
 
 std::vector<const Mod*> OptionManager::getMods() const {
