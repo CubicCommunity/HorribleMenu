@@ -66,12 +66,10 @@ namespace horrible {
 
         /// Check if an option already exists
         /// @param id The ID of the option to check
-        /// @returns Whether this option already exists or not
         bool doesOptionExist(geode::ZStringView id) const noexcept;
 
         /// Check if an external Geode mod has already been registered in the list of integrations
         /// @param id The ID of the option to check
-        /// @returns Whether this option already exists or not
         bool isModRegistered(geode::ZStringView id) const noexcept;
 
     public:
@@ -83,68 +81,60 @@ namespace horrible {
         void registerOption(SharedOption option);
 
         /// Check if a cheat option is currently enabled
-        /// @returns Whether cheating is on
         bool isCheatEnabled() const noexcept;
 
-        /// Returns a reference to the array of all registered options
-        /// @returns An array of every registered option, main and external
+        /// Returns a array with references to all registered options
         /// @deprecated Will be replaced with `OptionManager::getAllOptions` in GD 2.209x ports
-        [[nodiscard]] [[deprecated("Use OptionManager::getAllOptions instead")]] std::vector<std::weak_ptr<Option>> getOptions() const;
-        [[nodiscard]] geode::utils::StringMap<SharedOption> const& getAllOptions() const noexcept;
+        [[nodiscard]] [[deprecated("Use `OptionManager::getAllOptions` instead")]] std::vector<std::weak_ptr<Option>> getOptions() const;
+        geode::utils::StringMap<SharedOption> const& getAllOptions() const noexcept;
+
+        /// Returns a reference to a vector of options for a specific category
+        /// @param category The name of the category to check for its assigned options
+        std::span<const SharedOption> getAllOptionsForCategory(geode::ZStringView category) const noexcept;
 
         /// Quickly check the toggle state of an option
         /// @param id The ID of the option to check
-        /// @returns Boolean of the current value
         [[nodiscard]] bool isEnabled(geode::ZStringView id) const;
         [[nodiscard]] bool isEnabled(uint64_t id) const;
 
         /// Quickly check the pin state of an option
         /// @param id The ID of the option to check
-        /// @returns Boolean of the current value
         [[nodiscard]] bool isPinned(geode::ZStringView id) const;
         [[nodiscard]] bool isPinned(uint64_t id) const;
 
         /// Quickly check the viewed state of an option
         /// @param id The ID of the option to check
-        /// @returns Boolean of the current value
         [[nodiscard]] bool isViewed(geode::ZStringView id) const;
         [[nodiscard]] bool isViewed(uint64_t id) const;
 
         /// Quickly check if an option is a cheat option
         /// @param id The ID of the option to check
-        /// @returns Boolean of whether this option is a cheat or not
         [[nodiscard]] bool isCheating(geode::ZStringView id) const;
 
         /// Quickly check the default toggle state of an option
         /// @param id The ID of the option to check
-        /// @returns Boolean of the default value
         [[nodiscard]] bool getDefaultToggleState(geode::ZStringView id) const noexcept;
 
         /// Get the saved data of an option
         /// @param id The ID of the option to check
-        /// @returns The current save
         [[nodiscard]] OptionSave getOption(geode::ZStringView id) const;
         [[nodiscard]] OptionSave getOption(uint64_t id) const;
 
         /// Returns the data of an option
         /// @param id The ID of the option to get
-        /// @returns A result possibly containing the option object
         [[nodiscard]] std::weak_ptr<Option> getOptionInfo(geode::ZStringView id) const noexcept;
         [[nodiscard]] std::weak_ptr<Option> getOptionInfo(uint64_t id) const noexcept;
 
         /// Returns the string ID of an option via hash ID lookup
         /// @param id The hash ID of the option to get
-        /// @returns A result possibly containing the option's string ID
         [[nodiscard]] geode::Result<asp::BoxedString> getOptionIDForHash(uint64_t id) const noexcept;
 
         /// Returns the amount of delegate callbacks registered for an option
         /// @param id The ID of the option whose callbacks to check
-        /// @returns The amount of callbacks registered for this option
         [[nodiscard]] size_t getDelegateCount(std::string_view id) const noexcept;
         [[nodiscard]] size_t getDelegateCount(uint64_t id) const noexcept;
 
         /// Check if Safe Mode should be enabled based on the current state of options and settings
-        /// @returns Whether Safe Mode should be enabled or not
         [[nodiscard]] bool shouldBeSafeMode() const noexcept;
 
         /// Set the toggle state of an option
@@ -167,14 +157,12 @@ namespace horrible {
         void addDelegate(geode::ZStringView id, Callback&& callback);
         void addDelegate(uint64_t id, Callback&& callback);
 
-        /// Returns a reference to the array of all registered categories
-        /// @returns An array of every category name
+        /// Returns a reference to the vector of all registered categories
         /// @deprecated Will be replaced with `OptionManager::getAllCategories` in GD 2.209x ports
-        [[nodiscard]] [[deprecated("Use OptionManager::getAllCategories instead")]] std::span<const std::string> getCategories() const noexcept;
-        [[nodiscard]] geode::utils::StringMap<std::vector<SharedOption>> const& getAllCategories() const noexcept;
+        [[nodiscard]] [[deprecated("Use `OptionManager::getAllCategories` instead")]] std::span<const std::string> getCategories() const noexcept;
+        geode::utils::StringMap<std::vector<SharedOption>> const& getAllCategories() const noexcept;
 
-        /// Returns an array of all registered Geode mod integrations
-        /// @returns An array of every Geode mod integration
+        /// Returns a vector of all registered Geode mod integrations
         [[nodiscard]] std::vector<const geode::Mod*> getMods() const;
     };
 
@@ -183,7 +171,7 @@ namespace horrible {
     /// @param hooks The map of hooks to delegate
     BRKD_HORRIBLE_API_DLL void delegateHooks(geode::ZStringView id, geode::utils::StringMap<std::shared_ptr<geode::Hook>> const& hooks);
 
-    /// Get whether the current user supports Breakeode on Ko-fi
+    /// Check whether the current user supports Breakeode on Ko-fi
     BRKD_HORRIBLE_API_DLL bool isSupporter() noexcept;
 };
 

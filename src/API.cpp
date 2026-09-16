@@ -247,6 +247,11 @@ geode::utils::StringMap<SharedOption> const& OptionManager::getAllOptions() cons
     return m_options;
 };
 
+std::span<const SharedOption> OptionManager::getAllOptionsForCategory(geode::ZStringView category) const noexcept {
+    if (auto it = m_categoryMap.find(category); it != m_categoryMap.end()) return it->second;
+    return {};
+};
+
 std::span<const std::string> OptionManager::getCategories() const noexcept {
     return m_categories;
 };
