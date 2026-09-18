@@ -43,8 +43,8 @@ namespace horrible {
         HashedMapU64<asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs to their string IDs
         HashedMapU64<OptionSave> m_saveCache;        // Map of cached states
 
-        HashedMapU64<std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
-        std::unordered_set<uint64_t> m_enabledCheats;     // Map of currently enabled cheat options, used for dynamic safe mode
+        geode::utils::StringMap<std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
+        std::unordered_set<uint64_t> m_enabledCheats;                // Map of currently enabled cheat options, used for dynamic safe mode
 
     protected:
         OptionManager() = default;

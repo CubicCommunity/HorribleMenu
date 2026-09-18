@@ -222,12 +222,16 @@ void OptionManager::registerOption(SharedOption option) {
 };
 
 void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
-    if (auto opt = getOptionInfo(id).lock()) addDelegate(opt->getIDHash(), std::move(callback));
+    auto& thisDelegate = m_delegates[id];
+    thisDelegate.push_back(std::move(callback));
 };
 
 void OptionManager::addDelegate(uint64_t id, Callback&& callback) {
-    auto& thisDelegate = m_delegates[id];
-    thisDelegate.push_back(std::move(callback));
+    auto strIDRes = getOptionIDForHash(id);
+    if (strIDRes.isErr()) return;
+
+    auto const strID = std::move(strIDRes).unwrap();
+    addDelegate(strID.c_str(), std::move(callback));
 };
 
 bool OptionManager::isCheatEnabled() const noexcept {
@@ -331,12 +335,17 @@ geode::Result<asp::BoxedString> OptionManager::getOptionIDForHash(uint64_t id) c
 };
 
 size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
-    if (auto opt = getOptionInfo(std::string{id}).lock()) return getDelegateCount(opt->getIDHash());
+    if (auto const it = m_delegates.find(id); it != m_delegates.end()) return it->second.size();
     return 0;
 };
 
 size_t OptionManager::getDelegateCount(uint64_t id) const noexcept {
-    if (auto const it = m_delegates.find(id); it != m_delegates.end()) return it->second.size();
+    auto strIDRes = getOptionIDForHash(id);
+    if (strIDRes.isErr()) return 0;
+
+    auto const strID = std::move(strIDRes).unwrap();
+    if (auto const it = m_delegates.find(strID); it != m_delegates.end()) return it->second.size();
+
     return 0;
 };
 
@@ -355,7 +364,7 @@ void OptionManager::toggleOption(uint64_t id, bool enable) {
 
 void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed) {
     if (auto opt = getOptionInfo(id).lock()) {
-        auto const it = m_delegates.find(opt->getIDHash());
+        auto const it = m_delegates.find(id);
         if (it != m_delegates.end()) {
             for (auto& cb : it->second) cb(enable);
         };
