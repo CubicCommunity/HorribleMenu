@@ -33,7 +33,7 @@ struct MathQuiz::Impl final {
 };
 
 MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {}
-MathQuiz::~MathQuiz() {}
+MathQuiz::~MathQuiz() = default;
 
 bool MathQuiz::init() {
     auto const theme = mod->getSettingValue<std::string>("theme");

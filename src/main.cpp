@@ -81,7 +81,7 @@ $on_game(Loaded) {
     ButtonSettingPressedEventV3(mod, "utils")
         .listen([](std::string_view buttonKey) {
             if (buttonKey == "copy-list") {
-                std::string list = "";
+                std::string list;
 
                 for (auto const& [id, o] : OptionManager::get()->getAllOptions()) {
                     if (o->isEnabled()) list = fmt::format("{}{} | {}\n", list, o->isCheating() ? "!" : " ", id);

@@ -57,8 +57,8 @@ struct MenuOptionCell::Impl final {
 
     bool hasInternet = false;  // would rather call doWeHaveInternet once
 
-    CCMenuItemToggler* toggler = nullptr;  // The toggler for the option
-    CCNode* newContainer = nullptr;        // Container for the "New!" label and icon
+    Toggler* toggler = nullptr;      // The toggler for the option
+    CCNode* newContainer = nullptr;  // Container for the "New!" label and icon
 
     Callback pinCallback = nullptr;  // Callback for when the option is pinned or unpinned
 
@@ -122,7 +122,7 @@ struct MenuOptionCell::Impl final {
 };
 
 MenuOptionCell::MenuOptionCell() : m_impl(std::make_unique<Impl>()) {}
-MenuOptionCell::~MenuOptionCell() {}
+MenuOptionCell::~MenuOptionCell() = default;
 
 bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet) {
     m_impl->option = std::move(option);
@@ -159,20 +159,37 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
 
     auto x = 5.0f;
 
-    auto togglerOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
-    togglerOff->setScale(0.875f);
-    auto togglerOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
-    togglerOn->setScale(0.875f);
-
     // toggler for the option
-    m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(MenuOptionCell::onToggle));
+    m_impl->toggler = Toggler::createWithStandardSprites(
+        0.875f,
+        [this](auto, bool now) {
+            if (m_impl->compatible) {
+                auto saved = options::get(m_impl->option->getID());
+                options::set(m_impl->option->getID(), now, saved.pin, true);
+
+                if (m_impl->option->isRestartRequired()) {
+                    Notification::create("Restart required!", NotificationIcon::Warning)->show();
+                    log::warn("Restart required to apply option {}", m_impl->option->getID());
+                };
+
+                log::info("Option {} now set to {}", m_impl->option->getName(), now ? "enabled" : "disabled");
+
+                m_impl->hideNewLabel();
+            } else {
+                m_impl->toggler->setToggled(false);
+            };
+
+            m_impl->notifyIncompats();
+        }
+    );
     m_impl->toggler->setID("toggler");
     m_impl->toggler->setAnchorPoint(anchor::center);
+    m_impl->toggler->setScaleMultiplier(1.25f);
     m_impl->toggler->setPosition({ x + 12.0f, yCenter });
     m_impl->toggler->setScale(0.875f);
 
     // Set toggler state based on saved mod option value
-    m_impl->toggler->toggle(options::isEnabled(m_impl->option->getID()));
+    m_impl->toggler->setToggled(options::isEnabled(m_impl->option->getID()));
 
     addChild(m_impl->toggler);
 
@@ -246,19 +263,23 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     menu->addChild(infoBtn);
 
     auto pinOff = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
-    pinOff->setScale(0.425f);
     pinOff->setOpacity(75);
     auto pinOn = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
-    pinOn->setScale(0.425f);
     pinOn->setOpacity(225);
 
     pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
     pinOn->setColor(themes::getColor(theme));
 
-    auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(MenuOptionCell::onPin));
-    pinBtn->setID("pin-btn");
+    auto pinBtn = Toggler::create(pinOff, pinOn, [this](auto, bool toggled) {
+        options::set(m_impl->option->getID(), options::isEnabled(m_impl->option->getID()), toggled, true);
 
-    pinBtn->toggle(options::isPinned(m_impl->option->getID()));
+        if (m_impl->pinCallback) m_impl->pinCallback();
+        m_impl->hideNewLabel();
+    });
+    pinBtn->setID("pin-btn");
+    pinBtn->setScale(0.425f);
+
+    pinBtn->setToggled(options::isPinned(m_impl->option->getID()));
 
     menu->addChild(pinBtn);
 
@@ -295,12 +316,10 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     m_impl->newContainer->setScale(0.75f);
 
     if (!m_impl->compatible) {
-        m_impl->toggler->toggle(false);
+        m_impl->toggler->setToggled(false);
 
-        togglerOn->setDisplayFrame(togglerOff->displayFrame());
-
-        togglerOff->setColor(colors::gray);
-        togglerOn->setColor(colors::gray);
+        static_cast<CCSprite*>(m_impl->toggler->getOffNode())->setColor(colors::gray);
+        static_cast<CCSprite*>(m_impl->toggler->getOnNode())->setColor(colors::gray);
 
         bg->setColor(colors::gray);
 
@@ -327,37 +346,6 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     };
 
     return true;
-}
-
-void MenuOptionCell::onToggle(CCObject*) {
-    if (m_impl->toggler && m_impl->compatible) {
-        auto now = !m_impl->toggler->isToggled();
-
-        auto saved = options::get(m_impl->option->getID());
-        options::set(m_impl->option->getID(), now, saved.pin, true);
-
-        if (m_impl->option->isRestartRequired()) {
-            Notification::create("Restart required!", NotificationIcon::Warning, 2.5f)->show();
-            log::warn("Restart required to apply option {}", m_impl->option->getID());
-        };
-
-        log::info("Option {} now set to {}", m_impl->option->getName(), now ? "enabled" : "disabled");
-
-        m_impl->hideNewLabel();
-    } else if (m_impl->toggler) {
-        m_impl->toggler->toggle(false);
-    };
-
-    m_impl->notifyIncompats();
-}
-
-void MenuOptionCell::onPin(CCObject* sender) {
-    if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
-        options::set(m_impl->option->getID(), options::isEnabled(m_impl->option->getID()), !pinBtn->isToggled(), true);
-
-        if (m_impl->pinCallback) m_impl->pinCallback();
-        m_impl->hideNewLabel();
-    };
 }
 
 void MenuOptionCell::setPinCallback(Callback&& callback) {

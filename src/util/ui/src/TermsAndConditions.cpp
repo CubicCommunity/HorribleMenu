@@ -17,7 +17,7 @@ struct TermsAndConditions::Impl final {
 };
 
 TermsAndConditions::TermsAndConditions() : m_impl(std::make_unique<Impl>()) {}
-TermsAndConditions::~TermsAndConditions() {}
+TermsAndConditions::~TermsAndConditions() = default;
 
 bool TermsAndConditions::init(Callback&& cb) {
     m_impl->callback = std::move(cb);

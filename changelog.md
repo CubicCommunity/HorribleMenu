@@ -1,17 +1,10 @@
-# v1.4.0-prerelease 
+# v1.4.0 
 - Raised minimum Geode loader support to `v5.10.0`
 - Option *Parry Obstacles* is no longer in development
 - Adjusted randomization pacing for *Input Roulette* option
-- Enhanced Discord authorization flow internally ([#18](https://github.com/CubicCommunity/HorribleMenu/pull/18))
-  - Horrible Menu now uses [gdcord](https://github.com/CubicCommunity/gdcord) library
 - Added version debug label to *Horrible Options Menu* interface
 - Fix some potential crashes
 - Internal optimizations
-
-**From Breakeode**,
-> *This update focuses on API additions for mod developers to work more easily with Horrible Menu's systems. While no new options were added to Horrible Menu directly for players, we hope this update makes it easier for developers to make their own add-on mods to Horrible Menu with even more insane features for you!*
-> 
-> *We've also made some bugfixes and optimizations so you can enjoy a better Horrible Menu for the long-term on Geometry Dash version 2.208x while we prepare to move this mod forward to the upcoming GD update, 2.209!*
 
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.9.0`

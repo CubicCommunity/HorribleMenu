@@ -18,6 +18,8 @@
 
 #include <matjson.hpp>
 
+#include <Geode/ui/Toggler.hpp>
+
 #include <Geode/ui/GeodeUI.hpp>
 
 #include <Geode/utils/web.hpp>

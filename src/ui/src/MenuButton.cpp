@@ -58,7 +58,7 @@ struct MenuButton::Impl final {
 };
 
 MenuButton::MenuButton() : m_impl(std::make_unique<Impl>()) {}
-MenuButton::~MenuButton() {}
+MenuButton::~MenuButton() = default;
 
 void MenuButton::setupSprite() {
     cue::resetNode(m_impl->sprite);

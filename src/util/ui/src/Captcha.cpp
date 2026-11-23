@@ -20,7 +20,7 @@ static constexpr auto g_buttons = std::to_array<std::pair<const char*, const cha
 });
 
 struct Captcha::Impl final {
-    std::string expected = "";
+    std::string expected;
 
     RobotVerifier* verifier = nullptr;
 
@@ -35,7 +35,7 @@ struct Captcha::Impl final {
 };
 
 Captcha::Captcha() : m_impl(std::make_unique<Impl>()) {}
-Captcha::~Captcha() {}
+Captcha::~Captcha() = default;
 
 void Captcha::setupVerifier(std::string btnID) {
     cue::resetNode(m_impl->verifier);

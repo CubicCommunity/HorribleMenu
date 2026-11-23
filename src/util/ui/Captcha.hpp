@@ -34,7 +34,7 @@ namespace cs::brkd::horrible {
             using Callback = geode::Function<void(bool)>;
 
         private:
-            std::string m_expected = "";
+            std::string m_expected;
             Callback m_callback = nullptr;
 
             void addNewBtn();

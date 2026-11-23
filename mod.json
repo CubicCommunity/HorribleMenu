@@ -154,6 +154,23 @@
                 ]
             }
         },
+        "menu-backdrop-opacity": {
+            "type": "int",
+            "name": "Menu Backdrop Opacity",
+            "description": "Change the opacity of the darkened backdrop of the <cg>Horrible Options</c> menu.",
+            "default": 200,
+            "min": 5,
+            "max": 250,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 20
+            }
+        },
         "floating-btn-section": {
             "type": "title",
             "name": "Floating Button",

@@ -31,7 +31,7 @@ struct JumpHealthMeter::Impl final {
 };
 
 JumpHealthMeter::JumpHealthMeter() : m_impl(std::make_unique<Impl>()) {}
-JumpHealthMeter::~JumpHealthMeter() {}
+JumpHealthMeter::~JumpHealthMeter() = default;
 
 bool JumpHealthMeter::init(Callback&& cb) {
     m_impl->callback = std::move(cb);

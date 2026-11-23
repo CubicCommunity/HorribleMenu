@@ -33,22 +33,17 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     );
     m_bg->setColor(colors::gray);
 
-    auto togglerOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
-    togglerOff->setScale(0.5f);
-    auto togglerOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
-    togglerOn->setScale(0.5f);
-
     // toggler for the category
-    m_toggler = CCMenuItemToggler::create(
-        togglerOff,
-        togglerOn,
-        this,
-        menu_selector(MenuCategoryFilterCell::onToggle)
+    m_toggler = Toggler::createWithStandardSprites(
+        0.5f,
+        [this](auto, bool on) {
+            if (m_toggleCallback) m_toggleCallback(m_category, on);
+            if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
+        }
     );
     m_toggler->setID("toggler");
     m_toggler->setAnchorPoint(anchor::center);
     m_toggler->setPosition({ 10.0f, getScaledContentHeight() / 2.0f });
-    m_toggler->setScale(0.875f);
 
     addChild(m_toggler);
 
@@ -65,21 +60,12 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     return true;
 }
 
-void MenuCategoryFilterCell::onToggle(CCObject* sender) {
-    if (auto toggler = typeinfo_cast<CCMenuItemToggler*>(sender)) {
-        auto on = !toggler->isOn();
-
-        if (m_toggleCallback) m_toggleCallback(m_category, on);
-        if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
-    };
-}
-
 void MenuCategoryFilterCell::setToggleCallback(Callback&& callback) {
     m_toggleCallback = std::move(callback);
 }
 
 void MenuCategoryFilterCell::setToggled(bool on) {
-    if (m_toggler) m_toggler->toggle(on);
+    if (m_toggler) m_toggler->setToggled(on);
     if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
 }
 

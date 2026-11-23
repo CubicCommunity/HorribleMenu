@@ -24,9 +24,6 @@ namespace cs::brkd::horrible {
         MenuOptionCell();
         ~MenuOptionCell();
 
-        void onToggle(cocos2d::CCObject*);
-        void onPin(cocos2d::CCObject* sender);
-
         bool init(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme, bool devMode, bool hasInternet);
 
     public:

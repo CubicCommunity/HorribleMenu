@@ -22,9 +22,9 @@ struct Menu::Impl final {
     bool devMode = mod->getSettingValue<bool>("dev-mode");
 
     SillyTier selectedTier = SillyTier::None;
-    std::string selectedCategory = "";
+    std::string selectedCategory;
 
-    std::string searchText = "";
+    std::string searchText;
 
     bool showIncompatible = mod->getSettingValue<bool>("show-incompatible");
 
@@ -39,6 +39,11 @@ struct Menu::Impl final {
 
     bool safeMode = OptionManager::get()->shouldBeSafeMode();
     std::string const theme = mod->getSettingValue<std::string>("theme");
+    GLubyte bdOpacity = mod->getSettingValue<GLubyte>("menu-backdrop-opacity");
+    bool fastMenu = GameManager::sharedState()->getGameVariable(GameVar::FastMenu);
+
+    CCNodeRGBA* extraMenu = nullptr;
+    Label* debLabel = nullptr;
 
     CCNode* safeModeContainer = nullptr;
 
@@ -120,7 +125,7 @@ struct Menu::Impl final {
 };
 
 Menu::Menu() : m_impl(std::make_unique<Impl>()) {}
-Menu::~Menu() {}
+Menu::~Menu() = default;
 
 void Menu::setupSafeModeNode(bool safeMode) {
     if (m_impl->safeModeContainer) {
@@ -236,14 +241,52 @@ void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
     m_mainLayer->addChild(m_impl->sillyFilterDropdown, 9);
 }
 
+void Menu::showAnimation() {
+    if (!m_impl->fastMenu) {
+        stopAllActions();
+        m_mainLayer->stopAllActions();
+
+        setOpacity(0);
+        m_mainLayer->setScale(0.0f);
+
+        m_closeBtn->setOpacity(0);
+        m_impl->extraMenu->setOpacity(0);
+        m_impl->debLabel->setOpacity(0);
+
+        static constexpr auto dur = 0.25f;
+#define HORRIBLE_FADEIN_ACTION CCEaseExponentialInOut::create(CCFadeTo::create(dur, 255))
+
+        m_closeBtn->runAction(HORRIBLE_FADEIN_ACTION);
+        m_impl->extraMenu->runAction(HORRIBLE_FADEIN_ACTION);
+        m_impl->debLabel->runAction(CCEaseExponentialInOut::create(CCFadeTo::create(dur, m_impl->devMode ? 200 : 100)));
+
+        runAction(CCSequence::createWithTwoActions(CCEaseExponentialInOut::create(CCFadeTo::create(dur, m_impl->bdOpacity)), CallFuncExt::create([this]() { setOpacity(m_impl->bdOpacity); })));
+        m_mainLayer->runAction(CCEaseExponentialInOut::create(CCScaleTo::create(dur, 1.0f)));
+    } else {
+        setOpacity(m_impl->bdOpacity);
+    };
+}
+
 bool Menu::init() {
     auto btns = themes::getCircleBaseColor(m_impl->theme);
 
     if (!Popup::init(450.0f, 280.0f, themes::getBackgroundSprite(m_impl->theme))) return false;
 
+    cue::resetNode(m_closeBtn);
+
+    m_closeBtn = Button::createWithNode(
+        themes::createThemeCircleSprite(btns),
+        [this](Button* sender) {
+            this->onClose(sender);
+        }
+    );
+    m_closeBtn->setID("close-btn");
+    m_closeBtn->setScaleMultiplier(1.25f);
+
+    addChildAtPosition(m_closeBtn, Anchor::TopLeft, { m_closeBtn->getScaledContentWidth() * 0.625f, -(m_closeBtn->getScaledContentHeight() * 0.625f) }, false);
+
     setID("options"_spr);
     setTitle("Horrible Options");
-    setCloseButtonSpr(themes::createThemeCircleSprite(btns));
 
     m_bgSprite->setZOrder(-9);
 
@@ -306,7 +349,7 @@ bool Menu::init() {
                         if (cat->getCategory() != category) cat->setToggled(false);
                     };
                 } else if (m_impl->selectedCategory == category) {
-                    m_impl->selectedCategory = "";
+                    m_impl->selectedCategory.clear();
                 };
 
                 m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
@@ -533,33 +576,32 @@ bool Menu::init() {
 
     auto loader = Loader::get();
 
-    auto debLabel = Label::create(
+    m_impl->debLabel = Label::create(
         m_impl->devMode ? fmt::format("{} ({}) {} ({}, Geode {}, GD {})", mod->getName(), mod->getID(), mod->getVersion().toVString(), platform::getString(), loader->getVersion(), loader->getGameVersion()) : fmt::format("{} {} ", mod->getName(), mod->getVersion().toVString()),
         "chatFont.fnt"
     );
-    debLabel->setID("debug-label");
-    debLabel->setScale(m_impl->devMode ? 0.5f : 0.375f);
-    debLabel->setAlignment(Label::Alignment::Center);
-    debLabel->setOpacity(m_impl->devMode ? 200 : 100);
-    debLabel->setAnchorPoint({ 0.5, 0 });
+    m_impl->debLabel->setID("debug-label");
+    m_impl->debLabel->setScale(m_impl->devMode ? 0.5f : 0.375f);
+    m_impl->debLabel->setAlignment(Label::Alignment::Center);
+    m_impl->debLabel->setOpacity(m_impl->devMode ? 200 : 100);
+    m_impl->debLabel->setAnchorPoint({ 0.5, 0 });
 
-    addChildAtPosition(debLabel, Anchor::Bottom, { 0.0f, m_impl->devMode ? 4.25f : 7.5f }, false);
+    addChildAtPosition(m_impl->debLabel, Anchor::Bottom, { 0.0f, m_impl->devMode ? 4.25f : 7.5f }, false);
 
-    m_closeBtn->setVisible(false);
+    auto extraMenuLayout = ColumnLayout::create()
+                               ->setGap(3.75f)
+                               ->setAutoScale(false)
+                               ->setAxisAlignment(AxisAlignment::End)
+                               ->setAutoGrowAxis(0.0f)
+                               ->setGrowCrossAxis(true);
 
-    auto closeBtn = Button::createWithNode(
-        themes::createThemeCircleSprite(btns),
-        [this](Button* sender) {
-            this->onClose(sender);
-        }
-    );
-    closeBtn->setID("close-btn");
-    closeBtn->setScaleMultiplier(1.25f);
+    m_impl->extraMenu = CCNodeRGBA::create();
+    m_impl->extraMenu->setID("extras-menu");
+    m_impl->extraMenu->setAnchorPoint({ 1, 0 });
+    m_impl->extraMenu->setCascadeOpacityEnabled(true);
+    m_impl->extraMenu->setLayout(extraMenuLayout);
 
-    addChildAtPosition(closeBtn, Anchor::TopLeft, { closeBtn->getScaledContentWidth() * 0.625f, -(closeBtn->getScaledContentHeight() * 0.625f) }, false);
-
-    auto extraMenu = CCNode::create();
-    extraMenu->setID("extras-menu");
+    addChildAtPosition(m_impl->extraMenu, Anchor::BottomRight, { -5.0f, 5.0f }, false);
 
     auto settingsBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
@@ -574,7 +616,7 @@ bool Menu::init() {
     settingsBtn->setID("settings-btn");
     settingsBtn->setScale(0.625f);
 
-    m_mainLayer->addChild(settingsBtn);
+    m_impl->extraMenu->addChild(settingsBtn);
 
     auto resetFiltersBtnSpr = CircleButtonSprite::createWithSpriteFrameName(
         "geode.loader/reload.png",
@@ -595,7 +637,7 @@ bool Menu::init() {
                 [this, &dropdownPos](auto, bool ok) {
                     if (ok) {
                         m_impl->selectedTier = SillyTier::None;
-                        m_impl->selectedCategory = "";
+                        m_impl->selectedCategory;
 
                         for (auto const& cat : m_impl->categoryItems) {
                             cat->setToggled(false);
@@ -609,10 +651,12 @@ bool Menu::init() {
         }
     );
     resetFiltersBtn->setID("reset-filters-btn");
-    resetFiltersBtn->setScale(0.625f);
+    resetFiltersBtn->setScale(0.75f);
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
 
-    m_mainLayer->addChild(resetFiltersBtn);
+    m_impl->extraMenu->addChild(resetFiltersBtn);
+
+    m_impl->extraMenu->updateLayout();
 
     addEventListener(
         SettingChangedEvent(mod, setting::SafeMode),
@@ -651,8 +695,11 @@ bool Menu::init() {
 
 void Menu::onEnter() {
     Popup::onEnter();
+
     MenuEvent().send(this, true);
     s_inst = this;
+
+    showAnimation();
 }
 
 void Menu::onExit() {

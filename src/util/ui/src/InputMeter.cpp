@@ -25,7 +25,7 @@ struct InputMeter::Impl final {
 };
 
 InputMeter::InputMeter() : m_impl(std::make_unique<Impl>()) {}
-InputMeter::~InputMeter() {}
+InputMeter::~InputMeter() = default;
 
 bool InputMeter::init() {
     if (!CCNode::init()) return false;

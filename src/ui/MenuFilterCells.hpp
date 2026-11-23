@@ -9,15 +9,13 @@ namespace cs::brkd::horrible {
         using Callback = geode::Function<void(std::string_view, bool)>;
 
     private:
-        std::string m_category = "";             // The category name
-        CCMenuItemToggler* m_toggler = nullptr;  // The toggler for the option
-        Callback m_toggleCallback = nullptr;     // Callback for when the category is toggled
+        std::string m_category;               // The category name
+        geode::Toggler* m_toggler = nullptr;  // The toggler for the option
+        Callback m_toggleCallback = nullptr;  // Callback for when the category is toggled
 
         geode::NineSlice* m_bg = nullptr;
 
     protected:
-        void onToggle(CCObject* sender);
-
         bool init(cocos2d::CCSize const& size, std::string category);
 
     public:

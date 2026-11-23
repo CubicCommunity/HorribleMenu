@@ -23,7 +23,7 @@ struct SpamChallenge::Impl final {
 };
 
 SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {}
-SpamChallenge::~SpamChallenge() {}
+SpamChallenge::~SpamChallenge() = default;
 
 bool SpamChallenge::init() {
     m_impl->inputTarget = rng::get<uint8_t>(m_impl->inputTarget, 20);

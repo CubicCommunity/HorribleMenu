@@ -45,7 +45,7 @@ struct WhackButton::Impl final {
 };
 
 WhackButton::WhackButton() : m_impl(std::make_unique<Impl>()) {}
-WhackButton::~WhackButton() {}
+WhackButton::~WhackButton() = default;
 
 void WhackButton::reload() {
     cue::resetNode(m_impl->button);

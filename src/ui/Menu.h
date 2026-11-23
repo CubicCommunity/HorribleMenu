@@ -29,6 +29,8 @@ namespace cs::brkd::horrible {
         void setupImageBackground(fs::PathView path);
         void setupSillyFilterDropdown(cocos2d::CCPoint const& pos);
 
+        void showAnimation();
+
     protected:
         Menu();
         ~Menu();
@@ -54,6 +56,6 @@ namespace cs::brkd::horrible {
             };
 
             if (auto popup = Menu::create()) popup->show();
-        };
+        }
     };
 };
