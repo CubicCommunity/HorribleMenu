@@ -52,7 +52,7 @@ Keep includes clean, make sure your IDE isn't configured to automatically add th
 
 // Include namespaces
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 // Then get to writing!
 ```

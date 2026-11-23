@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "captcha"
 
@@ -25,7 +25,7 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
 
         Ref<Captcha> currentCaptcha = nullptr;
 
-        float defSpeed = 0.f;
+        float defSpeed = 0.0f;
     };
 
     HORRIBLE_SETUP_INTERFACE_FUNC {
@@ -36,23 +36,23 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         };
 
         nextCaptcha();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
         m_fields->defSpeed = m_player1->m_playerSpeed;
-    };
+    }
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
         cue::resetNode(m_fields->currentCaptcha);
-    };
+    }
 
     void levelComplete() {
         PlayLayer::levelComplete();
         cue::resetNode(m_fields->currentCaptcha);
-    };
+    }
 
     void pauseGame(bool unfocused) {
         PlayLayer::pauseGame(unfocused);
@@ -63,7 +63,7 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
             cue::resetNode(f->currentCaptcha);
             resetLevelFromStart();
         };
-    };
+    }
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
@@ -72,14 +72,14 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
             cue::resetNode(m_fields->currentCaptcha);
             nextCaptcha();
         };
-    };
+    }
 
     void nextCaptcha() {
         log::trace("scheduling captcha");
 
         unschedule(schedule_selector(CaptchaPlayLayer::doCaptcha));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(CaptchaPlayLayer::doCaptcha), rng::get(30.f, 5.f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(CaptchaPlayLayer::doCaptcha), rng::get(30.0f, 5.0f) * rng::chanceToDelayPct(m_fields->chance));
+    }
 
     void doCaptcha(float) {
         auto f = m_fields.self();
@@ -115,7 +115,7 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         queueInMainThread([self = WeakRef(this)]() {
             if (auto s = self.lock()) s->nextCaptcha();
         });
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, CaptchaPlayLayer);

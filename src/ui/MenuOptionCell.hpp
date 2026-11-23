@@ -4,7 +4,7 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     class MenuNothingNode final : public cocos2d::CCNode {
     protected:
         bool init(cocos2d::CCSize const& size, cocos2d::CCPoint const& pos);

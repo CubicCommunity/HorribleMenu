@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "spam"
 
@@ -35,29 +35,29 @@ class $modify(SpamPlayLayer, PlayLayer) {
         };
 
         nextSpam();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
         cue::resetNode(m_fields->currentSpam);
-    };
+    }
 
     void levelComplete() {
         PlayLayer::levelComplete();
         cue::resetNode(m_fields->currentSpam);
-    };
+    }
 
     void togglePracticeMode(bool practiceMode) {
         PlayLayer::togglePracticeMode(practiceMode);
 
         cue::resetNode(m_fields->currentSpam);
         nextSpam();
-    };
+    }
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
@@ -66,14 +66,14 @@ class $modify(SpamPlayLayer, PlayLayer) {
             cue::resetNode(m_fields->currentSpam);
             nextSpam();
         };
-    };
+    }
 
     void nextSpam() {
         log::trace("scheduling spam challenge");
 
         unschedule(schedule_selector(SpamPlayLayer::doSpam));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), rng::get(30.f, 5.f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), rng::get(30.0f, 5.0f) * rng::chanceToDelayPct(m_fields->chance));
+    }
 
     void doSpam(float) {
         auto f = m_fields.self();
@@ -104,7 +104,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
         queueInMainThread([self = WeakRef(this)]() {
             if (auto s = self.lock()) s->nextSpam();
         });
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, SpamPlayLayer);

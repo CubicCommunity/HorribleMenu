@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "death"
 
@@ -24,11 +24,11 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
         if (game == m_anticheatSpike) return PlayLayer::destroyPlayer(player, game);
 
         sfx::play(sfx::file::bad);
-        GJBaseGameLayer::shakeCamera(1.f, 2.f, 1.f);
+        GJBaseGameLayer::shakeCamera(1.0f, 2.0f, 1.0f);
 
         playDeath(m_player1);
         playDeath(m_player2);
-    };
+    }
 
     void playDeath(PlayerObject* player) {
         if (player) {
@@ -37,5 +37,5 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
 
             player->m_isDead = false;
         };
-    };
+    }
 };

@@ -17,7 +17,7 @@ struct HorribleOptionSave final {
 };
 
 // Container for Horrible Menu API
-namespace horrible {
+namespace cs::brkd::horrible {
     // Alias for `HorribleOptionSave`
     using OptionSave = HorribleOptionSave;
 

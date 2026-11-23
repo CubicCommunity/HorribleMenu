@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "random_mirror"
 
@@ -34,12 +34,12 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
         };
 
         scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 0.125f);
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void toggleFlipped(bool p0, bool p1) {
         PlayLayer::toggleFlipped(p0, p1);
@@ -48,17 +48,17 @@ class $modify(RandomMirrorPlayLayer, PlayLayer) {
 
         f->isFlipped = p0;
         log::debug("{}", f->isFlipped ? "flipped" : "unflipped");
-    };
+    }
 
     void nextFlipPortal(float) {
         log::trace("scheduling flip");
-        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::flipPortal), rng::get(10.f, 1.f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+        scheduleOnce(schedule_selector(RandomMirrorPlayLayer::flipPortal), rng::get(10.0f, 1.0f) * rng::chanceToDelayPct(m_fields->chance));
+    }
 
     void flipPortal(float) {
         toggleFlipped(!m_fields->isFlipped, false);
         scheduleOnce(schedule_selector(RandomMirrorPlayLayer::nextFlipPortal), 2.5f);
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, RandomMirrorPlayLayer);

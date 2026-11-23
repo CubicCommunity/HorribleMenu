@@ -22,7 +22,7 @@ struct matjson::Serialize<HorribleOptionSave> final {
 };
 
 // Container for Horrible Menu API functions
-namespace horrible {
+namespace cs::brkd::horrible {
     template <class T>
     using HashedMapU64 = std::unordered_map<uint64_t, T>;
 
@@ -34,21 +34,12 @@ namespace horrible {
         using Callback = geode::Function<void(bool)>;
 
     private:
-        geode::utils::StringMap<SharedOption> m_options;  // Map of registered options
-        std::vector<std::string> m_categories;            // Array of auto-registered categories
-
-        geode::utils::StringMap<std::vector<SharedOption>> m_categoryMap;  // Map of options bound to category name
-        geode::utils::StringMap<const geode::Mod* const> m_integrations;   // Map of auto-registered external mods using this API
-
-        HashedMapU64<asp::BoxedString> m_optHashes;  // Map of FNV-1a-hashed option IDs to their string IDs
-        HashedMapU64<OptionSave> m_saveCache;        // Map of cached states
-
-        geode::utils::StringMap<std::vector<Callback>> m_delegates;  // Map of option ID to array of delegates to call when that option is toggled
-        std::unordered_set<uint64_t> m_enabledCheats;                // Map of currently enabled cheat options, used for dynamic safe mode
+        struct Impl;
+        std::unique_ptr<Impl> m_impl;
 
     protected:
-        OptionManager() = default;
-        ~OptionManager() = default;
+        OptionManager();
+        ~OptionManager();
 
         OptionManager(const OptionManager&) = delete;
         OptionManager& operator=(const OptionManager&) = delete;
@@ -78,14 +69,12 @@ namespace horrible {
 
         /// Register a new option
         /// @param option Constructed option object
-        void registerOption(SharedOption option);
+        geode::Result<> registerOption(SharedOption option);
 
         /// Check if a cheat option is currently enabled
         bool isCheatEnabled() const noexcept;
 
-        /// Returns a array with references to all registered options
-        /// @deprecated Will be replaced with `OptionManager::getAllOptions` in GD 2.209x ports
-        [[nodiscard]] [[deprecated("Use `OptionManager::getAllOptions` instead")]] std::vector<std::weak_ptr<Option>> getOptions() const;
+        /// Returns the map with references to all registered options
         geode::utils::StringMap<SharedOption> const& getAllOptions() const noexcept;
 
         /// Returns a reference to a vector of options for a specific category
@@ -176,12 +165,12 @@ namespace horrible {
 };
 
 // Statically register an option
-#define HORRIBLE_REGISTER_OPTION(opt)                                          \
-    $on_mod(Loaded) {                                                          \
-        if (auto om = horrible::OptionManager::get()) om->registerOption(opt); \
+#define HORRIBLE_REGISTER_OPTION(opt)                                                    \
+    $on_mod(Loaded) {                                                                    \
+        if (auto om = cs::brkd::horrible::OptionManager::get()) om->registerOption(opt); \
     }
 
-#define HORRIBLE_DELEGATE_HOOKS_FUNC(optID) horrible::delegateHooks(optID, self.m_hooks)
+#define HORRIBLE_DELEGATE_HOOKS_FUNC(optID) cs::brkd::horrible::delegateHooks(optID, self.m_hooks)
 
 // Delegate hooks to OptionManager for dynamic toggling
 #define HORRIBLE_DELEGATE_HOOKS(optID)       \

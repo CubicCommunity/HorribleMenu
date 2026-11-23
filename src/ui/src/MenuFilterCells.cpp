@@ -2,10 +2,12 @@
 
 #include <Util.h>
 
+#include <asp/iter.hpp>
+
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 static constexpr auto filterId = "abcdefghijklmnopqrstuvwxyz0123456789-_./ ";
 
@@ -17,17 +19,18 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     // lol
     setID(str::join(asp::iter::split(str::filter(str::toLower(m_category), filterId), " ").collect(), "-"));
     setContentSize(size);
-    setAnchorPoint({0.5, 1});
+    setAnchorPoint({ 0.5, 1 });
 
     m_bg = cue::attachBackground(
         this,
         {
             .opacity = 175,
-            .sidePadding = 0.f,
-            .verticalPadding = 0.f,
+            .sidePadding = 0.0f,
+            .verticalPadding = 0.0f,
             .cornerRoundness = -0.25f,
             .texture = themes::square,
-        });
+        }
+    );
     m_bg->setColor(colors::gray);
 
     auto togglerOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
@@ -40,10 +43,11 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
         togglerOff,
         togglerOn,
         this,
-        menu_selector(MenuCategoryFilterCell::onToggle));
+        menu_selector(MenuCategoryFilterCell::onToggle)
+    );
     m_toggler->setID("toggler");
     m_toggler->setAnchorPoint(anchor::center);
-    m_toggler->setPosition({10.f, getScaledContentHeight() / 2.f});
+    m_toggler->setPosition({ 10.0f, getScaledContentHeight() / 2.0f });
     m_toggler->setScale(0.875f);
 
     addChild(m_toggler);
@@ -52,14 +56,14 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     auto nameLabel = Label::create(m_category.c_str(), font::gold);
     nameLabel->setID("name-label");
     nameLabel->setScale(0.375f);
-    nameLabel->setLimitLabelWidth(getScaledContentWidth() - 35.f, 0.375f, 0.125f);
-    nameLabel->setPosition({20.f, getScaledContentHeight() / 2.f});
-    nameLabel->setAnchorPoint({0.f, 0.5f});
+    nameLabel->setLimitLabelWidth(getScaledContentWidth() - 35.0f, 0.375f, 0.125f);
+    nameLabel->setPosition({ 20.0f, getScaledContentHeight() / 2.0f });
+    nameLabel->setAnchorPoint({ 0.0f, 0.5f });
 
     addChild(nameLabel);
 
     return true;
-};
+}
 
 void MenuCategoryFilterCell::onToggle(CCObject* sender) {
     if (auto toggler = typeinfo_cast<CCMenuItemToggler*>(sender)) {
@@ -68,20 +72,20 @@ void MenuCategoryFilterCell::onToggle(CCObject* sender) {
         if (m_toggleCallback) m_toggleCallback(m_category, on);
         if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
     };
-};
+}
 
 void MenuCategoryFilterCell::setToggleCallback(Callback&& callback) {
     m_toggleCallback = std::move(callback);
-};
+}
 
 void MenuCategoryFilterCell::setToggled(bool on) {
     if (m_toggler) m_toggler->toggle(on);
     if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
-};
+}
 
 ZStringView MenuCategoryFilterCell::getCategory() const noexcept {
     return m_category;
-};
+}
 
 MenuCategoryFilterCell* MenuCategoryFilterCell::create(CCSize const& size, std::string category) {
     auto ret = new MenuCategoryFilterCell();
@@ -92,7 +96,7 @@ MenuCategoryFilterCell* MenuCategoryFilterCell::create(CCSize const& size, std::
 
     delete ret;
     return nullptr;
-};
+}
 
 bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string id, ZStringView label, ccColor3B const& color) {
     m_silly = silly;
@@ -101,33 +105,34 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
 
     setID(std::move(id));
     setContentSize(size);
-    setAnchorPoint({0, 0.5});
+    setAnchorPoint({ 0, 0.5 });
     setZOrder(-1);
 
     auto bg = cue::attachBackground(
         this,
         {
             .opacity = 175,
-            .sidePadding = 0.f,
-            .verticalPadding = 0.f,
+            .sidePadding = 0.0f,
+            .verticalPadding = 0.0f,
             .texture = themes::square,
-        });
+        }
+    );
     bg->setColor(color);
 
     auto tierLabel = Label::create(label.c_str(), font::big);
     tierLabel->setID("label");
     tierLabel->setScale(0.5f);
     tierLabel->setAnchorPoint(anchor::center);
-    tierLabel->setPosition(getScaledContentSize() / 2.f);
+    tierLabel->setPosition(getScaledContentSize() / 2.0f);
 
     addChild(tierLabel, 1);
 
     return true;
-};
+}
 
 SillyTier MenuSillyFilterCell::getSillyTier() const noexcept {
     return m_silly;
-};
+}
 
 MenuSillyFilterCell* MenuSillyFilterCell::create(CCSize const& size, SillyTier silly, std::string id, ZStringView label, ccColor3B const& color) {
     auto ret = new MenuSillyFilterCell();
@@ -138,4 +143,4 @@ MenuSillyFilterCell* MenuSillyFilterCell::create(CCSize const& size, SillyTier s
 
     delete ret;
     return nullptr;
-};
+}

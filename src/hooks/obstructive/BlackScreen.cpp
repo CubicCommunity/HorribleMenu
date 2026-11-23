@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "black_screen"
 
@@ -27,12 +27,12 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
         };
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), rng::get(3.75f));
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void showBlackScreen(float) {
         log::trace("Showing black screen after delay");
@@ -44,15 +44,13 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
         blackScreen->setColor(colors::black);
         blackScreen->setAnchorPoint(anchor::center);
         blackScreen->setContentSize(winSize);
-        blackScreen->setPosition(winSize / 2.f);
+        blackScreen->setPosition(winSize / 2.0f);
 
         m_uiLayer->addChild(blackScreen, HIGHEST_Z);
 
         // Schedule removal after 0.5 seconds, then schedule to show again after a random delay
-        blackScreen->runAction(CCSequence::createWithTwoActions(
-            CCDelayTime::create(rng::get(0.25f, 0.125f)),
-            CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))));
-    };
+        blackScreen->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(rng::get(0.25f, 0.125f)), CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))));
+    }
 
     void removeBlackScreen(CCNode* sender) {
         cue::resetNode(sender);
@@ -61,7 +59,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
         log::debug("Black screen will appear again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, BlackScreenPlayLayer);

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace horrible {
+namespace cs::brkd::horrible {
     namespace util {
         // Cursor utils
         namespace cursor {

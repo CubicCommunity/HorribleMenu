@@ -6,7 +6,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "mock"
 
@@ -15,7 +15,7 @@ static auto const o = Option::create(THIS_ID)
                           ->setDescription("Occasionally taunts you in the main menu with a screenshot of one of your 90%-99% fails.\n<co>Must be enabled with Safe Mode disabled to save new best records.</c>\n<cl>suggested by Wuffin</c>")
                           ->setCategory(category::misc)
                           ->setSillyTier(SillyTier::Medium)
-                          ->setSupportedPlatforms({Platform::Windows, Platform::Android})
+                          ->setSupportedPlatforms({ Platform::Windows, Platform::Android })
                           ->autoRegister();
 
 #if !defined(GEODE_IS_MACOS) & !defined(GEODE_IS_IOS)  // not compat with these platforms
@@ -54,12 +54,12 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                     log::info("Displaying {}", pngPath);
 
-                    auto ss = LazySprite::create({192.f, 108.f}, false);
+                    auto ss = LazySprite::create({ 192.0f, 108.0f }, false);
                     ss->setID("mocked"_spr);
                     ss->setScale(0.25);
                     ss->setAutoResize(true);
                     ss->setAnchorPoint(anchor::center);
-                    ss->setPosition({-192.f, getScaledContentHeight() / 2.f});
+                    ss->setPosition({ -192.0f, getScaledContentHeight() / 2.0f });
 
                     ss->setLoadCallback([this, ss, percent](Result<> res) {
                         if (res.isOk()) {
@@ -69,9 +69,9 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                             auto percLabel = Label::create(percLabelText.c_str(), font::big);
                             percLabel->setID("percentage");
-                            percLabel->setPosition(ss->getScaledContentSize() / 2.f);
+                            percLabel->setPosition(ss->getScaledContentSize() / 2.0f);
                             percLabel->ignoreAnchorPointForPosition(false);
-                            percLabel->setAnchorPoint({0, 0});
+                            percLabel->setAnchorPoint({ 0, 0 });
                             percLabel->setScale(2.5);
 
                             ss->addChild(percLabel);
@@ -83,10 +83,10 @@ class $modify(MockMenuLayer, MenuLayer) {
                             float yB = getScaledContentHeight() * rA;  // ending height pos
 
                             ss->setPositionY(getScaledContentHeight() * yA);
-                            ss->setRotation(360.f * (yA * yB));  // random rotation
+                            ss->setRotation(360.0f * (yA * yB));  // random rotation
 
-                            auto move = CCEaseIn::create(CCMoveTo::create(10.f, {getScaledContentWidth() + 192.f, getScaledContentHeight() * yB}), 1.f);
-                            auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.f), 1.f);
+                            auto move = CCEaseIn::create(CCMoveTo::create(10.0f, { getScaledContentWidth() + 192.0f, getScaledContentHeight() * yB }), 1.0f);
+                            auto rotate = CCEaseOut::create(CCRotateBy::create(12.5f, 45.0f), 1.0f);
 
                             auto action = CCSpawn::createWithTwoActions(move, rotate);
                             ss->runAction(action);
@@ -109,7 +109,7 @@ class $modify(MockMenuLayer, MenuLayer) {
         };
 
         return true;
-    };
+    }
 };
 
 class $modify(MockPlayLayer, PlayLayer) {
@@ -134,7 +134,7 @@ class $modify(MockPlayLayer, PlayLayer) {
             if (auto image = renderTexture->newCCImage()) {
                 auto const path = mod->getSaveDir() / fmt::format("{}.png", id);
 
-                if (image->saveToFile(str::pathToString(path).c_str(), false)) {
+                if (image->saveToFile(path.c_str(), false)) {
                     auto const mockConfigPath = mod->getSaveDir() / "mock.json";
                     auto const mockConfig = file::readJson(mockConfigPath);  // get the saved fails to mock the player with :)
 
@@ -149,7 +149,7 @@ class $modify(MockPlayLayer, PlayLayer) {
 
                         toWrite = mockConfigUnwr;
                     } else {
-                        toWrite = json::makeObject({{numToString(id), percentage}});
+                        toWrite = json::makeObject({ { numToString(id), percentage } });
                     };
 
                     if (!toWrite.isNull()) {
@@ -174,7 +174,7 @@ class $modify(MockPlayLayer, PlayLayer) {
         };
 
         PlayLayer::showNewBest(newReward, orbs, diamonds, demonKey, noRetry, noTitle);
-    };
+    }
 
     void levelComplete() {
         int id = m_level->m_levelID;
@@ -198,6 +198,6 @@ class $modify(MockPlayLayer, PlayLayer) {
         };
 
         PlayLayer::levelComplete();
-    };
+    }
 };
 #endif

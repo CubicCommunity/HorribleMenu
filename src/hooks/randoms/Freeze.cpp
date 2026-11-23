@@ -6,7 +6,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "freeze"
 
@@ -33,7 +33,7 @@ class $modify(FreezeMenuLayer, MenuLayer) {
         };
 
         return true;
-    };
+    }
 };
 
 class $modify(FreezePlayLayer, PlayLayer) {
@@ -49,14 +49,14 @@ class $modify(FreezePlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (auto gm = GameManager::sharedState()) {
-            if (rng::fast() < f->chance) capFPS(1.f);
+            if (rng::fast() < f->chance) capFPS(1.0f);
         };
-    };
+    }
 
     void pauseGame(bool p0) {
         revertFPS();
         PlayLayer::pauseGame(p0);
-    };
+    }
 
     void revertFPS() {
         // default to user old fps
@@ -67,12 +67,12 @@ class $modify(FreezePlayLayer, PlayLayer) {
         gm->setGameVariable("0116", true);
 
         // Use seconds per frame, not raw FPS
-        float interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f);  // minimum 10 FPS
-        if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;      // fallback to 60 FPS if invalid
+        float interval = (oldFPS > 10.0f) ? (1.0f / oldFPS) : (1.0f / 60.0f);  // minimum 10 FPS
+        if (interval <= 0.0f || interval > 1.0f) interval = 1.0f / 60.0f;      // fallback to 60 FPS if invalid
 
         CCDirector::sharedDirector()->setAnimationInterval(interval);
         log::debug("reset fps to {} (interval {})", oldFPS, interval);
-    };
+    }
 
     void capFPS(float value) {
         auto gm = GameManager::sharedState();
@@ -80,17 +80,17 @@ class $modify(FreezePlayLayer, PlayLayer) {
         gm->setGameVariable("0116", true);
         gm->setGameVariable("0116", true);
 
-        float interval = 1.f / value;                                  // cap fps to 60
-        if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;  // fallback to 60 FPS if invalid
+        float interval = 1.0f / value;                                     // cap fps to 60
+        if (interval <= 0.0f || interval > 1.0f) interval = 1.0f / 60.0f;  // fallback to 60 FPS if invalid
 
         CCDirector::sharedDirector()->setAnimationInterval(interval);
         log::debug("cap fps to {} (interval {})", value, interval);
-    };
+    }
 
     void onQuit() {
         revertFPS();
         PlayLayer::onQuit();
-    };
+    }
 
     void updateProgressbar() {
         // check if current percentage is less than or equal to 90
@@ -102,8 +102,8 @@ class $modify(FreezePlayLayer, PlayLayer) {
             // Randomize FPS between 1 and 45
             int rndFps = rng::get(45, 1);  // 1 to 45 inclusive
 
-            auto interval = 1.f / static_cast<float>(rndFps);
-            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;  // fallback to 60 FPS if invalid
+            auto interval = 1.0f / static_cast<float>(rndFps);
+            if (interval <= 0.0f || interval > 1.0f) interval = 1.0f / 60.0f;  // fallback to 60 FPS if invalid
 
             CCDirector::sharedDirector()->setAnimationInterval(interval);
 
@@ -117,8 +117,8 @@ class $modify(FreezePlayLayer, PlayLayer) {
             auto oldFPS = mod->getSavedValue<float>("fps");
 
             // Use seconds per frame, not raw FPS
-            auto interval = (oldFPS > 10.f) ? (1.f / oldFPS) : (1.f / 60.f);  // minimum 10 FPS
-            if (interval <= 0.f || interval > 1.f) interval = 1.f / 60.f;     // fallback to 60 FPS if invalid
+            auto interval = (oldFPS > 10.0f) ? (1.0f / oldFPS) : (1.0f / 60.0f);  // minimum 10 FPS
+            if (interval <= 0.0f || interval > 1.0f) interval = 1.0f / 60.0f;     // fallback to 60 FPS if invalid
 
             CCDirector::sharedDirector()->setAnimationInterval(interval);
 
@@ -126,5 +126,5 @@ class $modify(FreezePlayLayer, PlayLayer) {
         };
 
         PlayLayer::updateProgressbar();
-    };
+    }
 };

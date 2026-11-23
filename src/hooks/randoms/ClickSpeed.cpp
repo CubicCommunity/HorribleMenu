@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayerObject.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "click_speed"
 
@@ -26,10 +26,10 @@ class $modify(ClickSpeedPlayerObject, PlayerObject) {
         auto currentSpeed = m_playerSpeed;
         log::trace("current speed: {}", currentSpeed);
 
-        m_playerSpeed = rng::flip() ? currentSpeed + 1.f : currentSpeed - 1.f;
+        m_playerSpeed = rng::flip() ? currentSpeed + 1.0f : currentSpeed - 1.0f;
 
         log::debug("Click Speed modified player speed to {}", m_playerSpeed);
 
         return PlayerObject::pushButton(p0);
-    };
+    }
 };

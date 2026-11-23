@@ -6,7 +6,7 @@
 #include <Geode/modify/EnhancedGameObject.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "dementia"
 
@@ -26,8 +26,8 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 
         unsigned int lastMusicTime = 0;  // last music time in milliseconds
 
-        float lastX = 0.f;  // last recorded X position
-        float lastY = 0.f;  // last recorded Y position
+        float lastX = 0.0f;  // last recorded X position
+        float lastY = 0.0f;  // last recorded Y position
     };
 
     bool pushButton(PlayerButton p0) {
@@ -45,7 +45,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
 
             // dementia
             if (rng::chance(f->chance)) {
-                setPosition({f->lastX, f->lastY});
+                setPosition({ f->lastX, f->lastY });
                 log::trace("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
 
                 // set the music time back to the last recorded time
@@ -63,7 +63,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
         };
 
         return PlayerObject::pushButton(p0);
-    };
+    }
 };
 
 class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
@@ -71,9 +71,9 @@ class $modify(DementiaEnhancedGameObject, EnhancedGameObject) {
 
     bool hasBeenActivated() {
         return false;
-    };
+    }
 
     bool hasBeenActivatedByPlayer(PlayerObject* p0) {
         return false;
-    };
+    }
 };

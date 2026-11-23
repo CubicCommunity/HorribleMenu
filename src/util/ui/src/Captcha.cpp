@@ -5,18 +5,18 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 // id, sprite name
 static constexpr auto g_buttons = std::to_array<std::pair<const char*, const char*>>({
-    {"The Yellow One", "icon_yellow.png"_spr},
-    {"Furry", "icon_colonthree.png"_spr},
-    {"Extreme David", "diffIcon_10_btn_001.png"},
-    {"Money", "currencyOrbIcon_001.png"},
-    {"Cooler Vaultkeeper", "GJ_rateDiffBtnMod_001.png"},
-    {"Compact Lists", "GJ_smallModeIcon_001.png"},
-    {"Subscribe to Breakeode", "gj_ytIcon_001.png"},
-    {"Globed Death Effect", "explosionIcon_20_001.png"},
+    { "The Yellow One", "icon_yellow.png"_spr },
+    { "Furry", "icon_colonthree.png"_spr },
+    { "Extreme David", "diffIcon_10_btn_001.png" },
+    { "Money", "currencyOrbIcon_001.png" },
+    { "Cooler Vaultkeeper", "GJ_rateDiffBtnMod_001.png" },
+    { "Compact Lists", "GJ_smallModeIcon_001.png" },
+    { "Subscribe to Breakeode", "gj_ytIcon_001.png" },
+    { "Globed Death Effect", "explosionIcon_20_001.png" },
 });
 
 struct Captcha::Impl final {
@@ -26,16 +26,16 @@ struct Captcha::Impl final {
 
     ProgressBar* countdown = nullptr;
 
-    float totalTime = 10.f;
+    float totalTime = 10.0f;
     float timeRemaining = totalTime;
-    float timeDt = 0.f;
+    float timeDt = 0.0f;
 
     bool success = false;
     Callback callback = nullptr;
 };
 
-Captcha::Captcha() : m_impl(std::make_unique<Impl>()) {};
-Captcha::~Captcha() {};
+Captcha::Captcha() : m_impl(std::make_unique<Impl>()) {}
+Captcha::~Captcha() {}
 
 void Captcha::setupVerifier(std::string btnID) {
     cue::resetNode(m_impl->verifier);
@@ -43,25 +43,23 @@ void Captcha::setupVerifier(std::string btnID) {
     m_impl->verifier = RobotVerifier::create(std::move(btnID), [this](bool success) {
         setSuccess(success);
     });
-    m_impl->verifier->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, (m_mainLayer->getScaledContentHeight() / 2.f) - 8.75f});
+    m_impl->verifier->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, (m_mainLayer->getScaledContentHeight() / 2.0f) - 8.75f });
 
     m_mainLayer->addChild(m_impl->verifier, 9);
-};
+}
 
 bool Captcha::init() {
     m_impl->expected = g_buttons[rng::get(g_buttons.size() - 1)].first;
 
     auto const theme = mod->getSettingValue<std::string>("theme");
 
-    if (!Popup::init({400.f, 275.f}, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init({ 400.0f, 275.0f }, themes::getBackgroundSprite(theme))) return false;
 
     setID("captcha"_spr);
     setTitle("Woah there!");
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
     setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
-
-    popup::closeBtnID(m_closeBtn);
 
     m_closeBtn->setVisible(false);
     m_closeBtn->setEnabled(false);
@@ -72,19 +70,19 @@ bool Captcha::init() {
     label->setID("message");
     label->setScale(0.75f);
     label->setAlignment(Label::Alignment::Center);
-    label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
+    label->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, m_mainLayer->getScaledContentHeight() - 37.5f });
     label->setAnchorPoint(anchor::center);
 
     m_mainLayer->addChild(label);
 
-    m_impl->countdown = ProgressBar::create(ProgressBarStyle::Solid);
+    m_impl->countdown = ProgressBar::create(ProgressBar::Style::Solid);
     m_impl->countdown->setID("countdown");
     m_impl->countdown->setScale(0.625f);
     m_impl->countdown->setAnchorPoint(anchor::center);
-    m_impl->countdown->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 17.5f});
-    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
+    m_impl->countdown->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 17.5f });
+    m_impl->countdown->setFillColor(colors::fadeColor(100.0f));
 
-    m_impl->countdown->updateProgress(100.f);
+    m_impl->countdown->updateProgress(100.0f);
 
     m_mainLayer->addChild(m_impl->countdown);
 
@@ -97,7 +95,8 @@ bool Captcha::init() {
         },
         {
             .zOrder = -1,
-        });
+        }
+    );
     bg->setPosition(m_impl->verifier->getPosition());
 
     m_mainLayer->addChild(bg);
@@ -108,7 +107,7 @@ bool Captcha::init() {
     hintID->setAnchorPoint(anchor::center);
     hintID->setAlignment(Label::Alignment::Center);
     hintID->setLimitLabelWidth(bg->getScaledContentWidth() * 0.875f, 0.5f, 0.125f);
-    hintID->setPosition({m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() + (m_impl->verifier->getScaledContentHeight() / 2.f) + 12.5f});
+    hintID->setPosition({ m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() + (m_impl->verifier->getScaledContentHeight() / 2.0f) + 12.5f });
 
     m_mainLayer->addChild(hintID, 1);
 
@@ -116,7 +115,7 @@ bool Captcha::init() {
     hint->setID("hint");
     hint->setColor(to4B(colors::yellow));
     hint->setAlignment(kCCTextAlignmentCenter);
-    hint->setPosition({m_impl->verifier->getPositionX(), hintID->getPositionY() + 10.f});
+    hint->setPosition({ m_impl->verifier->getPositionX(), hintID->getPositionY() + 10.0f });
 
     m_mainLayer->addChild(hint);
 
@@ -124,13 +123,15 @@ bool Captcha::init() {
         ButtonSprite::create(
             "Refresh",
             font::big,
-            themes::getButtonSquareSprite(theme)),
+            themes::getButtonSquareSprite(theme)
+        ),
         [this](auto) {
             setupVerifier(m_impl->expected);
-        });
+        }
+    );
     refreshBtn->setID("refresh-btn");
     refreshBtn->setScale(0.625f);
-    refreshBtn->setPosition({m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() - (m_impl->verifier->getScaledContentHeight() / 2.f) - (refreshBtn->getScaledContentHeight() * 0.825f)});
+    refreshBtn->setPosition({ m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() - (m_impl->verifier->getScaledContentHeight() / 2.0f) - (refreshBtn->getScaledContentHeight() * 0.825f) });
 
     m_mainLayer->addChild(refreshBtn, 1);
 
@@ -146,28 +147,30 @@ bool Captcha::init() {
                 nullptr,  // captcha popup can exit asynchronously
                 [self = WeakRef(this)](auto, auto) {
                     if (auto s = self.lock()) s->scheduleUpdate();
-                });
-        });
+                }
+            );
+        }
+    );
     infoBtn->setID("info-btn");
     infoBtn->setScale(0.875f);
 
-    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, {-17.5f, -17.5f});
+    m_mainLayer->addChildAtPosition(infoBtn, Anchor::TopRight, { -17.5f, -17.5f });
 
     scheduleUpdate();
 
     sfx::play(sfx::file::pop);
 
     return true;
-};
+}
 
 void Captcha::setCallback(Callback&& cb) {
     m_impl->callback = std::move(cb);
-};
+}
 
 void Captcha::callAfterFeedback(float) {
     if (m_impl->callback) m_impl->callback(m_impl->success);
     unscheduleAllSelectors();
-};
+}
 
 void Captcha::setSuccess(bool v) {
     m_impl->success = v;
@@ -178,42 +181,40 @@ void Captcha::setSuccess(bool v) {
 
     auto symbol = CCSprite::createWithSpriteFrameName(m_impl->success ? "GJ_completesIcon_001.png" : "GJ_deleteIcon_001.png");
     symbol->setID("success-icon");
-    symbol->setScale(0.f);
-    symbol->setPosition(m_mainLayer->getScaledContentSize() / 2.f);
+    symbol->setScale(0.0f);
+    symbol->setPosition(m_mainLayer->getScaledContentSize() / 2.0f);
 
     m_mainLayer->addChild(symbol, 9);
 
-    symbol->runAction(CCSequence::createWithTwoActions(
-        CCEaseSineOut::create(CCScaleTo::create(0.0875f, 2.75f)),
-        CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
+    symbol->runAction(CCSequence::createWithTwoActions(CCEaseSineOut::create(CCScaleTo::create(0.0875f, 2.75f)), CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
     sfx::play(m_impl->success ? sfx::file::good : sfx::file::bad);
     scheduleOnce(schedule_selector(Captcha::callAfterFeedback), 1.25f);
-};
+}
 
 void Captcha::update(float dt) {
-    if (m_impl->timeRemaining <= 0.f) return unscheduleUpdate();
+    if (m_impl->timeRemaining <= 0.0f) return unscheduleUpdate();
     m_impl->timeRemaining -= dt;
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         sfx::play(sfx::file::count);
-        m_impl->timeDt = 0.f;
+        m_impl->timeDt = 0.0f;
     };
 
-    if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
-    auto pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
+    if (m_impl->timeRemaining < 0.0f) m_impl->timeRemaining = 0.0f;
+    auto pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.0f;
 
     if (m_impl->countdown) {
         m_impl->countdown->updateProgress(pct);
         m_impl->countdown->setFillColor(colors::fadeColor(pct));
     };
 
-    if (m_impl->timeRemaining <= 0.f) {
+    if (m_impl->timeRemaining <= 0.0f) {
         setSuccess(false);
         unscheduleUpdate();
     };
-};
+}
 
 Captcha* Captcha::create() {
     auto ret = new Captcha();
@@ -224,7 +225,7 @@ Captcha* Captcha::create() {
 
     delete ret;
     return nullptr;
-};
+}
 
 void RobotVerifier::addNewBtn() {
     auto const& btnData = g_buttons[rng::get(g_buttons.size() - 1)];
@@ -239,13 +240,14 @@ void RobotVerifier::addNewBtn() {
             } else {
                 m_callback(false);
             };
-        });
+        }
+    );
     btn->setID(btnData.first);
 
     addChild(btn);
 
     cue::rescaleToMatch(btn, 27.5f);
-};
+}
 
 bool RobotVerifier::init(std::string id, Callback&& cb) {
     m_expected = std::move(id);
@@ -260,7 +262,7 @@ bool RobotVerifier::init(std::string id, Callback&& cb) {
 
     setID("captcha-verifier");
     setAnchorPoint(anchor::center);
-    setContentWidth(125.f);
+    setContentWidth(125.0f);
     setLayout(layout);
 
     for (int i = 0; i < 16; ++i) {
@@ -270,7 +272,7 @@ bool RobotVerifier::init(std::string id, Callback&& cb) {
     updateLayout();
 
     return true;
-};
+}
 
 void RobotVerifier::validateBtns(Button* called) {
     cue::resetNode(called);
@@ -286,7 +288,7 @@ void RobotVerifier::validateBtns(Button* called) {
     };
 
     m_callback(true);
-};
+}
 
 RobotVerifier* RobotVerifier::create(std::string id, Callback&& cb) {
     auto ret = new RobotVerifier();
@@ -297,4 +299,4 @@ RobotVerifier* RobotVerifier::create(std::string id, Callback&& cb) {
 
     delete ret;
     return nullptr;
-};
+}

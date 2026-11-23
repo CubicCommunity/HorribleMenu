@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "flipped"
 
@@ -31,30 +31,32 @@ class $modify(FlippedPlayLayer, PlayLayer) {
         };
 
         nextFlip();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void nextFlip() {
         log::trace("scheduling flip");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(10.f, 2.5f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(10.0f, 2.5f) * rng::chanceToDelayPct(m_fields->chance));
+    }
 
     void flip(float) {
         if (rng::chance(m_fields->chance)) runAction(
             CCSequence::createWithTwoActions(
-                CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.f)),
-                CCCallFunc::create(this, callfunc_selector(FlippedPlayLayer::finishFlip))));
-    };
+                CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.0f)),
+                CCCallFunc::create(this, callfunc_selector(FlippedPlayLayer::finishFlip))
+            )
+        );
+    }
 
     void finishFlip() {
         queueInMainThread([self = WeakRef(this)]() {
             if (auto s = self.lock()) s->nextFlip();
         });
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, FlippedPlayLayer);

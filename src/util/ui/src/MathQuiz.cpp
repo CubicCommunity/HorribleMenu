@@ -7,7 +7,7 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 struct MathQuiz::Impl final {
     Richard* richard = nullptr;
@@ -24,16 +24,16 @@ struct MathQuiz::Impl final {
     CCMenu* answerMenu = nullptr;
     CCDrawNode* drawNode = nullptr;
 
-    float totalTime = 10.f;
+    float totalTime = 10.0f;
     float timeRemaining = totalTime;
-    float timeDt = 0.f;
+    float timeDt = 0.0f;
 
     bool correct = false;
     Callback callback = nullptr;
 };
 
-MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {};
-MathQuiz::~MathQuiz() {};
+MathQuiz::MathQuiz() : m_impl(std::make_unique<Impl>()) {}
+MathQuiz::~MathQuiz() {}
 
 bool MathQuiz::init() {
     auto const theme = mod->getSettingValue<std::string>("theme");
@@ -62,9 +62,9 @@ bool MathQuiz::init() {
         m_impl->drawNode = CCDrawNode::create();
         m_impl->drawNode->setID("polygon");
 
-        auto radius = std::min(winSize.width, winSize.height) / 8.f;
-        auto centerX = winSize.width / 2.f - 160.f;
-        auto centerY = winSize.height / 2.f;
+        auto radius = std::min(winSize.width, winSize.height) / 8.0f;
+        auto centerX = winSize.width / 2.0f - 160.0f;
+        auto centerY = winSize.height / 2.0f;
 
         std::vector<CCPoint> polyPoints;
         polyPoints.reserve(sides);
@@ -73,7 +73,7 @@ bool MathQuiz::init() {
         auto theta = PI / sides;
 
         for (int i = 0; i < sides; ++i) {
-            auto angle = theta * i - PI / 2.f;  // start at top
+            auto angle = theta * i - PI / 2.0f;  // start at top
 
             auto x = radius * cosf(angle);
             auto y = radius * sinf(angle);
@@ -82,13 +82,13 @@ bool MathQuiz::init() {
         };
 
         // draw the polygon in local coords with drawNode placed at center
-        m_impl->drawNode->setPosition({centerX, centerY});
+        m_impl->drawNode->setPosition({ centerX, centerY });
         m_impl->drawNode->clear();
 
-        ccColor4F const fillColor = {0.85f, 0.65f, 0.15f, 1.f};
-        ccColor4F const borderColor = {0.05f, 0.05f, 0.05f, 1.f};
+        ccColor4F const fillColor = { 0.85f, 0.65f, 0.15f, 1.0f };
+        ccColor4F const borderColor = { 0.05f, 0.05f, 0.05f, 1.0f };
 
-        if (m_impl->drawNode->drawPolygon(polyPoints.data(), static_cast<unsigned int>(polyPoints.size()), fillColor, 2.f, borderColor)) addChild(m_impl->drawNode, 99);
+        if (m_impl->drawNode->drawPolygon(polyPoints.data(), static_cast<unsigned int>(polyPoints.size()), fillColor, 2.0f, borderColor)) addChild(m_impl->drawNode, 99);
     } else {
         m_impl->numFirst = rng::get(11);
         m_impl->numSecond = rng::get(11);
@@ -132,7 +132,7 @@ bool MathQuiz::init() {
         equalsLabel->setID("equals-label");
         equalsLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
         equalsLabel->setAlignment(Label::Alignment::Center);
-        equalsLabel->setPosition({winSize.width / 2.f, winSize.height - 100.f});
+        equalsLabel->setPosition({ winSize.width / 2.0f, winSize.height - 100.0f });
 
         addChild(equalsLabel);
     };
@@ -142,7 +142,7 @@ bool MathQuiz::init() {
     problemLabel->setID("problem-label");
     problemLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
     problemLabel->setAlignment(Label::Alignment::Center);
-    problemLabel->setPosition({winSize.width / 2.f, winSize.height - 60.f});
+    problemLabel->setPosition({ winSize.width / 2.0f, winSize.height - 60.0f });
     problemLabel->setScale(m_impl->operation == MathOperation::Geometry ? 0.5f : 0.925f);
 
     addChild(problemLabel, 1);
@@ -150,17 +150,17 @@ bool MathQuiz::init() {
     // i hope i did this right cheese, u added this progress bar thing
     m_impl->countdown = ProgressBar::create();
     m_impl->countdown->setID("countdown");
-    m_impl->countdown->setStyle(ProgressBarStyle::Solid);
+    m_impl->countdown->setStyle(ProgressBar::Style::Solid);
     m_impl->countdown->setAnchorPoint(anchor::center);
-    m_impl->countdown->setPosition({winSize.width / 2.f, winSize.height - 20.f});
-    m_impl->countdown->setFillColor(colors::fadeColor(100.f));
+    m_impl->countdown->setPosition({ winSize.width / 2.0f, winSize.height - 20.0f });
+    m_impl->countdown->setFillColor(colors::fadeColor(100.0f));
 
-    m_impl->countdown->updateProgress(100.f);
+    m_impl->countdown->updateProgress(100.0f);
 
     addChild(m_impl->countdown, 9);
 
-    m_impl->timeRemaining = m_impl->totalTime = 10.f;
-    m_impl->countdown->updateProgress(100.f);
+    m_impl->timeRemaining = m_impl->totalTime = 10.0f;
+    m_impl->countdown->updateProgress(100.0f);
 
     m_impl->answers.push_back(m_impl->correctAnswer);
 
@@ -183,14 +183,14 @@ bool MathQuiz::init() {
     if (auto richard = Richard::create()) {
         m_impl->richard = richard;
         m_impl->richard->setID("richard");
-        m_impl->richard->setAnchorPoint({1, 0.5});
+        m_impl->richard->setAnchorPoint({ 1, 0.5 });
         m_impl->richard->setScale(0.625f);
-        m_impl->richard->setPosition({winSize.width - 36.f, winSize.height / 2.f});
+        m_impl->richard->setPosition({ winSize.width - 36.0f, winSize.height / 2.0f });
 
         addChild(m_impl->richard, 99);
 
-        auto moveUp = CCMoveBy::create(1.f, ccp(0, 8.f));
-        auto moveDown = CCMoveBy::create(1.f, ccp(0, -8.f));
+        auto moveUp = CCMoveBy::create(1.0f, ccp(0, 8.0f));
+        auto moveDown = CCMoveBy::create(1.0f, ccp(0, -8.0f));
 
         auto seq = CCSequence::createWithTwoActions(moveUp, moveDown);
 
@@ -203,20 +203,21 @@ bool MathQuiz::init() {
 
     m_impl->answerMenu = CCMenu::create();
     m_impl->answerMenu->setID("answer-menu");
-    m_impl->answerMenu->setContentSize({220.f, 75.f});
-    m_impl->answerMenu->setPosition({winSize.width / 2.f, (winSize.height / 2.f) - 20.f});
+    m_impl->answerMenu->setContentSize({ 220.0f, 75.0f });
+    m_impl->answerMenu->setPosition({ winSize.width / 2.0f, (winSize.height / 2.0f) - 20.0f });
     m_impl->answerMenu->setLayout(answerMenuLayout);
 
     for (int i = 0; i < m_impl->answers.size(); i++) {
         auto answerBtn = Button::createWithNode(
             ButtonSprite::create(
                 fmt::format("{}", m_impl->answers[i]).c_str(),
-                80.f,
+                80.0f,
                 true,
                 font::big,
                 themes::getButtonSquareSprite(theme),
                 0,
-                0.825f),
+                0.825f
+            ),
             [this, selectedAnswer = m_impl->answers[i]](auto) {
                 unscheduleUpdate();
 
@@ -233,20 +234,16 @@ bool MathQuiz::init() {
                 feedbackLabel->setColor(correct ? colors::green : colors::red);
                 feedbackLabel->setAnchorPoint(anchor::center);
                 feedbackLabel->setAlignment(Label::Alignment::Center);
-                feedbackLabel->setPosition(winSize / 2.f);
+                feedbackLabel->setPosition(winSize / 2.0f);
 
                 addChild(feedbackLabel, 9);
 
                 // Small scale animation, delay, then call close
-                feedbackLabel->runAction(CCSequence::create(
-                    CCEaseSineOut::create(CCScaleTo::create(0.125f, 1.25f)),
-                    CCEaseSineOut::create(CCScaleTo::create(0.0875f, 1.f)),
-                    CCDelayTime::create(0.75f),
-                    CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)),
-                    nullptr));
+                feedbackLabel->runAction(CCSequence::create(CCEaseSineOut::create(CCScaleTo::create(0.125f, 1.25f)), CCEaseSineOut::create(CCScaleTo::create(0.0875f, 1.0f)), CCDelayTime::create(0.75f), CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)), nullptr));
 
                 setCorrect(correct);
-            });
+            }
+        );
         m_impl->answerMenu->addChild(answerBtn);
     };
 
@@ -258,16 +255,16 @@ bool MathQuiz::init() {
     sfx::play(sfx::file::pop);
 
     return true;
-};
+}
 
 void MathQuiz::setCallback(Callback&& cb) {
     m_impl->callback = std::move(cb);
-};
+}
 
 void MathQuiz::setCorrect(bool v) {
     m_impl->correct = v;
     sfx::play(v ? sfx::file::good : sfx::file::bad);
-};
+}
 
 bool MathQuiz::hasAnswer(int answer) const noexcept {
     for (auto const& a : m_impl->answers) {
@@ -275,32 +272,32 @@ bool MathQuiz::hasAnswer(int answer) const noexcept {
     };
 
     return false;
-};
+}
 
 void MathQuiz::callAfterFeedback(CCNode*) {
     if (m_impl->callback) m_impl->callback(m_impl->correct);
     unscheduleAllSelectors();
-};
+}
 
 void MathQuiz::update(float dt) {
-    if (m_impl->timeRemaining <= 0.f) return unscheduleUpdate();
+    if (m_impl->timeRemaining <= 0.0f) return unscheduleUpdate();
     m_impl->timeRemaining -= dt;
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
         sfx::play(sfx::file::count);
-        m_impl->timeDt = 0.f;
+        m_impl->timeDt = 0.0f;
     };
 
-    if (m_impl->timeRemaining < 0.f) m_impl->timeRemaining = 0.f;
-    float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.f;
+    if (m_impl->timeRemaining < 0.0f) m_impl->timeRemaining = 0.0f;
+    float pct = (m_impl->timeRemaining / m_impl->totalTime) * 100.0f;
 
     if (m_impl->countdown) {
         m_impl->countdown->updateProgress(pct);
         m_impl->countdown->setFillColor(colors::fadeColor(pct));
     };
 
-    if (m_impl->timeRemaining <= 0.f) {
+    if (m_impl->timeRemaining <= 0.0f) {
         // automatic incorrect
         setCorrect(false);
 
@@ -313,22 +310,23 @@ void MathQuiz::update(float dt) {
         feedbackLabel->setColor(colors::red);
         feedbackLabel->setAnchorPoint(anchor::center);
         feedbackLabel->setAlignment(Label::Alignment::Center);
-        feedbackLabel->setPosition(winSize / 2.f);
+        feedbackLabel->setPosition(winSize / 2.0f);
         feedbackLabel->setScale(0.1f);
 
         addChild(feedbackLabel, 999);
 
         auto seq = CCSequence::create(
             CCScaleTo::create(0.0875f, 1.25f),
-            CCScaleTo::create(0.125f, 1.f),
+            CCScaleTo::create(0.125f, 1.0f),
             CCDelayTime::create(0.75f),
             CCCallFuncN::create(this, callfuncN_selector(MathQuiz::callAfterFeedback)),
-            nullptr);
+            nullptr
+        );
 
         feedbackLabel->runAction(seq);
         unscheduleUpdate();
     };
-};
+}
 
 MathQuiz* MathQuiz::create() {
     auto ret = new MathQuiz();
@@ -339,7 +337,7 @@ MathQuiz* MathQuiz::create() {
 
     delete ret;
     return nullptr;
-};
+}
 
 bool Richard::init() {
     if (!CCNode::init()) return false;
@@ -349,17 +347,17 @@ bool Richard::init() {
 
     auto sprite = CCSprite::createWithSpriteFrameName(isSpriteSecret ? themes::getIconSprite(themes::icons::TheYellowOne) : "diffIcon_02_btn_001.png");
     sprite->setID("richard");
-    sprite->setScale(isSpriteSecret ? 7.5f : 5.f);
+    sprite->setScale(isSpriteSecret ? 7.5f : 5.0f);
     sprite->setAnchorPoint(anchor::center);
 
     setContentSize(sprite->getScaledContentSize());
 
-    sprite->setPosition(getScaledContentSize() / 2.f);
+    sprite->setPosition(getScaledContentSize() / 2.0f);
 
     addChild(sprite);
 
     return true;
-};
+}
 
 Richard* Richard::create() {
     auto ret = new Richard();
@@ -370,4 +368,4 @@ Richard* Richard::create() {
 
     delete ret;
     return nullptr;
-};
+}

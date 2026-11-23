@@ -4,7 +4,7 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     class Menu final : public geode::Popup {
         struct TierFilterBtnData final {
             SillyTier tier;
@@ -26,7 +26,7 @@ namespace horrible {
         static Menu* s_inst;
 
         void setupSafeModeNode(bool safeMode);
-        void setupImageBackground(fs::path const& path);
+        void setupImageBackground(fs::PathView path);
         void setupSillyFilterDropdown(cocos2d::CCPoint const& pos);
 
     protected:

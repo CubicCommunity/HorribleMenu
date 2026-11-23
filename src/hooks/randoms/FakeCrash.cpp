@@ -5,7 +5,7 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "fake_crash"
 
@@ -26,7 +26,7 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
         float lastTimeWarp = LevelTools::getLastTimewarp();
 
         bool inFakeCrash = false;
-        float fakeCrashStartTime = 0.f;
+        float fakeCrashStartTime = 0.0f;
     };
 
     bool init() {
@@ -35,7 +35,7 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
         schedule(schedule_selector(FakeCrashGJBaseGameLayer::scheduler), 0.125f);
 
         return true;
-    };
+    }
 
     void scheduler(float) {
         auto f = m_fields.self();
@@ -44,19 +44,19 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
             log::debug("Faking crash");
             f->lastTimeWarp = LevelTools::getLastTimewarp();
 
-            updateTimeWarp(0.f);
+            updateTimeWarp(0.0f);
 
             f->inFakeCrash = true;
             f->fakeCrashStartTime = m_gameState.m_currentProgress;
         };
 
         if (f->inFakeCrash) {
-            if ((m_gameState.m_currentProgress - f->fakeCrashStartTime) >= 5.f) {
+            if ((m_gameState.m_currentProgress - f->fakeCrashStartTime) >= 5.0f) {
                 log::debug("Reverting timewarp to: {}", f->lastTimeWarp);
 
                 updateTimeWarp(f->lastTimeWarp);
                 f->inFakeCrash = false;
             };
         };
-    };
+    }
 };

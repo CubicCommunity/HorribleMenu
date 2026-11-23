@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "friends"
 
@@ -41,17 +41,17 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         log::trace("Friend will visit after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);
-    };
+    }
 
     void showAFriend(float) {
         auto const uiSize = m_uiLayer->getScaledContentSize();
 
-        auto xA = -125.f;                // starting x pos
-        auto xB = uiSize.width + 125.f;  // ending x pos
+        auto xA = -125.0f;                // starting x pos
+        auto xB = uiSize.width + 125.0f;  // ending x pos
 
         if (rng::flip()) {
             xA = xB;
-            xB = -125.f;
+            xB = -125.0f;
         };  // swap sides
 
         auto rA = rng::pc();
@@ -61,13 +61,13 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto yB = uiSize.height * rB;  // ending height pos
 
         auto friendSpr = CCSprite::createWithSpriteFrameName(g_friends[rng::get(g_friends.size() - 1)]);
-        friendSpr->setPosition({xA, yA});
+        friendSpr->setPosition({ xA, yA });
         friendSpr->setScale(0.875f * (rB + rA));
-        friendSpr->setRotation(180.f * (yA * yB));  // random rotation
+        friendSpr->setRotation(180.0f * (yA * yB));  // random rotation
 
         auto dur = 12.5f * rA;
-        auto move = CCMoveTo::create(dur, {xB, yB});
-        auto rotate = CCRotateBy::create(dur, 90.f * (rB + rA));  // slight rotation while moving
+        auto move = CCMoveTo::create(dur, { xB, yB });
+        auto rotate = CCRotateBy::create(dur, 90.0f * (rB + rA));  // slight rotation while moving
 
         auto action = CCSpawn::createWithTwoActions(move, rotate);
         auto finish = CCCallFuncN::create(this, callfuncN_selector(FriendsPlayLayer::cleanupFriend));
@@ -77,16 +77,16 @@ class $modify(FriendsPlayLayer, PlayLayer) {
 
         m_uiLayer->addChild(friendSpr, HIGHEST_Z);
         friendSpr->runAction(CCSpawn::createWithTwoActions(friendAction, scheduleAction));
-    };
+    }
 
     void cleanupFriend(CCNode* sender) {
         cue::resetNode(sender);
-    };
+    }
 
     void scheduleNextFriend() {
         auto delay = rng::get(0.875f);
         log::trace("Friend will visit again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);
-    };
+    }
 };

@@ -1,10 +1,10 @@
 {
-    "geode": "5.10.0",
+    "geode": "6.0.0-beta.2",
     "gd": {
-        "win": "2.2081",
-        "android": "2.2081",
-        "mac": "2.2081",
-        "ios": "2.2081"
+        "win": "2.2091",
+        "android": "2.2091",
+        "mac": "2.2091",
+        "ios": "2.2091"
     },
     "id": "cubicstudios.horriblemenu",
     "name": "Horrible Menu",
@@ -44,16 +44,6 @@
         "include": [
             "include/horrible/*.h*"
         ]
-    },
-    "dependencies": {
-        "cheeseworks.moddevbranding": {
-            "version": ">=2.0.0",
-            "required": false
-        },
-        "dasshu.badgified": {
-            "version": ">=1.0.0",
-            "required": false
-        }
     },
     "settings": {
         "btn-popup": {

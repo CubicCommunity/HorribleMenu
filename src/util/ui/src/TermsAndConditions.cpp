@@ -6,33 +6,31 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 struct TermsAndConditions::Impl final {
     Button* acceptBtn = nullptr;
 
-    CCPoint acceptVelocity = {0.f, 0.f};
+    CCPoint acceptVelocity = { 0.0f, 0.0f };
 
     Callback callback;
 };
 
-TermsAndConditions::TermsAndConditions() : m_impl(std::make_unique<Impl>()) {};
-TermsAndConditions::~TermsAndConditions() {};
+TermsAndConditions::TermsAndConditions() : m_impl(std::make_unique<Impl>()) {}
+TermsAndConditions::~TermsAndConditions() {}
 
 bool TermsAndConditions::init(Callback&& cb) {
     m_impl->callback = std::move(cb);
 
     auto const theme = mod->getSettingValue<std::string>("theme");
 
-    if (!Popup::init(420.f, 240.f, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init(420.0f, 240.0f, themes::getBackgroundSprite(theme))) return false;
 
     setID("tos"_spr);
     setTitle("Terms and Conditions");
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
     setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
-
-    popup::closeBtnID(m_closeBtn);
 
     m_closeBtn->setVisible(false);
     m_closeBtn->setEnabled(false);
@@ -56,9 +54,9 @@ bool TermsAndConditions::init(Callback&& cb) {
         "**By clicking 'Accept', you acknowledge that you have read and agree to these terms and conditions.**\n\n"
         "---\n\n"
         "For legal reasons, this is all a joke..!",
-        {385.f, 145.f},
-        false);
-    tosArea->setPosition({m_mainLayer->getContentSize().width / 2.f, (m_mainLayer->getContentSize().height / 2.f) + 5.f});
+        { 385.0f, 145.0f }
+    );
+    tosArea->setPosition({ m_mainLayer->getContentSize().width / 2.0f, (m_mainLayer->getContentSize().height / 2.0f) + 5.0f });
 
     m_mainLayer->addChild(tosArea);
 
@@ -66,7 +64,8 @@ bool TermsAndConditions::init(Callback&& cb) {
         ButtonSprite::create(
             "Accept",
             font::big,
-            themes::getButtonSquareSprite(theme)),
+            themes::getButtonSquareSprite(theme)
+        ),
         [this](auto) {
             sfx::play(sfx::file::good);
 
@@ -74,7 +73,8 @@ bool TermsAndConditions::init(Callback&& cb) {
             if (auto pl = PlayLayer::get()) pl->resume();
 
             removeFromParent();
-        });
+        }
+    );
     m_impl->acceptBtn->setZOrder(10);
     m_impl->acceptBtn->setScale(0.75f);
 
@@ -82,21 +82,23 @@ bool TermsAndConditions::init(Callback&& cb) {
         ButtonSprite::create(
             "Decline",
             font::big,
-            themes::getButtonSquareSprite(theme)),
+            themes::getButtonSquareSprite(theme)
+        ),
         [this](auto) {
             sfx::play(sfx::file::bad);
 
             if (m_impl->callback) m_impl->callback(false);
 
             removeFromParent();
-        });
+        }
+    );
     declineBtn->setZOrder(10);
     declineBtn->setScale(0.75f);
 
-    m_mainLayer->addChildAtPosition(m_impl->acceptBtn, Anchor::Bottom, {-60.f, 25.f});
-    m_mainLayer->addChildAtPosition(declineBtn, Anchor::Bottom, {60.f, 25.f});
+    m_mainLayer->addChildAtPosition(m_impl->acceptBtn, Anchor::Bottom, { -60.0f, 25.0f });
+    m_mainLayer->addChildAtPosition(declineBtn, Anchor::Bottom, { 60.0f, 25.0f });
 
-    auto const angle = rng::get(2.f * std::numbers::pi);
+    auto const angle = rng::get(2.0f * std::numbers::pi);
     m_impl->acceptVelocity = ccp(cosf(angle), sinf(angle));
     scheduleUpdate();
 
@@ -104,20 +106,17 @@ bool TermsAndConditions::init(Callback&& cb) {
         m_impl->acceptBtn->setEnabled(false);
         acceptBtnSpr->setOpacity(0);
 
-        acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(
-            CCEaseBounceIn::create(
-                CCFadeTo::create(rng::get(10.f, 1.25f), 255)),
-            CCCallFuncN::create(this, callfuncN_selector(TermsAndConditions::finishBtnFade))));
+        acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(CCEaseBounceIn::create(CCFadeTo::create(rng::get(10.0f, 1.25f), 255)), CCCallFuncN::create(this, callfuncN_selector(TermsAndConditions::finishBtnFade))));
     };
 
     sfx::play(sfx::file::pop);
 
     return true;
-};
+}
 
 void TermsAndConditions::finishBtnFade(CCNode* sender) {
     if (auto btn = typeinfo_cast<Button*>(sender->getParent())) btn->setEnabled(true);
-};
+}
 
 void TermsAndConditions::update(float dt) {
     if (!m_impl->acceptBtn) return;
@@ -133,20 +132,20 @@ void TermsAndConditions::update(float dt) {
     CCPoint const away = ccpSub(worldPos, mousePos);
 
     float const dist = std::sqrt(away.x * away.x + away.y * away.y);
-    float speed = 100.f;  // default speed
+    float speed = 100.0f;  // default speed
 
     // make the mouse (like cheeseworks) to chase the accept button cuz im evil
-    if (dist < 25.f && dist > 0.f) {
+    if (dist < 25.0f && dist > 0.0f) {
         auto normalizedAway = ccp(away.x / dist, away.y / dist);
 
         auto currentVelLen = std::sqrt(m_impl->acceptVelocity.x * m_impl->acceptVelocity.x + m_impl->acceptVelocity.y * m_impl->acceptVelocity.y);
-        if (currentVelLen > 0.f) {
+        if (currentVelLen > 0.0f) {
             normalizedAway.x += m_impl->acceptVelocity.x / currentVelLen;
             normalizedAway.y += m_impl->acceptVelocity.y / currentVelLen;
         };
 
         auto const newLen = std::sqrt(normalizedAway.x * normalizedAway.x + normalizedAway.y * normalizedAway.y);
-        if (newLen > 0.f) {
+        if (newLen > 0.0f) {
             normalizedAway.x /= newLen;
             normalizedAway.y /= newLen;
             m_impl->acceptVelocity = normalizedAway;
@@ -158,8 +157,8 @@ void TermsAndConditions::update(float dt) {
 
     worldPos = ccpAdd(worldPos, ccpMult(m_impl->acceptVelocity, speed * dt));
 
-    auto const halfW = buttonSize.width / 2.f;
-    auto const halfH = buttonSize.height / 2.f;
+    auto const halfW = buttonSize.width / 2.0f;
+    auto const halfH = buttonSize.height / 2.0f;
 
     if (worldPos.x < halfW) {
         worldPos.x = halfW;
@@ -178,7 +177,7 @@ void TermsAndConditions::update(float dt) {
     };
 
     m_impl->acceptBtn->setPosition(m_mainLayer->convertToNodeSpace(worldPos));
-};
+}
 
 TermsAndConditions* TermsAndConditions::create(Callback&& cb) {
     auto ret = new TermsAndConditions();
@@ -189,4 +188,4 @@ TermsAndConditions* TermsAndConditions::create(Callback&& cb) {
 
     delete ret;
     return nullptr;
-};
+}

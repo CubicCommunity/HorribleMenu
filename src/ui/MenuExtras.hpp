@@ -4,75 +4,75 @@
 
 #include <util/Base.h>
 
-#include <gdcord/gdc.h>
+// #include <gdcord/gdc.h>
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
-    class MenuSuggest final : public geode::Popup {
-    private:
-        static asp::Instant s_lastSuggest;
+namespace cs::brkd::horrible {
+    // class MenuSuggest final : public geode::Popup {
+    // private:
+    //     static asp::Instant s_lastSuggest;
 
-        geode::TextInput* m_topicInput;
-        geode::TextInput* m_descriptionInput;
+    //     geode::TextInput* m_topicInput;
+    //     geode::TextInput* m_descriptionInput;
 
-        geode::LoadingSpinner* m_loading;
+    //     geode::LoadingSpinner* m_loading;
 
-        geode::async::TaskHolder<geode::Result<std::string>> m_authTask;
-        geode::async::TaskHolder<geode::utils::web::WebResponse> m_sendTask;
+    //     geode::async::TaskHolder<geode::Result<std::string>> m_authTask;
+    //     geode::async::TaskHolder<geode::utils::web::WebResponse> m_sendTask;
 
-    protected:
-        void processSuggestion(geode::Button* sender);
+    // protected:
+    //     void processSuggestion(geode::Button* sender);
 
-        bool init(geode::ZStringView theme);
+    //     bool init(geode::ZStringView theme);
 
-    public:
-        static MenuSuggest* create(geode::ZStringView theme);
-    };
+    // public:
+    //     static MenuSuggest* create(geode::ZStringView theme);
+    // };
 
-    class MenuDiscordCell final : public cocos2d::CCNode {
-    private:
-        std::string normalizeAvatarURL(std::string url) const;
+    // class MenuDiscordCell final : public cocos2d::CCNode {
+    // private:
+    //     std::string normalizeAvatarURL(std::string url) const;
 
-    protected:
-        bool init(gdc::DiscordLink const& profile);
+    // protected:
+    //     bool init(gdc::DiscordLink const& profile);
 
-    public:
-        static MenuDiscordCell* create(gdc::DiscordLink const& profile);
-    };
+    // public:
+    //     static MenuDiscordCell* create(gdc::DiscordLink const& profile);
+    // };
 
-    class MenuDiscord final : public geode::Popup {
-    private:
-        geode::Label* m_linkLabel = nullptr;
-        MenuDiscordCell* m_discordCell = nullptr;
+    // class MenuDiscord final : public geode::Popup {
+    // private:
+    //     geode::Label* m_linkLabel = nullptr;
+    //     MenuDiscordCell* m_discordCell = nullptr;
 
-        geode::Button* m_linkBtn = nullptr;
-        geode::LoadingSpinner* m_loading = nullptr;
+    //     geode::Button* m_linkBtn = nullptr;
+    //     geode::LoadingSpinner* m_loading = nullptr;
 
-        ui::LabelArea* m_label = nullptr;
+    //     ui::LabelArea* m_label = nullptr;
 
-        void setupAuthInterface(bool forceHide = false);
+    //     void setupAuthInterface(bool forceHide = false);
 
-    protected:
-        bool init(geode::ZStringView theme);
+    // protected:
+    //     bool init(geode::ZStringView theme);
 
-    public:
-        static MenuDiscord* create(geode::ZStringView theme);
-    };
+    // public:
+    //     static MenuDiscord* create(geode::ZStringView theme);
+    // };
 
-    class MenuKofi final : public geode::Popup {
-    private:
-        ui::LabelArea* m_infoContainer = nullptr;
-        geode::LoadingSpinner* m_loading = nullptr;
+    // class MenuKofi final : public geode::Popup {
+    // private:
+    //     ui::LabelArea* m_infoContainer = nullptr;
+    //     geode::LoadingSpinner* m_loading = nullptr;
 
-        geode::Button* m_linkBtn = nullptr;
-        geode::Label* m_linkLabel = nullptr;
-        geode::LoadingSpinner* m_linkLoading = nullptr;
+    //     geode::Button* m_linkBtn = nullptr;
+    //     geode::Label* m_linkLabel = nullptr;
+    //     geode::LoadingSpinner* m_linkLoading = nullptr;
 
-    protected:
-        bool init(geode::ZStringView theme);
+    // protected:
+    //     bool init(geode::ZStringView theme);
 
-    public:
-        static MenuKofi* create(geode::ZStringView theme);
-    };
+    // public:
+    //     static MenuKofi* create(geode::ZStringView theme);
+    // };
 };

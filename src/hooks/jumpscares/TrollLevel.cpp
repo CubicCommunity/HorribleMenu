@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "troll_level"
 
@@ -27,13 +27,14 @@ namespace js_internal {
                 } else if (result.isErr()) {
                     log::error("Failed to get level {}: {}", HORRIBLE_JUMPSCARES_TROLL, result.unwrapErr());
                 };
-            });
-    };
+            }
+        );
+    }
 
-    static void switchToTrollLevel(GJGameLevel* level, bool dontCreateObjects, bool useReplay) {
+    static void switchToTrollLevel(GJGameLevel* level, bool dontCreateObjects) {
         log::warn("Switching to {} level ({})", level->m_levelName, level->m_levelID.value());
-        CCDirector::sharedDirector()->replaceScene(PlayLayer::scene(level, useReplay, dontCreateObjects));
-    };
+        CCDirector::sharedDirector()->replaceScene(PlayLayer::scene(level, dontCreateObjects));
+    }
 };
 
 $on_mod(Loaded) {
@@ -43,8 +44,9 @@ $on_mod(Loaded) {
         THIS_ID,
         [](OptionSave data) {
             if (data.enabled) js_internal::saveTrollLevel();
-        });
-};
+        }
+    );
+}
 
 class $modify(TrollLevelPlayLayer, PlayLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
@@ -53,13 +55,13 @@ class $modify(TrollLevelPlayLayer, PlayLayer) {
         uint8_t chance = options::getChance(THIS_ID);
     };
 
-    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
+    bool init(GJGameLevel* level, bool dontCreateObjects) {
         if (auto jm = jumpscares::JumpscareLevelManager::get()) {
             if (rng::chance(m_fields->chance)) {
-                if (auto lvl = jm->getLevel(HORRIBLE_JUMPSCARES_TROLL)) return PlayLayer::init(lvl, useReplay, dontCreateObjects);
+                if (auto lvl = jm->getLevel(HORRIBLE_JUMPSCARES_TROLL)) return PlayLayer::init(lvl, dontCreateObjects);
             };
         };
 
-        return PlayLayer::init(level, useReplay, dontCreateObjects);
-    };
+        return PlayLayer::init(level, dontCreateObjects);
+    }
 };

@@ -14,7 +14,7 @@
 #include <Geode/utils/terminate.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 Menu* Menu::s_inst = nullptr;
 
@@ -82,11 +82,12 @@ struct Menu::Impl final {
         if (!empty) {
             for (auto& o : list) {
                 if (auto modOption = MenuOptionCell::create(
-                        {optionList->m_contentLayer->getScaledContentWidth(), 32.5f},
+                        { optionList->m_contentLayer->getScaledContentWidth(), 32.5f },
                         o,
                         theme,
                         devMode,
-                        hasInternet)) {
+                        hasInternet
+                    )) {
                     if (modOption->isCompatible() || showIncompatible) {
                         modOption->setPinCallback([this]() {
                             filterOptions(options::getAll(), selectedTier, selectedCategory);  // re-filter to update sorting
@@ -105,7 +106,7 @@ struct Menu::Impl final {
 
         optionList->m_contentLayer->updateLayout();
         optionList->scrollToTop();
-    };
+    }
 
     Label* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
         auto label = Label::create(text.c_str(), font::big);
@@ -115,11 +116,11 @@ struct Menu::Impl final {
         label->setPosition(pos);
 
         return label;
-    };
+    }
 };
 
-Menu::Menu() : m_impl(std::make_unique<Impl>()) {};
-Menu::~Menu() {};
+Menu::Menu() : m_impl(std::make_unique<Impl>()) {}
+Menu::~Menu() {}
 
 void Menu::setupSafeModeNode(bool safeMode) {
     if (m_impl->safeModeContainer) {
@@ -144,8 +145,10 @@ void Menu::setupSafeModeNode(bool safeMode) {
                     fmt::format("{}\n\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in gameplay</c>.\n\n<cy>You can toggle Safe Mode in settings.</c>", safeMode ? "Currently <cc>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cf>progress on levels WILL save</c>!"),
                     "OK",
                     nullptr,
-                    nullptr);
-            });
+                    nullptr
+                );
+            }
+        );
         infoBtn->setID("info-btn");
         infoBtn->setScale(0.375f);
 
@@ -155,16 +158,16 @@ void Menu::setupSafeModeNode(bool safeMode) {
     };
 
     if (m_impl->safeMode != safeMode) m_impl->safeMode = safeMode;
-};
+}
 
-void Menu::setupImageBackground(fs::path const& path) {
+void Menu::setupImageBackground(fs::PathView path) {
     cue::resetNode(m_impl->themeBackground);
 
     if (fs::exists(path)) {
         if (m_impl->themeBgContainer) {
             m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
             m_impl->themeBackground->setID("theme-bg");
-            m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+            m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.0f);
 
             m_impl->themeBackground->setLoadCallback([this, themeBg = WeakRef(m_impl->themeBackground)](Result<> res) {
                 if (auto bg = themeBg.lock()) {
@@ -187,7 +190,7 @@ void Menu::setupImageBackground(fs::path const& path) {
             m_impl->themeBackground->loadFromFile(path);
         };
     };
-};
+}
 
 void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
     cue::resetNode(m_impl->sillyFilterDropdown);
@@ -196,9 +199,10 @@ void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
         to4B(colors::black, 0),
         m_impl->categoryList->getScaledContentWidth(),
         17.5f,
-        43.75f);
+        43.75f
+    );
     m_impl->sillyFilterDropdown->setID("silly-filter-dropdown");
-    m_impl->sillyFilterDropdown->setAnchorPoint({0.5, 1});
+    m_impl->sillyFilterDropdown->setAnchorPoint({ 0.5, 1 });
     m_impl->sillyFilterDropdown->setPosition(pos);
 
     m_impl->sillyFilterDropdown->setCallback([this](auto, CCNode* node) {
@@ -209,19 +213,20 @@ void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
     });
 
     constexpr TierFilterBtnData filterBtns[] = {
-        {SillyTier::None, "Any", "filter-none-btn", colors::white},
-        {SillyTier::Low, "Low", "filter-low-btn", colors::green},
-        {SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow},
-        {SillyTier::High, "High", "filter-high-btn", colors::red},
+        { SillyTier::None, "Any", "filter-none-btn", colors::white },
+        { SillyTier::Low, "Low", "filter-low-btn", colors::green },
+        { SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow },
+        { SillyTier::High, "High", "filter-high-btn", colors::red },
     };
 
     for (auto const& fBtn : filterBtns) {
         if (auto cell = MenuSillyFilterCell::create(
-                {m_impl->sillyFilterDropdown->getScaledContentWidth(), 16.5f},
+                { m_impl->sillyFilterDropdown->getScaledContentWidth(), 16.5f },
                 fBtn.tier,
                 fBtn.id,
                 fBtn.label,
-                fBtn.color)) {
+                fBtn.color
+            )) {
             m_impl->sillyFilterDropdown->addCell(cell);
         } else {
             log::error("Failed to create filter button");
@@ -229,18 +234,16 @@ void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
     };
 
     m_mainLayer->addChild(m_impl->sillyFilterDropdown, 9);
-};
+}
 
 bool Menu::init() {
     auto btns = themes::getCircleBaseColor(m_impl->theme);
 
-    if (!Popup::init(450.f, 280.f, themes::getBackgroundSprite(m_impl->theme))) return false;
+    if (!Popup::init(450.0f, 280.0f, themes::getBackgroundSprite(m_impl->theme))) return false;
 
     setID("options"_spr);
     setTitle("Horrible Options");
     setCloseButtonSpr(themes::createThemeCircleSprite(btns));
-
-    popup::closeBtnID(m_closeBtn);
 
     m_bgSprite->setZOrder(-9);
 
@@ -250,7 +253,7 @@ bool Menu::init() {
     m_impl->themeBgContainer->setAnchorPoint(m_bgSprite->getAnchorPoint());
     m_impl->themeBgContainer->setContentSize(m_bgSprite->getScaledContentSize());
     m_impl->themeBgContainer->setPosition(m_bgSprite->getPosition());
-    m_impl->themeBgContainer->setAlphaThreshold(0.f);
+    m_impl->themeBgContainer->setAlphaThreshold(0.0f);
 
     m_mainLayer->addChild(m_impl->themeBgContainer, -8);
 
@@ -260,17 +263,18 @@ bool Menu::init() {
             .opacity = 255,
             .texture = "GJ_square07.png",
             .id = "",
-        });
-    border->setPosition(m_bgSprite->getScaledContentSize() / 2.f);
+        }
+    );
+    border->setPosition(m_bgSprite->getScaledContentSize() / 2.0f);
 
     m_mainLayer->addChild(border, -1);
 
     // scroll layer
-    m_impl->categoryList = ScrollLayer::create({(mainLayerSize.width / 3.f) - 20.f, 100.f});
+    m_impl->categoryList = ScrollLayer::create({ (mainLayerSize.width / 3.0f) - 20.0f, 100.0f });
     m_impl->categoryList->setID("category-list");
     m_impl->categoryList->setAnchorPoint(anchor::center);
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
-    m_impl->categoryList->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height - 70.f) - (m_impl->categoryList->getScaledContentHeight() / 2.f)});
+    m_impl->categoryList->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height - 70.0f) - (m_impl->categoryList->getScaledContentHeight() / 2.0f) });
 
     m_impl->categoryList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout());
 
@@ -293,7 +297,7 @@ bool Menu::init() {
     };
 
     for (auto const& category : sortedCats) {
-        if (auto categoryItem = MenuCategoryFilterCell::create({m_impl->categoryList->getScaledContentWidth(), 20.f}, category)) {
+        if (auto categoryItem = MenuCategoryFilterCell::create({ m_impl->categoryList->getScaledContentWidth(), 20.0f }, category)) {
             categoryItem->setToggleCallback([this](std::string_view category, bool enabled) {
                 if (enabled) {
                     m_impl->selectedCategory = category;
@@ -317,36 +321,38 @@ bool Menu::init() {
     m_impl->categoryList->scrollToTop();
 
     auto categoryListBg = cue::createBackground(
-        {m_impl->categoryList->getScaledContentWidth() + 7.5f, m_impl->categoryList->getScaledContentHeight() + 7.5f},
+        { m_impl->categoryList->getScaledContentWidth() + 7.5f, m_impl->categoryList->getScaledContentHeight() + 7.5f },
         {
             .cornerRoundness = -0.875f,
             .zOrder = 1,
             .id = "",
-        });
+        }
+    );
     categoryListBg->setPosition(m_impl->categoryList->getPosition());
 
     m_mainLayer->addChild(categoryListBg);
 
-    m_mainLayer->addChild(m_impl->createFilterLabel("Categories", "category-list-label", {m_impl->categoryList->getPositionX(), mainLayerSize.height - 57.5f}), 1);
+    m_mainLayer->addChild(m_impl->createFilterLabel("Categories", "category-list-label", { m_impl->categoryList->getPositionX(), mainLayerSize.height - 57.5f }), 1);
 
-    m_impl->optionList = ScrollLayer::create({(mainLayerSize.width / 1.5f) - 43.75f, mainLayerSize.height - 93.25f});
+    m_impl->optionList = ScrollLayer::create({ (mainLayerSize.width / 1.5f) - 43.75f, mainLayerSize.height - 93.25f });
     m_impl->optionList->setID("options-list");
     m_impl->optionList->setAnchorPoint(anchor::center);
     m_impl->optionList->ignoreAnchorPointForPosition(false);
-    m_impl->optionList->setPosition({(mainLayerSize.width / 2.f) - 82.5f, (mainLayerSize.height / 2.f) - 31.25f});
+    m_impl->optionList->setPosition({ (mainLayerSize.width / 2.0f) - 82.5f, (mainLayerSize.height / 2.0f) - 31.25f });
 
     m_impl->optionList->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout(3.75f));
 
     auto optionListScroll = Scrollbar::create(m_impl->optionList);
     optionListScroll->setID("option-list-scrollbar");
-    optionListScroll->setPosition({m_impl->optionList->getPositionX() + (m_impl->optionList->getScaledContentWidth() / 1.825f), m_impl->optionList->getPositionY()});
+    optionListScroll->setPosition({ m_impl->optionList->getPositionX() + (m_impl->optionList->getScaledContentWidth() / 1.825f), m_impl->optionList->getPositionY() });
 
     auto optionListBg = cue::createBackground(
-        {m_impl->optionList->getScaledContentWidth() + 8.75f, m_impl->optionList->getScaledContentHeight() + 10.f},
+        { m_impl->optionList->getScaledContentWidth() + 8.75f, m_impl->optionList->getScaledContentHeight() + 10.0f },
         {
             .cornerRoundness = -0.75f,
             .id = "",
-        });
+        }
+    );
     optionListBg->setPosition(m_impl->optionList->getPosition());
 
     m_mainLayer->addChild(optionListBg);
@@ -357,39 +363,41 @@ bool Menu::init() {
     // add search bar
     m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", font::big);
     m_impl->searchInput->setID("search-input");
-    m_impl->searchInput->setAnchorPoint({0, 0.5});
-    m_impl->searchInput->setPosition({10.f, mainLayerSize.height - 51.25f});
+    m_impl->searchInput->setAnchorPoint({ 0, 0.5 });
+    m_impl->searchInput->setPosition({ 10.0f, mainLayerSize.height - 51.25f });
 
     m_impl->searchInput->setCallback([this](std::string str) {
         m_impl->searchText = std::move(str);
         m_impl->filterOptions(
             options::getAll(),
             m_impl->selectedTier,
-            m_impl->selectedCategory);  // lets search this crap
+            m_impl->selectedCategory
+        );  // lets search this crap
     });
 
     m_mainLayer->addChild(m_impl->searchInput);
 
     // add a list button background
     auto filterContainerBg = cue::createBackground(
-        {(mainLayerSize.width / 3.f), mainLayerSize.height - 45.f},
+        { (mainLayerSize.width / 3.0f), mainLayerSize.height - 45.0f },
         {
             .id = "",
-        });
-    filterContainerBg->setPosition({mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.f) - 12.5f});
+        }
+    );
+    filterContainerBg->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height / 2.0f) - 12.5f });
 
     m_mainLayer->addChild(filterContainerBg);
 
     auto filterContainerLabel = Label::create("Filters", font::gold);
     filterContainerLabel->setID("filter-container-label");
     filterContainerLabel->setScale(0.375f);
-    filterContainerLabel->setAnchorPoint({0.5, 0});
+    filterContainerLabel->setAnchorPoint({ 0.5, 0 });
     filterContainerLabel->setAlignment(Label::Alignment::Center);
-    filterContainerLabel->setPosition({filterContainerBg->getPositionX(), mainLayerSize.height - 50.f});
+    filterContainerLabel->setPosition({ filterContainerBg->getPositionX(), mainLayerSize.height - 50.0f });
 
     m_mainLayer->addChild(filterContainerLabel);
 
-    CCPoint const dropdownPos = {filterContainerLabel->getPositionX(), 88.75f};
+    CCPoint const dropdownPos = { filterContainerLabel->getPositionX(), 88.75f };
     setupSillyFilterDropdown(dropdownPos);
 
     // adding now to fix touch issue with cue dropdown
@@ -399,16 +407,17 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->optionList, 9);
     m_mainLayer->addChild(optionListScroll);
 
-    m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", {m_impl->categoryList->getPositionX(), m_impl->sillyFilterDropdown->getPositionY() + 8.75f}), 1);
+    m_mainLayer->addChild(m_impl->createFilterLabel("Silliness", "silly-filter-label", { m_impl->categoryList->getPositionX(), m_impl->sillyFilterDropdown->getPositionY() + 8.75f }), 1);
 
     auto filterHint = Label::create(
         "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
-        font::chat);
+        font::chat
+    );
     filterHint->setID("filter-hint");
     filterHint->setScale(0.5f);
     filterHint->setAlignment(Label::Alignment::Center);
-    filterHint->setPosition({filterContainerBg->getPositionX(), 47.5f});
-    filterHint->setMaxWidth(categoryListBg->getScaledContentWidth() * 2.f);  // ????? label what r u doing
+    filterHint->setPosition({ filterContainerBg->getPositionX(), 47.5f });
+    filterHint->setMaxWidth(categoryListBg->getScaledContentWidth() * 2.0f);  // ????? label what r u doing
 
     m_mainLayer->addChild(filterHint, 1);
 
@@ -416,14 +425,152 @@ bool Menu::init() {
     m_impl->filterOptions(options::getAll());
     log::debug("Processed {} options", options::getAll().size());
 
+    auto socialContainerLayout = RowLayout::create()
+                                     ->setGap(1.25f)
+                                     ->setAutoScale(false)
+                                     ->setAxisReverse(true)
+                                     ->setAxisAlignment(AxisAlignment::End)
+                                     ->setAutoGrowAxis(0.0f);
+
+    auto socialContainer = CCNode::create();
+    socialContainer->setID("social-container");
+    socialContainer->setAnchorPoint({ 1, 0.5 });
+    socialContainer->setPosition({ mainLayerSize.width - 8.75f, mainLayerSize.height - 20.0f });
+    socialContainer->setLayout(socialContainerLayout);
+
+#define NOTIFY_INTERNET_IF_OFFLINE \
+    if (!m_impl->hasInternet) return Notification::create("An internet connection is required.", NotificationIcon::Error)->show()
+
+    // #define NOTIFY_IF_LOGGED_OUT \
+//     if (!argon::signedIn()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show()
+
+    auto socialBtns = std::to_array<SocialBtnData>(
+        {
+            {
+                "btn_credits.png"_spr,
+                "credits-btn",
+                [this](auto) {
+                    if (auto popup = MenuCredits::create(m_impl->theme)) popup->show();
+                },
+            },
+            // {
+            //     "btn_ideas.png"_spr,
+            //     "suggestions-btn",
+            //     [this](auto) {
+            //         NOTIFY_INTERNET_IF_OFFLINE;
+            //         NOTIFY_IF_LOGGED_OUT;
+            //         if (auto popup = MenuSuggest::create(m_impl->theme)) popup->show();
+            //     },
+            // },
+            {
+                "gj_discordIcon_001.png",
+                "discord-btn",
+                [this](auto) {
+                    NOTIFY_INTERNET_IF_OFFLINE;
+
+                    // if (!argon::signedIn()) {
+                    createQuickPopup(
+                        "Discord",
+                        "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
+                        "Cancel",
+                        "OK",
+                        [](auto, bool ok) {
+                            if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
+                        }
+                    );
+
+                    return;
+                    // };
+
+                    // if (auto popup = MenuDiscord::create(m_impl->theme)) popup->show();
+                },
+            },
+            // {
+            //     "btn_kofi.png"_spr,
+            //     "support-btn",
+            //     [this](auto) {
+            //         NOTIFY_INTERNET_IF_OFFLINE;
+            //         NOTIFY_IF_LOGGED_OUT;
+            //         if (auto popup = MenuKofi::create(m_impl->theme)) popup->show();
+            //     },
+            // },
+        }
+    );
+
+    for (auto& socialBtn : socialBtns) {
+        if (auto btn = Button::createWithSpriteFrameName(
+                socialBtn.sprite,
+                std::move(socialBtn.callback)
+            )) {
+            btn->setID(std::move(socialBtn.id));
+
+            cue::rescaleToMatch(btn, 23.75f);
+
+            socialContainer->addChild(btn);
+        } else {
+            log::error("Failed to create social button");
+        };
+    };
+
+    m_mainLayer->addChild(socialContainer);
+    socialContainer->updateLayout();
+
+    auto safeModeContainerLayout = RowLayout::create()
+                                       ->setGap(2.5f)
+                                       ->setAutoScale(false)
+                                       ->setAutoGrowAxis(0.0f);
+
+    m_impl->safeModeContainer = CCNode::create();
+    m_impl->safeModeContainer->setID("safe-mode-container");
+    m_impl->safeModeContainer->setAnchorPoint({ 0.5, 0 });
+    m_impl->safeModeContainer->setPosition({ filterContainerBg->getPositionX(), 15.0f });
+    m_impl->safeModeContainer->setLayout(safeModeContainerLayout);
+
+    m_mainLayer->addChild(m_impl->safeModeContainer, 9);
+
+    setupSafeModeNode(m_impl->safeMode);
+    setupImageBackground(mod->getSettingValue<fs::Path>("theme-background"));
+
+    auto loader = Loader::get();
+
+    auto debLabel = Label::create(
+        m_impl->devMode ? fmt::format("{} ({}) {} ({}, Geode {}, GD {})", mod->getName(), mod->getID(), mod->getVersion().toVString(), platform::getString(), loader->getVersion(), loader->getGameVersion()) : fmt::format("{} {} ", mod->getName(), mod->getVersion().toVString()),
+        "chatFont.fnt"
+    );
+    debLabel->setID("debug-label");
+    debLabel->setScale(m_impl->devMode ? 0.5f : 0.375f);
+    debLabel->setAlignment(Label::Alignment::Center);
+    debLabel->setOpacity(m_impl->devMode ? 200 : 100);
+    debLabel->setAnchorPoint({ 0.5, 0 });
+
+    addChildAtPosition(debLabel, Anchor::Bottom, { 0.0f, m_impl->devMode ? 4.25f : 7.5f }, false);
+
+    m_closeBtn->setVisible(false);
+
+    auto closeBtn = Button::createWithNode(
+        themes::createThemeCircleSprite(btns),
+        [this](Button* sender) {
+            this->onClose(sender);
+        }
+    );
+    closeBtn->setID("close-btn");
+    closeBtn->setScaleMultiplier(1.25f);
+
+    addChildAtPosition(closeBtn, Anchor::TopLeft, { closeBtn->getScaledContentWidth() * 0.625f, -(closeBtn->getScaledContentHeight() * 0.625f) }, false);
+
+    auto extraMenu = CCNode::create();
+    extraMenu->setID("extras-menu");
+
     auto settingsBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
             "geode.loader/settings.png",
-            1.f,
-            btns),
+            1.0f,
+            btns
+        ),
         [](auto) {
             openSettingsPopup(mod);
-        });
+        }
+    );
     settingsBtn->setID("settings-btn");
     settingsBtn->setScale(0.625f);
 
@@ -431,10 +578,11 @@ bool Menu::init() {
 
     auto resetFiltersBtnSpr = CircleButtonSprite::createWithSpriteFrameName(
         "geode.loader/reload.png",
-        1.f,
+        1.0f,
         btns,
-        CircleBaseSize::Small);
-    resetFiltersBtnSpr->setTopOffset({1.f, -0.25f});
+        CircleBaseSize::Small
+    );
+    resetFiltersBtnSpr->setTopOffset({ 1.0f, -0.25f });
 
     auto resetFiltersBtn = Button::createWithNode(
         resetFiltersBtnSpr,
@@ -456,139 +604,15 @@ bool Menu::init() {
                         m_impl->filterOptions(options::getAll(), m_impl->selectedTier, m_impl->selectedCategory);
                         setupSillyFilterDropdown(dropdownPos);
                     };
-                });
-        });
+                }
+            );
+        }
+    );
     resetFiltersBtn->setID("reset-filters-btn");
     resetFiltersBtn->setScale(0.625f);
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
 
     m_mainLayer->addChild(resetFiltersBtn);
-
-    auto socialContainerLayout = RowLayout::create()
-                                     ->setGap(1.25f)
-                                     ->setAutoScale(false)
-                                     ->setAxisReverse(true)
-                                     ->setAxisAlignment(AxisAlignment::End)
-                                     ->setAutoGrowAxis(0.f);
-
-    auto socialContainer = CCNode::create();
-    socialContainer->setID("social-container");
-    socialContainer->setAnchorPoint({1, 0.5});
-    socialContainer->setPosition({mainLayerSize.width - 8.75f, mainLayerSize.height - 20.f});
-    socialContainer->setLayout(socialContainerLayout);
-
-#define NOTIFY_INTERNET_IF_OFFLINE \
-    if (!m_impl->hasInternet) return Notification::create("An internet connection is required.", NotificationIcon::Error)->show()
-
-#define NOTIFY_IF_LOGGED_OUT \
-    if (!argon::signedIn()) return Notification::create("You must be logged in!", NotificationIcon::Warning)->show()
-
-    auto socialBtns = std::to_array<SocialBtnData>(
-        {
-            {
-                "btn_credits.png"_spr,
-                "credits-btn",
-                [this](auto) {
-                    if (auto popup = MenuCredits::create(m_impl->theme)) popup->show();
-                },
-            },
-            {
-                "btn_ideas.png"_spr,
-                "suggestions-btn",
-                [this](auto) {
-                    NOTIFY_INTERNET_IF_OFFLINE;
-                    NOTIFY_IF_LOGGED_OUT;
-                    if (auto popup = MenuSuggest::create(m_impl->theme)) popup->show();
-                },
-            },
-            {
-                "gj_discordIcon_001.png",
-                "discord-btn",
-                [this](auto) {
-                    NOTIFY_INTERNET_IF_OFFLINE;
-
-                    if (!argon::signedIn()) {
-                        createQuickPopup(
-                            "Discord",
-                            "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
-                            "Cancel",
-                            "OK",
-                            [](auto, bool ok) {
-                                if (ok) web::openLinkInBrowser("https://www.dsc.gg/cubic");
-                            });
-
-                        return;
-                    };
-
-                    if (auto popup = MenuDiscord::create(m_impl->theme)) popup->show();
-                },
-            },
-            {
-                "btn_kofi.png"_spr,
-                "support-btn",
-                [this](auto) {
-                    NOTIFY_INTERNET_IF_OFFLINE;
-                    NOTIFY_IF_LOGGED_OUT;
-                    if (auto popup = MenuKofi::create(m_impl->theme)) popup->show();
-                },
-            },
-        });
-
-    for (auto& socialBtn : socialBtns) {
-        if (auto btn = Button::createWithSpriteFrameName(
-                socialBtn.sprite,
-                std::move(socialBtn.callback))) {
-            btn->setID(std::move(socialBtn.id));
-
-            cue::rescaleToMatch(btn, 23.75f);
-
-            socialContainer->addChild(btn);
-        } else {
-            log::error("Failed to create social button");
-        };
-    };
-
-    m_mainLayer->addChild(socialContainer);
-    socialContainer->updateLayout();
-
-    auto safeModeContainerLayout = RowLayout::create()
-                                       ->setGap(2.5f)
-                                       ->setAutoScale(false)
-                                       ->setAutoGrowAxis(0.f);
-
-    m_impl->safeModeContainer = CCNode::create();
-    m_impl->safeModeContainer->setID("safe-mode-container");
-    m_impl->safeModeContainer->setAnchorPoint({0.5, 0});
-    m_impl->safeModeContainer->setPosition({filterContainerBg->getPositionX(), 15.f});
-    m_impl->safeModeContainer->setLayout(safeModeContainerLayout);
-
-    m_mainLayer->addChild(m_impl->safeModeContainer, 9);
-
-    setupSafeModeNode(m_impl->safeMode);
-    setupImageBackground(mod->getSettingValue<fs::path>("theme-background"));
-
-    auto loader = Loader::get();
-
-    auto debLabel = Label::create(
-        m_impl->devMode
-            ? fmt::format("{} ({}) {} ({}, Geode {}, GD {})",
-                  mod->getName(),
-                  mod->getID(),
-                  mod->getVersion().toVString(),
-                  platform::getString(),
-                  loader->getVersion(),
-                  loader->getGameVersion())
-            : fmt::format("{} {} ",
-                  mod->getName(),
-                  mod->getVersion().toVString()),
-        "chatFont.fnt");
-    debLabel->setID("debug-label");
-    debLabel->setScale(m_impl->devMode ? 0.5f : 0.375f);
-    debLabel->setAlignment(Label::Alignment::Center);
-    debLabel->setOpacity(m_impl->devMode ? 200 : 100);
-    debLabel->setAnchorPoint({0.5, 0});
-
-    addChildAtPosition(debLabel, Anchor::Bottom, {0.f, m_impl->devMode ? 4.25f : 7.5f}, false);
 
     addEventListener(
         SettingChangedEvent(mod, setting::SafeMode),
@@ -597,54 +621,58 @@ bool Menu::init() {
                 auto settingBool = std::static_pointer_cast<BoolSettingV3>(setting);
                 setupSafeModeNode(settingBool->getValue());
             };
-        });
+        }
+    );
 
     addEventListener(
         SettingChangedEvent(mod, setting::DynamicSafeMode),
         [this](std::shared_ptr<SettingV3>) {
-            if (auto om = OptionManager::get()) setupSafeModeNode(om->shouldBeSafeMode());
-        });
+            setupSafeModeNode(OptionManager::get()->shouldBeSafeMode());
+        }
+    );
 
     addEventListener(
         SettingChangedEvent(mod, "theme-background"),
         [this](std::shared_ptr<SettingV3> setting) {
             auto settingPath = std::static_pointer_cast<FileSettingV3>(setting);
             setupImageBackground(settingPath->getValue());
-        });
+        }
+    );
 
     addEventListener(
         OptionCheatingEvent(),
         [this](bool cheating) {
             if (mod->getSettingValue<bool>(setting::DynamicSafeMode)) setupSafeModeNode(cheating);
-        });
+        }
+    );
 
     return true;
-};
+}
 
 void Menu::onEnter() {
     Popup::onEnter();
     MenuEvent().send(this, true);
     s_inst = this;
-};
+}
 
 void Menu::onExit() {
-    if (auto scene = CCScene::get()) {
-        if (auto credits = scene->getChildByType<MenuCredits>()) credits->removeFromParent();
-        if (auto suggest = scene->getChildByType<MenuSuggest>()) suggest->removeFromParent();
-        if (auto discord = scene->getChildByType<MenuDiscord>()) discord->removeFromParent();
-        if (auto kofi = scene->getChildByType<MenuKofi>()) kofi->removeFromParent();
-    };
+    auto scene = CCScene::get();
+
+    if (auto credits = scene->getChildByType<MenuCredits>()) credits->removeFromParent();
+    // if (auto suggest = scene->getChildByType<MenuSuggest>()) suggest->removeFromParent();
+    // if (auto discord = scene->getChildByType<MenuDiscord>()) discord->removeFromParent();
+    // if (auto kofi = scene->getChildByType<MenuKofi>()) kofi->removeFromParent();
 
     MenuEvent().send(nullptr, false);
 
     s_inst = nullptr;
 
     Popup::onExit();
-};
+}
 
 Menu* Menu::get() noexcept {
     return s_inst;
-};
+}
 
 Menu* Menu::create() {
     auto ret = new Menu();
@@ -655,4 +683,4 @@ Menu* Menu::create() {
 
     delete ret;
     return nullptr;
-};
+}

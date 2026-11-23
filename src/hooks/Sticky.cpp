@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayerObject.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "sticky"
 
@@ -23,7 +23,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
     struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
-        float defSpeed = 0.f;
+        float defSpeed = 0.0f;
 
         Label* clickLabel = nullptr;
 
@@ -46,21 +46,22 @@ class $modify(StickyPlayerObject, PlayerObject) {
             f->clickLabel->setID("sticky-alert"_spr);
             f->clickLabel->setScale(0.625f);
             f->clickLabel->setAlignment(Label::Alignment::Center);
-            f->clickLabel->setAnchorPoint({0.5, 0});
-            f->clickLabel->setPosition({pl->getScaledContentWidth() / 2.f, 25.f});
-            f->clickLabel->setVisible(m_playerSpeed <= 0.f);
+            f->clickLabel->setAnchorPoint({ 0.5, 0 });
+            f->clickLabel->setPosition({ pl->getScaledContentWidth() / 2.0f, 25.0f });
+            f->clickLabel->setVisible(m_playerSpeed <= 0.0f);
 
             auto seq = CCSequence::create(
                 CCCallFuncN::create(this, callfuncN_selector(StickyPlayerObject::stickyCol1)),
                 CCDelayTime::create(0.125f),
                 CCCallFuncN::create(this, callfuncN_selector(StickyPlayerObject::stickyCol2)),
                 CCDelayTime::create(0.125f),
-                nullptr);
+                nullptr
+            );
 
             pl->m_uiLayer->addChild(f->clickLabel, HIGHEST_Z);
             f->clickLabel->runAction(CCRepeatForever::create(seq));
         };
-    };
+    }
 
     bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
@@ -72,20 +73,20 @@ class $modify(StickyPlayerObject, PlayerObject) {
         };
 
         return true;
-    };
+    }
 
     void stickyCol1(CCNode* sender) {
         if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(colors::yellow);
-    };
+    }
 
     void stickyCol2(CCNode* sender) {
         if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(colors::white);
-    };
+    }
 
     bool onGround() {
         log::trace("1: {} 2: {} 3: {} 4: {}", m_isOnGround ? "y" : "n", m_isOnGround2 ? "y" : "n", m_isOnGround3 ? "y" : "n", m_isOnGround4 ? "y" : "n");
         return m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
-    };
+    }
 
     void hitGround(GameObject* object, bool notFlipped) {
         if (!m_gameLayer) return PlayerObject::hitGround(object, notFlipped);
@@ -100,7 +101,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
             if (nowOnGround && !wasOnGround) {
                 if (rng::fast() < f->chance) {
                     f->defSpeed = m_playerSpeed;
-                    m_playerSpeed = 0.f;
+                    m_playerSpeed = 0.0f;
 
                     if (f->clickLabel) f->clickLabel->setVisible(true);
                 };
@@ -108,14 +109,14 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
             f->onGround = nowOnGround;
         };
-    };
+    }
 
     bool pushButton(PlayerButton button) {
         if (!PlayerObject::pushButton(button)) return false;
 
         auto f = m_fields.self();
 
-        if (m_playerSpeed <= 0.f && f->onGround) {
+        if (m_playerSpeed <= 0.0f && f->onGround) {
             m_playerSpeed = f->defSpeed;
             if (f->clickLabel) f->clickLabel->setVisible(false);
         };
@@ -123,7 +124,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         f->onGround = onGround();
 
         return true;
-    };
+    }
 };
 
 $on_mod(Loaded) {
@@ -131,5 +132,6 @@ $on_mod(Loaded) {
         THIS_ID,
         [](OptionSave data) {
             if (auto pl = PlayLayer::get()) modify_cast<StickyPlayerObject*>(pl->m_player1)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
-        });
-};
+        }
+    );
+}

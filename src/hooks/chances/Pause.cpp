@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "pauses"
 
@@ -32,22 +32,22 @@ class $modify(PausePlayLayer, PlayLayer) {
         };
 
         nextPause();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void nextPause() {
         log::trace("scheduling pause");
-        scheduleOnce(schedule_selector(PausePlayLayer::pause), rng::get(15.f, 3.f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+        scheduleOnce(schedule_selector(PausePlayLayer::pause), rng::get(15.0f, 3.0f) * rng::chanceToDelayPct(m_fields->chance));
+    }
 
     void pause(float) {
         nextPause();
         pauseGame(true);
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, PausePlayLayer);

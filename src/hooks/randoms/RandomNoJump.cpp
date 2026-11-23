@@ -5,7 +5,7 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "no_jump"
 

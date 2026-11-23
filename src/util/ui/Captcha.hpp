@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     namespace ui {
         class Captcha final : public geode::Popup {
             using Callback = geode::Function<void(bool)>;

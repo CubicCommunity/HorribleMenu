@@ -4,20 +4,20 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     // Fast color object references ^w^
     namespace colors {
-        inline constexpr cocos2d::ccColor3B white = {255, 255, 255};
-        inline constexpr cocos2d::ccColor3B gray = {150, 150, 150};
-        inline constexpr cocos2d::ccColor3B red = {225, 75, 100};
-        inline constexpr cocos2d::ccColor3B yellow = {250, 250, 25};
-        inline constexpr cocos2d::ccColor3B green = {100, 255, 100};
-        inline constexpr cocos2d::ccColor3B cyan = {10, 175, 255};
-        inline constexpr cocos2d::ccColor3B blue = {0, 122, 255};
-        inline constexpr cocos2d::ccColor3B pink = {233, 89, 161};
-        inline constexpr cocos2d::ccColor3B purple = {106, 25, 200};
-        inline constexpr cocos2d::ccColor3B gold = {255, 200, 150};
-        inline constexpr cocos2d::ccColor3B black = {25, 25, 25};
+        inline constexpr cocos2d::ccColor3B white = { 255, 255, 255 };
+        inline constexpr cocos2d::ccColor3B gray = { 150, 150, 150 };
+        inline constexpr cocos2d::ccColor3B red = { 225, 75, 100 };
+        inline constexpr cocos2d::ccColor3B yellow = { 250, 250, 25 };
+        inline constexpr cocos2d::ccColor3B green = { 100, 255, 100 };
+        inline constexpr cocos2d::ccColor3B cyan = { 10, 175, 255 };
+        inline constexpr cocos2d::ccColor3B blue = { 0, 122, 255 };
+        inline constexpr cocos2d::ccColor3B pink = { 233, 89, 161 };
+        inline constexpr cocos2d::ccColor3B purple = { 106, 25, 200 };
+        inline constexpr cocos2d::ccColor3B gold = { 255, 200, 150 };
+        inline constexpr cocos2d::ccColor3B black = { 25, 25, 25 };
 
         namespace internal {
 
@@ -27,12 +27,12 @@ namespace horrible {
                     static_cast<GLubyte>(a.g + (b.g - a.g) * t),
                     static_cast<GLubyte>(a.b + (b.b - a.b) * t),
                 };
-            };
+            }
         };
 
         inline constexpr cocos2d::ccColor3B fadeColor(float value) noexcept {
-            if (value > 100.f) value = 100.f;
-            if (value < 0.f) value = 0.f;
+            if (value > 100.0f) value = 100.0f;
+            if (value < 0.0f) value = 0.0f;
 
             if (value <= 50.0f) {
                 auto t = value / 50.0f;
@@ -41,7 +41,7 @@ namespace horrible {
                 auto t = (value - 50.0f) / 50.0f;
                 return internal::lerpColor(yellow, green, t);
             };
-        };
+        }
     };
 
     namespace util {
@@ -75,7 +75,7 @@ namespace horrible {
                 if (theme == enums::Geode) return "geode.loader/GE_square01.png";
 
                 return "GJ_square01.png";
-            };
+            }
 
             // Get the current theme's circle base color enum
             inline constexpr auto getCircleBaseColor(std::string_view theme) noexcept {
@@ -89,7 +89,7 @@ namespace horrible {
                 if (theme == enums::Geode) return geode::CircleBaseColor::DarkPurple;
 
                 return geode::CircleBaseColor::Green;
-            };
+            }
 
             // Get the current theme's square button sprite name
             inline constexpr auto getButtonSquareSprite(std::string_view theme) noexcept {
@@ -103,7 +103,7 @@ namespace horrible {
                 if (theme == enums::Geode) return "geode.loader/GE_button_05.png";
 
                 return "GJ_button_01.png";
-            };
+            }
 
             // Get the current theme's color
             inline constexpr auto getColor(std::string_view theme) noexcept {
@@ -117,11 +117,11 @@ namespace horrible {
                 if (theme == enums::Geode) return colors::gold;
 
                 return colors::white;
-            };
+            }
 
             inline constexpr auto createThemeCircleSprite(geode::CircleBaseColor btns) {
                 return geode::CircleButtonSprite::createWithSpriteFrameName(themes::close, 0.875f, btns, geode::CircleBaseSize::Small);
-            };
+            }
 
             // Floating button icon options
             namespace icons {
@@ -157,7 +157,7 @@ namespace horrible {
                 if (icon == icons::SapphireSDK) return "icon_sapphire.png"_spr;
 
                 return "icon.png"_spr;
-            };
+            }
         };
     };
 };

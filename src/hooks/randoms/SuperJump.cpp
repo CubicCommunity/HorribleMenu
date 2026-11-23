@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayerObject.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "super_jump"
 
@@ -29,12 +29,12 @@ class $modify(SuperJumpPlayerObject, PlayerObject) {
 
         if (m_isOnGround && rng::chance(m_fields->chance)) {
             sfx::play(sfx::file::pop);
-            boostPlayer(rng::get(25.f, 17.5f) * (m_isUpsideDown ? -1.f : 1.f));
+            boostPlayer(rng::get(25.0f, 17.5f) * (m_isUpsideDown ? -1.0f : 1.0f));
             Notification::create("Super jump!", NotificationIcon::None, 0.125f)->show();
         } else {
             return PlayerObject::pushButton(button);
         };
 
         return true;
-    };
+    }
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace horrible {
+namespace cs::brkd::horrible {
     namespace base {
         template <class T>
         class Singleton {

@@ -5,7 +5,7 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 void cursor::show() {
     PlatformToolbox::showCursor();  // yea idk just wanna keep the use code consistent

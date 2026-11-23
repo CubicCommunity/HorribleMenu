@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "confetti"
 
@@ -46,19 +46,19 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         };
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void nextConfetti(float) {
         auto delay = rng::get(8.75f, 1.25f);
         log::trace("scheduling confetti in {}s", delay);
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::confetti), delay);
-    };
+    }
 
     void confetti(float) {
         log::debug("unleashing confetti!");
@@ -69,7 +69,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         for (int i = 0; i < rng::get(150, 75); i++) createConfetti();
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
-    };
+    }
 
     void createConfetti() {
         auto conf = CCSprite::createWithSpriteFrameName(g_confettis[rng::get(g_confettis.size() - 1)]);
@@ -78,24 +78,26 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         auto useY = rng::flip();
         auto const endPos = ccp(
             useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * rng::pc(),
-            useY ? getScaledContentHeight() * rng::pc() : getScaledContentHeight() + conf->getScaledContentHeight());
+            useY ? getScaledContentHeight() * rng::pc() : getScaledContentHeight() + conf->getScaledContentHeight()
+        );
 
         auto dur = 0.875f + rng::pc() * 2.5f;
 
         auto move = CCEaseSineOut::create(CCMoveTo::create(dur, endPos));
-        auto rotate = CCEaseSineOut::create(CCRotateBy::create(dur * rng::get(2.5f, 1.f), (360.f * (rng::flip() ? 1.f : -1.f)) * rng::get(3.75f, 0.875f)));
+        auto rotate = CCEaseSineOut::create(CCRotateBy::create(dur * rng::get(2.5f, 1.0f), (360.0f * (rng::flip() ? 1.0f : -1.0f)) * rng::get(3.75f, 0.875f)));
 
         auto seq = CCSequence::createWithTwoActions(
             CCSpawn::createWithTwoActions(move, rotate),
-            CCCallFuncN::create(this, callfuncN_selector(ConfettiPlayLayer::cleanConfetti)));
+            CCCallFuncN::create(this, callfuncN_selector(ConfettiPlayLayer::cleanConfetti))
+        );
 
         m_uiLayer->addChild(conf, HIGHEST_Z);
         conf->runAction(seq);
-    };
+    }
 
     void cleanConfetti(CCNode* sender) {
         cue::resetNode(sender);
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, ConfettiPlayLayer);

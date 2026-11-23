@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "gambler"
 
@@ -32,21 +32,21 @@ class $modify(GamblerPlayLayer, PlayLayer) {
         };
 
         schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.125f);
-    };
+    }
 
-    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
+    bool init(GJGameLevel* level, bool dontCreateObjects) {
+        if (!PlayLayer::init(level, dontCreateObjects)) return false;
 
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
 
         return true;
-    };
+    }
 
     void fullReset() {
         PlayLayer::fullReset();
         schedule(schedule_selector(GamblerPlayLayer::gamblerCheck), 0.125f);
         log::trace("gambler full reset");
-    };
+    }
 
     void gamblerCheck(float) {
         // detect the moment the player first reaches or crosses 95
@@ -60,8 +60,8 @@ class $modify(GamblerPlayLayer, PlayLayer) {
                 m_player1->reversePlayer(nullptr);
                 m_player2->reversePlayer(nullptr);
 
-                m_player1->boostPlayer(rng::get(12.5f, 8.75f) * (m_player1->m_isUpsideDown ? -1.f : 1.f));
-                m_player2->boostPlayer(rng::get(12.5f, 8.75f) * (m_player2->m_isUpsideDown ? -1.f : 1.f));
+                m_player1->boostPlayer(rng::get(12.5f, 8.75f) * (m_player1->m_isUpsideDown ? -1.0f : 1.0f));
+                m_player2->boostPlayer(rng::get(12.5f, 8.75f) * (m_player2->m_isUpsideDown ? -1.0f : 1.0f));
             } else {
                 log::info("Gambler won the bet! instant win.");
 
@@ -73,7 +73,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
 
             unschedule(schedule_selector(GamblerPlayLayer::gamblerCheck));
         };
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, GamblerPlayLayer);

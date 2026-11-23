@@ -5,7 +5,7 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 // hardcoded lead devs for this build of horrible menu if web request fails
 static auto const g_defaultDevs = std::to_array<LeadDevIcon>({
@@ -30,7 +30,7 @@ $on_mod(Loaded) {
         cm->loadLeadDevs();
         cm->loadLicense();
     };
-};
+}
 
 Result<LeadDevIcon> json::Serialize<LeadDevIcon>::fromJson(json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
@@ -52,8 +52,9 @@ Result<LeadDevIcon> json::Serialize<LeadDevIcon>::fromJson(json::Value const& va
             color1,
             color2,
             glowColor,
-        });
-};
+        }
+    );
+}
 
 json::Value json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
     auto obj = json::Value();
@@ -67,7 +68,7 @@ json::Value json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
     obj["glowColor"] = value.glowColor;
 
     return obj;
-};
+}
 
 Result<LicenseData> json::Serialize<LicenseData>::fromJson(json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
@@ -81,8 +82,9 @@ Result<LicenseData> json::Serialize<LicenseData>::fromJson(json::Value const& va
             std::move(key),
             std::move(name),
             std::move(url),
-        });
-};
+        }
+    );
+}
 
 json::Value json::Serialize<LicenseData>::toJson(LicenseData const& value) {
     auto obj = json::Value();
@@ -92,14 +94,14 @@ json::Value json::Serialize<LicenseData>::toJson(LicenseData const& value) {
     obj["url"] = value.url;
 
     return obj;
-};
+}
 
 bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int color2, int glowColor) {
     if (!CCNode::init()) return false;
 
     auto layout = ColumnLayout::create()
                       ->setGap(2.5f)
-                      ->setAutoGrowAxis(0.f)
+                      ->setAutoGrowAxis(0.0f)
                       ->setAxisAlignment(AxisAlignment::Center)
                       ->setCrossAxisAlignment(AxisAlignment::Start)
                       ->setAutoScale(false);
@@ -116,19 +118,20 @@ bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int c
         font::gold,
         [account](auto) {
             if (auto page = ProfilePage::create(account, false)) page->show();
-        });
+        }
+    );
     labelBtn->setID("profile-btn");
     labelBtn->setScale(0.375f);
 
-    playerIcon->setPosition(getScaledContentSize() / 2.f);
-    labelBtn->setPosition({getScaledContentWidth() / 2.f, getScaledContentHeight() + (labelBtn->getScaledContentHeight() * 0.875f)});
+    playerIcon->setPosition(getScaledContentSize() / 2.0f);
+    labelBtn->setPosition({ getScaledContentWidth() / 2.0f, getScaledContentHeight() + (labelBtn->getScaledContentHeight() * 0.875f) });
 
     addChild(labelBtn, 1);
 
     updateLayout();
 
     return true;
-};
+}
 
 MenuPlayer* MenuPlayer::create(ZStringView name, int account, int icon, int color1, int color2, int glowColor) {
     auto ret = new MenuPlayer();
@@ -139,37 +142,35 @@ MenuPlayer* MenuPlayer::create(ZStringView name, int account, int icon, int colo
 
     delete ret;
     return nullptr;
-};
+}
 
 bool MenuCredits::init(ZStringView theme) {
     auto btns = themes::getCircleBaseColor(theme);
 
-    if (!Popup::init(400.f, 265.f, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init(400.0f, 265.0f, themes::getBackgroundSprite(theme))) return false;
 
     setID("credits"_spr);
     setTitle("Credits");
     setCloseButtonSpr(themes::createThemeCircleSprite(btns));
-
-    popup::closeBtnID(m_closeBtn);
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
     auto leadDevLabel = Label::create("Lead Developers", font::big);
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);
-    leadDevLabel->setAnchorPoint({0, 0.5});
-    leadDevLabel->setPosition({30.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 91.25f});
+    leadDevLabel->setAnchorPoint({ 0, 0.5 });
+    leadDevLabel->setPosition({ 30.0f, (m_mainLayer->getScaledContentHeight() / 2.0f) + 91.25f });
 
     m_mainLayer->addChild(leadDevLabel);
 
     auto leadDevContainerLayout = RowLayout::create()
-                                      ->setGap(5.f)
+                                      ->setGap(5.0f)
                                       ->setAutoScale(false)
-                                      ->setAutoGrowAxis(0.f);
+                                      ->setAutoGrowAxis(0.0f);
 
     auto leadDevContainer = CCNode::create();
     leadDevContainer->setID("lead-dev-container");
-    leadDevContainer->setAnchorPoint({anchor::center});
+    leadDevContainer->setAnchorPoint({ anchor::center });
     leadDevContainer->setLayout(leadDevContainerLayout);
 
     m_mainLayer->addChild(leadDevContainer, 1);
@@ -183,14 +184,15 @@ bool MenuCredits::init(ZStringView theme) {
 
     leadDevContainer->updateLayout();
 
-    leadDevContainer->setPosition({2.5f + leadDevLabel->getPositionX() + (leadDevContainer->getScaledContentWidth() / 2.f), leadDevLabel->getPositionY() - 35.f});
+    leadDevContainer->setPosition({ 2.5f + leadDevLabel->getPositionX() + (leadDevContainer->getScaledContentWidth() / 2.0f), leadDevLabel->getPositionY() - 35.0f });
 
     auto leadDevContainerBg = cue::createBackground(
-        {leadDevContainer->getScaledContentWidth() + 10.f, leadDevContainer->getScaledContentHeight() + 6.25f},
+        { leadDevContainer->getScaledContentWidth() + 10.0f, leadDevContainer->getScaledContentHeight() + 6.25f },
         {
             .zOrder = 0,
             .id = "",
-        });
+        }
+    );
     leadDevContainerBg->setPosition(leadDevContainer->getPosition());
 
     m_mainLayer->addChild(leadDevContainerBg);
@@ -204,9 +206,9 @@ bool MenuCredits::init(ZStringView theme) {
 
     auto resrcBtnContainer = CCNode::create();
     resrcBtnContainer->setID("resources-container");
-    resrcBtnContainer->setAnchorPoint({0, 0.5});
-    resrcBtnContainer->setContentSize({(m_mainLayer->getScaledContentWidth() - leadDevContainerBg->getScaledContentWidth()) - 60.f, leadDevContainer->getScaledContentHeight()});
-    resrcBtnContainer->setPosition({leadDevContainer->getPositionX() + (leadDevContainerBg->getScaledContentWidth() / 2.f) + 5.f, leadDevContainer->getPositionY()});
+    resrcBtnContainer->setAnchorPoint({ 0, 0.5 });
+    resrcBtnContainer->setContentSize({ (m_mainLayer->getScaledContentWidth() - leadDevContainerBg->getScaledContentWidth()) - 60.0f, leadDevContainer->getScaledContentHeight() });
+    resrcBtnContainer->setPosition({ leadDevContainer->getPositionX() + (leadDevContainerBg->getScaledContentWidth() / 2.0f) + 5.0f, leadDevContainer->getPositionY() });
     resrcBtnContainer->setLayout(resrcBtnContainerLayout);
 
     m_mainLayer->addChild(resrcBtnContainer, 9);
@@ -224,7 +226,8 @@ bool MenuCredits::init(ZStringView theme) {
                     "OK",
                     [](auto, bool ok) {
                         if (ok) web::openLinkInBrowser("https://dsc.gg/breakeode");
-                    });
+                    }
+                );
             },
         },
         {
@@ -241,7 +244,8 @@ bool MenuCredits::init(ZStringView theme) {
                 MDPopup::create(
                     "License & Attribution",
                     CreditsManager::get()->getLicense(),
-                    "OK")
+                    "OK"
+                )
                     ->show();
             },
         },
@@ -252,8 +256,10 @@ bool MenuCredits::init(ZStringView theme) {
             ButtonSprite::create(
                 b.label.c_str(),
                 font::gold,
-                themes::getButtonSquareSprite(theme)),
-            std::move(b.callback));
+                themes::getButtonSquareSprite(theme)
+            ),
+            std::move(b.callback)
+        );
         btn->setID(std::move(b.id));
         btn->setScale(0.625f);
 
@@ -280,11 +286,12 @@ bool MenuCredits::init(ZStringView theme) {
         "**[Team Avalanche](user:31079132)**: Supporting the project since its experimental days\n\n"
         "**[Talindrusk](user:30689066)**: Codebase contributions, playtesting",
         {
-            m_mainLayer->getScaledContentWidth() - 55.f,
-            140.f,
-        });
+            m_mainLayer->getScaledContentWidth() - 55.0f,
+            140.0f,
+        }
+    );
     creditsMd->setID("credits");
-    creditsMd->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 90.f});
+    creditsMd->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 90.0f });
 
     m_mainLayer->addChild(creditsMd, 1);
 
@@ -292,7 +299,8 @@ bool MenuCredits::init(ZStringView theme) {
         ButtonSprite::create(
             "Website",
             font::big,
-            themes::getButtonSquareSprite(theme)),
+            themes::getButtonSquareSprite(theme)
+        ),
         [](auto) {
             createQuickPopup(
                 "Breakeode",
@@ -301,11 +309,13 @@ bool MenuCredits::init(ZStringView theme) {
                 "OK",
                 [](auto, bool ok) {
                     if (ok) web::openLinkInBrowser("https://breakeode.cubicstudios.xyz/");
-                });
-        });
+                }
+            );
+        }
+    );
     websiteBtn->setID("website-btn");
     websiteBtn->setScale(0.625f);
-    websiteBtn->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 0.f});
+    websiteBtn->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 0.0f });
 
     m_mainLayer->addChild(websiteBtn, 1);
 
@@ -315,22 +325,22 @@ bool MenuCredits::init(ZStringView theme) {
     auto modBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
             isModBtnSecret ? themes::getIconSprite(themes::icons::SapphireSDK) : "geode.loader/geode-logo-outline-gold.png",
-            isModBtnSecret ? 1.125f : 1.f,
-            btns),
+            isModBtnSecret ? 1.125f : 1.0f,
+            btns
+        ),
         [](auto) {
             openInfoPopup(mod);
-        });
+        }
+    );
     modBtn->setID("mod-information-btn");
     modBtn->setScale(0.5f);
-    modBtn->setPosition({15.f, 15.f});
+    modBtn->setPosition({ 15.0f, 15.0f });
 
     m_mainLayer->addChild(modBtn, 9);
 
     if (auto om = OptionManager::get()) {
         auto integrations = om->getMods();
-        auto str = (integrations.size() > 0)
-                       ? fmt::format("Here's the <cg>full list of your installed mods (**`{}`**)</c> which <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---", integrations.size())
-                       : "If <cg>different mods</c> use this mod's API to <cy>add their own options</c>, they will all be listed here.";
+        auto str = (integrations.size() > 0) ? fmt::format("Here's the <cg>full list of your installed mods (**`{}`**)</c> which <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---", integrations.size()) : "If <cg>different mods</c> use this mod's API to <cy>add their own options</c>, they will all be listed here.";
 
         if (integrations.size() > 0) {
             for (auto const& i : integrations) {
@@ -343,13 +353,15 @@ bool MenuCredits::init(ZStringView theme) {
             CircleButtonSprite::createWithSpriteFrameName(
                 "geode.loader/grid-view.png",
                 0.75f,
-                btns),
+                btns
+            ),
             [integrations = std::move(integrations), str = std::move(str)](auto) {
                 if (integrations.size() > 0) {
                     MDPopup::create(
                         "Integrations",
                         str,
-                        "OK")
+                        "OK"
+                    )
                         ->show();
                 } else {
                     createQuickPopup(
@@ -357,12 +369,14 @@ bool MenuCredits::init(ZStringView theme) {
                         str,
                         "OK",
                         nullptr,
-                        nullptr);
+                        nullptr
+                    );
                 };
-            });
+            }
+        );
         integrationsBtn->setID("integrations-btn");
         integrationsBtn->setScale(0.5f);
-        integrationsBtn->setPosition({m_mainLayer->getScaledContentWidth() - 15.f, 15.f});
+        integrationsBtn->setPosition({ m_mainLayer->getScaledContentWidth() - 15.0f, 15.0f });
 
         m_mainLayer->addChild(integrationsBtn, 9);
     };
@@ -371,10 +385,11 @@ bool MenuCredits::init(ZStringView theme) {
         m_mainLayer,
         "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n"
         "<co>If we missed anyone, let us know by opening an issue about it on our GitHub repository!</c>\n\n"
-        "<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>");
+        "<cd>Thanks to everyone who has helped this project in any way! We greatly appreciate you! <3</c>"
+    );
 
     return true;
-};
+}
 
 MenuCredits* MenuCredits::create(ZStringView theme) {
     auto ret = new MenuCredits();
@@ -385,7 +400,7 @@ MenuCredits* MenuCredits::create(ZStringView theme) {
 
     delete ret;
     return nullptr;
-};
+}
 
 void CreditsManager::loadLeadDevs() {
     log::trace("Requested to fetch data on lead developers");
@@ -433,11 +448,12 @@ void CreditsManager::loadLeadDevs() {
                 for (auto const& val : array) {
                     LEAD_DEVS_INTERNAL(m_leadDevs, val.as<LeadDevIcon>());
                 };
-            });
+            }
+        );
     } else {
         log::error("Lead developer data already populated");
     };
-};
+}
 
 void CreditsManager::loadLicense() {
     log::trace("Requested to fetch data on mod licensing");
@@ -469,17 +485,19 @@ void CreditsManager::loadLicense() {
                     "[Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under [{}]({}).\n\n"
                     "Third-party assets, API modifications, libraries, and other external resources are credited in their respective sections in the Credits interface.",
                     lic.name,
-                    lic.url);
-            });
+                    lic.url
+                );
+            }
+        );
     } else {
         log::error("License data already populated");
     };
-};
+}
 
 std::span<const LeadDevIcon> CreditsManager::getLeadDevs() const noexcept {
     return m_leadDevs;
-};
+}
 
 ZStringView CreditsManager::getLicense() const noexcept {
     return m_license;
-};
+}

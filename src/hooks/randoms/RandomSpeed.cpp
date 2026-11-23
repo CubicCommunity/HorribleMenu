@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayerObject.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "random_speed"
 
@@ -31,10 +31,10 @@ class $modify(RandomSpeedPlayerObject, PlayerObject) {
 
         if (rng::chance(f->chance)) {
             // randomly choose a new speed between 10% and 200%
-            m_playerSpeed = rng::get(200.f, 10.f) / 100.f;
+            m_playerSpeed = rng::get(200.0f, 10.0f) / 100.0f;
             log::debug("Changed player speed to {}", m_playerSpeed);
         };
 
         return true;
-    };
+    }
 };

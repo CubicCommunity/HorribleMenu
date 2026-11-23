@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "motivation"
 
@@ -119,40 +119,41 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
         log::trace("Preparing {} motivational messages", g_msgs.size());
 
-        auto delay = rng::get(10.f, 3.f);
+        auto delay = rng::get(10.0f, 3.0f);
         log::debug("Motivational message will show after {} seconds", delay);
 
         scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), delay);
-    };
+    }
 
     void showMessage(float) {
         if (!m_hasCompletedLevel) {
             auto label = Label::create(g_msgs[rng::get(g_msgs.size())], font::big);
             label->setMaxWidth(getScaledContentWidth() - 12.5f);
-            label->setAnchorPoint({0.5, 0});
+            label->setAnchorPoint({ 0.5, 0 });
             label->setAlignment(Label::Alignment::Center);
-            label->setPosition({getScaledContentWidth() / 2.f, -label->getScaledContentHeight()});
+            label->setPosition({ getScaledContentWidth() / 2.0f, -label->getScaledContentHeight() });
 
             auto action = CCSequence::create(
-                CCEaseSineOut::create(CCMoveTo::create(0.375f, {label->getPositionX(), 12.5f})),
-                CCDelayTime::create(5.f),
-                CCEaseSineIn::create(CCMoveTo::create(0.5f, {label->getPositionX(), -label->getScaledContentHeight()})),
+                CCEaseSineOut::create(CCMoveTo::create(0.375f, { label->getPositionX(), 12.5f })),
+                CCDelayTime::create(5.0f),
+                CCEaseSineIn::create(CCMoveTo::create(0.5f, { label->getPositionX(), -label->getScaledContentHeight() })),
                 CCCallFuncN::create(this, callfuncN_selector(MotivationPlayLayer::scheduleNextMessage)),
-                nullptr);
+                nullptr
+            );
 
             m_uiLayer->addChild(label, HIGHEST_Z);
 
             sfx::play(sfx::file::good);
             label->runAction(action);
         };
-    };
+    }
 
     void scheduleNextMessage(CCNode* sender) {
         cue::resetNode(sender);
 
-        auto delay = rng::get(15.f, 5.f);
+        auto delay = rng::get(15.0f, 5.0f);
         log::debug("Motivational message will show again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), delay);
-    };
+    }
 };

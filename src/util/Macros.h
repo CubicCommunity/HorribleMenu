@@ -9,11 +9,12 @@
 #define HORRIBLE_SETUP_INTERFACE_FUNC void HORRIBLE_SETUP_INTERFACE_FUNC_NAME(bool on = true)
 
 #define HORRIBLE_MODIFY_EVENT_HANDLER(Base, Derived)                                                                           \
-    horrible::listenForHorribleOptionChanges(                                                                                  \
+    cs::brkd::horrible::listenForHorribleOptionChanges(                                                                        \
         THIS_ID,                                                                                                               \
-        [](horrible::OptionSave data) {                                                                                        \
+        [](cs::brkd::horrible::OptionSave data) {                                                                              \
             if (auto b = Base::get()) geode::cast::modify_cast<Derived*>(b)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled); \
-        })
+        }                                                                                                                      \
+    )
 
 #define HORRIBLE_TOGGLE_MODIFY(Base, Derived)         \
     $on_mod(Loaded) {                                 \

@@ -5,14 +5,14 @@
 #include <Geode/Result.hpp>
 
 #include <Geode/loader/Mod.hpp>
-#include <Geode/loader/Dispatch.hpp>
+#include <Geode/loader/EventExport.hpp>
 
 #ifdef MY_MOD_ID
 #undef MY_MOD_ID
 #endif
 #define MY_MOD_ID "cubicstudios.horriblemenu"
 
-namespace horrible {
+namespace cs::brkd::horrible {
     // Metadata for a horrible option
     struct OptionV2 final {
     private:
@@ -42,8 +42,9 @@ namespace horrible {
             bool state = false,
             bool online = false,
             bool restart = false,
-            std::vector<Platform> platforms = {Platform::All},
-            bool cheating = false) :
+            std::vector<Platform> platforms = { Platform::All },
+            bool cheating = false
+        ) :
             id(std::move(id)),
             name(std::move(name)),
             description(std::move(description)),
@@ -54,11 +55,11 @@ namespace horrible {
             restart(restart),
             platforms(std::move(platforms)),
             cheating(cheating),
-            integration(geode::Mod::get()) {};
+            integration(geode::Mod::get()) {}
 
         inline const geode::Mod* getIntegration() const noexcept {
             return integration;
-        };
+        }
     };
 
     // Optional bridge to option manager for Horrible Menu
@@ -69,8 +70,7 @@ namespace horrible {
          *
          * @param option Constructed option object
          */
-        static void registerOption(OptionV2 const& option)
-            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::registerOption, (option));
+        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, geode::Result<>, registerOption, (OptionV2 const& option), (option));
 
         /**
          * Set the toggle state of an option
@@ -78,8 +78,7 @@ namespace horrible {
          * @param id The ID of the option to toggle
          * @param enable Boolean to toggle to
          */
-        static void toggleOption(geode::ZStringView id, bool enable)
-            GEODE_EVENT_EXPORT_NORES(&OptionManagerV2::toggleOption, (id, enable));
+        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, void, toggleOption, (geode::ZStringView id, bool enable), (id, enable));
 
         /**
          * Quickly check the toggle state of an option
@@ -88,7 +87,6 @@ namespace horrible {
          *
          * @returns Boolean of the current value
          */
-        static geode::Result<bool> isEnabled(geode::ZStringView id)
-            GEODE_EVENT_EXPORT(&OptionManagerV2::isEnabled, (id));
+        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, geode::Result<bool>, isEnabled, (geode::ZStringView id), (id));
     };
 };

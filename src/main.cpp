@@ -5,10 +5,10 @@
 
 #include <Geode/Geode.hpp>
 
-#include <cheeseworks.moddevbranding/include/OptionalAPI.hpp>
+// #include <cheeseworks.moddevbranding/include/OptionalAPI.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 static bool g_loadedOnce = false;
 
@@ -21,48 +21,56 @@ $on_game(Loaded) {
         "key-popup",
         [](auto, bool down, bool repeat, auto) {
             if (down && !repeat) menu::open();
-        });
+        }
+    );
 
     listenForSettingChanges<bool>(
         "floating-btn-level",
         [](bool value) {
             if (auto fb = MenuButton::get()) fb->setShowInLevel(value);
-        });
+        }
+    );
 
     listenForSettingChanges<bool>(
         "floating-btn-editor",
         [](bool value) {
             if (auto fb = MenuButton::get()) fb->setShowInEditor(value);
-        });
+        }
+    );
 
     listenForSettingChanges<float>(
         "floating-btn-scale",
         [](float value) {
             if (auto fb = MenuButton::get()) fb->setScale(value);
-        });
+        }
+    );
 
     listenForSettingChanges<uint8_t>(
         "floating-btn-opacity",
         [](uint8_t value) {
             if (auto fb = MenuButton::get()) fb->setOpacity(value);
-        });
+        }
+    );
 
     listenForSettingChanges<std::string>(
         "floating-btn-icon",
         [](std::string value) {
             if (auto fb = MenuButton::get()) fb->setButtonIcon(std::move(value));
-        });
+        }
+    );
 
     listenForSettingChanges<std::string>(
         "theme",
         [](std::string value) {
             if (auto fb = MenuButton::get()) fb->setTheme(std::move(value));
-        });
+        }
+    );
 
     listenForAllHorribleOptionChanges(
         [](std::string_view id, OptionSave data) {
             log::trace("Global options listener detected {} being {}, {}, {}", id, data.enabled ? "enabled" : "disabled", data.pin ? "pinned" : "unpinned", data.viewed ? "viewed" : "not viewed yet");
-        });
+        }
+    );
 
     ButtonSettingPressedEventV3(mod, "btn-popup")
         .listen([](std::string_view buttonKey) {
@@ -100,20 +108,21 @@ $on_game(Loaded) {
                             Notification::create("Disabled all cheats", NotificationIcon::Success)->show();
                             if (Menu::get()) menu::open(true);
                         };
-                    });
+                    }
+                );
             };
         })
         .leak();
 
-    (void)branding::registerBrand(GEODE_MOD_ID, "https://moddev.cheeseworks.gay/cdn/cubic_horriblemenu.webp", branding::Type::URL);
+    // (void)branding::registerBrand(GEODE_MOD_ID, "https://moddev.cheeseworks.gay/cdn/cubic_horriblemenu.webp", branding::Type::URL);
 
     g_loadedOnce = true;
-};
+}
 
 $on_game(TexturesLoaded) {
     if (!g_loadedOnce) return;  // trigger the button setup to match graphics quality !!!
     if (auto fb = MenuButton::get()) fb->setTheme(mod->getSettingValue<std::string>("theme"));
-};
+}
 
 // i didn't wanna inline this in Util.h for reasons...
 Button* popup::addHelpButton(CCNode* to, std::string content, bool useMarkdown, float btnScale, CCPoint const& offset) {
@@ -127,7 +136,8 @@ Button* popup::addHelpButton(CCNode* to, std::string content, bool useMarkdown, 
                     content,
                     "OK",
                     nullptr,
-                    nullptr)
+                    nullptr
+                )
                     ->show();
             } else {
                 createQuickPopup(
@@ -135,13 +145,15 @@ Button* popup::addHelpButton(CCNode* to, std::string content, bool useMarkdown, 
                     content,
                     "OK",
                     nullptr,
-                    nullptr);
+                    nullptr
+                );
             };
-        });
+        }
+    );
     infoBtn->setID("info-btn");
     infoBtn->setScale(btnScale);
     infoBtn->setZOrder(HIGHEST_Z);
 
     to->addChildAtPosition(infoBtn, Anchor::TopRight, offset, false);
     return infoBtn;
-};
+}

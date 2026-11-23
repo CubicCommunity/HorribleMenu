@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayerObject.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "double_jump"
 

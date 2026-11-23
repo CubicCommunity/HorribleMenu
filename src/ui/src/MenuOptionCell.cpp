@@ -5,7 +5,7 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     if (!CCNode::init()) return false;
@@ -19,25 +19,25 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     auto label = Label::create("No options found :(", font::big);
     label->setScale(0.5f);
     label->setOpacity(250);
-    label->setAnchorPoint({0.5, 0});
+    label->setAnchorPoint({ 0.5, 0 });
     label->setAlignment(Label::Alignment::Center);
     label->setLimitLabelWidth(getScaledContentWidth() * 0.875f, label->getScale(), label->getScale() * 0.125f);
-    label->setPosition(getScaledContentSize() / 2.f);
+    label->setPosition(getScaledContentSize() / 2.0f);
 
     addChild(label, 1);
 
     auto labelHint = Label::create("Try searching other keywords, or change some filters!", font::chat);
     labelHint->setScale(0.625f);
     labelHint->setOpacity(200);
-    labelHint->setAnchorPoint({0.5, 1});
+    labelHint->setAnchorPoint({ 0.5, 1 });
     labelHint->setAlignment(Label::Alignment::Center);
     labelHint->setLimitLabelWidth(getScaledContentWidth() * 0.875f, labelHint->getScale(), labelHint->getScale() * 0.125f);
-    labelHint->setPosition(getScaledContentSize() / 2.f);
+    labelHint->setPosition(getScaledContentSize() / 2.0f);
 
     addChild(labelHint);
 
     return true;
-};
+}
 
 MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos) {
     auto ret = new MenuNothingNode();
@@ -48,7 +48,7 @@ MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos)
 
     delete ret;
     return nullptr;
-};
+}
 
 struct MenuOptionCell::Impl final {
     bool compatible = false;  // If this option is compatible with the current platform
@@ -68,7 +68,7 @@ struct MenuOptionCell::Impl final {
         if (toggler) options::set(option->getID(), toggler->isToggled(), saved.pin, saved.viewed);
 
         hideNewLabel();
-    };
+    }
 
     // Notify the user if this option is not compatible for their current platform
     void notifyIncompats() {
@@ -81,11 +81,11 @@ struct MenuOptionCell::Impl final {
             log::warn("Option {} is unavailable for platform {}", option->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
             Notification::create(fmt::format("{} is not available for {}", option->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
         };
-    };
+    }
 
     void hideNewLabel() {
         if (auto label = WeakRef(newContainer).lock()) label->setVisible(false);
-    };
+    }
 
     constexpr auto getTierDescString(SillyTier silly, bool compat) noexcept {
         if (!compat) return "<cp>OPTION UNAVAILABLE</c>";
@@ -98,7 +98,7 @@ struct MenuOptionCell::Impl final {
             case SillyTier::High: return "<cr>Silly Tier - HIGH</c>";
             case SillyTier::None: return "Silly Tier - UNKNOWN";
         };
-    };
+    }
 
     constexpr auto getTierColor(SillyTier silly) noexcept {
         switch (silly) {
@@ -118,11 +118,11 @@ struct MenuOptionCell::Impl final {
                 return colors::red;
                 break;
         };
-    };
+    }
 };
 
-MenuOptionCell::MenuOptionCell() : m_impl(std::make_unique<Impl>()) {};
-MenuOptionCell::~MenuOptionCell() {};
+MenuOptionCell::MenuOptionCell() : m_impl(std::make_unique<Impl>()) {}
+MenuOptionCell::~MenuOptionCell() {}
 
 bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet) {
     m_impl->option = std::move(option);
@@ -140,23 +140,24 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
 
     setID(m_impl->option->getID());
     setContentSize(size);
-    setAnchorPoint({0.5, 1});
+    setAnchorPoint({ 0.5, 1 });
 
     auto bg = cue::attachBackground(
         this,
         {
             .opacity = 175,
-            .sidePadding = 0.f,
-            .verticalPadding = 0.f,
+            .sidePadding = 0.0f,
+            .verticalPadding = 0.0f,
             .cornerRoundness = -0.125f,
             .texture = themes::square,
-        });
+        }
+    );
     bg->setColor(m_impl->getTierColor(m_impl->option->getSillyTier()));
 
     // Horizontal layout: [toggle] [name] [info]
-    float yCenter = getScaledContentHeight() / 2.f;
+    float yCenter = getScaledContentHeight() / 2.0f;
 
-    auto x = 5.f;
+    auto x = 5.0f;
 
     auto togglerOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
     togglerOff->setScale(0.875f);
@@ -167,7 +168,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     m_impl->toggler = CCMenuItemToggler::create(togglerOff, togglerOn, this, menu_selector(MenuOptionCell::onToggle));
     m_impl->toggler->setID("toggler");
     m_impl->toggler->setAnchorPoint(anchor::center);
-    m_impl->toggler->setPosition({x + 12.f, yCenter});
+    m_impl->toggler->setPosition({ x + 12.0f, yCenter });
     m_impl->toggler->setScale(0.875f);
 
     // Set toggler state based on saved mod option value
@@ -175,40 +176,40 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
 
     addChild(m_impl->toggler);
 
-    x += 30.f;
+    x += 30.0f;
 
-    auto labelWidth = getScaledContentWidth() - 80.f;
+    auto labelWidth = getScaledContentWidth() - 80.0f;
 
     // name of the joke
     auto nameLabel = Label::create(m_impl->option->getName().c_str(), font::big);
     nameLabel->setID("name-label");
     nameLabel->setScale(0.4f);
     nameLabel->setLimitLabelWidth(labelWidth, 0.4f, 0.125f);
-    nameLabel->setAnchorPoint({0.f, 0.5f});
-    nameLabel->setPosition({x, yCenter});
+    nameLabel->setAnchorPoint({ 0.0f, 0.5f });
+    nameLabel->setPosition({ x, yCenter });
 
     auto categoryLabel = Label::create(m_impl->option->getCategory().c_str(), font::gold);
     categoryLabel->setID("category-label");
     categoryLabel->setScale(0.25f);
     categoryLabel->setLimitLabelWidth(labelWidth, 0.25f, 0.125f);
-    categoryLabel->setAnchorPoint({0.f, 0.5f});
-    categoryLabel->setPosition({x, yCenter + 10.f});
+    categoryLabel->setAnchorPoint({ 0.0f, 0.5f });
+    categoryLabel->setPosition({ x, yCenter + 10.0f });
     categoryLabel->setOpacity(200);
 
     addChild(nameLabel);
     addChild(categoryLabel);
 
     auto menuLayout = RowLayout::create()
-                          ->setGap(5.f)
+                          ->setGap(5.0f)
                           ->setAutoScale(false)
                           ->setAxisReverse(true)
-                          ->setAutoGrowAxis(0.f);
+                          ->setAutoGrowAxis(0.0f);
 
     auto menu = CCMenu::create();
     menu->setID("menu");
-    menu->setAnchorPoint({1, 0.5});
-    menu->setContentSize({0.f, 0.f});
-    menu->setPosition({getScaledContentWidth() - 7.5f, yCenter});
+    menu->setAnchorPoint({ 1, 0.5 });
+    menu->setContentSize({ 0.0f, 0.0f });
+    menu->setPosition({ getScaledContentWidth() - 7.5f, yCenter });
     menu->setLayout(menuLayout);
 
     addChild(menu);
@@ -226,8 +227,9 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
                 std::move(formatDesc),
                 "OK",
                 nullptr,
-                375.f,
-                nullptr);
+                375.0f,
+                nullptr
+            );
 
             auto saved = options::get(m_impl->option->getID());
             if (!saved.viewed) {
@@ -236,7 +238,8 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
             };
 
             m_impl->notifyIncompats();
-        });
+        }
+    );
     infoBtn->setID("info-btn");
     infoBtn->setScale(onlineCompat ? 0.75f : 0.625f);
 
@@ -249,7 +252,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     pinOn->setScale(0.425f);
     pinOn->setOpacity(225);
 
-    pinOff->setBlendFunc({GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA});
+    pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
     pinOn->setColor(themes::getColor(theme));
 
     auto pinBtn = CCMenuItemToggler::create(pinOff, pinOn, this, menu_selector(MenuOptionCell::onPin));
@@ -264,12 +267,12 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     auto newContainerLayout = RowLayout::create()
                                   ->setGap(1.25f)
                                   ->setAutoScale(false)
-                                  ->setAutoGrowAxis(0.f);
+                                  ->setAutoGrowAxis(0.0f);
 
     m_impl->newContainer = CCNode::create();
     m_impl->newContainer->setID("new-option-container");
-    m_impl->newContainer->setAnchorPoint({0, 0.5});
-    m_impl->newContainer->setPosition({x, 5.25f});
+    m_impl->newContainer->setAnchorPoint({ 0, 0.5 });
+    m_impl->newContainer->setPosition({ x, 5.25f });
     m_impl->newContainer->setLayout(newContainerLayout);
 
     addChild(m_impl->newContainer, 9);
@@ -314,9 +317,9 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
         idLabel->setID("id-label");
         idLabel->setScale(0.375f);
         idLabel->setAlignment(Label::Alignment::Right);
-        idLabel->setLimitLabelWidth(getScaledContentWidth() - 65.f);
-        idLabel->setPosition({getScaledContentWidth() - 2.5f, 2.5f});
-        idLabel->setAnchorPoint({1, 0});
+        idLabel->setLimitLabelWidth(getScaledContentWidth() - 65.0f);
+        idLabel->setPosition({ getScaledContentWidth() - 2.5f, 2.5f });
+        idLabel->setAnchorPoint({ 1, 0 });
         idLabel->setColor(colors::black);
         idLabel->setOpacity(125);
 
@@ -324,7 +327,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     };
 
     return true;
-};
+}
 
 void MenuOptionCell::onToggle(CCObject*) {
     if (m_impl->toggler && m_impl->compatible) {
@@ -346,7 +349,7 @@ void MenuOptionCell::onToggle(CCObject*) {
     };
 
     m_impl->notifyIncompats();
-};
+}
 
 void MenuOptionCell::onPin(CCObject* sender) {
     if (auto pinBtn = typeinfo_cast<CCMenuItemToggler*>(sender)) {
@@ -355,19 +358,19 @@ void MenuOptionCell::onPin(CCObject* sender) {
         if (m_impl->pinCallback) m_impl->pinCallback();
         m_impl->hideNewLabel();
     };
-};
+}
 
 void MenuOptionCell::setPinCallback(Callback&& callback) {
     m_impl->pinCallback = std::move(callback);
-};
+}
 
 SharedOption const& MenuOptionCell::getOption() const noexcept {
     return m_impl->option;
-};
+}
 
 bool MenuOptionCell::isCompatible() const noexcept {
     return m_impl->compatible;
-};
+}
 
 MenuOptionCell* MenuOptionCell::create(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet) {
     auto ret = new MenuOptionCell();
@@ -378,4 +381,4 @@ MenuOptionCell* MenuOptionCell::create(CCSize const& size, SharedOption option, 
 
     delete ret;
     return nullptr;
-};
+}

@@ -7,11 +7,11 @@
 #include <Geode/utils/cocos.hpp>
 #include <Geode/utils/function.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     // Event for option toggles
-    class OptionEvent final : public geode::ThreadSafeGlobalEvent<OptionEvent, bool(std::string_view, OptionSave), bool(OptionSave), std::string> {
+    class OptionEvent final : public geode::GlobalEvent<OptionEvent, bool(std::string_view, OptionSave), bool(OptionSave), std::string> {
     public:
-        using ThreadSafeGlobalEvent::ThreadSafeGlobalEvent;
+        using GlobalEvent::GlobalEvent;
     };
 
     struct OptionCheatingEvent final : public geode::Event<OptionEvent, bool(bool)> {

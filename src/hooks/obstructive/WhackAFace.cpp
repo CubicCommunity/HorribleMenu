@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "whack_a_face"
 
@@ -33,7 +33,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
 
             active.clear();
             active.shrink_to_fit();
-        };
+        }
     };
 
     HORRIBLE_SETUP_INTERFACE_FUNC {
@@ -46,36 +46,36 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
 
         cursor::show();
         nextWhack();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void levelComplete() {
         PlayLayer::levelComplete();
         m_fields->clearWhackBtns();
-    };
+    }
 
     void resetLevel() {
         PlayLayer::resetLevel();
 
         m_fields->clearWhackBtns();
         cursor::show();
-    };
+    }
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
 
         m_fields->clearWhackBtns();
         cursor::show();
-    };
+    }
 
     void onQuit() {
         m_fields->clearWhackBtns();
         PlayLayer::onQuit();
-    };
+    }
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
@@ -91,12 +91,12 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
             m_fields->clearWhackBtns();
             cursor::show();
         };
-    };
+    }
 
     void nextWhack() {
         log::trace("scheduling new whack btn");
         if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), rng::get(12.5f, 1.25f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+    }
 
     void doWhack(float) {
         if (!m_isPracticeMode && !m_hasCompletedLevel && !m_playerDied) {
@@ -112,7 +112,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                         cursor::show();
                         whack->removeFromParent();
                     });
-                    whack->setPosition(CCPoint{winSize.width * rng::get(0.75f, 0.25f), winSize.height * rng::get(0.75f, 0.25f)} / 2.f);
+                    whack->setPosition(CCPoint{ winSize.width * rng::get(0.75f, 0.25f), winSize.height * rng::get(0.75f, 0.25f) } / 2.0f);
 
                     m_uiLayer->addChild(whack, HIGHEST_Z);
                     m_fields->active.push_back(whack);
@@ -123,7 +123,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                 });
             };
         };
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, WhackAFacePlayLayer);

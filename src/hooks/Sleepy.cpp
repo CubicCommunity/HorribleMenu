@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayerObject.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "sleepy"
 
@@ -26,20 +26,20 @@ class $modify(SleepyPlayerObject, PlayerObject) {
         bool m_sleepy = false;  // decelerating-to-zero stage
         bool m_waking = false;  // 5s buffer stage (cannot be re-slept)
 
-        float m_defSpeed = 0.f;  // original speed captured at sleep start
+        float m_defSpeed = 0.0f;  // original speed captured at sleep start
     };
 
     bool init(int player, int ship, GJBaseGameLayer* gameLayer, CCLayer* layer, bool playLayer) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
-        if (playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), rng::get(30.f, 5.f) * rng::chanceToDelayPct(m_fields->chance));
+        if (playLayer) scheduleOnce(schedule_selector(SleepyPlayerObject::asleep), rng::get(30.0f, 5.0f) * rng::chanceToDelayPct(m_fields->chance));
 
         return true;
-    };
+    }
 
     void startSleepTimer(float) {
-        scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), rng::get(15.f, 3.f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+        scheduleOnce(schedule_selector(SleepyPlayerObject::wakeUpSchedule), rng::get(15.0f, 3.0f) * rng::chanceToDelayPct(m_fields->chance));
+    }
 
     void wakeUpSchedule(float) {
         log::debug("Waking the player up");
@@ -51,19 +51,19 @@ class $modify(SleepyPlayerObject, PlayerObject) {
 
         m_playerSpeed = f->m_defSpeed;  // snap back to original speed
 
-        scheduleOnce(schedule_selector(SleepyPlayerObject::fullyWakeUpSchedule), 5.f);
-    };
+        scheduleOnce(schedule_selector(SleepyPlayerObject::fullyWakeUpSchedule), 5.0f);
+    }
 
     // schedule wrapper for fullyWakeUp
     void fullyWakeUpSchedule(float) {
         m_fields->m_waking = false;
-    };
+    }
 
     bool pushButton(PlayerButton p0) {
         // no jumping while m_sleepy
         if (m_fields->m_sleepy) return false;
         return PlayerObject::pushButton(p0);
-    };
+    }
 
     void asleep(float) {
         auto f = m_fields.self();
@@ -81,20 +81,20 @@ class $modify(SleepyPlayerObject, PlayerObject) {
             // go to sleep, go to sleep, sweet little baby go to sleep
             schedule(schedule_selector(SleepyPlayerObject::fallAsleep), 0.125f);
         };
-    };
+    }
 
     void fallAsleep(float dt) {
         auto f = m_fields.self();
 
         // decelerate to 0 speed
         if (f->m_sleepy) {
-            auto decelRate = f->m_defSpeed / 5.f;  // decel to 0 in 5s
+            auto decelRate = f->m_defSpeed / 5.0f;  // decel to 0 in 5s
             m_playerSpeed -= decelRate * dt;
 
-            if (m_playerSpeed <= 0.f) {
-                m_playerSpeed = 0.f;
+            if (m_playerSpeed <= 0.0f) {
+                m_playerSpeed = 0.0f;
                 unschedule(schedule_selector(SleepyPlayerObject::fallAsleep));
             };
         };
-    };
+    }
 };

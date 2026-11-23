@@ -4,7 +4,7 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     class MenuCategoryFilterCell final : public cocos2d::CCMenu {
         using Callback = geode::Function<void(std::string_view, bool)>;
 

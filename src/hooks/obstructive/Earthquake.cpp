@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "earthquake"
 
@@ -28,23 +28,23 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
         };
 
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
-    };
+    }
 
     void nextQuake(float) {
         auto delay = rng::get(3.75f, 1.25f);
         log::trace("scheduling quake in {}s", delay);
 
         scheduleOnce(schedule_selector(EarthquakePlayLayer::quake), delay);
-    };
+    }
 
     void quake(float) {
-        shakeCamera(rng::get(2.5f, 1.f), rng::get(5.f, 1.f), 0.00125f);
+        shakeCamera(rng::get(2.5f, 1.0f), rng::get(5.0f, 1.0f), 0.00125f);
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, EarthquakePlayLayer);

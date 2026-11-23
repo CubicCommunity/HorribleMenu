@@ -4,22 +4,22 @@
 
 #include <Util.h>
 
-#include <gdcord/gdc.h>
+// #include <gdcord/gdc.h>
 
 #include <ranges>
 
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible;
+using namespace cs::brkd::horrible;
 
-$on_game(Loaded) {
-    if (auto ss = SupporterState::get()) ss->validateSupporter(
-        [](Result<> res) {
-            if (res.isErr()) return log::error("Supporter state check failed: {}", res.unwrapErr());
-            log::info("User is a Ko-fi supporter!");
-        });
-};
+// $on_game(Loaded) {
+//     if (auto ss = SupporterState::get()) ss->validateSupporter(
+//         [](Result<> res) {
+//             if (res.isErr()) return log::error("Supporter state check failed: {}", res.unwrapErr());
+//             log::info("User is a Ko-fi supporter!");
+//         });
+// };
 
 Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matjson::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
@@ -28,8 +28,8 @@ Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matj
     GEODE_UNWRAP_INTO(bool pin, value["pin"].asBool());
     GEODE_UNWRAP_INTO(bool viewed, value["viewed"].asBool());
 
-    return Ok(HorribleOptionSave{enabled, pin, viewed});
-};
+    return Ok(HorribleOptionSave{ enabled, pin, viewed });
+}
 
 matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave const& value) {
     auto obj = matjson::Value();
@@ -38,146 +38,163 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
     obj["viewed"] = value.viewed;
 
     return obj;
-};
+}
 
-Option::Option(std::string id, const Mod* integration) : m_idHash(fnv1aHash(id)), m_id(std::move(id)), m_integration(integration) {};
+Option::Option(std::string id, const Mod* integration) : m_idHash(fnv1aHash(id)), m_id(std::move(id)), m_integration(integration) {}
 
 Option::SharedSelf Option::setName(std::string name) {
     m_name = std::move(name);
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setDescription(std::string description) {
     m_description = std::move(description);
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setCategory(std::string category) {
     m_category = std::move(category);
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setSillyTier(SillyTier tier) {
     m_silly = tier;
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setDefaultToggleState(bool state) {
     m_default = state;
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setOnline(bool online) {
     m_online = online;
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setRequiresRestart(bool required) {
     m_restart = required;
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setSupportedPlatforms(std::vector<Platform> platforms) {
     m_platforms = std::move(platforms);
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::setCheating(bool isCheat) {
     m_isCheating = isCheat;
     return shared_from_this();
-};
+}
 
 ZStringView Option::getID() const noexcept {
     return m_id.c_str();
-};
+}
 
 ZStringView Option::getName() const noexcept {
     return m_name;
-};
+}
 
 ZStringView Option::getDescription() const noexcept {
     return m_description;
-};
+}
 
 ZStringView Option::getCategory() const noexcept {
     return m_category;
-};
+}
 
 SillyTier Option::getSillyTier() const noexcept {
     return m_silly;
-};
+}
 
 bool Option::getDefaultToggleState() const noexcept {
     return m_default;
-};
+}
 
 bool Option::isOnline() const noexcept {
     return m_online;
-};
+}
 
 bool Option::isRestartRequired() const noexcept {
     return m_restart;
-};
+}
 
 std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
     return m_platforms;
-};
+}
 
 bool Option::isCheating() const noexcept {
     return m_isCheating;
-};
+}
 
 const Mod* Option::getIntegration() const noexcept {
     return m_integration;
-};
+}
 
 asp::BoxedString Option::getIDShared() const noexcept {
     return m_id;
-};
+}
 
 uint64_t Option::getIDHash() const noexcept {
     return m_idHash;
+}
+
+struct OptionManager::Impl final {
+    geode::utils::StringMap<SharedOption> options;  // Map of registered options
+    std::vector<std::string> categories;            // Array of auto-registered categories
+
+    geode::utils::StringMap<std::vector<SharedOption>> categoryMap;  // Map of options bound to category name
+    geode::utils::StringMap<const geode::Mod* const> integrations;   // Map of auto-registered external mods using this API
+
+    HashedMapU64<asp::BoxedString> optHashes;  // Map of FNV-1a-hashed option IDs to their string IDs
+    HashedMapU64<OptionSave> saveCache;        // Map of cached states
+
+    geode::utils::StringMap<std::vector<Callback>> delegates;  // Map of option ID to array of delegates to call when that option is toggled
+    std::unordered_set<uint64_t> enabledCheats;                // Map of currently enabled cheat options, used for dynamic safe mode
 };
+
+OptionManager::OptionManager() : m_impl(std::make_unique<Impl>()) {}
+OptionManager::~OptionManager() = default;
 
 bool Option::isEnabled() const& {
     if (auto om = OptionManager::get()) return om->isEnabled(getID());
     return false;
-};
+}
 
 bool Option::isPinned() const& {
     if (auto om = OptionManager::get()) return om->isPinned(getID());
     return false;
-};
+}
 
 void Option::enable() & {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), true);
-};
+}
 
 void Option::disable() & {
     if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
-};
+}
 
 Option::SharedSelf Option::autoRegister() {
-    if (auto om = OptionManager::get()) om->registerOption(shared_from_this());
+    if (auto om = OptionManager::get()) (void)om->registerOption(shared_from_this());
     return shared_from_this();
-};
+}
 
 Option::SharedSelf Option::create(std::string id, const Mod* integration) {
     return std::make_shared<Option>(std::move(id), integration);
-};
+}
 
 void OptionManager::registerCategory(std::string category, SharedOption option) {
-    auto it = m_categoryMap.find(category);
+    auto it = m_impl->categoryMap.find(category);
 
-    if (it != m_categoryMap.end()) {
-        auto& list = m_categoryMap[category];
+    if (it != m_impl->categoryMap.end()) {
+        auto& list = m_impl->categoryMap[category];
         list.push_back(option);
     } else {
-        m_categoryMap[category] = {};
+        m_impl->categoryMap[category] = {};
     };
 
-    if (!str::containsAny(category, m_categories)) m_categories.push_back(std::move(category));
-};
+    if (!str::containsAny(category, m_impl->categories)) m_impl->categories.push_back(std::move(category));
+}
 
 void OptionManager::registerMod(const Mod* mod) {
     if (!isModRegistered(mod->getID())) {
@@ -185,46 +202,48 @@ void OptionManager::registerMod(const Mod* mod) {
         if (mod->getID() == GEODE_MOD_ID) return;
 
         std::string id = mod->getID();
-        m_integrations.emplace(std::move(id), mod);
+        m_impl->integrations.emplace(std::move(id), mod);
     };
-};
+}
 
 bool OptionManager::doesOptionExist(ZStringView id) const noexcept {
-    return m_options.find(id) != m_options.end();
-};
+    return m_impl->options.contains(id);
+}
 
 bool OptionManager::isModRegistered(ZStringView id) const noexcept {
-    return m_integrations.find(id) != m_integrations.end();
-};
+    return m_impl->integrations.contains(id);
+}
 
-void OptionManager::registerOption(SharedOption option) {
+Result<> OptionManager::registerOption(SharedOption option) {
     if (doesOptionExist(option->getID())) {
-        log::error("Could not register option '{}' ({}) because it already exists!", option->getName(), option->getID());
+        return Err("Could not register option '{}' ({}) because it already exists!", option->getName(), option->getID());
     } else {
         registerCategory(option->getCategory(), option);
         registerMod(option->getIntegration());
 
         std::string id = option->getID();
 
-        auto cheats = m_enabledCheats.size();
+        auto cheats = m_impl->enabledCheats.size();
 
         if (option->isCheating()) {
-            if (isEnabled(id)) m_enabledCheats.emplace(option->getIDHash());
+            if (isEnabled(id)) m_impl->enabledCheats.emplace(option->getIDHash());
         };
 
-        m_options.emplace(std::move(id), option);
+        m_impl->options.emplace(std::move(id), option);
         log::debug("Registered option {} of category {}", option->getID(), option->getCategory());
 
-        m_optHashes.emplace(option->getIDHash(), option->getIDShared());
+        m_impl->optHashes.emplace(option->getIDHash(), option->getIDShared());
 
-        if (cheats == 0 && m_enabledCheats.size() > cheats) (void)OptionCheatingEvent().send(true);
+        if (cheats == 0 && m_impl->enabledCheats.size() > cheats) (void)OptionCheatingEvent().send(true);
     };
-};
+
+    return Ok();
+}
 
 void OptionManager::addDelegate(ZStringView id, Callback&& callback) {
-    auto& thisDelegate = m_delegates[id];
+    auto& thisDelegate = m_impl->delegates[id];
     thisDelegate.push_back(std::move(callback));
-};
+}
 
 void OptionManager::addDelegate(uint64_t id, Callback&& callback) {
     auto strIDRes = getOptionIDForHash(id);
@@ -232,168 +251,159 @@ void OptionManager::addDelegate(uint64_t id, Callback&& callback) {
 
     auto const strID = std::move(strIDRes).unwrap();
     addDelegate(strID.c_str(), std::move(callback));
-};
+}
 
 bool OptionManager::isCheatEnabled() const noexcept {
-    return m_enabledCheats.size() > 0;
-};
-
-std::vector<std::weak_ptr<Option>> OptionManager::getOptions() const {
-    std::vector<std::weak_ptr<Option>> out;
-    out.reserve(m_options.size());
-
-    for (auto const& [k, v] : m_options) out.push_back(v);
-
-    return out;
-};
+    return m_impl->enabledCheats.size() > 0;
+}
 
 geode::utils::StringMap<SharedOption> const& OptionManager::getAllOptions() const noexcept {
-    return m_options;
-};
+    return m_impl->options;
+}
 
 std::span<const SharedOption> OptionManager::getAllOptionsForCategory(geode::ZStringView category) const noexcept {
-    if (auto it = m_categoryMap.find(category); it != m_categoryMap.end()) return it->second;
+    if (auto it = m_impl->categoryMap.find(category); it != m_impl->categoryMap.end()) return it->second;
     return {};
-};
+}
 
 std::span<const std::string> OptionManager::getCategories() const noexcept {
-    return m_categories;
-};
+    return m_impl->categories;
+}
 
 geode::utils::StringMap<std::vector<SharedOption>> const& OptionManager::getAllCategories() const noexcept {
-    return m_categoryMap;
-};
+    return m_impl->categoryMap;
+}
 
 std::vector<const Mod*> OptionManager::getMods() const {
     std::vector<const Mod*> out;
-    out.reserve(m_integrations.size());
+    out.reserve(m_impl->integrations.size());
 
-    for (auto const& [k, v] : m_integrations) out.push_back(v);
+    for (auto const& [k, v] : m_impl->integrations) out.push_back(v);
 
     return out;
-};
+}
 
 bool OptionManager::isEnabled(ZStringView id) const {
     return getOption(id).enabled;
-};
+}
 
 bool OptionManager::isEnabled(uint64_t id) const {
     return getOption(id).enabled;
-};
+}
 
 bool OptionManager::isPinned(ZStringView id) const {
     return getOption(id).pin;
-};
+}
 
 bool OptionManager::isPinned(uint64_t id) const {
     return getOption(id).pin;
-};
+}
 
 bool OptionManager::isViewed(ZStringView id) const {
     return getOption(id).viewed;
-};
+}
 
 bool OptionManager::isViewed(uint64_t id) const {
     return getOption(id).viewed;
-};
+}
 
 bool OptionManager::isCheating(ZStringView id) const {
     if (auto o = getOptionInfo(id).lock()) return o->isCheating();
     return false;
-};
+}
 
 bool OptionManager::getDefaultToggleState(ZStringView id) const noexcept {
     if (auto o = getOptionInfo(id).lock()) return o->getDefaultToggleState();
     return false;
-};
+}
 
 OptionSave OptionManager::getOption(ZStringView id) const {
     if (auto opt = getOptionInfo(id).lock()) return getOption(opt->getIDHash());
-    return mod->getSavedValue<OptionSave>(id, OptionSave{getDefaultToggleState(id)});
-};
+    return mod->getSavedValue<OptionSave>(id, OptionSave{ getDefaultToggleState(id) });
+}
 
 OptionSave OptionManager::getOption(uint64_t id) const {
-    if (auto const it = m_saveCache.find(id); it != m_saveCache.end()) return it->second;
-    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return mod->getSavedValue<OptionSave>(it->second, OptionSave{getDefaultToggleState(it->second.c_str())});
+    if (auto const it = m_impl->saveCache.find(id); it != m_impl->saveCache.end()) return it->second;
+    if (auto const it = m_impl->optHashes.find(id); it != m_impl->optHashes.end()) return mod->getSavedValue<OptionSave>(it->second, OptionSave{ getDefaultToggleState(it->second.c_str()) });
 
     return {};
-};
+}
 
 std::weak_ptr<Option> OptionManager::getOptionInfo(ZStringView id) const noexcept {
-    if (auto const it = m_options.find(id); it != m_options.end()) return it->second;
+    if (auto const it = m_impl->options.find(id); it != m_impl->options.end()) return it->second;
     return std::weak_ptr<Option>();
-};
+}
 
 std::weak_ptr<Option> OptionManager::getOptionInfo(uint64_t id) const noexcept {
-    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return getOptionInfo(it->second.c_str());
+    if (auto const it = m_impl->optHashes.find(id); it != m_impl->optHashes.end()) return getOptionInfo(it->second.c_str());
     return std::weak_ptr<Option>();
-};
+}
 
 geode::Result<asp::BoxedString> OptionManager::getOptionIDForHash(uint64_t id) const noexcept {
-    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) return Ok(it->second);
+    if (auto const it = m_impl->optHashes.find(id); it != m_impl->optHashes.end()) return Ok(it->second);
     return Err("No string ID found for this hash ID");
-};
+}
 
 size_t OptionManager::getDelegateCount(std::string_view id) const noexcept {
-    if (auto const it = m_delegates.find(id); it != m_delegates.end()) return it->second.size();
+    if (auto const it = m_impl->delegates.find(id); it != m_impl->delegates.end()) return it->second.size();
     return 0;
-};
+}
 
 size_t OptionManager::getDelegateCount(uint64_t id) const noexcept {
     auto strIDRes = getOptionIDForHash(id);
     if (strIDRes.isErr()) return 0;
 
     auto const strID = std::move(strIDRes).unwrap();
-    if (auto const it = m_delegates.find(strID); it != m_delegates.end()) return it->second.size();
+    if (auto const it = m_impl->delegates.find(strID); it != m_impl->delegates.end()) return it->second.size();
 
     return 0;
-};
+}
 
 bool OptionManager::shouldBeSafeMode() const noexcept {
     if (mod->getSettingValue<bool>("dyn-safe-mode")) return isCheatEnabled();
     return mod->getSettingValue<bool>("safe-mode");
-};
+}
 
 void OptionManager::toggleOption(ZStringView id, bool enable) {
     setOption(id, enable, isPinned(id));
-};
+}
 
 void OptionManager::toggleOption(uint64_t id, bool enable) {
     setOption(id, enable, isPinned(id));
-};
+}
 
 void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed) {
     if (auto opt = getOptionInfo(id).lock()) {
-        auto const it = m_delegates.find(id);
-        if (it != m_delegates.end()) {
+        auto const it = m_impl->delegates.find(id);
+        if (it != m_impl->delegates.end()) {
             for (auto& cb : it->second) cb(enable);
         };
 
-        log::trace("Called {} delegates {} for option {}", it != m_delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
+        log::trace("Called {} delegates {} for option {}", it != m_impl->delegates.end() ? it->second.size() : 0, enable ? "on" : "off", id);
 
-        auto cheats = m_enabledCheats.size();
+        auto cheats = m_impl->enabledCheats.size();
 
-        auto const save = OptionSave{enable, pin, viewed};
+        auto const save = OptionSave{ enable, pin, viewed };
 
-        queueInMainThread([id = std::string{id}, save]() {
+        queueInMainThread([id = std::string{ id }, save]() {
             (void)mod->setSavedValue(id, save);
         });
 
-        m_saveCache[opt->getIDHash()] = save;
+        m_impl->saveCache[opt->getIDHash()] = save;
         (void)OptionEvent(id).send(save);
 
-        if (auto const it = m_enabledCheats.find(opt->getIDHash()); it != m_enabledCheats.end()) {
-            if (!enable) m_enabledCheats.erase(it);
+        if (auto const it = m_impl->enabledCheats.find(opt->getIDHash()); it != m_impl->enabledCheats.end()) {
+            if (!enable) m_impl->enabledCheats.erase(it);
         } else if (enable) {
             if (auto o = getOptionInfo(id).lock()) {
                 if (o->isCheating()) {
                     log::debug("Enabled cheat option {}, adding to enabled cheats map", id);
-                    m_enabledCheats.emplace(opt->getIDHash());
+                    m_impl->enabledCheats.emplace(opt->getIDHash());
                 };
             };
         };
 
-        auto cheatsNow = m_enabledCheats.size();
+        auto cheatsNow = m_impl->enabledCheats.size();
 
         if (isCheating(id) && cheats != cheatsNow) {
             if (cheats == 0 && cheatsNow > 0) (void)OptionCheatingEvent().send(true);
@@ -402,18 +412,18 @@ void OptionManager::setOption(ZStringView id, bool enable, bool pin, bool viewed
     } else {
         log::error("Option '{}' not found", id);
     };
-};
+}
 
 void OptionManager::setOption(uint64_t id, bool enable, bool pin, bool viewed) {
-    if (auto const it = m_optHashes.find(id); it != m_optHashes.end()) setOption(it->second.c_str(), enable, pin, viewed);
-};
+    if (auto const it = m_impl->optHashes.find(id); it != m_impl->optHashes.end()) setOption(it->second.c_str(), enable, pin, viewed);
+}
 
 OptionManager* OptionManager::get() noexcept {
     static OptionManager inst;
     return &inst;
-};
+}
 
-void horrible::delegateHooks(ZStringView id, StringMap<std::shared_ptr<Hook>> const& hooks) {
+void cs::brkd::horrible::delegateHooks(ZStringView id, StringMap<std::shared_ptr<Hook>> const& hooks) {
     if (auto om = OptionManager::get()) {
         auto value = om->isEnabled(id);
 
@@ -434,75 +444,78 @@ void horrible::delegateHooks(ZStringView id, StringMap<std::shared_ptr<Hook>> co
                         (void)h->toggle(value);
                     };
                 };
-            });
+            }
+        );
     } else {
         log::error("Failed to get OptionManager to delegate hooks for option {}", id);
     };
-};
+}
 
-bool horrible::isSupporter() noexcept {
-    if (auto ss = SupporterState::get()) return ss->isSupporter();
-    return false;
-};
+// bool cs::brkd::horrible::isSupporter() noexcept {
+//     if (auto ss = SupporterState::get()) return ss->isSupporter();
+//     return false;
+// };
 
-void OptionManagerV2::registerOption(OptionV2 const& option) {
-    if (auto om = OptionManager::get()) {
-        auto opt = Option::create(option.id, option.getIntegration())
-                       ->setName(option.name)
-                       ->setDescription(option.description)
-                       ->setCategory(option.category)
-                       ->setSillyTier(option.silly)
-                       ->setDefaultToggleState(option.state)
-                       ->setOnline(option.online)
-                       ->setRequiresRestart(option.restart)
-                       ->setSupportedPlatforms(option.platforms)
-                       ->setCheating(option.cheating);
+Result<> OptionManagerV2::registerOption(OptionV2 const& option) {
+    auto om = OptionManager::get();
 
-        om->registerOption(opt);
-        (void)OptionEvent(opt->getID()).send(om->getOption(opt->getID()));
-    };
-};
+    auto opt = Option::create(option.id, option.getIntegration())
+                   ->setName(option.name)
+                   ->setDescription(option.description)
+                   ->setCategory(option.category)
+                   ->setSillyTier(option.silly)
+                   ->setDefaultToggleState(option.state)
+                   ->setOnline(option.online)
+                   ->setRequiresRestart(option.restart)
+                   ->setSupportedPlatforms(option.platforms)
+                   ->setCheating(option.cheating);
+
+    auto res = om->registerOption(opt);
+    (void)OptionEvent(opt->getID()).send(om->getOption(opt->getID()));
+
+    return res;
+}
 
 void OptionManagerV2::toggleOption(ZStringView id, bool enable) {
     if (auto om = OptionManager::get()) om->toggleOption(id, enable);
-};
+}
 
 Result<bool> OptionManagerV2::isEnabled(ZStringView id) {
     if (auto om = OptionManager::get()) return Ok(om->isEnabled(id));
     return Err("Failed to get OptionManager");
-};
+}
 
-void SupporterState::validateSupporter(Callback&& cb) {
-    m_gdcTask.spawn(
-        gdc::getLink(),
-        [this, cb = std::move(cb)](gdc::LinkResult res) {
-            if (res.isErr()) {
-                log::error("Couldn't get Discord link to check Ko-fi status: {}", res.unwrapErr());
-                return cb(std::move(res).asErr());
-            };
+// void SupporterState::validateSupporter(Callback&& cb) {
+//     m_gdcTask.spawn(
+//         gdc::getLink(),
+//         [this, cb = std::move(cb)](gdc::LinkResult res) {
+//             if (res.isErr()) {
+//                 log::error("Couldn't get Discord link to check Ko-fi status: {}", res.unwrapErr());
+//                 return cb(std::move(res).asErr());
+//             };
 
-            if (auto gjam = GJAccountManager::sharedState()) {
-                log::trace("Checking Ko-fi supporter status...");
+//             if (auto gjam = GJAccountManager::sharedState()) {
+//                 log::trace("Checking Ko-fi supporter status...");
 
-                auto req = request::base()
-                               .param("id", gjam->m_accountID);
+//                 auto req = request::base()
+//                                .param("id", gjam->m_accountID);
 
-                m_task.spawn(
-                    req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
-                    [this, cb = std::move(cb)](web::WebResponse res) {
-                        if (res.ok()) {
-                            log::info("User is a supporter of Breakeode");
-                            m_supporter = res.ok();
+//                 m_task.spawn(
+//                     req.get("https://api.cubicstudios.xyz/breakeode/v1/discord/supporter"),
+//                     [this, cb = std::move(cb)](web::WebResponse res) {
+//                         if (res.ok()) {
+//                             log::info("User is a supporter of Breakeode");
+//                             m_supporter = res.ok();
 
-                            return cb(Ok());
-                        };
+//                             return cb(Ok());
+//                         };
 
-                        return cb(Err("User is not a Breakeode supporter"));
-                    });
-            };
-        });
-};
+//                         return cb(Err("User is not a Breakeode supporter"));
+//                     });
+//             };
+//         });
+// };
 
-bool SupporterState::isSupporter() const noexcept {
-    return m_supporter;
-};
+// bool SupporterState::isSupporter() const noexcept {
+//     return m_supporter;
+// };

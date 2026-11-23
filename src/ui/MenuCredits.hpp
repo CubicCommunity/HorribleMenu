@@ -6,7 +6,7 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     struct LeadDevIcon final {
         std::string id;
         std::string name;
@@ -63,13 +63,13 @@ namespace horrible {
 };
 
 template <>
-struct horrible::json::Serialize<horrible::LeadDevIcon> final {
-    static geode::Result<horrible::LeadDevIcon> fromJson(horrible::json::Value const& value);
-    static horrible::json::Value toJson(horrible::LeadDevIcon const& value);
+struct matjson::Serialize<cs::brkd::horrible::LeadDevIcon> final {
+    static geode::Result<cs::brkd::horrible::LeadDevIcon> fromJson(matjson::Value const& value);
+    static matjson::Value toJson(cs::brkd::horrible::LeadDevIcon const& value);
 };
 
 template <>
-struct horrible::json::Serialize<horrible::LicenseData> final {
-    static geode::Result<horrible::LicenseData> fromJson(horrible::json::Value const& value);
-    static horrible::json::Value toJson(horrible::LicenseData const& value);
+struct matjson::Serialize<cs::brkd::horrible::LicenseData> final {
+    static geode::Result<cs::brkd::horrible::LicenseData> fromJson(matjson::Value const& value);
+    static matjson::Value toJson(cs::brkd::horrible::LicenseData const& value);
 };

@@ -5,7 +5,7 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "timewarp_jump"
 
@@ -22,12 +22,12 @@ class $modify(TimewarpJumpGJBaseGameLayer, GJBaseGameLayer) {
 
     void handleButton(bool down, int button, bool isPlayer1) {
         if (button == 1 && !down) {
-            auto warpFactor = rng::get(2.f, 0.75f);
+            auto warpFactor = rng::get(2.0f, 0.75f);
 
             log::debug("applying time warp factor {}", warpFactor);
             updateTimeWarp(warpFactor);
         };
 
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
-    };
+    }
 };

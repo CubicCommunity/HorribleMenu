@@ -5,7 +5,7 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "leap"
 
@@ -21,8 +21,8 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
 
     struct Fields final {
-        float charge = 0.f;
-        float speed = 0.f;
+        float charge = 0.0f;
+        float speed = 0.0f;
 
         Ref<ProgressBar> chargeMeter = nullptr;
     };
@@ -36,7 +36,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
             unschedule(schedule_selector(LeapGJBaseGameLayer::decharge));
 
-            f->charge = 0.f;
+            f->charge = 0.0f;
 
             m_player1->m_playerSpeed = f->speed;
             m_player2->m_playerSpeed = f->speed;
@@ -51,15 +51,15 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             f->chargeMeter->setID("charge-meter"_spr);
             f->chargeMeter->setFillColor(colors::red);
             f->chargeMeter->setAnchorPoint(anchor::center);
-            f->chargeMeter->setPosition({pl->m_uiLayer->getScaledContentWidth() / 2.f, 25.f});
+            f->chargeMeter->setPosition({ pl->m_uiLayer->getScaledContentWidth() / 2.0f, 25.0f });
             f->chargeMeter->setScale(0.625f);
 
             pl->m_uiLayer->addChild(f->chargeMeter, HIGHEST_Z);
 
-            f->chargeMeter->updateProgress(0.f);
+            f->chargeMeter->updateProgress(0.0f);
             f->chargeMeter->setVisible(false);
         };
-    };
+    }
 
     bool init() {
         if (!GJBaseGameLayer::init()) return false;
@@ -69,7 +69,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         });
 
         return true;
-    };
+    }
 
     void handleButton(bool down, int button, bool isPlayer1) {
         if (button != 1 || !isGroundMode(isPlayer1 ? m_player1 : m_player2)) return GJBaseGameLayer::handleButton(down, button, isPlayer1);
@@ -77,7 +77,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         auto f = m_fields.self();
 
         if (down) {
-            f->charge = 0.f;
+            f->charge = 0.0f;
 
             schedule(schedule_selector(LeapGJBaseGameLayer::chargeUp), 0.1f);
             if (f->chargeMeter) f->chargeMeter->setVisible(true);
@@ -90,14 +90,14 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
 
             if (f->chargeMeter) {
                 f->chargeMeter->setVisible(false);
-                f->chargeMeter->updateProgress(0.f);
+                f->chargeMeter->updateProgress(0.0f);
             };
 
-            if (f->charge <= 0.f) return;
+            if (f->charge <= 0.0f) return;
 
             f->speed = m_player1->m_playerSpeed;  // cba to check p2
 
-            auto pct = f->charge / 100.f;
+            auto pct = f->charge / 100.0f;
 
             auto newSpeed = (f->speed * 2.5f) * pct;
             auto boostHeight = 16.25f * pct;
@@ -105,30 +105,30 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             m_player1->m_playerSpeed = newSpeed;
             m_player2->m_playerSpeed = newSpeed;
 
-            if (onGround(m_player1)) m_player1->boostPlayer(boostHeight * (m_player1->m_isUpsideDown ? -1.f : 1.f));
-            if (onGround(m_player2)) m_player2->boostPlayer(boostHeight * (m_player2->m_isUpsideDown ? -1.f : 1.f));
+            if (onGround(m_player1)) m_player1->boostPlayer(boostHeight * (m_player1->m_isUpsideDown ? -1.0f : 1.0f));
+            if (onGround(m_player2)) m_player2->boostPlayer(boostHeight * (m_player2->m_isUpsideDown ? -1.0f : 1.0f));
 
             GJBaseGameLayer::handleButton(true, button, isPlayer1);
 
-            if (f->charge >= 100.f) sfx::play(sfx::file::pop);
+            if (f->charge >= 100.0f) sfx::play(sfx::file::pop);
 
             schedule(schedule_selector(LeapGJBaseGameLayer::decharge));
 
-            f->charge = 0.f;
+            f->charge = 0.0f;
 
             GJBaseGameLayer::handleButton(false, button, isPlayer1);
         };
-    };
+    }
 
     void chargeUp(float dt) {
         auto f = m_fields.self();
 
         if (m_playerDied) {
-            f->charge = 0.f;
+            f->charge = 0.0f;
 
             if (f->chargeMeter) {
                 f->chargeMeter->setVisible(false);
-                f->chargeMeter->updateProgress(0.f);
+                f->chargeMeter->updateProgress(0.0f);
             };
 
             setOnGround(m_player1, true);
@@ -139,31 +139,31 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
         };
 
-        f->charge += 20.f;
+        f->charge += 20.0f;
 
         if (f->chargeMeter) {
             f->chargeMeter->updateProgress(f->charge);
             f->chargeMeter->setFillColor(colors::fadeColor(f->charge));
         };
 
-        if (f->charge >= 100.f) {
-            f->charge = 100.f;
+        if (f->charge >= 100.0f) {
+            f->charge = 100.0f;
             unschedule(schedule_selector(LeapGJBaseGameLayer::chargeUp));
         };
-    };
+    }
 
     void decharge(float dt) {
         auto f = m_fields.self();
 
         if (m_playerDied) {
-            f->charge = 0.f;
+            f->charge = 0.0f;
 
             m_player1->m_playerSpeed = f->speed;
             m_player2->m_playerSpeed = f->speed;
 
             if (f->chargeMeter) {
                 f->chargeMeter->setVisible(false);
-                f->chargeMeter->updateProgress(0.f);
+                f->chargeMeter->updateProgress(0.0f);
             };
 
             setOnGround(m_player1, true);
@@ -181,24 +181,24 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         if (m_player2->m_playerSpeed <= f->speed) m_player2->m_playerSpeed = f->speed;
 
         if ((m_player1->m_playerSpeed == f->speed) && (m_player2->m_playerSpeed == f->speed)) unschedule(schedule_selector(LeapGJBaseGameLayer::decharge));
-    };
+    }
 
     bool isGroundMode(PlayerObject* player) const noexcept {
         if (player) return player->m_isRobot || (!player->m_isShip && !player->m_isBall && !player->m_isBird && !player->m_isDart && !player->m_isRobot && !player->m_isSpider && !player->m_isSwing);
         return false;
-    };
+    }
 
     bool onGround(PlayerObject* player) const noexcept {
         if (player) return player->m_isOnGround && player->m_isOnGround2 && player->m_isOnGround3 && player->m_isOnGround4;
         return false;
-    };
+    }
 
     void setOnGround(PlayerObject* player, bool onGround) {
         player->m_isOnGround = onGround;
         player->m_isOnGround2 = onGround;
         player->m_isOnGround3 = onGround;
         player->m_isOnGround4 = onGround;
-    };
+    }
 };
 
 $on_mod(Loaded) {
@@ -206,5 +206,6 @@ $on_mod(Loaded) {
         THIS_ID,
         [](OptionSave data) {
             if (auto gjbgl = GJBaseGameLayer::get()) modify_cast<LeapGJBaseGameLayer*>(gjbgl)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
-        });
-};
+        }
+    );
+}

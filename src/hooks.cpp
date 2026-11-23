@@ -12,12 +12,12 @@
 #include <Geode/modify/EndLevelLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 static std::vector<std::weak_ptr<Hook>> g_safeModeHooks;
 static std::vector<std::weak_ptr<Hook>> g_floatingBtnHooks;
 
-namespace horrible::hooks {
+namespace cs::brkd::horrible::hooks {
     static void setup(auto& self, std::vector<std::weak_ptr<Hook>>& hookVector, std::string_view settingID) {
         StringMap<std::shared_ptr<Hook>> const& hooks = self.m_hooks;
         auto enable = Mod::get()->getSettingValue<bool>(settingID);
@@ -30,7 +30,7 @@ namespace horrible::hooks {
 
             hookVector.push_back(hook);
         };
-    };
+    }
 
     static void toggleButton(bool toggle = false, bool editor = false) {
         log::trace("{} floating button", toggle ? "Showing" : "Hiding");
@@ -41,7 +41,7 @@ namespace horrible::hooks {
             fb->setVisible(toggleTo);
             fb->setTouchEnabled(toggleTo);
         };
-    };
+    }
 
     static void toggleSafeModeHooks(bool value) {
         for (auto const& hook : g_safeModeHooks) {
@@ -50,7 +50,7 @@ namespace horrible::hooks {
                 (void)h->toggle(value);
             };
         };
-    };
+    }
 };
 
 #define HORRIBLE_HOOK_INTERNAL(hookVector, settingID) \
@@ -65,13 +65,15 @@ $on_game(Loaded) {
         setting::SafeMode,
         [](bool value) {
             if (!mod->getSettingValue<bool>(setting::DynamicSafeMode)) hooks::toggleSafeModeHooks(value);
-        });
+        }
+    );
 
     listenForSettingChanges<bool>(
         setting::DynamicSafeMode,
         [](bool) {
             if (auto om = OptionManager::get()) hooks::toggleSafeModeHooks(om->shouldBeSafeMode());
-        });
+        }
+    );
 
     listenForSettingChanges<bool>(
         setting::FloatingBtn,
@@ -87,7 +89,8 @@ $on_game(Loaded) {
                     (void)h->toggle(value);
                 };
             };
-        });
+        }
+    );
 
     OptionCheatingEvent()
         .listen([](bool cheating) {
@@ -97,14 +100,14 @@ $on_game(Loaded) {
             };
         })
         .leak();
-};
+}
 
 class $modify(HMSafeGJGameLevel, GJGameLevel) {
     HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
 
     void savePercentage(int, bool, int, int, bool) {
         log::warn("Safe mode is enabled, so progress will not be saved!");
-    };
+    }
 };
 
 // safe mode
@@ -120,7 +123,7 @@ class $modify(HMSafePlayLayer, PlayLayer) {
         m_isTestMode = true;
         PlayLayer::levelComplete();
         m_isTestMode = testMode;
-    };
+    }
 };
 
 class $modify(HMEndLevelLayer, EndLevelLayer) {
@@ -138,15 +141,16 @@ class $modify(HMEndLevelLayer, EndLevelLayer) {
                     "<cj>Safe Mode</c> is <cg>enabled</c> and your progress <cr>has not</c> been saved.",
                     "OK",
                     nullptr,
-                    nullptr);
+                    nullptr
+                );
             });
             btn->setID("safe-mode-indicator-btn"_spr);
             btn->setZOrder(2);
             btn->setScale(0.425f);
 
-            m_mainLayer->addChildAtPosition(btn, Anchor::Center, {165.f, -105.f}, false);
+            m_mainLayer->addChildAtPosition(btn, Anchor::Center, { 165.0f, -105.0f }, false);
         };
-    };
+    }
 };
 
 class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
@@ -155,7 +159,7 @@ class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
     struct Fields final {
         ~Fields() {
             hooks::toggleButton(true, true);
-        };
+        }
     };
 
     bool init(GJGameLevel* level, bool noUI) {
@@ -165,7 +169,7 @@ class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
         hooks::toggleButton(false, true);
 
         return true;
-    };
+    }
 };
 
 class $modify(HMFloatBtnPauseLayer, PauseLayer) {
@@ -181,7 +185,7 @@ class $modify(HMFloatBtnPauseLayer, PauseLayer) {
         };
 
         PauseLayer::customSetup();
-    };
+    }
 };
 
 class $modify(HMFloatBtnPlayLayer, PlayLayer) {
@@ -190,25 +194,25 @@ class $modify(HMFloatBtnPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         hooks::toggleButton();
         PlayLayer::setupHasCompleted();
-    };
+    }
 
     void resume() {
         hooks::toggleButton();
         PlayLayer::resume();
-    };
+    }
 
     void resumeAndRestart(bool fromStart) {
         hooks::toggleButton();
         PlayLayer::resumeAndRestart(fromStart);
-    };
+    }
 
     void showEndLayer() {
         hooks::toggleButton(true);
         PlayLayer::showEndLayer();
-    };
+    }
 
     void onQuit() {
         hooks::toggleButton(true);
         PlayLayer::onQuit();
-    };
+    }
 };

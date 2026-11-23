@@ -5,7 +5,7 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "terms_and_conditions"
 
@@ -28,7 +28,7 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
 
     HORRIBLE_SETUP_INTERFACE_FUNC {
         if (!on) cue::resetNode(m_fields->currentTos);
-    };
+    }
 
     void handleButton(bool down, int button, bool isPlayer1) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
@@ -43,20 +43,21 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
             if (auto popup = TermsAndConditions::create(
                     [this](bool accepted) {
                         cursor::hide();
-                        updateTimeWarp(1.f);
+                        updateTimeWarp(1.0f);
 
                         if (!accepted) {
                             Notification::create("You declined our terms and conditions!", NotificationIcon::Error)->show();
                             if (auto pl = PlayLayer::get()) pl->resetLevelFromStart();
                         };
-                    })) {
+                    }
+                )) {
                 popup->show();
                 f->currentTos = popup;
 
                 cursor::show();
             };
         };
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(GJBaseGameLayer, TOSGJBaseGameLayer);

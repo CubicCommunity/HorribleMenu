@@ -1,9 +1,7 @@
 name: Release Geode Mod
 
 on:
-    push:
-        tags:
-            - "v*"
+    workflow_dispatch:
 
 jobs:
     release:
@@ -13,7 +11,7 @@ jobs:
             contents: write
 
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@v7
 
             - name: Check for Discord webhook URL
               id: check-discord
@@ -33,14 +31,14 @@ jobs:
 
             - name: Publish release
               id: publish-release
-              uses: BlueWitherer/release-geode-mod@main
+              uses: Cheeseworks/release-geode-mod@main
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   workflow: build.yml
 
             - name: Send Discord webhook
               if: ${{ steps.check-discord.outputs.has-webhook == 'true' }}
-              uses: BlueWitherer/mod-discord-webhooks/geode@main
+              uses: Cheeseworks/mod-discord-webhooks/geode@main
               with:
                   webhook-url: ${{ steps.check-discord.outputs.webhook-url }}
                   content: "> -# @everyone"

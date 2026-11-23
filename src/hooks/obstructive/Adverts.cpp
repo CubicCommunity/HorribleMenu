@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "ads"
 
@@ -33,20 +33,20 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
 
         cursor::show();
         nextAd();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void nextAd() {
-        auto delay = rng::get(15.f, 5.f);
+        auto delay = rng::get(15.0f, 5.0f);
         log::trace("scheduling ad in {}s", delay);
 
         unschedule(schedule_selector(AdvertsPlayLayer::showAd));
         scheduleOnce(schedule_selector(AdvertsPlayLayer::showAd), delay);
-    };
+    }
 
     void showAd(float) {
         auto f = m_fields.self();
@@ -61,7 +61,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
         queueInMainThread([self = WeakRef(this)]() {
             if (auto s = self.lock()) s->nextAd();
         });
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, AdvertsPlayLayer);

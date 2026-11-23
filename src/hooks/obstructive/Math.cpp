@@ -5,7 +5,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "math_quiz"
 
@@ -35,36 +35,36 @@ class $modify(MathPlayLayer, PlayLayer) {
         };
 
         nextQuiz();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
         cue::resetNode(m_fields->currentMath);
-    };
+    }
 
     void levelComplete() {
         PlayLayer::levelComplete();
         cue::resetNode(m_fields->currentMath);
-    };
+    }
 
     void togglePracticeMode(bool practiceMode) {
         PlayLayer::togglePracticeMode(practiceMode);
 
         cue::resetNode(m_fields->currentMath);
         nextQuiz();
-    };
+    }
 
     void nextQuiz() {
         log::trace("scheduling math quiz");
 
         unschedule(schedule_selector(MathPlayLayer::doQuiz));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), rng::get(30.f, 5.f) * rng::chanceToDelayPct(m_fields->chance));
-    };
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), rng::get(30.0f, 5.0f) * rng::chanceToDelayPct(m_fields->chance));
+    }
 
     void doQuiz(float) {
         auto f = m_fields.self();
@@ -93,7 +93,7 @@ class $modify(MathPlayLayer, PlayLayer) {
         queueInMainThread([self = WeakRef(this)]() {
             if (auto s = self.lock()) s->nextQuiz();
         });
-    };
+    }
 };
 
 $on_mod(Loaded) {
@@ -101,7 +101,8 @@ $on_mod(Loaded) {
         THIS_ID,
         [](OptionSave data) {
             if (auto pl = PlayLayer::get()) modify_cast<MathPlayLayer*>(pl)->HORRIBLE_SETUP_INTERFACE_FUNC_NAME(data.enabled);
-        });
-};
+        }
+    );
+}
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, MathPlayLayer);

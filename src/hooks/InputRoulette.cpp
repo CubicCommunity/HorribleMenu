@@ -6,7 +6,7 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 #define THIS_ID "input_roulette"
 
@@ -35,9 +35,9 @@ class $modify(InputRouletteGJBaseGameLayer, GJBaseGameLayer) {
             f->inputMeter->setScale(1.25f);
             f->inputMeter->setZOrder(HIGHEST_Z);
 
-            pl->m_uiLayer->addChildAtPosition(f->inputMeter, Anchor::Right, {-12.5f, 0.f}, false);
+            pl->m_uiLayer->addChildAtPosition(f->inputMeter, Anchor::Right, { -12.5f, 0.0f }, false);
         };
-    };
+    }
 
     bool init() {
         if (!GJBaseGameLayer::init()) return false;
@@ -47,7 +47,7 @@ class $modify(InputRouletteGJBaseGameLayer, GJBaseGameLayer) {
         });
 
         return true;
-    };
+    }
 
     void handleButton(bool down, int button, bool isPlayer1) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
@@ -65,12 +65,12 @@ class $modify(InputRouletteGJBaseGameLayer, GJBaseGameLayer) {
                 };
             };
         };
-    };
+    }
 
     InputMeter* getHealthMeter() noexcept {
         if (auto f = m_fields.self()) return f->inputMeter;
         return nullptr;
-    };
+    }
 };
 
 class $modify(InputRoulettePlayLayer, PlayLayer) {
@@ -84,7 +84,7 @@ class $modify(InputRoulettePlayLayer, PlayLayer) {
                 if (auto meter = modify_cast<InputRouletteGJBaseGameLayer*>(gjbgl)->getHealthMeter()) meter->playPause(false);
             };
         };
-    };
+    }
 
     void resetLevel() {
         PlayLayer::resetLevel();
@@ -92,7 +92,7 @@ class $modify(InputRoulettePlayLayer, PlayLayer) {
         if (auto gjbgl = GJBaseGameLayer::get()) {
             if (auto meter = modify_cast<InputRouletteGJBaseGameLayer*>(gjbgl)->getHealthMeter()) meter->playPause(true);
         };
-    };
+    }
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
@@ -100,7 +100,7 @@ class $modify(InputRoulettePlayLayer, PlayLayer) {
         if (auto gjbgl = GJBaseGameLayer::get()) {
             if (auto meter = modify_cast<InputRouletteGJBaseGameLayer*>(gjbgl)->getHealthMeter()) meter->playPause(true);
         };
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(GJBaseGameLayer, InputRouletteGJBaseGameLayer);

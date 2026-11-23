@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     namespace ui {
         class WhackButton final : public cocos2d::CCNode {
             using Callback = geode::Function<void(bool)>;

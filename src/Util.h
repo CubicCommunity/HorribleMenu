@@ -5,7 +5,7 @@
 #include <util/Include.h>
 #include <util/Macros.h>
 
-#include <gdcord/gdc.h>
+// #include <gdcord/gdc.h>
 
 #include <cue/Util.hpp>
 #include <cue/DropdownNode.hpp>
@@ -24,14 +24,14 @@
 #include <Geode/utils/cocos.hpp>
 
 // Quick utility methods for Horrible Menu
-namespace horrible {
+namespace cs::brkd::horrible {
     // Pointer to this Geode mod
     inline static geode::Mod* mod = geode::Mod::get();
 
     namespace mods {
         inline bool isImagePlus() {
             return geode::Loader::get()->isModLoaded("prevter.imageplus");
-        };
+        }
     };
 
     // For convenience
@@ -52,7 +52,7 @@ namespace horrible {
          */
         inline void play(geode::ZStringView file) {
             if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
-        };
+        }
     };
 
     namespace font {
@@ -69,15 +69,11 @@ namespace horrible {
 
         inline constexpr auto isOnOff(bool on) {
             return on ? "ON" : "OFF";
-        };
+        }
     };
 
     namespace popup {
-        inline void closeBtnID(CCMenuItemSpriteExtra* btn) {
-            if (btn) btn->setID("close-btn");  // xd
-        };
-
-        geode::Button* addHelpButton(cocos2d::CCNode* to, std::string content, bool useMarkdown = false, float btnScale = 0.75f, cocos2d::CCPoint const& offset = {-13.75f, -13.75f});
+        geode::Button* addHelpButton(cocos2d::CCNode* to, std::string content, bool useMarkdown = false, float btnScale = 0.75f, cocos2d::CCPoint const& offset = { -13.75f, -13.75f });
     };
 
     // For convenience
@@ -100,7 +96,7 @@ namespace horrible {
 
     // got tired of typing {0.5, 0.5} a billion times
     namespace anchor {
-        inline constexpr cocos2d::CCPoint center = {0.5f, 0.5f};
+        inline constexpr cocos2d::CCPoint center = { 0.5f, 0.5f };
     };
 
     namespace request {
@@ -108,34 +104,30 @@ namespace horrible {
             auto loader = geode::Loader::get();
 
             return geode::utils::web::WebRequest()
-                .userAgent(fmt::format("HorribleMenu/{} ({}, Geode {}, GD {})",
-                    mod->getVersion().toVString(false),
-                    geode::utils::platform::getString(),
-                    loader->getVersion(),
-                    loader->getGameVersion()))
-                .timeout(std::chrono::seconds(15));
-        };
+                .userAgent(fmt::format("HorribleMenu/{} ({}, Geode {}, GD {})", mod->getVersion().toVString(false), geode::utils::platform::getString(), loader->getVersion(), loader->getGameVersion()))
+                .timeout(asp::Duration::fromSecs(15));
+        }
     };
 
-    class SupporterState final : public base::Singleton<SupporterState> {
-        using Callback = geode::CopyableFunction<void(geode::Result<>)>;
+    // class SupporterState final : public base::Singleton<SupporterState> {
+    //     using Callback = geode::CopyableFunction<void(geode::Result<>)>;
 
-    private:
-        bool m_supporter = false;
+    // private:
+    //     bool m_supporter = false;
 
-        geode::async::TaskHolder<gdc::LinkResult> m_gdcTask;
-        geode::async::TaskHolder<geode::utils::web::WebResponse> m_task;
+    //     geode::async::TaskHolder<gdc::LinkResult> m_gdcTask;
+    //     geode::async::TaskHolder<geode::utils::web::WebResponse> m_task;
 
-    public:
-        void validateSupporter(Callback&& cb);
+    // public:
+    //     void validateSupporter(Callback&& cb);
 
-        bool isSupporter() const noexcept;
-    };
+    //     bool isSupporter() const noexcept;
+    // };
 
     // All namespace includes
     namespace prelude {
-        using namespace ::horrible;
-        using namespace ::horrible::ui;
-        using namespace ::horrible::util;
+        using namespace ::cs::brkd::horrible;
+        using namespace ::cs::brkd::horrible::ui;
+        using namespace ::cs::brkd::horrible::util;
     };
 };

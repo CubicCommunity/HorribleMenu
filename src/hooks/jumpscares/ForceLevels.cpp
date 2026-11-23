@@ -7,7 +7,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 // concentrating all jumpscare options into this one file cuz we don't want em to interfere with each other through their own hooks
 
@@ -49,7 +49,7 @@ namespace js_internal {
         if (id == THIS_ID_TIDAL) return HORRIBLE_JUMPSCARES_TIDAL;
 
         return HORRIBLE_JUMPSCARES_GRIEF;
-    };
+    }
 
     static void toggleHooks(bool on) {
         log::trace("Toggling all jumpscare hooks {}", str::isOnOff(on));
@@ -57,7 +57,7 @@ namespace js_internal {
         for (auto& hook : g_jsHooks) {
             if (auto h = hook.lock()) (void)h->toggle(on);
         };
-    };
+    }
 
     static void toggleOption(ZStringView id, bool on) {
         auto size = g_jsSet.size();
@@ -70,7 +70,7 @@ namespace js_internal {
 
         if (size == 0 && g_jsSet.size() > 0) toggleHooks(true);
         if (size > 0 && g_jsSet.size() == 0) toggleHooks(false);
-    };
+    }
 };
 
 $on_mod(Loaded) {
@@ -82,33 +82,36 @@ $on_mod(Loaded) {
         THIS_ID_GRIEF,
         [](OptionSave data) {
             js_internal::toggleOption(THIS_ID_GRIEF, data.enabled);
-        });
+        }
+    );
 
     listenForHorribleOptionChanges(
         THIS_ID_CONGREG,
         [](OptionSave data) {
             js_internal::toggleOption(THIS_ID_CONGREG, data.enabled);
-        });
+        }
+    );
 
     listenForHorribleOptionChanges(
         THIS_ID_TIDAL,
         [](OptionSave data) {
             js_internal::toggleOption(THIS_ID_TIDAL, data.enabled);
-        });
-};
+        }
+    );
+}
 
-static void tryJumpscare(bool useReplay) {
+static void tryJumpscare() {
     for (auto const& js : g_jsSet) {
         if (rng::fast() <= options::getChance(js)) {
             auto const level = js_internal::getLevelInfo(js);
 
             log::debug("jumpscare for {} triggered!", level);
-            return jumpscares::switchLevel(level, false, useReplay, [level]() {
+            return jumpscares::switchLevel(level, false, [level]() {
                 if (level == HORRIBLE_JUMPSCARES_TIDAL) Notification::create("Wait, this isn't Tidal Wave...")->show();
             });
         };
     };
-};
+}
 
 class $modify(ForceLevelsPlayLayer, PlayLayer) {
     static void onModify(auto& self) {  // should auto disable when no jumpscare options are on
@@ -118,13 +121,13 @@ class $modify(ForceLevelsPlayLayer, PlayLayer) {
             hook->setAutoEnable(g_jsSet.size() > 0);
             g_jsHooks.push_back(hook);
         };
-    };
+    }
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         PlayLayer::destroyPlayer(player, object);
 
         if (object == m_anticheatSpike && !player->m_isDead) return;
 
-        tryJumpscare(m_useReplay);
-    };
+        tryJumpscare();
+    }
 };

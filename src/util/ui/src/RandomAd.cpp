@@ -5,37 +5,33 @@
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-using namespace horrible::prelude;
+using namespace cs::brkd::horrible::prelude;
 
 bool RandomAd::init() {
     auto const theme = mod->getSettingValue<std::string>("theme");
 
-    if (!Popup::init(375.f, 250.f, themes::getBackgroundSprite(theme))) return false;
+    if (!Popup::init(375.0f, 250.0f, themes::getBackgroundSprite(theme))) return false;
 
     setID("ad"_spr);
     setTitle("Sponsored");
     setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
 
-    popup::closeBtnID(m_closeBtn);
-
     auto label = Label::create("Check out this cool level we found!", font::chat);
     label->setID("message");
     label->setAlignment(Label::Alignment::Center);
-    label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() - 37.5f});
+    label->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, m_mainLayer->getScaledContentHeight() - 37.5f });
     label->setAnchorPoint(anchor::center);
 
     m_mainLayer->addChild(label);
 
     // featured project thumbnail
-    auto projThumb = LazySprite::create({228.f, 128.f}, true);
+    auto projThumb = LazySprite::create({ 228.0f, 128.0f }, true);
     projThumb->setID("thumbnail");
     projThumb->setAutoResize(true);
-    projThumb->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 110.f});
+    projThumb->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 110.0f });
 
     projThumb->setLoadCallback([](Result<> res) {
-        res.isOk()
-            ? log::info("Ad sprite loaded successfully")
-            : log::error("Ad sprite failed to load: {}", res.unwrapErr());
+        res.isOk() ? log::info("Ad sprite loaded successfully") : log::error("Ad sprite failed to load: {}", res.unwrapErr());
     });
 
     std::string url = "https://api.cubicstudios.xyz/breakeode/v1/fetch/random-thumbnail";
@@ -53,7 +49,8 @@ bool RandomAd::init() {
         ButtonSprite::create(
             "Play!",
             font::big,
-            themes::getButtonSquareSprite(theme)),
+            themes::getButtonSquareSprite(theme)
+        ),
         [this, loading = WeakRef(playBtnLoading)](Button* sender) {
             sender->setVisible(false);
             if (auto load = loading.lock()) load->setVisible(true);
@@ -66,9 +63,10 @@ bool RandomAd::init() {
             } else {
                 log::error("Player not in a level");
             };
-        });
+        }
+    );
     playBtn->setID("play-btn");
-    playBtn->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 2.5f});
+    playBtn->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 2.5f });
 
     playBtnLoading->setPosition(playBtn->getPosition());
 
@@ -78,7 +76,7 @@ bool RandomAd::init() {
     sfx::play(sfx::file::pop);
 
     return true;
-};
+}
 
 RandomAd* RandomAd::create() {
     auto ret = new RandomAd();
@@ -89,4 +87,4 @@ RandomAd* RandomAd::create() {
 
     delete ret;
     return nullptr;
-};
+}

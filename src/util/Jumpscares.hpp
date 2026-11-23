@@ -4,11 +4,11 @@
 
 #include <Geode/Geode.hpp>
 
-namespace horrible {
+namespace cs::brkd::horrible {
     namespace util {
         // Jumpscare level manager
         namespace jumpscares {
-            void switchLevel(int level, bool dontCreateObjects, bool useReplay, geode::CopyableFunction<void()>&& callback = nullptr);
+            void switchLevel(int level, bool dontCreateObjects, geode::CopyableFunction<void()>&& callback = nullptr);
 
             namespace coro {
                 using LevelResult = geode::Result<GJGameLevel*>;
