@@ -42,7 +42,7 @@ class $modify(FakeCrashGJBaseGameLayer, GJBaseGameLayer) {
     void scheduler(float) {
         auto f = m_fields.self();
 
-        if (rng::flip() && !f->inFakeCrash) {
+        if (cw::rng::flip() && !f->inFakeCrash) {
             log::debug("Faking crash");
             f->lastTimeWarp = LevelTools::getLastTimewarp();
 

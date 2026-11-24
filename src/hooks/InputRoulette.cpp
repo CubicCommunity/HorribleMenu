@@ -35,7 +35,7 @@ class $modify(InputRouletteGJBaseGameLayer, GJBaseGameLayer) {
             f->inputMeter = InputMeter::create();
             f->inputMeter->setID("input-chance-meter"_spr);
             f->inputMeter->setScale(1.25f);
-            f->inputMeter->setZOrder(HIGHEST_Z);
+            f->inputMeter->setZOrder(CW_HIGHEST_Z);
 
             pl->m_uiLayer->addChildAtPosition(f->inputMeter, Anchor::Right, { -12.5f, 0.0f }, false);
         };
@@ -62,7 +62,7 @@ class $modify(InputRouletteGJBaseGameLayer, GJBaseGameLayer) {
                     if (f->inputMeter->isDeath()) {
                         pl->destroyPlayer(pl->m_player1, nullptr);
                     } else if (f->inputMeter->isDanger()) {
-                        rng::flip() ? pl->destroyPlayer(pl->m_player1, nullptr) : Notification::create("Careful when you jump!", NotificationIcon::Warning, 0.5f)->show();
+                        cw::rng::flip() ? pl->destroyPlayer(pl->m_player1, nullptr) : Notification::create("Careful when you jump!", NotificationIcon::Warning, 0.5f)->show();
                     };
                 };
             };

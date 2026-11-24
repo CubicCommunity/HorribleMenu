@@ -32,7 +32,7 @@ class $modify(MockMenuLayer, MenuLayer) {
         if (!MenuLayer::init()) return false;
 
         // show a lazysprite for the first png found in the save dir
-        if (rng::chance(m_fields->chance)) {
+        if (cw::rng::chance(m_fields->chance)) {
             auto const mockConfigPath = mod->getSaveDir() / "mock.json";
             auto const mockConfig = file::readJson(mockConfigPath);
 
@@ -44,7 +44,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                 auto const mockConfigUnwr = mockConfig.unwrapOr(json::Value());
 
                 auto const lvlUnwr = mockConfigUnwr.begin();
-                auto const lvl = lvlUnwr->get(rng::get(lvlUnwr->size() - 1)).unwrapOr(json::Value());
+                auto const lvl = lvlUnwr->get(cw::rng::get(lvlUnwr->size() - 1)).unwrapOr(json::Value());
 
                 auto const id = lvl.getKey().value_or("");
                 auto percent = lvl.asInt().unwrapOr(90);
@@ -60,7 +60,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                     ss->setID("mocked"_spr);
                     ss->setScale(0.25);
                     ss->setAutoResize(true);
-                    ss->setAnchorPoint(anchor::center);
+                    ss->setAnchorPoint(cw::anchor::center);
                     ss->setPosition({ -192.0f, getScaledContentHeight() / 2.0f });
 
                     ss->setLoadCallback([this, ss, percent](Result<> res) {
@@ -78,8 +78,8 @@ class $modify(MockMenuLayer, MenuLayer) {
 
                             ss->addChild(percLabel);
 
-                            auto rA = rng::pc();
-                            auto rB = rng::pc();
+                            auto rA = cw::rng::pc();
+                            auto rB = cw::rng::pc();
 
                             float yA = getScaledContentHeight() * rB;  // starting height pos
                             float yB = getScaledContentHeight() * rA;  // ending height pos
@@ -101,7 +101,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                     });
 
                     ss->loadFromFile(pngPath);
-                    addChild(ss, HIGHEST_Z);
+                    addChild(ss, CW_HIGHEST_Z);
                 } else {
                     log::error("ID is invalid");
                 };

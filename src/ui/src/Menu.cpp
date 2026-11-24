@@ -119,7 +119,7 @@ struct Menu::Impl final {
         auto label = Label::create(text.c_str(), font::big);
         label->setID(std::move(id));
         label->setScale(0.375f);
-        label->setAnchorPoint(anchor::center);
+        label->setAnchorPoint(cw::anchor::center);
         label->setPosition(pos);
 
         return label;
@@ -140,12 +140,12 @@ void Menu::setupSafeModeNode(bool safeMode) {
 
         auto label = Label::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", font::big);
         label->setScale(0.325f);
-        label->setColor(safeMode ? colors::green : colors::red);
+        label->setColor(safeMode ? cw::colors::green : cw::colors::red);
 
         m_impl->safeModeContainer->addChild(label);
 
         auto infoBtn = Button::createWithSpriteFrameName(
-            themes::info,
+            cw::sprites::info,
             [safeMode](auto) {
                 createQuickPopup(
                     "Safe Mode",
@@ -203,7 +203,7 @@ void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
     cue::resetNode(m_impl->sillyFilterDropdown);
 
     m_impl->sillyFilterDropdown = cue::DropdownNode::create(
-        to4B(colors::black, 0),
+        to4B(cw::colors::black, 0),
         m_impl->categoryList->getScaledContentWidth(),
         17.5f,
         43.75f
@@ -220,10 +220,10 @@ void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
     });
 
     constexpr TierFilterBtnData filterBtns[] = {
-        { SillyTier::None, "Any", "filter-none-btn", colors::white },
-        { SillyTier::Low, "Low", "filter-low-btn", colors::green },
-        { SillyTier::Medium, "Medium", "filter-medium-btn", colors::yellow },
-        { SillyTier::High, "High", "filter-high-btn", colors::red },
+        { SillyTier::None, "Any", "filter-none-btn", cw::colors::white },
+        { SillyTier::Low, "Low", "filter-low-btn", cw::colors::green },
+        { SillyTier::Medium, "Medium", "filter-medium-btn", cw::colors::yellow },
+        { SillyTier::High, "High", "filter-high-btn", cw::colors::red },
     };
 
     for (auto const& fBtn : filterBtns) {
@@ -317,7 +317,7 @@ bool Menu::init() {
     // scroll layer
     m_impl->categoryList = ScrollLayer::create({ (mainLayerSize.width / 3.0f) - 20.0f, 100.0f });
     m_impl->categoryList->setID("category-list");
-    m_impl->categoryList->setAnchorPoint(anchor::center);
+    m_impl->categoryList->setAnchorPoint(cw::anchor::center);
     m_impl->categoryList->ignoreAnchorPointForPosition(false);
     m_impl->categoryList->setPosition({ mainLayerSize.width - 82.5f, (mainLayerSize.height - 70.0f) - (m_impl->categoryList->getScaledContentHeight() / 2.0f) });
 
@@ -381,7 +381,7 @@ bool Menu::init() {
 
     m_impl->optionList = ScrollLayer::create({ (mainLayerSize.width / 1.5f) - 43.75f, mainLayerSize.height - 93.25f });
     m_impl->optionList->setID("options-list");
-    m_impl->optionList->setAnchorPoint(anchor::center);
+    m_impl->optionList->setAnchorPoint(cw::anchor::center);
     m_impl->optionList->ignoreAnchorPointForPosition(false);
     m_impl->optionList->setPosition({ (mainLayerSize.width / 2.0f) - 82.5f, (mainLayerSize.height / 2.0f) - 31.25f });
 

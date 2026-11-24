@@ -21,7 +21,7 @@ static auto const o = Option::create(THIS_ID)
                           ->autoRegister();
 
 void placeboEffect() {
-    if (rng::fast() <= 1) {  // 1% chance :trol:
+    if (cw::rng::fast() <= 1) {  // 1% chance :trol:
         log::warn("Placebo effect activated! Toggling all options...");
 
         for (auto const& o : options::getAll()) {

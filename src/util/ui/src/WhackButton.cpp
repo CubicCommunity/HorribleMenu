@@ -26,12 +26,12 @@ struct WhackButton::Impl final {
     uint8_t inputCount = 0;
     uint8_t inputTarget = g_severities.size();
 
-    float scale = rng::get(0.875f, 0.625f);
+    float scale = cw::rng::get(0.875f, 0.625f);
 
     Button* button = nullptr;
     ProgressBar* countdown = nullptr;
 
-    float totalTime = 5.0f * rng::get(1.25f, 0.5f);
+    float totalTime = 5.0f * cw::rng::get(1.25f, 0.5f);
     float timeRemaining = totalTime;
     float timeDt = 0.0f;
 
@@ -82,21 +82,21 @@ void WhackButton::reload() {
 }
 
 bool WhackButton::init() {
-    m_impl->inputTarget = rng::get<uint8_t>(g_severities.size(), 3);
+    m_impl->inputTarget = cw::rng::get<uint8_t>(g_severities.size(), 3);
 
     if (!CCNode::init()) return false;
 
     setID("whack-btn"_spr);
-    setAnchorPoint(anchor::center);
+    setAnchorPoint(cw::anchor::center);
 
     reload();
 
     m_impl->countdown = ProgressBar::create(ProgressBar::Style::Solid);
     m_impl->countdown->setID("countdown");
     m_impl->countdown->setScale(0.125f * m_impl->scale);
-    m_impl->countdown->setAnchorPoint(anchor::center);
+    m_impl->countdown->setAnchorPoint(cw::anchor::center);
     m_impl->countdown->setPosition({ getScaledContentWidth() / 2.0f, -3.75f - (2.0f * m_impl->scale) });
-    m_impl->countdown->setFillColor(colors::fadeColor(100.0f));
+    m_impl->countdown->setFillColor(cw::colors::fadeColor(100.0f));
 
     m_impl->countdown->updateProgress(100.0f);
 
@@ -151,7 +151,7 @@ void WhackButton::update(float dt) {
 
     if (m_impl->countdown) {
         m_impl->countdown->updateProgress(pct);
-        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+        m_impl->countdown->setFillColor(cw::colors::fadeColor(pct));
     };
 
     if (m_impl->timeRemaining <= 0.0f) {

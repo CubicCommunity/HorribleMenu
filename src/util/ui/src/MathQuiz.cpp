@@ -46,7 +46,7 @@ bool MathQuiz::init() {
     setKeypadEnabled(false);
     setKeyboardEnabled(false);
 
-    m_impl->operation = static_cast<MathOperation>(rng::get(3));
+    m_impl->operation = static_cast<MathOperation>(cw::rng::get(3));
 
     auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -57,7 +57,7 @@ bool MathQuiz::init() {
     if (m_impl->operation == MathOperation::Geometry) {
         problemText = "How many sides does this shape have?";
 
-        auto sides = rng::get<uint8_t>(10, 3);
+        auto sides = cw::rng::get<uint8_t>(10, 3);
         m_impl->correctAnswer = sides;
 
         // draw node and polygon points
@@ -80,7 +80,7 @@ bool MathQuiz::init() {
             auto x = radius * cosf(angle);
             auto y = radius * sinf(angle);
 
-            polyPoints.push_back(ccp(x, y));
+            polyPoints.push_back({ x, y });
         };
 
         // draw the polygon in local coords with drawNode placed at center
@@ -92,8 +92,8 @@ bool MathQuiz::init() {
 
         if (m_impl->drawNode->drawPolygon(polyPoints.data(), static_cast<unsigned int>(polyPoints.size()), fillColor, 2.0f, borderColor)) addChild(m_impl->drawNode, 99);
     } else {
-        m_impl->numFirst = rng::get(11);
-        m_impl->numSecond = rng::get(11);
+        m_impl->numFirst = cw::rng::get(11);
+        m_impl->numSecond = cw::rng::get(11);
 
         std::string operation;
         switch (m_impl->operation) {
@@ -153,9 +153,9 @@ bool MathQuiz::init() {
     m_impl->countdown = ProgressBar::create();
     m_impl->countdown->setID("countdown");
     m_impl->countdown->setStyle(ProgressBar::Style::Solid);
-    m_impl->countdown->setAnchorPoint(anchor::center);
+    m_impl->countdown->setAnchorPoint(cw::anchor::center);
     m_impl->countdown->setPosition({ winSize.width / 2.0f, winSize.height - 20.0f });
-    m_impl->countdown->setFillColor(colors::fadeColor(100.0f));
+    m_impl->countdown->setFillColor(cw::colors::fadeColor(100.0f));
 
     m_impl->countdown->updateProgress(100.0f);
 
@@ -169,17 +169,17 @@ bool MathQuiz::init() {
     // Add 3 wrong answers
     if (m_impl->operation == MathOperation::Geometry) {
         while (m_impl->answers.size() < 4) {
-            int wrongAnswer = rng::get(10, 3);
+            int wrongAnswer = cw::rng::get(10, 3);
             if (wrongAnswer != m_impl->correctAnswer && !hasAnswer(wrongAnswer)) m_impl->answers.push_back(wrongAnswer);
         };
     } else {
         while (m_impl->answers.size() < 4) {
-            int wrongAnswer = m_impl->correctAnswer + rng::get(10, -5);
+            int wrongAnswer = m_impl->correctAnswer + cw::rng::get(10, -5);
             if (wrongAnswer != m_impl->correctAnswer && !hasAnswer(wrongAnswer)) m_impl->answers.push_back(wrongAnswer);
         };
     };
 
-    rng::internal::shuffle(m_impl->answers);
+    cw::rng::internal::shuffle(m_impl->answers);
 
     // richard floating lol
     if (auto richard = Richard::create()) {
@@ -191,8 +191,8 @@ bool MathQuiz::init() {
 
         addChild(m_impl->richard, 99);
 
-        auto moveUp = CCMoveBy::create(1.0f, ccp(0, 8.0f));
-        auto moveDown = CCMoveBy::create(1.0f, ccp(0, -8.0f));
+        auto moveUp = CCMoveBy::create(1.0f, { 0.0f, 8.0f });
+        auto moveDown = CCMoveBy::create(1.0f, { 0.0f, -8.0f });
 
         auto seq = CCSequence::createWithTwoActions(moveUp, moveDown);
 
@@ -233,8 +233,8 @@ bool MathQuiz::init() {
                 auto feedbackLabel = Label::create(correct ? "Correct!" : "Incorrect!", font::gold);
                 feedbackLabel->setID("feedback-label");
                 feedbackLabel->setScale(0.125f);
-                feedbackLabel->setColor(correct ? colors::green : colors::red);
-                feedbackLabel->setAnchorPoint(anchor::center);
+                feedbackLabel->setColor(correct ? cw::colors::green : cw::colors::red);
+                feedbackLabel->setAnchorPoint(cw::anchor::center);
                 feedbackLabel->setAlignment(Label::Alignment::Center);
                 feedbackLabel->setPosition(winSize / 2.0f);
 
@@ -296,7 +296,7 @@ void MathQuiz::update(float dt) {
 
     if (m_impl->countdown) {
         m_impl->countdown->updateProgress(pct);
-        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+        m_impl->countdown->setFillColor(cw::colors::fadeColor(pct));
     };
 
     if (m_impl->timeRemaining <= 0.0f) {
@@ -309,8 +309,8 @@ void MathQuiz::update(float dt) {
 
         auto feedbackLabel = Label::create("Time's Up!", font::gold);
         feedbackLabel->setID("feedback-label");
-        feedbackLabel->setColor(colors::red);
-        feedbackLabel->setAnchorPoint(anchor::center);
+        feedbackLabel->setColor(cw::colors::red);
+        feedbackLabel->setAnchorPoint(cw::anchor::center);
         feedbackLabel->setAlignment(Label::Alignment::Center);
         feedbackLabel->setPosition(winSize / 2.0f);
         feedbackLabel->setScale(0.1f);
@@ -345,12 +345,12 @@ bool Richard::init() {
     if (!CCNode::init()) return false;
 
     // 2% chance it becomes the yellow one
-    auto isSpriteSecret = rng::fast() <= 2;
+    auto isSpriteSecret = cw::rng::fast() <= 2;
 
     auto sprite = CCSprite::createWithSpriteFrameName(isSpriteSecret ? themes::getIconSprite(themes::icons::TheYellowOne) : "diffIcon_02_btn_001.png");
     sprite->setID("richard");
     sprite->setScale(isSpriteSecret ? 7.5f : 5.0f);
-    sprite->setAnchorPoint(anchor::center);
+    sprite->setAnchorPoint(cw::anchor::center);
 
     setContentSize(sprite->getScaledContentSize());
 

@@ -40,7 +40,7 @@ class $modify(FlicksPlayLayer, PlayLayer) {
 
         if (f->options.empty()) return log::error("No options found for Flicks");
 
-        auto o = f->options[rng::get(f->options.size() - 1)];
+        auto o = f->options[cw::rng::get(f->options.size() - 1)];
         if (o->getID() == THIS_ID || !platformCompat(o->getSupportedPlatforms())) return Notification::create("Whoops! Missed an option!", NotificationIcon::Warning, 0.25f)->show();
 
         queueInMainThread([o]() {

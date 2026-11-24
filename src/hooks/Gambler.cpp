@@ -53,7 +53,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
     void gamblerCheck(float) {
         // detect the moment the player first reaches or crosses 95
         if (getCurrentPercentInt() >= 95) {
-            if (rng::flip()) {
+            if (cw::rng::flip()) {
                 log::info("Gambler lost the bet!");
 
                 sfx::play(sfx::file::pop);
@@ -62,8 +62,8 @@ class $modify(GamblerPlayLayer, PlayLayer) {
                 m_player1->reversePlayer(nullptr);
                 m_player2->reversePlayer(nullptr);
 
-                m_player1->boostPlayer(rng::get(12.5f, 8.75f) * (m_player1->m_isUpsideDown ? -1.0f : 1.0f));
-                m_player2->boostPlayer(rng::get(12.5f, 8.75f) * (m_player2->m_isUpsideDown ? -1.0f : 1.0f));
+                m_player1->boostPlayer(cw::rng::get(12.5f, 8.75f) * (m_player1->m_isUpsideDown ? -1.0f : 1.0f));
+                m_player2->boostPlayer(cw::rng::get(12.5f, 8.75f) * (m_player2->m_isUpsideDown ? -1.0f : 1.0f));
             } else {
                 log::info("Gambler won the bet! instant win.");
 

@@ -65,7 +65,7 @@ class $modify(MathPlayLayer, PlayLayer) {
         log::trace("scheduling math quiz");
 
         unschedule(schedule_selector(MathPlayLayer::doQuiz));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), rng::get(30.0f, 5.0f) * rng::chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(MathPlayLayer::doQuiz), cw::rng::get(30.0f, 5.0f) * cw::rng::chanceToDelayPct(m_fields->chance));
     }
 
     void doQuiz(float) {
@@ -80,15 +80,15 @@ class $modify(MathPlayLayer, PlayLayer) {
                     if (!correct) resetLevelFromStart();
                     nextQuiz();
 
-                    cursor::hide();
+                    cw::cursor::hide();
 
                     cue::resetNode(m_fields->currentMath);
                 });
 
-                m_uiLayer->addChild(quiz, HIGHEST_Z);
+                m_uiLayer->addChild(quiz, CW_HIGHEST_Z);
                 f->currentMath = quiz;
 
-                cursor::show();
+                cw::cursor::show();
             };
         };
 

@@ -39,7 +39,7 @@ bool TermsAndConditions::init(Callback&& cb) {
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupBlue);
 
-    cursor::show();
+    cw::cursor::show();
 
     auto tosArea = MDTextArea::create(
         "By using this mod, you agree to the following terms and conditions:\n\n"
@@ -100,15 +100,15 @@ bool TermsAndConditions::init(Callback&& cb) {
     m_mainLayer->addChildAtPosition(m_impl->acceptBtn, Anchor::Bottom, { -60.0f, 25.0f });
     m_mainLayer->addChildAtPosition(declineBtn, Anchor::Bottom, { 60.0f, 25.0f });
 
-    auto const angle = rng::get(2.0f * std::numbers::pi);
-    m_impl->acceptVelocity = ccp(cosf(angle), sinf(angle));
+    auto const angle = cw::rng::get(2.0f * std::numbers::pi);
+    m_impl->acceptVelocity = CCPoint{ cosf(angle), sinf(angle) };
     scheduleUpdate();
 
     if (auto acceptBtnSpr = typeinfo_cast<ButtonSprite*>(m_impl->acceptBtn->getDisplayNode())) {
         m_impl->acceptBtn->setEnabled(false);
         acceptBtnSpr->setOpacity(0);
 
-        acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(CCEaseBounceIn::create(CCFadeTo::create(rng::get(10.0f, 1.25f), 255)), CCCallFuncN::create(this, callfuncN_selector(TermsAndConditions::finishBtnFade))));
+        acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(CCEaseBounceIn::create(CCFadeTo::create(cw::rng::get(10.0f, 1.25f), 255)), CCCallFuncN::create(this, callfuncN_selector(TermsAndConditions::finishBtnFade))));
     };
 
     sfx::play(sfx::file::pop);
@@ -138,7 +138,7 @@ void TermsAndConditions::update(float dt) {
 
     // make the mouse (like cheeseworks) to chase the accept button cuz im evil
     if (dist < 25.0f && dist > 0.0f) {
-        auto normalizedAway = ccp(away.x / dist, away.y / dist);
+        CCPoint normalizedAway{ away.x / dist, away.y / dist };
 
         auto currentVelLen = std::sqrt(m_impl->acceptVelocity.x * m_impl->acceptVelocity.x + m_impl->acceptVelocity.y * m_impl->acceptVelocity.y);
         if (currentVelLen > 0.0f) {

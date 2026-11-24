@@ -26,15 +26,15 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
 
         // jump pls
         if (auto gm = GameManager::sharedState()) {
-            if (rng::flip()) {
+            if (cw::rng::flip()) {
                 // count the icons i guess
                 auto maxIcons = 0;
                 maxIcons = gm->countForType(IconType::Cube);
                 if (maxIcons <= 0) maxIcons = 38;
 
-                auto newIcon = rng::get(maxIcons);
+                auto newIcon = cw::rng::get(maxIcons);
 
-#define RANDOM_COLOR { rng::get<GLubyte>(255), rng::get<GLubyte>(255), rng::get<GLubyte>(255) }
+#define RANDOM_COLOR { cw::rng::get<GLubyte>(255), cw::rng::get<GLubyte>(255), cw::rng::get<GLubyte>(255) }
 
                 setColor(RANDOM_COLOR);
                 setSecondColor(RANDOM_COLOR);

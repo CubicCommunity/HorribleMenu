@@ -87,7 +87,7 @@ bool MenuButton::init() {
     if (!CCLayer::init()) return false;
 
     setID("menu-btn"_spr);
-    setAnchorPoint(anchor::center);
+    setAnchorPoint(cw::anchor::center);
     setPosition(mod->getSavedValue<CCPoint>("menu-pos", m_impl->screenSize - 75.0f));
     setTouchMode(kCCTouchesOneByOne);
     setTouchEnabled(true);
@@ -133,7 +133,7 @@ void MenuButton::setButtonIcon(std::string icon) {
     setupSprite();
 }
 
-bool MenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
+bool MenuButton::ccTouchBegan(CCTouch* touch, CCEvent*) {
     if (!isVisible()) return false;
 
     if (m_impl->sprite) {
@@ -158,7 +158,7 @@ bool MenuButton::ccTouchBegan(CCTouch* touch, CCEvent* ev) {
     return false;
 }
 
-void MenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
+void MenuButton::ccTouchMoved(CCTouch* touch, CCEvent*) {
     if (m_impl->isDragging) {
         auto const touchLocation = touch->getLocation();
         auto const newLocation = ccpAdd(touchLocation, m_impl->dragStartPos);
@@ -166,11 +166,11 @@ void MenuButton::ccTouchMoved(CCTouch* touch, CCEvent* ev) {
         auto clampX = std::max(0.0f, std::min(newLocation.x, m_impl->screenSize.width - getScaledContentWidth()));
         auto clampY = std::max(0.0f, std::min(newLocation.y, m_impl->screenSize.height - getScaledContentHeight()));
 
-        setPosition(ccp(clampX, clampY));
+        setPosition({ clampX, clampY });
     };
 }
 
-void MenuButton::ccTouchEnded(CCTouch* touch, CCEvent* ev) {
+void MenuButton::ccTouchEnded(CCTouch* touch, CCEvent*) {
     if (m_impl->isDragging) {
         auto pos = ccpSub(getPosition(), touch->getLocation());
         if (m_impl->isDistant(m_impl->comparePos, getPosition(), 5.0f)) menu::open();
@@ -229,7 +229,7 @@ MenuButton* MenuButton::create() {
     return nullptr;
 }
 
-MenuButton* MenuButton::get() {
-    static auto inst = MenuButton::create();
+Ref<MenuButton> MenuButton::get() {
+    static auto inst = Ref(MenuButton::create());
     return inst;
 }

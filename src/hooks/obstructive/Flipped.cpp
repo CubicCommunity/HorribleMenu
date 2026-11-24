@@ -42,11 +42,11 @@ class $modify(FlippedPlayLayer, PlayLayer) {
 
     void nextFlip() {
         log::trace("scheduling flip");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), rng::get(10.0f, 2.5f) * rng::chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(FlippedPlayLayer::flip), cw::rng::get(10.0f, 2.5f) * cw::rng::chanceToDelayPct(m_fields->chance));
     }
 
     void flip(float) {
-        if (rng::chance(m_fields->chance)) runAction(
+        if (cw::rng::chance(m_fields->chance)) runAction(
             CCSequence::createWithTwoActions(
                 CCEaseSineOut::create(CCRotateBy::create(0.875f, 180.0f)),
                 CCCallFunc::create(this, callfunc_selector(FlippedPlayLayer::finishFlip))

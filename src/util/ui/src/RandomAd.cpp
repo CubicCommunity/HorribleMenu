@@ -22,25 +22,21 @@ bool RandomAd::init() {
     label->setID("message");
     label->setAlignment(Label::Alignment::Center);
     label->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, m_mainLayer->getScaledContentHeight() - 37.5f });
-    label->setAnchorPoint(anchor::center);
+    label->setAnchorPoint(cw::anchor::center);
 
     m_mainLayer->addChild(label);
 
     // featured project thumbnail
-    auto projThumb = LazySprite::create({ 228.0f, 128.0f }, true);
+    auto projThumb = cw::WebSprite::create({ 228.0f, 128.0f }, true);
     projThumb->setID("thumbnail");
-    projThumb->setAutoResize(true);
     projThumb->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 110.0f });
-
-    projThumb->setLoadCallback([](Result<> res) {
-        res.isOk() ? log::info("Ad sprite loaded successfully") : log::error("Ad sprite failed to load: {}", res.unwrapErr());
-    });
 
     std::string url = "https://api.cubicstudios.xyz/breakeode/v1/fetch/random-thumbnail";
     if (mods::isImagePlus()) url = fmt::format("{}?webp=1", url);
 
-    projThumb->loadFromUrl(std::move(url), CCImage::kFmtUnKnown, true);
-    if (projThumb) m_mainLayer->addChild(projThumb);
+    projThumb->load(std::move(url), nullptr);
+
+    m_mainLayer->addChild(projThumb);
 
     auto playBtnLoading = LoadingSpinner::create(37.5f);
     playBtnLoading->setID("loading-circle");

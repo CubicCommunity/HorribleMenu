@@ -104,7 +104,7 @@ $on_mod(Loaded) {
 
 static void tryJumpscare() {
     for (auto const& js : g_jsSet) {
-        if (rng::fast() <= options::getChance(js)) {
+        if (cw::rng::fast() <= options::getChance(js)) {
             auto const level = js_internal::getLevelInfo(js);
 
             log::debug("jumpscare for {} triggered!", level);

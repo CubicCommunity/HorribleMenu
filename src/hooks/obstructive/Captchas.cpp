@@ -80,7 +80,7 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         log::trace("scheduling captcha");
 
         unschedule(schedule_selector(CaptchaPlayLayer::doCaptcha));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(CaptchaPlayLayer::doCaptcha), rng::get(30.0f, 5.0f) * rng::chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(CaptchaPlayLayer::doCaptcha), cw::rng::get(30.0f, 5.0f) * cw::rng::chanceToDelayPct(m_fields->chance));
     }
 
     void doCaptcha(float) {
@@ -89,7 +89,7 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
         if (options::isEnabled(THIS_ID) && !f->currentCaptcha && !m_hasCompletedLevel && !m_playerDied) {
             if (auto captcha = Captcha::create()) {
                 captcha->setCallback([this](bool success) {
-                    cursor::hide();
+                    cw::cursor::hide();
 
                     auto f = m_fields.self();
 
@@ -107,7 +107,7 @@ class $modify(CaptchaPlayLayer, PlayLayer) {
                 captcha->show();
                 f->currentCaptcha = captcha;
 
-                cursor::show();
+                cw::cursor::show();
 
                 m_player1->m_playerSpeed = 0.0125f;
                 m_player2->m_playerSpeed = 0.0125f;

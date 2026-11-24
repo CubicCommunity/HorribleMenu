@@ -51,7 +51,7 @@ void Captcha::setupVerifier(std::string btnID) {
 }
 
 bool Captcha::init() {
-    m_impl->expected = g_buttons[rng::get(g_buttons.size() - 1)].first;
+    m_impl->expected = g_buttons[cw::rng::get(g_buttons.size() - 1)].first;
 
     auto const theme = mod->getSettingValue<std::string>("theme");
 
@@ -73,16 +73,16 @@ bool Captcha::init() {
     label->setScale(0.75f);
     label->setAlignment(Label::Alignment::Center);
     label->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, m_mainLayer->getScaledContentHeight() - 37.5f });
-    label->setAnchorPoint(anchor::center);
+    label->setAnchorPoint(cw::anchor::center);
 
     m_mainLayer->addChild(label);
 
     m_impl->countdown = ProgressBar::create(ProgressBar::Style::Solid);
     m_impl->countdown->setID("countdown");
     m_impl->countdown->setScale(0.625f);
-    m_impl->countdown->setAnchorPoint(anchor::center);
+    m_impl->countdown->setAnchorPoint(cw::anchor::center);
     m_impl->countdown->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 17.5f });
-    m_impl->countdown->setFillColor(colors::fadeColor(100.0f));
+    m_impl->countdown->setFillColor(cw::colors::fadeColor(100.0f));
 
     m_impl->countdown->updateProgress(100.0f);
 
@@ -106,7 +106,7 @@ bool Captcha::init() {
     auto hintID = Label::create(m_impl->expected.c_str(), font::big);
     hintID->setID("hint-id");
     hintID->setScale(0.5f);
-    hintID->setAnchorPoint(anchor::center);
+    hintID->setAnchorPoint(cw::anchor::center);
     hintID->setAlignment(Label::Alignment::Center);
     hintID->setLimitLabelWidth(bg->getScaledContentWidth() * 0.875f, 0.5f, 0.125f);
     hintID->setPosition({ m_impl->verifier->getPositionX(), m_impl->verifier->getPositionY() + (m_impl->verifier->getScaledContentHeight() / 2.0f) + 12.5f });
@@ -115,7 +115,7 @@ bool Captcha::init() {
 
     auto hint = SimpleTextArea::create("Press all the buttons with", font::chat, 0.5f, bg->getScaledContentWidth() * 0.875f);
     hint->setID("hint");
-    hint->setColor(to4B(colors::yellow));
+    hint->setColor(to4B(cw::colors::yellow));
     hint->setAlignment(kCCTextAlignmentCenter);
     hint->setPosition({ m_impl->verifier->getPositionX(), hintID->getPositionY() + 10.0f });
 
@@ -138,7 +138,7 @@ bool Captcha::init() {
     m_mainLayer->addChild(refreshBtn, 1);
 
     auto infoBtn = Button::createWithSpriteFrameName(
-        themes::info,
+        cw::sprites::info,
         [this](auto) {
             unscheduleUpdate();
 
@@ -209,7 +209,7 @@ void Captcha::update(float dt) {
 
     if (m_impl->countdown) {
         m_impl->countdown->updateProgress(pct);
-        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+        m_impl->countdown->setFillColor(cw::colors::fadeColor(pct));
     };
 
     if (m_impl->timeRemaining <= 0.0f) {
@@ -230,7 +230,7 @@ Captcha* Captcha::create() {
 }
 
 void RobotVerifier::addNewBtn() {
-    auto const& btnData = g_buttons[rng::get(g_buttons.size() - 1)];
+    auto const& btnData = g_buttons[cw::rng::get(g_buttons.size() - 1)];
 
     auto btn = Button::createWithSpriteFrameName(
         btnData.second,
@@ -263,7 +263,7 @@ bool RobotVerifier::init(std::string id, Callback&& cb) {
                       ->setGrowCrossAxis(true);
 
     setID("captcha-verifier");
-    setAnchorPoint(anchor::center);
+    setAnchorPoint(cw::anchor::center);
     setContentWidth(125.0f);
     setLayout(layout);
 

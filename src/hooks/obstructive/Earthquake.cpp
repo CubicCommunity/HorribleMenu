@@ -37,14 +37,14 @@ class $modify(EarthquakePlayLayer, PlayLayer) {
     }
 
     void nextQuake(float) {
-        auto delay = rng::get(3.75f, 1.25f);
+        auto delay = cw::rng::get(3.75f, 1.25f);
         log::trace("scheduling quake in {}s", delay);
 
         scheduleOnce(schedule_selector(EarthquakePlayLayer::quake), delay);
     }
 
     void quake(float) {
-        shakeCamera(rng::get(2.5f, 1.0f), rng::get(5.0f, 1.0f), 0.00125f);
+        shakeCamera(cw::rng::get(2.5f, 1.0f), cw::rng::get(5.0f, 1.0f), 0.00125f);
         scheduleOnce(schedule_selector(EarthquakePlayLayer::nextQuake), 0.125f);
     }
 };

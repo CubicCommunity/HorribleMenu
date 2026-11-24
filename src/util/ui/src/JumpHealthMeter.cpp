@@ -12,8 +12,8 @@ using namespace cs::brkd::horrible::prelude;
 #define PACE_RANGES 50.0f, 25.0f
 
 struct JumpHealthMeter::Impl final {
-    uint8_t jumps = rng::get(15, 7);
-    float pace = rng::get(PACE_RANGES);
+    uint8_t jumps = cw::rng::get(15, 7);
+    float pace = cw::rng::get(PACE_RANGES);
 
     Label* healthLabel = nullptr;
     ProgressBar* healthMeter = nullptr;
@@ -40,13 +40,13 @@ bool JumpHealthMeter::init(Callback&& cb) {
 
     if (!CCNode::init()) return false;
 
-    setAnchorPoint(anchor::center);
+    setAnchorPoint(cw::anchor::center);
     setContentSize({ 150.0f, 27.5f });
 
     m_impl->healthMeter = ProgressBar::create();
     m_impl->healthMeter->setID("meter");
-    m_impl->healthMeter->setFillColor(colors::pink);
-    m_impl->healthMeter->setAnchorPoint(anchor::center);
+    m_impl->healthMeter->setFillColor(cw::colors::pink);
+    m_impl->healthMeter->setAnchorPoint(cw::anchor::center);
     m_impl->healthMeter->updateProgress(0.0f);
 
     cue::rescaleToMatch(m_impl->healthMeter, getScaledContentWidth() - 8.75f);
@@ -76,7 +76,7 @@ void JumpHealthMeter::update(float dt) {
             m_impl->updateLabel();
             m_impl->healthMeter->updateProgress(0.0f);
 
-            m_impl->pace = rng::get(PACE_RANGES);
+            m_impl->pace = cw::rng::get(PACE_RANGES);
         };
     };
 }
@@ -91,7 +91,7 @@ void JumpHealthMeter::jump() {
 void JumpHealthMeter::reset() {
     unscheduleUpdate();
 
-    m_impl->jumps = rng::get(15, 7);
+    m_impl->jumps = cw::rng::get(15, 7);
 
     if (m_impl->healthMeter) m_impl->healthMeter->updateProgress(0.0f);
     m_impl->updateLabel();

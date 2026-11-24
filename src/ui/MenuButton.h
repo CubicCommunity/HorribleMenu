@@ -26,16 +26,16 @@ namespace cs::brkd::horrible {
 
         void onEnter() override;
 
-        bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
-        void ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
-        void ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
+        bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent*) override;
+        void ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent*) override;
+        void ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent*) override;
 
         bool init() override;
 
         static MenuButton* create();
 
     public:
-        static MenuButton* get();
+        static geode::Ref<MenuButton> get();
 
         void setOpacity(GLubyte opacity);
 

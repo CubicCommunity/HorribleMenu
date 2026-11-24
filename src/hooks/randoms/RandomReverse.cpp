@@ -32,7 +32,7 @@ class $modify(RandomReverseGJBaseGameLayer, GJBaseGameLayer) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
 
         if (down && button == 1) {
-            if (rng::chance(m_fields->chance)) reversePlayers();
+            if (cw::rng::chance(m_fields->chance)) reversePlayers();
         };
     }
 
@@ -50,7 +50,7 @@ class $modify(RandomReverseGJBaseGameLayer, GJBaseGameLayer) {
 
             m_fields->reversed = true;
 
-            scheduleOnce(schedule_selector(RandomReverseGJBaseGameLayer::unreversePlayers), rng::get(3.75f, 1.25f));
+            scheduleOnce(schedule_selector(RandomReverseGJBaseGameLayer::unreversePlayers), cw::rng::get(3.75f, 1.25f));
         };
     }
 

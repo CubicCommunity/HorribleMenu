@@ -90,13 +90,13 @@ class $modify(RealFloatingPlayLayer, PlayLayer) {
 
         f->theBtn->setPosition(pos);
 
-        m_uiLayer->addChild(f->theBtn, HIGHEST_Z);
+        m_uiLayer->addChild(f->theBtn, CW_HIGHEST_Z);
 
         sfx::play(sfx::file::click);
 
         f->theBtn->runAction(
             CCSequence::createWithTwoActions(
-                CCMoveTo::create(rng::get(1.25f, 0.5f), getRandomEdge(m_uiLayer->getScaledContentSize(), f->theBtn->getPosition())),
+                CCMoveTo::create(cw::rng::get(1.25f, 0.5f), getRandomEdge(m_uiLayer->getScaledContentSize(), f->theBtn->getPosition())),
                 CCCallFuncN::create(this, callfuncN_selector(RealFloatingPlayLayer::nextPosition))
             )
         );
@@ -105,16 +105,16 @@ class $modify(RealFloatingPlayLayer, PlayLayer) {
     Button* makeButton(bool autoPos = true) {
         auto theBtn = Button::createWithNode(
             CircleButtonSprite::createWithSpriteFrameName(
-                themes::getIconSprite(g_icons[rng::get(g_icons.size() - 1)]),
+                themes::getIconSprite(g_icons[cw::rng::get(g_icons.size() - 1)]),
                 0.875f,
-                g_frames[rng::get(g_frames.size() - 1)]
+                g_frames[cw::rng::get(g_frames.size() - 1)]
             ),
             [this](auto) {
                 destroyPlayer(m_player1, nullptr);
             }
         );
         theBtn->setID("press-me-btn"_spr);
-        theBtn->setScale(rng::get(2.5f, 1.25f));
+        theBtn->setScale(cw::rng::get(2.5f, 1.25f));
 
         if (autoPos) theBtn->setPosition(getRandomEdge(m_uiLayer->getScaledContentSize(), theBtn->getPosition()));
 
@@ -127,23 +127,23 @@ class $modify(RealFloatingPlayLayer, PlayLayer) {
 
         if (currentPos.x <= 0.0f) {
             x = maxSize.x;
-            y = rng::get(maxSize.y);
+            y = cw::rng::get(maxSize.y);
         } else if (currentPos.x >= maxSize.x) {
             x = 0.0f;
-            y = rng::get(maxSize.y);
+            y = cw::rng::get(maxSize.y);
         } else if (currentPos.y <= 0.0f) {
-            x = rng::get(maxSize.x);
+            x = cw::rng::get(maxSize.x);
             y = maxSize.y;
         } else if (currentPos.y >= maxSize.y) {
-            x = rng::get(maxSize.x);
+            x = cw::rng::get(maxSize.x);
             y = 0.0f;
         } else {
-            if (rng::flip()) {
-                x = (rng::flip() ? 0.0f : maxSize.x);
-                y = rng::get(maxSize.y);
+            if (cw::rng::flip()) {
+                x = (cw::rng::flip() ? 0.0f : maxSize.x);
+                y = cw::rng::get(maxSize.y);
             } else {
-                x = rng::get(maxSize.x);
-                y = (rng::flip() ? 0.0f : maxSize.y);
+                x = cw::rng::get(maxSize.x);
+                y = (cw::rng::flip() ? 0.0f : maxSize.y);
             };
         };
 

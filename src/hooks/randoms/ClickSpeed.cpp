@@ -28,7 +28,7 @@ class $modify(ClickSpeedPlayerObject, PlayerObject) {
         auto currentSpeed = m_playerSpeed;
         log::trace("current speed: {}", currentSpeed);
 
-        m_playerSpeed = rng::flip() ? currentSpeed + 1.0f : currentSpeed - 1.0f;
+        m_playerSpeed = cw::rng::flip() ? currentSpeed + 1.0f : currentSpeed - 1.0f;
 
         log::debug("Click Speed modified player speed to {}", m_playerSpeed);
 

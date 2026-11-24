@@ -46,7 +46,7 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
             return;
         };
 
-        cursor::show();
+        cw::cursor::show();
         nextWhack();
     }
 
@@ -64,14 +64,14 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
         PlayLayer::resetLevel();
 
         m_fields->clearWhackBtns();
-        cursor::show();
+        cw::cursor::show();
     }
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
 
         m_fields->clearWhackBtns();
-        cursor::show();
+        cw::cursor::show();
     }
 
     void onQuit() {
@@ -91,13 +91,13 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
             });
 
             m_fields->clearWhackBtns();
-            cursor::show();
+            cw::cursor::show();
         };
     }
 
     void nextWhack() {
         log::trace("scheduling new whack btn");
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), rng::get(12.5f, 1.25f) * rng::chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(WhackAFacePlayLayer::doWhack), cw::rng::get(12.5f, 1.25f) * cw::rng::chanceToDelayPct(m_fields->chance));
     }
 
     void doWhack(float) {
@@ -111,12 +111,12 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
                     whack->setCallback([this, whack](bool success) {
                         if (!success) resetLevelFromStart();
 
-                        cursor::show();
+                        cw::cursor::show();
                         whack->removeFromParent();
                     });
-                    whack->setPosition(CCPoint{ winSize.width * rng::get(0.75f, 0.25f), winSize.height * rng::get(0.75f, 0.25f) } / 2.0f);
+                    whack->setPosition(CCPoint{ winSize.width * cw::rng::get(0.75f, 0.25f), winSize.height * cw::rng::get(0.75f, 0.25f) } / 2.0f);
 
-                    m_uiLayer->addChild(whack, HIGHEST_Z);
+                    m_uiLayer->addChild(whack, CW_HIGHEST_Z);
                     m_fields->active.push_back(whack);
                 };
 

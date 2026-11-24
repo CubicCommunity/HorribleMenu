@@ -74,10 +74,6 @@ namespace cs::brkd::horrible {
         }
     };
 
-    namespace popup {
-        geode::Button* addHelpButton(cocos2d::CCNode* to, std::string content, bool useMarkdown = false, float btnScale = 0.75f, cocos2d::CCPoint const& offset = { -13.75f, -13.75f });
-    };
-
     // For convenience
     namespace setting {
         inline constexpr auto SafeMode = "safe-mode";
@@ -94,21 +90,6 @@ namespace cs::brkd::horrible {
         inline constexpr auto chances = "Chances";
         inline constexpr auto obstructive = "Obstructive";
         inline constexpr auto misc = "Misc";
-    };
-
-    // got tired of typing {0.5, 0.5} a billion times
-    namespace anchor {
-        inline constexpr cocos2d::CCPoint center = { 0.5f, 0.5f };
-    };
-
-    namespace request {
-        inline auto base() {
-            auto loader = geode::Loader::get();
-
-            return geode::utils::web::WebRequest()
-                .userAgent(fmt::format("HorribleMenu/{} ({}, Geode {}, GD {})", mod->getVersion().toVString(false), geode::utils::platform::getString(), loader->getVersion(), loader->getGameVersion()))
-                .timeout(asp::Duration::fromSecs(15));
-        }
     };
 
     // class SupporterState final : public base::Singleton<SupporterState> {

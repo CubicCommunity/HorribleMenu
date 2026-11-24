@@ -15,7 +15,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     setID("nothing-label");
     setPosition(pos);
     setContentSize(size);
-    setAnchorPoint(anchor::center);
+    setAnchorPoint(cw::anchor::center);
     setVisible(false);
 
     auto label = Label::create("No options found :(", font::big);
@@ -105,19 +105,19 @@ struct MenuOptionCell::Impl final {
     constexpr auto getTierColor(SillyTier silly) noexcept {
         switch (silly) {
             default:
-                return colors::white;
+                return cw::colors::white;
                 break;
 
             case SillyTier::Low:
-                return colors::green;
+                return cw::colors::green;
                 break;
 
             case SillyTier::Medium:
-                return colors::yellow;
+                return cw::colors::yellow;
                 break;
 
             case SillyTier::High:
-                return colors::red;
+                return cw::colors::red;
                 break;
         };
     }
@@ -151,7 +151,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
             .sidePadding = 0.0f,
             .verticalPadding = 0.0f,
             .cornerRoundness = -0.125f,
-            .texture = themes::square,
+            .texture = cw::sprites::squares::white,
         }
     );
     bg->setColor(m_impl->getTierColor(m_impl->option->getSillyTier()));
@@ -185,7 +185,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
         }
     );
     m_impl->toggler->setID("toggler");
-    m_impl->toggler->setAnchorPoint(anchor::center);
+    m_impl->toggler->setAnchorPoint(cw::anchor::center);
     m_impl->toggler->setScaleMultiplier(1.25f);
     m_impl->toggler->setPosition({ x + 12.0f, yCenter });
     m_impl->toggler->setScale(0.875f);
@@ -237,7 +237,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
 
     // info button
     auto infoBtn = Button::createWithSpriteFrameName(
-        (m_impl->compatible) ? (onlineCompat ? themes::info : "geode.loader/info-warning.png") : "geode.loader/info-alert.png",
+        (m_impl->compatible) ? (onlineCompat ? cw::sprites::info : "geode.loader/info-warning.png") : "geode.loader/info-alert.png",
         [this](auto) {
             auto formatDesc = fmt::format("{}\n\n{}{}{}", (m_impl->option->getDescription().size() > 0) ? m_impl->option->getDescription() : "<cc>No description provided.</c>", m_impl->option->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(m_impl->option->getSillyTier(), m_impl->compatible), m_impl->option->isCheating() ? "\n<ca>Cheat Option</c>" : "");
 
@@ -307,7 +307,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     auto newLabel = Label::create("New!", font::big);
     newLabel->setID("new-option-label");
     newLabel->setScale(0.25f);
-    newLabel->setColor(colors::cyan);
+    newLabel->setColor(cw::colors::cyan);
 
     m_impl->newContainer->addChild(newIcon);
     m_impl->newContainer->addChild(newLabel);
@@ -320,13 +320,13 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     if (!m_impl->compatible) {
         m_impl->toggler->setToggled(false);
 
-        static_cast<CCSprite*>(m_impl->toggler->getOffNode())->setColor(colors::gray);
-        static_cast<CCSprite*>(m_impl->toggler->getOnNode())->setColor(colors::gray);
+        static_cast<CCSprite*>(m_impl->toggler->getOffNode())->setColor(cw::colors::gray);
+        static_cast<CCSprite*>(m_impl->toggler->getOnNode())->setColor(cw::colors::gray);
 
-        bg->setColor(colors::gray);
+        bg->setColor(cw::colors::gray);
 
-        nameLabel->setColor(colors::gray);
-        categoryLabel->setColor(colors::gray);
+        nameLabel->setColor(cw::colors::gray);
+        categoryLabel->setColor(cw::colors::gray);
 
         m_impl->saveTogglerState();
     };
@@ -341,7 +341,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
         idLabel->setLimitLabelWidth(getScaledContentWidth() - 65.0f);
         idLabel->setPosition({ getScaledContentWidth() - 2.5f, 2.5f });
         idLabel->setAnchorPoint({ 1, 0 });
-        idLabel->setColor(colors::black);
+        idLabel->setColor(cw::colors::black);
         idLabel->setOpacity(125);
 
         addChild(idLabel);

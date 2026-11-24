@@ -33,7 +33,7 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
 
         auto f = m_fields.self();
 
-        if (rng::chance(f->chance)) {
+        if (cw::rng::chance(f->chance)) {
             togglePlayerScale(!f->scaled, false);
             f->scaled = !f->scaled;
         };

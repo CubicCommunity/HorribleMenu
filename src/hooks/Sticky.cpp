@@ -60,7 +60,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
                 nullptr
             );
 
-            pl->m_uiLayer->addChild(f->clickLabel, HIGHEST_Z);
+            pl->m_uiLayer->addChild(f->clickLabel, CW_HIGHEST_Z);
             f->clickLabel->runAction(CCRepeatForever::create(seq));
         };
     }
@@ -78,11 +78,11 @@ class $modify(StickyPlayerObject, PlayerObject) {
     }
 
     void stickyCol1(CCNode* sender) {
-        if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(colors::yellow);
+        if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(cw::colors::yellow);
     }
 
     void stickyCol2(CCNode* sender) {
-        if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(colors::white);
+        if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(cw::colors::white);
     }
 
     bool onGround() {
@@ -101,7 +101,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
         if (m_hasEverJumped) {
             if (nowOnGround && !wasOnGround) {
-                if (rng::fast() < f->chance) {
+                if (cw::rng::fast() < f->chance) {
                     f->defSpeed = m_playerSpeed;
                     m_playerSpeed = 0.0f;
 

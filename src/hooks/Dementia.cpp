@@ -46,7 +46,7 @@ class $modify(DementiaPlayerObject, PlayerObject) {
             auto onGround = m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
 
             // dementia
-            if (rng::chance(f->chance)) {
+            if (cw::rng::chance(f->chance)) {
                 setPosition({ f->lastX, f->lastY });
                 log::trace("player has dementia to ({}, {}), play time {}", f->lastX, f->lastY, f->lastMusicTime);
 

@@ -58,7 +58,7 @@ jumpscares::coro::LevelFuture jumpscares::coro::getLevel(int id) {
         return std::string{};
     });
 
-    auto req = request::base()
+    auto req = cw::request::base()
                    .bodyString(fmt::format("secret=Wmfd2893gb7&levelID={}{}", id, auth))
                    .userAgent("");  // robby why do you hate user agents and not ai agents
 

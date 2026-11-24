@@ -33,7 +33,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
             return;
         };
 
-        cursor::show();
+        cw::cursor::show();
         nextAd();
     }
 
@@ -43,7 +43,7 @@ class $modify(AdvertsPlayLayer, PlayLayer) {
     }
 
     void nextAd() {
-        auto delay = rng::get(15.0f, 5.0f);
+        auto delay = cw::rng::get(15.0f, 5.0f);
         log::trace("scheduling ad in {}s", delay);
 
         unschedule(schedule_selector(AdvertsPlayLayer::showAd));

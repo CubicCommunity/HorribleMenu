@@ -39,7 +39,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        auto delay = rng::get(1.25f);
+        auto delay = cw::rng::get(1.25f);
         log::trace("Friend will visit after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);
@@ -51,18 +51,18 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto xA = -125.0f;                // starting x pos
         auto xB = uiSize.width + 125.0f;  // ending x pos
 
-        if (rng::flip()) {
+        if (cw::rng::flip()) {
             xA = xB;
             xB = -125.0f;
         };  // swap sides
 
-        auto rA = rng::pc();
-        auto rB = rng::pc();
+        auto rA = cw::rng::pc();
+        auto rB = cw::rng::pc();
 
         auto yA = uiSize.height * rA;  // starting height pos
         auto yB = uiSize.height * rB;  // ending height pos
 
-        auto friendSpr = CCSprite::createWithSpriteFrameName(g_friends[rng::get(g_friends.size() - 1)]);
+        auto friendSpr = CCSprite::createWithSpriteFrameName(g_friends[cw::rng::get(g_friends.size() - 1)]);
         friendSpr->setPosition({ xA, yA });
         friendSpr->setScale(0.875f * (rB + rA));
         friendSpr->setRotation(180.0f * (yA * yB));  // random rotation
@@ -77,7 +77,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
         auto friendAction = CCSequence::createWithTwoActions(action, finish);
         auto scheduleAction = CCCallFunc::create(this, callfunc_selector(FriendsPlayLayer::scheduleNextFriend));
 
-        m_uiLayer->addChild(friendSpr, HIGHEST_Z);
+        m_uiLayer->addChild(friendSpr, CW_HIGHEST_Z);
         friendSpr->runAction(CCSpawn::createWithTwoActions(friendAction, scheduleAction));
     }
 
@@ -86,7 +86,7 @@ class $modify(FriendsPlayLayer, PlayLayer) {
     }
 
     void scheduleNextFriend() {
-        auto delay = rng::get(0.875f);
+        auto delay = cw::rng::get(0.875f);
         log::trace("Friend will visit again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(FriendsPlayLayer::showAFriend), delay);

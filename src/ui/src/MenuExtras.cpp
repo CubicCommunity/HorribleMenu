@@ -96,7 +96,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //     m_mainLayer->addChild(m_loading, 9);
 
-//     popup::addHelpButton(
+//     cw::addHelpButton(
 //         m_mainLayer,
 //         "This is the <cg>feature suggestion form</c>. You can use it to <cy>send Breakeode your feature ideas for Horrible Menu</c>. Be sure to <cr>read the guidelines below before submitting any ideas</c>.");
 
@@ -151,7 +151,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //                     reqJson["v"] = mod->getVersion().toVString();
 
-//                     auto req = request::base()
+//                     auto req = cw::request::base()
 //                                    .bodyJSON(reqJson);
 
 //                     s->m_sendTask.spawn(
@@ -331,7 +331,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //     m_mainLayer->addChild(breakeodeBtn, 1);
 
-//     popup::addHelpButton(
+//     cw::addHelpButton(
 //         m_mainLayer,
 //         "This is the <cb>Discord community menu</c>. You can join <cf>Cubic Studios</c>'s Discord community server to chat with others, or <cc>Breakeode</c>'s Discord server to get help with using <co>Horrible Menu</c> or suggest ideas.\n\n"
 //         "You can also <cy>link your Discord account with your Geometry Dash account</c> here, which is <cr>required</c> in order to receive any <cd>Ko-fi support perks</c>.");
@@ -375,7 +375,7 @@ using namespace cs::brkd::horrible::prelude;
 //     addChildAtPosition(square, Anchor::Left, {20.0f, 0.0f});
 
 //     auto iconContainer = CCClippingNode::create(square);
-//     iconContainer->setAnchorPoint(anchor::center);
+//     iconContainer->setAnchorPoint(cw::anchor::center);
 //     iconContainer->setPosition(square->getPosition());
 //     iconContainer->setContentSize(square->getScaledContentSize());
 //     iconContainer->setAlphaThreshold(0.0f);
@@ -385,7 +385,7 @@ using namespace cs::brkd::horrible::prelude;
 //     auto icon = LazySprite::create({40.0f, 40.0f});
 //     icon->setID("profile-icon");
 //     icon->setAutoResize(true);
-//     icon->setAnchorPoint(anchor::center);
+//     icon->setAnchorPoint(cw::anchor::center);
 //     icon->setLoadCallback([icon](Result<> res) {
 //         if (res.isErr()) return log::error("Failed to load Discord profile icon: {}", res.unwrapErr());
 //         cue::rescaleToMatch(icon, 40.0f);
@@ -438,7 +438,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //     auto bgClip = CCClippingNode::create(m_bgSprite);
 //     bgClip->setZOrder(-2);
-//     bgClip->setAnchorPoint(anchor::center);
+//     bgClip->setAnchorPoint(cw::anchor::center);
 //     bgClip->setContentSize(m_mainLayer->getScaledContentSize());
 //     bgClip->setAlphaThreshold(0.0f);
 
@@ -479,7 +479,7 @@ using namespace cs::brkd::horrible::prelude;
 //                                                ? "<cg>Thanks for supporting Breakeode</c>! You can now <cj>press the badge below</c> to see the <cd>Supporter badge</c> on your profile. Feel free to <cb>join Breakeode's Discord server</c> for even more perks."
 //                                                : "<co>Horrible Menu</c> <cc>couldn't be made possible without community support</c>. Feel free to <cd>donate through Ko-fi</c> and get cool perks such as the badge below!\n<cj>Press the badge</c> to get started.";
 
-//                 s->m_infoContainer = LabelArea::create(std::move(infoLabelTxt), s->m_mainLayer->getScaledContentWidth() - 15.0f, 0.625f, res.isOk() ? colors::black : colors::purple);
+//                 s->m_infoContainer = LabelArea::create(std::move(infoLabelTxt), s->m_mainLayer->getScaledContentWidth() - 15.0f, 0.625f, res.isOk() ? cw::colors::black : cw::colors::purple);
 //                 s->m_infoContainer->setID("kofi-description");
 
 //                 s->m_mainLayer->addChildAtPosition(s->m_infoContainer, Anchor::Center, {0.0f, 12.5f + s->m_infoContainer->getScaledContentHeight()});
@@ -582,7 +582,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //     m_mainLayer->addChildAtPosition(discordBtn, Anchor::BottomLeft, {17.5f, 17.5f});
 
-//     popup::addHelpButton(
+//     cw::addHelpButton(
 //         m_mainLayer,
 //         "This is the <cg>Ko-fi supporter menu</c>. Here you can find <cd>links to support Breakeode, and the perks for doing so</c>!");
 

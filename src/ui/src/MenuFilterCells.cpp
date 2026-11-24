@@ -30,21 +30,21 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
             .sidePadding = 0.0f,
             .verticalPadding = 0.0f,
             .cornerRoundness = -0.25f,
-            .texture = themes::square,
+            .texture = cw::sprites::squares::white,
         }
     );
-    m_bg->setColor(colors::gray);
+    m_bg->setColor(cw::colors::gray);
 
     // toggler for the category
     m_toggler = Toggler::createWithStandardSprites(
         0.5f,
         [this](auto, bool on) {
             if (m_toggleCallback) m_toggleCallback(m_category, on);
-            if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
+            if (m_bg) m_bg->setColor(on ? cw::colors::gold : cw::colors::gray);
         }
     );
     m_toggler->setID("toggler");
-    m_toggler->setAnchorPoint(anchor::center);
+    m_toggler->setAnchorPoint(cw::anchor::center);
     m_toggler->setPosition({ 10.0f, getScaledContentHeight() / 2.0f });
 
     addChild(m_toggler);
@@ -68,7 +68,7 @@ void MenuCategoryFilterCell::setToggleCallback(Callback&& callback) {
 
 void MenuCategoryFilterCell::setToggled(bool on) {
     if (m_toggler) m_toggler->setToggled(on);
-    if (m_bg) m_bg->setColor(on ? colors::gold : colors::gray);
+    if (m_bg) m_bg->setColor(on ? cw::colors::gold : cw::colors::gray);
 }
 
 ZStringView MenuCategoryFilterCell::getCategory() const noexcept {
@@ -102,7 +102,7 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
             .opacity = 175,
             .sidePadding = 0.0f,
             .verticalPadding = 0.0f,
-            .texture = themes::square,
+            .texture = cw::sprites::squares::white,
         }
     );
     bg->setColor(color);
@@ -110,7 +110,7 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
     auto tierLabel = Label::create(label.c_str(), font::big);
     tierLabel->setID("label");
     tierLabel->setScale(0.5f);
-    tierLabel->setAnchorPoint(anchor::center);
+    tierLabel->setAnchorPoint(cw::anchor::center);
     tierLabel->setPosition(getScaledContentSize() / 2.0f);
 
     addChild(tierLabel, 1);

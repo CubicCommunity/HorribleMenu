@@ -499,7 +499,7 @@ Result<bool> OptionManagerV2::isEnabled(ZStringView id) {
 //             if (auto gjam = GJAccountManager::sharedState()) {
 //                 log::trace("Checking Ko-fi supporter status...");
 
-//                 auto req = request::base()
+//                 auto req = cw::request::base()
 //                                .param("id", gjam->m_accountID);
 
 //                 m_task.spawn(

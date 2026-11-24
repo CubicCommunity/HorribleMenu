@@ -109,7 +109,7 @@ bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int c
                       ->setAutoScale(false);
 
     setLayout(layout);
-    setAnchorPoint(anchor::center);
+    setAnchorPoint(cw::anchor::center);
 
     auto playerIcon = cue::PlayerIcon::create(IconType::Cube, icon, color1, color2, glowColor);
 
@@ -172,7 +172,7 @@ bool MenuCredits::init(ZStringView theme) {
 
     auto leadDevContainer = CCNode::create();
     leadDevContainer->setID("lead-dev-container");
-    leadDevContainer->setAnchorPoint({ anchor::center });
+    leadDevContainer->setAnchorPoint({ cw::anchor::center });
     leadDevContainer->setLayout(leadDevContainerLayout);
 
     m_mainLayer->addChild(leadDevContainer, 1);
@@ -322,7 +322,7 @@ bool MenuCredits::init(ZStringView theme) {
     m_mainLayer->addChild(websiteBtn, 1);
 
     // 1% chance to show sapphire logo over geode
-    auto isModBtnSecret = rng::fast() <= 1;
+    auto isModBtnSecret = cw::rng::fast() <= 1;
 
     auto modBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
@@ -383,7 +383,7 @@ bool MenuCredits::init(ZStringView theme) {
         m_mainLayer->addChild(integrationsBtn, 9);
     };
 
-    popup::addHelpButton(
+    cw::addHelpButton(
         m_mainLayer,
         "This menu aims to give credit to everyone who has <cy>contributed to the development of Horrible Menu</c>, directly or indirectly.\n\n"
         "<co>If we missed anyone, let us know by opening an issue about it on our GitHub repository!</c>\n\n"
@@ -427,7 +427,7 @@ void CreditsManager::loadLeadDevs() {
         log::debug("Sending web request for lead developer credits");
 
         m_creditsTask.spawn(
-            request::base().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
+            cw::request::base().get("https://api.cubicstudios.xyz/breakeode/v1/horrible/credits"),
             [this](web::WebResponse res) {
                 auto const fallback = [this](std::string_view err = "") {
                     log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
@@ -464,7 +464,7 @@ void CreditsManager::loadLicense() {
         log::debug("Sending web request for lead developer credits");
 
         m_licenseTask.spawn(
-            request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
+            cw::request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
             [this](web::WebResponse res) {
                 auto const fallback = [this](std::string_view err = "") {
                     log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);

@@ -1,6 +1,6 @@
 // #include <Util.h>
 
-#include <rhatt/prelude.h>
+// #include <rhatt/prelude.h>
 
 // #include <util/Base.h>
 
@@ -64,7 +64,7 @@
 
 //             if (!request) co_return Err("Badge not found in cache");
 
-//             auto res = co_await request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/badges/user?id={}", accountID));
+//             auto res = co_await cw::request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/badges/user?id={}", accountID));
 
 //             auto const fallback = [this](std::string err = "") {
 //                 log::error("Badges web request failed ({})", err);

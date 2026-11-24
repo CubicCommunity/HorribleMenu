@@ -74,7 +74,7 @@ class $modify(SpamPlayLayer, PlayLayer) {
         log::trace("scheduling spam challenge");
 
         unschedule(schedule_selector(SpamPlayLayer::doSpam));
-        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), rng::get(30.0f, 5.0f) * rng::chanceToDelayPct(m_fields->chance));
+        if (!m_hasCompletedLevel) scheduleOnce(schedule_selector(SpamPlayLayer::doSpam), cw::rng::get(30.0f, 5.0f) * cw::rng::chanceToDelayPct(m_fields->chance));
     }
 
     void doSpam(float) {
@@ -91,15 +91,15 @@ class $modify(SpamPlayLayer, PlayLayer) {
                     if (!success) resetLevelFromStart();
                     nextSpam();
 
-                    cursor::hide();
+                    cw::cursor::hide();
 
                     cue::resetNode(m_fields->currentSpam);
                 });
 
-                m_uiLayer->addChild(spam, HIGHEST_Z);
+                m_uiLayer->addChild(spam, CW_HIGHEST_Z);
                 f->currentSpam = spam;
 
-                cursor::show();
+                cw::cursor::show();
             };
         };
 

@@ -47,7 +47,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
             return;
         };
 
-        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
+        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), cw::rng::get(0.125f));
     }
 
     void setupHasCompleted() {
@@ -56,7 +56,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     }
 
     void nextConfetti(float) {
-        auto delay = rng::get(8.75f, 1.25f);
+        auto delay = cw::rng::get(8.75f, 1.25f);
         log::trace("scheduling confetti in {}s", delay);
 
         scheduleOnce(schedule_selector(ConfettiPlayLayer::confetti), delay);
@@ -68,32 +68,32 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
         sfx::play(sfx::file::bad);
         shakeCamera(0.875f, 2.5f, 0.00875f);
 
-        for (int i = 0; i < rng::get(150, 75); i++) createConfetti();
+        for (int i = 0; i < cw::rng::get(150, 75); i++) createConfetti();
 
-        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), rng::get(0.125f));
+        scheduleOnce(schedule_selector(ConfettiPlayLayer::nextConfetti), cw::rng::get(0.125f));
     }
 
     void createConfetti() {
-        auto conf = CCSprite::createWithSpriteFrameName(g_confettis[rng::get(g_confettis.size() - 1)]);
-        conf->setScale(1.25f * rng::pc());
+        auto conf = CCSprite::createWithSpriteFrameName(g_confettis[cw::rng::get(g_confettis.size() - 1)]);
+        conf->setScale(1.25f * cw::rng::pc());
 
-        auto useY = rng::flip();
-        auto const endPos = ccp(
-            useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * rng::pc(),
-            useY ? getScaledContentHeight() * rng::pc() : getScaledContentHeight() + conf->getScaledContentHeight()
-        );
+        auto useY = cw::rng::flip();
+        CCPoint const endPos{
+            useY ? getScaledContentWidth() + conf->getScaledContentWidth() : getScaledContentWidth() * cw::rng::pc(),
+            useY ? getScaledContentHeight() * cw::rng::pc() : getScaledContentHeight() + conf->getScaledContentHeight(),
+        };
 
-        auto dur = 0.875f + rng::pc() * 2.5f;
+        auto dur = 0.875f + cw::rng::pc() * 2.5f;
 
         auto move = CCEaseSineOut::create(CCMoveTo::create(dur, endPos));
-        auto rotate = CCEaseSineOut::create(CCRotateBy::create(dur * rng::get(2.5f, 1.0f), (360.0f * (rng::flip() ? 1.0f : -1.0f)) * rng::get(3.75f, 0.875f)));
+        auto rotate = CCEaseSineOut::create(CCRotateBy::create(dur * cw::rng::get(2.5f, 1.0f), (360.0f * (cw::rng::flip() ? 1.0f : -1.0f)) * cw::rng::get(3.75f, 0.875f)));
 
         auto seq = CCSequence::createWithTwoActions(
             CCSpawn::createWithTwoActions(move, rotate),
             CCCallFuncN::create(this, callfuncN_selector(ConfettiPlayLayer::cleanConfetti))
         );
 
-        m_uiLayer->addChild(conf, HIGHEST_Z);
+        m_uiLayer->addChild(conf, CW_HIGHEST_Z);
         conf->runAction(seq);
     }
 

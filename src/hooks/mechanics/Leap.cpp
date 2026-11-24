@@ -51,12 +51,12 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
         if (auto pl = PlayLayer::get(); pl && !f->chargeMeter) {
             f->chargeMeter = ProgressBar::create();
             f->chargeMeter->setID("charge-meter"_spr);
-            f->chargeMeter->setFillColor(colors::red);
-            f->chargeMeter->setAnchorPoint(anchor::center);
+            f->chargeMeter->setFillColor(cw::colors::red);
+            f->chargeMeter->setAnchorPoint(cw::anchor::center);
             f->chargeMeter->setPosition({ pl->m_uiLayer->getScaledContentWidth() / 2.0f, 25.0f });
             f->chargeMeter->setScale(0.625f);
 
-            pl->m_uiLayer->addChild(f->chargeMeter, HIGHEST_Z);
+            pl->m_uiLayer->addChild(f->chargeMeter, CW_HIGHEST_Z);
 
             f->chargeMeter->updateProgress(0.0f);
             f->chargeMeter->setVisible(false);
@@ -145,7 +145,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
 
         if (f->chargeMeter) {
             f->chargeMeter->updateProgress(f->charge);
-            f->chargeMeter->setFillColor(colors::fadeColor(f->charge));
+            f->chargeMeter->setFillColor(cw::colors::fadeColor(f->charge));
         };
 
         if (f->charge >= 100.0f) {

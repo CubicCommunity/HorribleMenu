@@ -36,7 +36,7 @@ class $modify(LimitedJumpGJBaseGameLayer, GJBaseGameLayer) {
                 if (auto pl = PlayLayer::get()) pl->destroyPlayer(pl->m_player1, nullptr);
             });
             f->jumpMeter->setID("jump-energy-meter"_spr);
-            f->jumpMeter->setZOrder(HIGHEST_Z);
+            f->jumpMeter->setZOrder(CW_HIGHEST_Z);
             f->jumpMeter->setAnchorPoint({ 1, 0 });
 
             pl->m_uiLayer->addChildAtPosition(f->jumpMeter, Anchor::BottomRight, { -8.75f, 8.75f }, false);

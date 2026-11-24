@@ -52,22 +52,22 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
             if (!f->speedMeterLabel) {
                 f->speedMeterLabel = Label::create("Speed", font::big);
                 f->speedMeterLabel->setScale(0.375f);
-                f->speedMeterLabel->setColor(colors::gold);
-                f->speedMeterLabel->setAnchorPoint(anchor::center);
+                f->speedMeterLabel->setColor(cw::colors::gold);
+                f->speedMeterLabel->setAnchorPoint(cw::anchor::center);
                 f->speedMeterLabel->setPosition({ pl->m_uiLayer->getScaledContentWidth() / 2.0f, 37.5f });
 
-                pl->m_uiLayer->addChild(f->speedMeterLabel, HIGHEST_Z);
+                pl->m_uiLayer->addChild(f->speedMeterLabel, CW_HIGHEST_Z);
             };
 
             if (!f->speedMeter) {
                 f->speedMeter = ProgressBar::create();
                 f->speedMeter->setID("speed-meter"_spr);
-                f->speedMeter->setFillColor(colors::gold);
-                f->speedMeter->setAnchorPoint(anchor::center);
+                f->speedMeter->setFillColor(cw::colors::gold);
+                f->speedMeter->setAnchorPoint(cw::anchor::center);
                 f->speedMeter->setPosition({ f->speedMeterLabel->getPositionX(), f->speedMeterLabel->getPositionY() - 12.5f });
                 f->speedMeter->setScale(0.875f);
 
-                pl->m_uiLayer->addChild(f->speedMeter, HIGHEST_Z);
+                pl->m_uiLayer->addChild(f->speedMeter, CW_HIGHEST_Z);
 
                 f->speedMeter->updateProgress(50.0f);
             };

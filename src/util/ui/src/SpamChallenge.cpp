@@ -28,7 +28,7 @@ SpamChallenge::SpamChallenge() : m_impl(std::make_unique<Impl>()) {}
 SpamChallenge::~SpamChallenge() = default;
 
 bool SpamChallenge::init() {
-    m_impl->inputTarget = rng::get<uint8_t>(m_impl->inputTarget, 20);
+    m_impl->inputTarget = cw::rng::get<uint8_t>(m_impl->inputTarget, 20);
 
     if (!CCBlockLayer::init()) return false;
 
@@ -62,8 +62,8 @@ bool SpamChallenge::init() {
     m_impl->counter->setAlignment(Label::Alignment::Center);
     m_impl->counter->setPosition({ winSize.width / 2.0f, (winSize.height / 2.0f) - 6.25f });
 
-    auto moveUp = CCEaseSineInOut::create(CCMoveBy::create(1.25f, ccp(0, 12.5f)));
-    auto moveDown = CCEaseSineInOut::create(CCMoveBy::create(1.25f, ccp(0, -12.5f)));
+    auto moveUp = CCEaseSineInOut::create(CCMoveBy::create(1.25f, { 0.0f, 12.5f }));
+    auto moveDown = CCEaseSineInOut::create(CCMoveBy::create(1.25f, { 0.0f, -12.5f }));
 
     auto seq = CCSequence::createWithTwoActions(moveUp, moveDown);
 
@@ -72,10 +72,10 @@ bool SpamChallenge::init() {
 
     m_impl->countdown = ProgressBar::create();
     m_impl->countdown->setID("countdown");
-    m_impl->countdown->setAnchorPoint(anchor::center);
+    m_impl->countdown->setAnchorPoint(cw::anchor::center);
     m_impl->countdown->setStyle(ProgressBar::Style::Solid);
     m_impl->countdown->setPosition({ winSize.width / 2.0f, winSize.height - 20.0f });
-    m_impl->countdown->setFillColor(colors::fadeColor(100.0f));
+    m_impl->countdown->setFillColor(cw::colors::fadeColor(100.0f));
 
     m_impl->countdown->updateProgress(100.0f);
 
@@ -142,7 +142,7 @@ void SpamChallenge::update(float dt) {
 
     if (m_impl->countdown) {
         m_impl->countdown->updateProgress(pct);
-        m_impl->countdown->setFillColor(colors::fadeColor(pct));
+        m_impl->countdown->setFillColor(cw::colors::fadeColor(pct));
     };
 
     if (m_impl->timeRemaining <= 0.0f) {

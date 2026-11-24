@@ -121,7 +121,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
         log::trace("Preparing {} motivational messages", g_msgs.size());
 
-        auto delay = rng::get(10.0f, 3.0f);
+        auto delay = cw::rng::get(10.0f, 3.0f);
         log::debug("Motivational message will show after {} seconds", delay);
 
         scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), delay);
@@ -129,7 +129,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
 
     void showMessage(float) {
         if (!m_hasCompletedLevel) {
-            auto label = Label::create(g_msgs[rng::get(g_msgs.size())], font::big);
+            auto label = Label::create(g_msgs[cw::rng::get(g_msgs.size())], font::big);
             label->setMaxWidth(getScaledContentWidth() - 12.5f);
             label->setAnchorPoint({ 0.5, 0 });
             label->setAlignment(Label::Alignment::Center);
@@ -143,7 +143,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
                 nullptr
             );
 
-            m_uiLayer->addChild(label, HIGHEST_Z);
+            m_uiLayer->addChild(label, CW_HIGHEST_Z);
 
             sfx::play(sfx::file::good);
             label->runAction(action);
@@ -153,7 +153,7 @@ class $modify(MotivationPlayLayer, PlayLayer) {
     void scheduleNextMessage(CCNode* sender) {
         cue::resetNode(sender);
 
-        auto delay = rng::get(15.0f, 5.0f);
+        auto delay = cw::rng::get(15.0f, 5.0f);
         log::debug("Motivational message will show again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(MotivationPlayLayer::showMessage), delay);

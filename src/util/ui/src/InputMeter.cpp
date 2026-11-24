@@ -13,16 +13,16 @@ using namespace cs::brkd::horrible::prelude;
 
 struct InputMeter::Impl final {
     float chance = 0.0f;
-    float pace = rng::get(PACE_RANGES);
+    float pace = cw::rng::get(PACE_RANGES);
 
     FMODLevelVisualizer* meter = nullptr;
     CCSprite* indicator = nullptr;
 
     constexpr ccColor3B const& getChanceColor(float chance) {
-        if (chance >= 85.0f) return colors::red;
-        if (chance >= 60.0f) return colors::yellow;
+        if (chance >= 85.0f) return cw::colors::red;
+        if (chance >= 60.0f) return cw::colors::yellow;
 
-        return colors::green;
+        return cw::colors::green;
     }
 };
 
@@ -32,7 +32,7 @@ InputMeter::~InputMeter() = default;
 bool InputMeter::init() {
     if (!CCNode::init()) return false;
 
-    setAnchorPoint(anchor::center);
+    setAnchorPoint(cw::anchor::center);
     setContentSize({ 10.0f, 100.0f });
 
     m_impl->meter = FMODLevelVisualizer::create();
@@ -65,10 +65,10 @@ void InputMeter::update(float dt) {
 
         if (m_impl->chance <= 0.0f) {
             m_impl->chance = 0.0f;
-            m_impl->pace = rng::get(PACE_RANGES);
+            m_impl->pace = cw::rng::get(PACE_RANGES);
         } else if (m_impl->chance >= 100.0f) {
             m_impl->chance = 100.0f;
-            m_impl->pace = rng::get(PACE_RANGES) * -1.0f;
+            m_impl->pace = cw::rng::get(PACE_RANGES) * -1.0f;
         };
     };
 }

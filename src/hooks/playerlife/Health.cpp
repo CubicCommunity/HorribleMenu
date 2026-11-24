@@ -44,12 +44,12 @@ class $modify(HealthPlayLayer, PlayLayer) {
         if (!f->healthBar) {
             f->healthBar = ProgressBar::create();
             f->healthBar->setID("health-bar"_spr);
-            f->healthBar->setFillColor(colors::red);
-            f->healthBar->setAnchorPoint(anchor::center);
+            f->healthBar->setFillColor(cw::colors::red);
+            f->healthBar->setAnchorPoint(cw::anchor::center);
             f->healthBar->setPosition({ 10.0f, getScaledContentHeight() / 2.0f });
             f->healthBar->setRotation(-90.0f);
 
-            m_uiLayer->addChild(f->healthBar, HIGHEST_Z);
+            m_uiLayer->addChild(f->healthBar, CW_HIGHEST_Z);
         };
 
         f->healthBar->updateProgress(f->health);
@@ -57,12 +57,12 @@ class $modify(HealthPlayLayer, PlayLayer) {
         auto hp = fmt::format("HP\n{}%", static_cast<uint8_t>(f->health));
         if (!f->healthLabel) {
             f->healthLabel = Label::create(std::move(hp), font::big);
-            f->healthLabel->setColor(colors::red);
+            f->healthLabel->setColor(cw::colors::red);
             f->healthLabel->setAnchorPoint({ 0.0f, 1.0f });
             f->healthLabel->setPosition({ 2.0f, (getScaledContentHeight() / 2.0f) - (f->healthBar->getScaledContentWidth() / 2.0f) - 1.25f });
             f->healthLabel->setScale(0.25f);
 
-            m_uiLayer->addChild(f->healthLabel, HIGHEST_Z);
+            m_uiLayer->addChild(f->healthLabel, CW_HIGHEST_Z);
         } else {
             f->healthLabel->setText(std::move(hp));
         };

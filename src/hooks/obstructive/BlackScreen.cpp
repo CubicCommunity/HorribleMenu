@@ -28,7 +28,7 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
             return;
         };
 
-        scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), rng::get(3.75f));
+        scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), cw::rng::get(3.75f));
     }
 
     void setupHasCompleted() {
@@ -43,21 +43,21 @@ class $modify(BlackScreenPlayLayer, PlayLayer) {
 
         auto blackScreen = CCLayerColor::create();
         blackScreen->setID("blink"_spr);
-        blackScreen->setColor(colors::black);
-        blackScreen->setAnchorPoint(anchor::center);
+        blackScreen->setColor(cw::colors::black);
+        blackScreen->setAnchorPoint(cw::anchor::center);
         blackScreen->setContentSize(winSize);
         blackScreen->setPosition(winSize / 2.0f);
 
-        m_uiLayer->addChild(blackScreen, HIGHEST_Z);
+        m_uiLayer->addChild(blackScreen, CW_HIGHEST_Z);
 
         // Schedule removal after 0.5 seconds, then schedule to show again after a random delay
-        blackScreen->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(rng::get(0.25f, 0.125f)), CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))));
+        blackScreen->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(cw::rng::get(0.25f, 0.125f)), CCCallFuncN::create(this, callfuncN_selector(BlackScreenPlayLayer::removeBlackScreen))));
     }
 
     void removeBlackScreen(CCNode* sender) {
         cue::resetNode(sender);
 
-        auto delay = rng::get(2.5f);
+        auto delay = cw::rng::get(2.5f);
         log::debug("Black screen will appear again after {} seconds", delay);
 
         scheduleOnce(schedule_selector(BlackScreenPlayLayer::showBlackScreen), delay);

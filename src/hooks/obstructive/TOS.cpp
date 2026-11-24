@@ -39,12 +39,12 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
 
         auto f = m_fields.self();
 
-        if (rng::chance(f->chance)) {
+        if (cw::rng::chance(f->chance)) {
             cue::resetNode(f->currentTos);
 
             if (auto popup = TermsAndConditions::create(
                     [this](bool accepted) {
-                        cursor::hide();
+                        cw::cursor::hide();
                         updateTimeWarp(1.0f);
 
                         if (!accepted) {
@@ -56,7 +56,7 @@ class $modify(TOSGJBaseGameLayer, GJBaseGameLayer) {
                 popup->show();
                 f->currentTos = popup;
 
-                cursor::show();
+                cw::cursor::show();
             };
         };
     }

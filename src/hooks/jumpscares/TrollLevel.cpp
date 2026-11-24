@@ -59,7 +59,7 @@ class $modify(TrollLevelPlayLayer, PlayLayer) {
 
     bool init(GJGameLevel* level, bool dontCreateObjects) {
         if (auto jm = jumpscares::JumpscareLevelManager::get()) {
-            if (rng::chance(m_fields->chance)) {
+            if (cw::rng::chance(m_fields->chance)) {
                 if (auto lvl = jm->getLevel(HORRIBLE_JUMPSCARES_TROLL)) return PlayLayer::init(lvl, dontCreateObjects);
             };
         };

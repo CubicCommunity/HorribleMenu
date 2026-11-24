@@ -2,8 +2,6 @@
 
 #include <horrible/API.h>
 
-#define HIGHEST_Z cocos2d::CCScene::get()->getHighestChildZ() + 1
-
 #define HORRIBLE_SETUP_INTERFACE_FUNC_NAME hmSetupInterface
 
 #define HORRIBLE_SETUP_INTERFACE_FUNC void HORRIBLE_SETUP_INTERFACE_FUNC_NAME(bool on = true)
