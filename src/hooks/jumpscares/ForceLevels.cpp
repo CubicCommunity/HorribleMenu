@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <ranges>
 
 #include <Geode/Geode.hpp>

@@ -171,6 +171,12 @@
                 "big-arrow-step": 20
             }
         },
+        "menu-force-animation": {
+            "type": "bool",
+            "name": "Force Menu Animation",
+            "description": "Always display the opening animation for the <cg>Horrible Options</c> menu regardless if you have <cg>Fast Menu</c> enabled.",
+            "default": false
+        },
         "floating-btn-section": {
             "type": "title",
             "name": "Floating Button",

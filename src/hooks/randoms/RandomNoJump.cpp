@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/GJBaseGameLayer.hpp>
@@ -29,5 +31,5 @@ class $modify(NoJumpGJBaseGameLayer, GJBaseGameLayer) {
         };
 
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
-    };
+    }
 };

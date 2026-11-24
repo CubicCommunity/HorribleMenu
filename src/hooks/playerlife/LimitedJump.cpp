@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
@@ -35,11 +37,11 @@ class $modify(LimitedJumpGJBaseGameLayer, GJBaseGameLayer) {
             });
             f->jumpMeter->setID("jump-energy-meter"_spr);
             f->jumpMeter->setZOrder(HIGHEST_Z);
-            f->jumpMeter->setAnchorPoint({1, 0});
+            f->jumpMeter->setAnchorPoint({ 1, 0 });
 
-            pl->m_uiLayer->addChildAtPosition(f->jumpMeter, Anchor::BottomRight, {-8.75f, 8.75f}, false);
+            pl->m_uiLayer->addChildAtPosition(f->jumpMeter, Anchor::BottomRight, { -8.75f, 8.75f }, false);
         };
-    };
+    }
 
     bool init() {
         if (!GJBaseGameLayer::init()) return false;
@@ -49,17 +51,17 @@ class $modify(LimitedJumpGJBaseGameLayer, GJBaseGameLayer) {
         });
 
         return true;
-    };
+    }
 
     void handleButton(bool down, int button, bool isPlayer1) {
         GJBaseGameLayer::handleButton(down, button, isPlayer1);
         if (button == 1 && down) m_fields->jumpMeter->jump();
-    };
+    }
 
     JumpHealthMeter* getHealthMeter() noexcept {
         if (auto f = m_fields.self()) return f->jumpMeter;
         return nullptr;
-    };
+    }
 };
 
 class $modify(LimitedJumpPlayLayer, PlayLayer) {
@@ -73,7 +75,7 @@ class $modify(LimitedJumpPlayLayer, PlayLayer) {
                 if (auto meter = modify_cast<LimitedJumpGJBaseGameLayer*>(gjbgl)->getHealthMeter()) meter->playPause(false);
             };
         };
-    };
+    }
 
     void resetLevel() {
         PlayLayer::resetLevel();
@@ -81,7 +83,7 @@ class $modify(LimitedJumpPlayLayer, PlayLayer) {
         if (auto gjbgl = GJBaseGameLayer::get()) {
             if (auto meter = modify_cast<LimitedJumpGJBaseGameLayer*>(gjbgl)->getHealthMeter()) meter->reset();
         };
-    };
+    }
 
     void resetLevelFromStart() {
         PlayLayer::resetLevelFromStart();
@@ -89,7 +91,7 @@ class $modify(LimitedJumpPlayLayer, PlayLayer) {
         if (auto gjbgl = GJBaseGameLayer::get()) {
             if (auto meter = modify_cast<LimitedJumpGJBaseGameLayer*>(gjbgl)->getHealthMeter()) meter->reset();
         };
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(GJBaseGameLayer, LimitedJumpGJBaseGameLayer);

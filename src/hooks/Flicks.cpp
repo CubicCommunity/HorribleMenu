@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
@@ -48,7 +50,7 @@ class $modify(FlicksPlayLayer, PlayLayer) {
             sfx::play(sfx::file::bad);
             Notification::create(fmt::format("Flicked {} ({}) {}", o->getName(), o->getCategory(), str::isOnOff(o->isEnabled())).c_str(), NotificationIcon::Warning, 0.5f)->show();
         });
-    };
+    }
 
     bool platformCompat(std::span<const Platform> plats) {
         for (auto const& p : plats) {
@@ -56,5 +58,5 @@ class $modify(FlicksPlayLayer, PlayLayer) {
         };
 
         return false;
-    };
+    }
 };

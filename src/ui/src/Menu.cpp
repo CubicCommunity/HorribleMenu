@@ -7,6 +7,8 @@
 
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <asp/iter.hpp>
 
 #include <Geode/Geode.hpp>
@@ -40,7 +42,7 @@ struct Menu::Impl final {
     bool safeMode = OptionManager::get()->shouldBeSafeMode();
     std::string const theme = mod->getSettingValue<std::string>("theme");
     GLubyte bdOpacity = mod->getSettingValue<GLubyte>("menu-backdrop-opacity");
-    bool fastMenu = GameManager::sharedState()->getGameVariable(GameVar::FastMenu);
+    bool forceAnim = mod->getSettingValue<bool>("menu-force-animation");
 
     CCNodeRGBA* extraMenu = nullptr;
     Label* debLabel = nullptr;
@@ -242,7 +244,7 @@ void Menu::setupSillyFilterDropdown(CCPoint const& pos) {
 }
 
 void Menu::showAnimation() {
-    if (!m_impl->fastMenu) {
+    if (m_impl->forceAnim || !m_noElasticity) {
         stopAllActions();
         m_mainLayer->stopAllActions();
 
@@ -637,7 +639,7 @@ bool Menu::init() {
                 [this, &dropdownPos](auto, bool ok) {
                     if (ok) {
                         m_impl->selectedTier = SillyTier::None;
-                        m_impl->selectedCategory;
+                        m_impl->selectedCategory.clear();
 
                         for (auto const& cat : m_impl->categoryItems) {
                             cat->setToggled(false);

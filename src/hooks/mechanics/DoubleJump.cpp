@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayerObject.hpp>
@@ -39,7 +41,7 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
         setOnGround(f->jumps < 2);
 
         return PlayerObject::pushButton(p0);
-    };
+    }
 
     void hitGround(GameObject* object, bool notFlipped) {
         if (!m_gameLayer) return PlayerObject::hitGround(object, notFlipped);
@@ -58,16 +60,16 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
 
             f->onGround = nowOnGround;
         };
-    };
+    }
 
     bool onGround() const noexcept {
         return m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
-    };
+    }
 
     void setOnGround(bool onGround) {
         m_isOnGround = onGround;
         m_isOnGround2 = onGround;
         m_isOnGround3 = onGround;
         m_isOnGround4 = onGround;
-    };
+    }
 };

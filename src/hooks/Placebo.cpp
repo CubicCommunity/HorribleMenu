@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/LevelPage.hpp>
@@ -30,7 +32,7 @@ void placeboEffect() {
     } else {
         log::trace("Placebo effect did not activate");
     };
-};
+}
 
 class $modify(PlaceboLevelPage, LevelPage) {
     HORRIBLE_DELEGATE_HOOKS(THIS_ID);
@@ -40,7 +42,7 @@ class $modify(PlaceboLevelPage, LevelPage) {
         log::trace("Placebo triggered in level page");
 
         LevelPage::onPlay(sender);
-    };
+    }
 };
 
 class $modify(PlaceboLevelInfoLayer, LevelInfoLayer) {
@@ -51,5 +53,5 @@ class $modify(PlaceboLevelInfoLayer, LevelInfoLayer) {
         log::trace("Placebo triggered in level info layer");
 
         LevelInfoLayer::onPlay(sender);
-    };
+    }
 };

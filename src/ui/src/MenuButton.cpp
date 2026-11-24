@@ -2,6 +2,8 @@
 
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <ui/Menu.h>
 
 #include <Geode/Geode.hpp>

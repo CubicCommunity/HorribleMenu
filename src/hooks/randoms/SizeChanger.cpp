@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayerObject.hpp>
@@ -37,5 +39,5 @@ class $modify(SizeChangerPlayerObject, PlayerObject) {
         };
 
         return PlayerObject::pushButton(p0);
-    };
+    }
 };

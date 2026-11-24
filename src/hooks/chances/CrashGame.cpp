@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
@@ -37,5 +39,5 @@ class $modify(CrashGamePlayLayer, PlayLayer) {
         };
 
         PlayLayer::destroyPlayer(p0, p1);
-    };
+    }
 };

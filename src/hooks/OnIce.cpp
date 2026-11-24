@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayerObject.hpp>
@@ -23,5 +25,5 @@ class $modify(OnIcePlayerObject, PlayerObject) {
     void update(float p0) {
         PlayerObject::update(p0);
         m_isOnIce = true;  // make the player always on ice. yea this is it xD
-    };
+    }
 };

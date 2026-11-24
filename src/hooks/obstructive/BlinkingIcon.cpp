@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
@@ -27,19 +29,19 @@ class $modify(BlinkingIconPlayLayer, PlayLayer) {
         };
 
         nextBlink();
-    };
+    }
 
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
         HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
-    };
+    }
 
     void nextBlink() {
         auto delay = rng::get(1.25f, 0.875f);
         log::trace("scheduling blink in {}s", delay);
 
         scheduleOnce(schedule_selector(BlinkingIconPlayLayer::blink), delay);
-    };
+    }
 
     void blink(float) {
         log::debug("Blink!");
@@ -48,7 +50,7 @@ class $modify(BlinkingIconPlayLayer, PlayLayer) {
         if (m_player2) m_player2->playSpawnEffect();
 
         nextBlink();
-    };
+    }
 };
 
 HORRIBLE_TOGGLE_MODIFY(PlayLayer, BlinkingIconPlayLayer);

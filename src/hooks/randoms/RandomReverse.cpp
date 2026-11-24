@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/GJBaseGameLayer.hpp>
@@ -32,14 +34,14 @@ class $modify(RandomReverseGJBaseGameLayer, GJBaseGameLayer) {
         if (down && button == 1) {
             if (rng::chance(m_fields->chance)) reversePlayers();
         };
-    };
+    }
 
     void resetPlayer() {
         GJBaseGameLayer::resetPlayer();
 
         unschedule(schedule_selector(RandomReverseGJBaseGameLayer::unreversePlayers));
         m_fields->reversed = false;
-    };
+    }
 
     void reversePlayers() {
         if (!m_fields->reversed) {
@@ -50,7 +52,7 @@ class $modify(RandomReverseGJBaseGameLayer, GJBaseGameLayer) {
 
             scheduleOnce(schedule_selector(RandomReverseGJBaseGameLayer::unreversePlayers), rng::get(3.75f, 1.25f));
         };
-    };
+    }
 
     void unreversePlayers(float) {
         if (m_fields->reversed) {
@@ -59,5 +61,5 @@ class $modify(RandomReverseGJBaseGameLayer, GJBaseGameLayer) {
 
             m_fields->reversed = false;
         };
-    };
+    }
 };

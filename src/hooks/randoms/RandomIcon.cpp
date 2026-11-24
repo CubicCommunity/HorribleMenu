@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/modify/PlayerObject.hpp>
@@ -32,7 +34,7 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
 
                 auto newIcon = rng::get(maxIcons);
 
-#define RANDOM_COLOR {rng::get<GLubyte>(255), rng::get<GLubyte>(255), rng::get<GLubyte>(255)}
+#define RANDOM_COLOR { rng::get<GLubyte>(255), rng::get<GLubyte>(255), rng::get<GLubyte>(255) }
 
                 setColor(RANDOM_COLOR);
                 setSecondColor(RANDOM_COLOR);
@@ -46,5 +48,5 @@ class $modify(RandomIconPlayerObject, PlayerObject) {
         };
 
         return PlayerObject::pushButton(p0);
-    };
+    }
 };

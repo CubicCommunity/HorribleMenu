@@ -1,4 +1,6 @@
 #include <Util.h>
+
+#include <rhatt/prelude.h>
 #include <horrible/API.h>
 
 #include <Geode/Geode.hpp>
@@ -29,5 +31,5 @@ class $modify(AchievementCCMenuItem, CCMenuItem) {
 
         // @geode-ignore(unknown-resource)
         if (rng::chance(m_fields->chance)) sfx::play("achievement_01.ogg");
-    };
+    }
 };

@@ -1,5 +1,7 @@
 #include <Util.h>
 
+#include <rhatt/prelude.h>
+
 #include <ui/Menu.h>
 #include <ui/MenuButton.h>
 
