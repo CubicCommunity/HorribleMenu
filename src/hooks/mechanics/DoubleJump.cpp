@@ -34,8 +34,8 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
         auto f = m_fields.self();
 
         if (p0 == PlayerButton::Jump) {
-            if (onGround()) f->jumps = 0;
-            if (!onGround()) f->jumps++;
+            if (checkGround()) f->jumps = 0;
+            if (!checkGround()) f->jumps++;
         };
 
         setOnGround(f->jumps < 2);
@@ -50,7 +50,7 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
 
         auto wasOnGround = f->onGround;
         PlayerObject::hitGround(object, notFlipped);
-        auto nowOnGround = onGround();
+        auto nowOnGround = checkGround();
 
         if (m_hasEverJumped) {
             if (nowOnGround && !wasOnGround) {
@@ -62,7 +62,7 @@ class $modify(DoubleJumpPlayerObject, PlayerObject) {
         };
     }
 
-    bool onGround() const noexcept {
+    bool checkGround() noexcept {
         return m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
     }
 

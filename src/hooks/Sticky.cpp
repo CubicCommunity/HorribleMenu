@@ -69,7 +69,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         if (!PlayerObject::init(player, ship, gameLayer, layer, playLayer)) return false;
 
         if (playLayer) {
-            m_fields->onGround = onGround();
+            m_fields->onGround = checkGround();
 
             HORRIBLE_SETUP_INTERFACE_FUNC_NAME();
         };
@@ -85,7 +85,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         if (auto label = typeinfo_cast<Label*>(sender)) label->setColor(cw::colors::white);
     }
 
-    bool onGround() {
+    bool checkGround() noexcept {
         log::trace("1: {} 2: {} 3: {} 4: {}", m_isOnGround ? "y" : "n", m_isOnGround2 ? "y" : "n", m_isOnGround3 ? "y" : "n", m_isOnGround4 ? "y" : "n");
         return m_isOnGround && m_isOnGround2 && m_isOnGround3 && m_isOnGround4;
     }
@@ -97,7 +97,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
 
         auto wasOnGround = f->onGround;
         PlayerObject::hitGround(object, notFlipped);
-        auto nowOnGround = onGround();
+        auto nowOnGround = checkGround();
 
         if (m_hasEverJumped) {
             if (nowOnGround && !wasOnGround) {
@@ -123,7 +123,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
             if (f->clickLabel) f->clickLabel->setVisible(false);
         };
 
-        f->onGround = onGround();
+        f->onGround = checkGround();
 
         return true;
     }
