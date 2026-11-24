@@ -50,7 +50,7 @@ class $modify(VelocityGJBaseGameLayer, GJBaseGameLayer) {
 
         if (auto pl = PlayLayer::get(); pl) {
             if (!f->speedMeterLabel) {
-                f->speedMeterLabel = Label::create("Speed", font::big);
+                f->speedMeterLabel = Label::create("Speed", cw::font::big);
                 f->speedMeterLabel->setScale(0.375f);
                 f->speedMeterLabel->setColor(cw::colors::gold);
                 f->speedMeterLabel->setAnchorPoint(cw::anchor::center);

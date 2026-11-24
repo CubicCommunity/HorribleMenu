@@ -65,11 +65,11 @@ bool TermsAndConditions::init(Callback&& cb) {
     m_impl->acceptBtn = Button::createWithNode(
         ButtonSprite::create(
             "Accept",
-            font::big,
+            cw::font::big,
             themes::getButtonSquareSprite(theme)
         ),
         [this](auto) {
-            sfx::play(sfx::file::good);
+            cw::sfx::play(sfx::file::good);
 
             if (m_impl->callback) m_impl->callback(true);
             if (auto pl = PlayLayer::get()) pl->resume();
@@ -83,11 +83,11 @@ bool TermsAndConditions::init(Callback&& cb) {
     auto declineBtn = Button::createWithNode(
         ButtonSprite::create(
             "Decline",
-            font::big,
+            cw::font::big,
             themes::getButtonSquareSprite(theme)
         ),
         [this](auto) {
-            sfx::play(sfx::file::bad);
+            cw::sfx::play(sfx::file::bad);
 
             if (m_impl->callback) m_impl->callback(false);
 
@@ -111,7 +111,7 @@ bool TermsAndConditions::init(Callback&& cb) {
         acceptBtnSpr->runAction(CCSpawn::createWithTwoActions(CCEaseBounceIn::create(CCFadeTo::create(cw::rng::get(10.0f, 1.25f), 255)), CCCallFuncN::create(this, callfuncN_selector(TermsAndConditions::finishBtnFade))));
     };
 
-    sfx::play(sfx::file::pop);
+    cw::sfx::play(sfx::file::pop);
 
     return true;
 }

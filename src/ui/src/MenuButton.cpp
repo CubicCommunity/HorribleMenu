@@ -11,7 +11,7 @@
 using namespace geode::prelude;
 using namespace cs::brkd::horrible::prelude;
 
-Result<CCPoint> json::Serialize<CCPoint>::fromJson(json::Value const& value) {
+Result<CCPoint> cw::json::Serialize<CCPoint>::fromJson(cw::json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
 
     GEODE_UNWRAP_INTO(float x, value["x"].asDouble());
@@ -25,8 +25,8 @@ Result<CCPoint> json::Serialize<CCPoint>::fromJson(json::Value const& value) {
     );
 }
 
-json::Value json::Serialize<CCPoint>::toJson(CCPoint const& value) {
-    auto obj = json::Value();
+cw::json::Value cw::json::Serialize<CCPoint>::toJson(CCPoint const& value) {
+    auto obj = cw::json::Value();
     obj["x"] = value.x;
     obj["y"] = value.y;
 

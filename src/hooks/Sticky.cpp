@@ -44,7 +44,7 @@ class $modify(StickyPlayerObject, PlayerObject) {
         };
 
         if (auto pl = PlayLayer::get(); pl && !f->clickLabel && !m_isSecondPlayer) {
-            f->clickLabel = Label::create("Press again to un-stick!", font::big);
+            f->clickLabel = Label::create("Press again to un-stick!", cw::font::big);
             f->clickLabel->setID("sticky-alert"_spr);
             f->clickLabel->setScale(0.625f);
             f->clickLabel->setAlignment(Label::Alignment::Center);

@@ -34,7 +34,7 @@ $on_mod(Loaded) {
     };
 }
 
-Result<LeadDevIcon> json::Serialize<LeadDevIcon>::fromJson(json::Value const& value) {
+Result<LeadDevIcon> cw::json::Serialize<LeadDevIcon>::fromJson(cw::json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
 
     GEODE_UNWRAP_INTO(std::string id, value["id"].asString());
@@ -58,8 +58,8 @@ Result<LeadDevIcon> json::Serialize<LeadDevIcon>::fromJson(json::Value const& va
     );
 }
 
-json::Value json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
-    auto obj = json::Value();
+cw::json::Value cw::json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
+    auto obj = cw::json::Value();
 
     obj["id"] = value.id;
     obj["name"] = value.name;
@@ -72,7 +72,7 @@ json::Value json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
     return obj;
 }
 
-Result<LicenseData> json::Serialize<LicenseData>::fromJson(json::Value const& value) {
+Result<LicenseData> cw::json::Serialize<LicenseData>::fromJson(cw::json::Value const& value) {
     if (!value.isObject()) return Err("Expected an object");
 
     GEODE_UNWRAP_INTO(std::string key, value["key"].asString());
@@ -88,8 +88,8 @@ Result<LicenseData> json::Serialize<LicenseData>::fromJson(json::Value const& va
     );
 }
 
-json::Value json::Serialize<LicenseData>::toJson(LicenseData const& value) {
-    auto obj = json::Value();
+cw::json::Value cw::json::Serialize<LicenseData>::toJson(LicenseData const& value) {
+    auto obj = cw::json::Value();
 
     obj["key"] = value.key;
     obj["name"] = value.name;
@@ -117,7 +117,7 @@ bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int c
 
     auto labelBtn = Button::createWithLabel(
         name,
-        font::gold,
+        cw::font::gold,
         [account](auto) {
             if (auto page = ProfilePage::create(account, false)) page->show();
         }
@@ -157,7 +157,7 @@ bool MenuCredits::init(ZStringView theme) {
 
     addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
-    auto leadDevLabel = Label::create("Lead Developers", font::big);
+    auto leadDevLabel = Label::create("Lead Developers", cw::font::big);
     leadDevLabel->setID("lead-dev-label");
     leadDevLabel->setScale(0.425f);
     leadDevLabel->setAnchorPoint({ 0, 0.5 });
@@ -220,7 +220,7 @@ bool MenuCredits::init(ZStringView theme) {
             "breakeode-support-btn",
             "Need Help?",
             [](auto) {
-                createQuickPopup(
+                cw::showAlert(
                     "Breakeode Support",
                     "If <cg>Horrible Menu</c> <cy>is causing issues</c>, you may reach out to the <cl>Breakeode</c> development team by <cy>creating a support ticket in the Discord server</c>. If you have any other questions, feel free to ask!\n\n"
                     "Would you like to join <cl>Breakeode</c>'s <cj>support Discord server</c>?",
@@ -257,7 +257,7 @@ bool MenuCredits::init(ZStringView theme) {
         auto btn = Button::createWithNode(
             ButtonSprite::create(
                 b.label.c_str(),
-                font::gold,
+                cw::font::gold,
                 themes::getButtonSquareSprite(theme)
             ),
             std::move(b.callback)
@@ -300,11 +300,11 @@ bool MenuCredits::init(ZStringView theme) {
     auto websiteBtn = Button::createWithNode(
         ButtonSprite::create(
             "Website",
-            font::big,
+            cw::font::big,
             themes::getButtonSquareSprite(theme)
         ),
         [](auto) {
-            createQuickPopup(
+            cw::showAlert(
                 "Breakeode",
                 "Visit <cl>Breakeode</c>'s official website?",
                 "Cancel",
@@ -366,7 +366,7 @@ bool MenuCredits::init(ZStringView theme) {
                     )
                         ->show();
                 } else {
-                    createQuickPopup(
+                    cw::showAlert(
                         "Integrations",
                         str,
                         "OK",

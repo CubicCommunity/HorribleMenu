@@ -92,7 +92,7 @@ class $modify(RealFloatingPlayLayer, PlayLayer) {
 
         m_uiLayer->addChild(f->theBtn, CW_HIGHEST_Z);
 
-        sfx::play(sfx::file::click);
+        cw::sfx::play(sfx::file::click);
 
         f->theBtn->runAction(
             CCSequence::createWithTwoActions(

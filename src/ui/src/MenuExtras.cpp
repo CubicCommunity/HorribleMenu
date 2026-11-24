@@ -35,7 +35,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //     m_mainLayer->addChild(m_topicInput, 1);
 
-//     m_descriptionInput = TextInput::create(mainLayerSize.width - 25.0f, "Describe your idea in more detail...", font::chat);
+//     m_descriptionInput = TextInput::create(mainLayerSize.width - 25.0f, "Describe your idea in more detail...", cw::font::chat);
 //     m_descriptionInput->setID("description-input");
 //     m_descriptionInput->setMaxCharCount(512);
 //     m_descriptionInput->setCommonFilter(CommonFilter::Any);
@@ -67,13 +67,13 @@ using namespace cs::brkd::horrible::prelude;
 //     auto submitBtn = Button::createWithNode(
 //         ButtonSprite::create(
 //             "Submit",
-//             font::gold,
+//             cw::font::gold,
 //             themes::getButtonSquareSprite(theme),
 //             0.875f),
 //         [this](Button* sender) {
 //             auto elapsed = asp::Instant::now().durationSince(s_lastSuggest).seconds();
 //             if (elapsed < g_suggestWait) {
-//                 createQuickPopup(
+//                 cw::showAlert(
 //                     "Slow Down!",
 //                     fmt::format("We appreciate your enthusiasm, but you must <co>wait {} seconds before sending your next suggestion</c>.", g_suggestWait - elapsed),
 //                     "OK",
@@ -130,15 +130,15 @@ using namespace cs::brkd::horrible::prelude;
 //                         toggleBack(s);
 //                     };
 
-//                     auto topic = str::trim(s->m_topicInput->getString());
+//                     auto topic = cw::str::trim(s->m_topicInput->getString());
 //                     if (topic.empty()) return fallback("Topic field cannot be empty");
 //                     if (topic.size() > 48) return fallback("Topic text exceeds 48 characters");
 
-//                     auto desc = str::trim(s->m_descriptionInput->getString());
+//                     auto desc = cw::str::trim(s->m_descriptionInput->getString());
 //                     if (desc.empty()) return fallback("Description field cannot be empty");
 //                     if (desc.size() > 512) return fallback("Description text exceeds 512 characters");
 
-//                     auto reqJson = json::Value();
+//                     auto reqJson = cw::json::Value();
 //                     reqJson["topic"] = topic;
 //                     reqJson["description"] = desc;
 
@@ -210,7 +210,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //         m_mainLayer->addChildAtPosition(m_discordCell, Anchor::BottomLeft, {10.0f, 10.0f});
 
-//         m_linkLabel = Label::create("Playing as...", font::chat);
+//         m_linkLabel = Label::create("Playing as...", cw::font::chat);
 //         m_linkLabel->setScale(0.75f);
 //         m_linkLabel->setAnchorPoint({0, 0});
 //         m_linkLabel->setPosition({m_discordCell->getPositionX(), m_discordCell->getPositionY() + m_discordCell->getScaledContentHeight() + 5.0f});
@@ -234,7 +234,7 @@ using namespace cs::brkd::horrible::prelude;
 //         m_linkBtn = Button::createWithNode(
 //             ButtonSprite::create(
 //                 "Link Account",
-//                 font::gold,
+//                 cw::font::gold,
 //                 themes::getButtonSquareSprite(mod->getSettingValue<std::string>("theme")),
 //                 0.875f),
 //             [this, hideBtns](auto) {
@@ -290,11 +290,11 @@ using namespace cs::brkd::horrible::prelude;
 //     auto cubicBtn = Button::createWithNode(
 //         ButtonSprite::create(
 //             "Join Cubic Studios",
-//             font::big,
+//             cw::font::big,
 //             themes::getButtonSquareSprite(theme),
 //             0.875f),
 //         [](auto) {
-//             createQuickPopup(
+//             cw::showAlert(
 //                 "Discord",
 //                 "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
 //                 "Cancel",
@@ -312,11 +312,11 @@ using namespace cs::brkd::horrible::prelude;
 //     auto breakeodeBtn = Button::createWithNode(
 //         ButtonSprite::create(
 //             "Join Breakeode",
-//             font::gold,
+//             cw::font::gold,
 //             themes::getButtonSquareSprite(theme),
 //             0.875f),
 //         [](auto) {
-//             createQuickPopup(
+//             cw::showAlert(
 //                 "Discord",
 //                 "Join <cc>Breakeode</c>'s <cj>support Discord server</c>?",
 //                 "Cancel",
@@ -351,8 +351,8 @@ using namespace cs::brkd::horrible::prelude;
 // };
 
 // std::string MenuDiscordCell::normalizeAvatarURL(std::string url) const {
-//     if (!mods::isImagePlus() && str::endsWith(url, "webp")) {
-//         str::replaceIP(url, ".webp", ".jpg");
+//     if (!mods::isImagePlus() && cw::str::endsWith(url, "webp")) {
+//         cw::str::replaceIP(url, ".webp", ".jpg");
 //     } else {
 //         url = fmt::format("{}?animated=true", url);  // nitro users lol, shouldnt affect static pfps
 //     };
@@ -397,7 +397,7 @@ using namespace cs::brkd::horrible::prelude;
 
 //     auto label = Button::createWithLabel(
 //         fmt::format("@{}", profile.username),
-//         font::big,
+//         cw::font::big,
 //         [name = profile.username](auto) {
 //             clipboard::write(name);
 //             Notification::create("Copied to clipboard", NotificationIcon::Success)->show();
@@ -498,7 +498,7 @@ using namespace cs::brkd::horrible::prelude;
 //                 if (as->isSupporter()) {
 //                     ProfilePage::create(argon::getGameAccountData().accountId, false)->show();
 //                 } else {
-//                     createQuickPopup(
+//                     cw::showAlert(
 //                         "Ko-fi",
 //                         "Visit <cc>Breakeode</c>'s <cd>Ko-fi page</c>?",
 //                         "Cancel",
@@ -524,7 +524,7 @@ using namespace cs::brkd::horrible::prelude;
 //                 s->m_linkBtn = Button::createWithNode(
 //                     ButtonSprite::create(
 //                         "Link Account",
-//                         font::gold,
+//                         cw::font::gold,
 //                         themes::getButtonSquareSprite(theme),
 //                         0.875f),
 //                     [theme](auto) {
@@ -540,7 +540,7 @@ using namespace cs::brkd::horrible::prelude;
 //                                            ? fmt::format("Discord account <cj>@{}</c> <cg>authorized & linked</c>!", std::move(res).unwrap().username)
 //                                            : "Discord account <cr>not linked</c>.\nThis is <cy>required to receive supporter perks</c>!";
 
-//             s->m_linkLabel = Label::createRich(std::move(linkLabelTxt), font::chat);
+//             s->m_linkLabel = Label::createRich(std::move(linkLabelTxt), cw::font::chat);
 //             s->m_linkLabel->setScale(0.75f);
 //             s->m_linkLabel->setAnchorPoint({0.5, 1});
 //             s->m_linkLabel->setAlignment(Label::Alignment::Center);
@@ -568,7 +568,7 @@ using namespace cs::brkd::horrible::prelude;
 //     auto discordBtn = Button::createWithSpriteFrameName(
 //         "gj_discordIcon_001.png",
 //         [](auto) {
-//             createQuickPopup(
+//             cw::showAlert(
 //                 "Discord",
 //                 "Join <cc>Breakeode</c>'s <cj>support Discord server</c>?",
 //                 "Cancel",

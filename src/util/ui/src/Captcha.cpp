@@ -68,7 +68,7 @@ bool Captcha::init() {
 
     m_bgSprite->setZOrder(-9);
 
-    auto label = Label::create("You're playing almost too well... Are you sure you're not a robot?", font::chat);
+    auto label = Label::create("You're playing almost too well... Are you sure you're not a robot?", cw::font::chat);
     label->setID("message");
     label->setScale(0.75f);
     label->setAlignment(Label::Alignment::Center);
@@ -103,7 +103,7 @@ bool Captcha::init() {
 
     m_mainLayer->addChild(bg);
 
-    auto hintID = Label::create(m_impl->expected.c_str(), font::big);
+    auto hintID = Label::create(m_impl->expected, cw::font::big);
     hintID->setID("hint-id");
     hintID->setScale(0.5f);
     hintID->setAnchorPoint(cw::anchor::center);
@@ -113,7 +113,7 @@ bool Captcha::init() {
 
     m_mainLayer->addChild(hintID, 1);
 
-    auto hint = SimpleTextArea::create("Press all the buttons with", font::chat, 0.5f, bg->getScaledContentWidth() * 0.875f);
+    auto hint = SimpleTextArea::create("Press all the buttons with", cw::font::chat, 0.5f, bg->getScaledContentWidth() * 0.875f);
     hint->setID("hint");
     hint->setColor(to4B(cw::colors::yellow));
     hint->setAlignment(kCCTextAlignmentCenter);
@@ -124,7 +124,7 @@ bool Captcha::init() {
     auto refreshBtn = Button::createWithNode(
         ButtonSprite::create(
             "Refresh",
-            font::big,
+            cw::font::big,
             themes::getButtonSquareSprite(theme)
         ),
         [this](auto) {
@@ -142,7 +142,7 @@ bool Captcha::init() {
         [this](auto) {
             unscheduleUpdate();
 
-            createQuickPopup(
+            cw::showAlert(
                 "Help",
                 "Press on the images that correspond to the provided captcha hint. It is purposefully obscured to make this sillier.\n\n<cc>Refresh the captcha if you can't find any button that matches the hint.</c>",
                 "OK",
@@ -160,7 +160,7 @@ bool Captcha::init() {
 
     scheduleUpdate();
 
-    sfx::play(sfx::file::pop);
+    cw::sfx::play(sfx::file::pop);
 
     return true;
 }
@@ -190,7 +190,7 @@ void Captcha::setSuccess(bool v) {
 
     symbol->runAction(CCSequence::createWithTwoActions(CCEaseSineOut::create(CCScaleTo::create(0.0875f, 2.75f)), CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
-    sfx::play(m_impl->success ? sfx::file::good : sfx::file::bad);
+    cw::sfx::play(m_impl->success ? sfx::file::good : sfx::file::bad);
     scheduleOnce(schedule_selector(Captcha::callAfterFeedback), 1.25f);
 }
 
@@ -200,7 +200,7 @@ void Captcha::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        sfx::play(sfx::file::count);
+        cw::sfx::play(sfx::file::count);
         m_impl->timeDt = 0.0f;
     };
 
@@ -235,7 +235,7 @@ void RobotVerifier::addNewBtn() {
     auto btn = Button::createWithSpriteFrameName(
         btnData.second,
         [this, &id = btnData.first](auto sender) {
-            sfx::play(sfx::file::click);
+            cw::sfx::play(sfx::file::click);
 
             if (id == m_expected) {
                 validateBtns(sender);

@@ -112,7 +112,7 @@ class $modify(LeapGJBaseGameLayer, GJBaseGameLayer) {
 
             GJBaseGameLayer::handleButton(true, button, isPlayer1);
 
-            if (f->charge >= 100.0f) sfx::play(sfx::file::pop);
+            if (f->charge >= 100.0f) cw::sfx::play(sfx::file::pop);
 
             schedule(schedule_selector(LeapGJBaseGameLayer::decharge));
 

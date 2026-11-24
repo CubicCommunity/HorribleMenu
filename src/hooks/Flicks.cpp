@@ -45,10 +45,10 @@ class $modify(FlicksPlayLayer, PlayLayer) {
 
         queueInMainThread([o]() {
             o->isEnabled() ? o->disable() : o->enable();
-            log::warn("Flicked option {} {} due to flicks", o->getID(), str::isOnOff(o->isEnabled()));
+            log::warn("Flicked option {} {} due to flicks", o->getID(), cw::str::isOnOff(o->isEnabled()));
 
-            sfx::play(sfx::file::bad);
-            Notification::create(fmt::format("Flicked {} ({}) {}", o->getName(), o->getCategory(), str::isOnOff(o->isEnabled())).c_str(), NotificationIcon::Warning, 0.5f)->show();
+            cw::sfx::play(sfx::file::bad);
+            Notification::create(fmt::format("Flicked {} ({}) {}", o->getName(), o->getCategory(), cw::str::isOnOff(o->isEnabled())), NotificationIcon::Warning, 0.5f)->show();
         });
     }
 

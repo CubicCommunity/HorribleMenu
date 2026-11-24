@@ -94,7 +94,7 @@ $on_game(Loaded) {
                     Notification::create("Copied list to clipboard", NotificationIcon::Success)->show();
                 };
             } else if (buttonKey == "disable-cheats") {
-                createQuickPopup(
+                cw::showAlert(
                     "Disable All Cheats",
                     "Are you sure you want to <cr>disable all options marked as cheats</c>?",
                     "Cancel",

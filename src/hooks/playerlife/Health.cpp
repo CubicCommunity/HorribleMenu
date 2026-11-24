@@ -56,7 +56,7 @@ class $modify(HealthPlayLayer, PlayLayer) {
 
         auto hp = fmt::format("HP\n{}%", static_cast<uint8_t>(f->health));
         if (!f->healthLabel) {
-            f->healthLabel = Label::create(std::move(hp), font::big);
+            f->healthLabel = Label::create(std::move(hp), cw::font::big);
             f->healthLabel->setColor(cw::colors::red);
             f->healthLabel->setAnchorPoint({ 0.0f, 1.0f });
             f->healthLabel->setPosition({ 2.0f, (getScaledContentHeight() / 2.0f) - (f->healthBar->getScaledContentWidth() / 2.0f) - 1.25f });

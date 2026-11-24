@@ -26,7 +26,7 @@ namespace cs::brkd::horrible {
         static Menu* s_inst;
 
         void setupSafeModeNode(bool safeMode);
-        void setupImageBackground(fs::PathView path);
+        void setupImageBackground(cw::fs::PathView path);
         void setupSillyFilterDropdown(cocos2d::CCPoint const& pos);
 
         void showAnimation();

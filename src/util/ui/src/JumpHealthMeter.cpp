@@ -53,7 +53,7 @@ bool JumpHealthMeter::init(Callback&& cb) {
 
     addChildAtPosition(m_impl->healthMeter, Anchor::Bottom, { 0.0f, 3.75f });
 
-    m_impl->healthLabel = Label::createRich(fmt::format("{}{}</c> Inputs Remaining", m_impl->getColorForJumps(m_impl->jumps), m_impl->jumps), font::big);
+    m_impl->healthLabel = Label::createRich(fmt::format("{}{}</c> Inputs Remaining", m_impl->getColorForJumps(m_impl->jumps), m_impl->jumps), cw::font::big);
     m_impl->healthLabel->setID("label");
     m_impl->healthLabel->setScale(0.375f);
 

@@ -130,7 +130,7 @@ bool MathQuiz::init() {
 
         problemText = fmt::format("{} {} {}", m_impl->numFirst, operation, m_impl->numSecond);
 
-        auto equalsLabel = Label::create("= ?", font::gold);
+        auto equalsLabel = Label::create("= ?", cw::font::gold);
         equalsLabel->setID("equals-label");
         equalsLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
         equalsLabel->setAlignment(Label::Alignment::Center);
@@ -140,7 +140,7 @@ bool MathQuiz::init() {
     };
 
     // reuse winSize declared above
-    auto problemLabel = Label::create(problemText.c_str(), font::big);
+    auto problemLabel = Label::create(std::move(problemText), cw::font::big);
     problemLabel->setID("problem-label");
     problemLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
     problemLabel->setAlignment(Label::Alignment::Center);
@@ -215,7 +215,7 @@ bool MathQuiz::init() {
                 fmt::format("{}", m_impl->answers[i]).c_str(),
                 80.0f,
                 true,
-                font::big,
+                cw::font::big,
                 themes::getButtonSquareSprite(theme),
                 0,
                 0.825f
@@ -230,7 +230,7 @@ bool MathQuiz::init() {
 
                 auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-                auto feedbackLabel = Label::create(correct ? "Correct!" : "Incorrect!", font::gold);
+                auto feedbackLabel = Label::create(correct ? "Correct!" : "Incorrect!", cw::font::gold);
                 feedbackLabel->setID("feedback-label");
                 feedbackLabel->setScale(0.125f);
                 feedbackLabel->setColor(correct ? cw::colors::green : cw::colors::red);
@@ -254,7 +254,7 @@ bool MathQuiz::init() {
 
     scheduleUpdate();
 
-    sfx::play(sfx::file::pop);
+    cw::sfx::play(sfx::file::pop);
 
     return true;
 }
@@ -265,7 +265,7 @@ void MathQuiz::setCallback(Callback&& cb) {
 
 void MathQuiz::setCorrect(bool v) {
     m_impl->correct = v;
-    sfx::play(v ? sfx::file::good : sfx::file::bad);
+    cw::sfx::play(v ? sfx::file::good : sfx::file::bad);
 }
 
 bool MathQuiz::hasAnswer(int answer) const noexcept {
@@ -287,7 +287,7 @@ void MathQuiz::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        sfx::play(sfx::file::count);
+        cw::sfx::play(sfx::file::count);
         m_impl->timeDt = 0.0f;
     };
 
@@ -307,7 +307,7 @@ void MathQuiz::update(float dt) {
 
         if (m_impl->answerMenu) m_impl->answerMenu->removeFromParentAndCleanup(true);
 
-        auto feedbackLabel = Label::create("Time's Up!", font::gold);
+        auto feedbackLabel = Label::create("Time's Up!", cw::font::gold);
         feedbackLabel->setID("feedback-label");
         feedbackLabel->setColor(cw::colors::red);
         feedbackLabel->setAnchorPoint(cw::anchor::center);

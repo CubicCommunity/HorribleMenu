@@ -18,7 +18,7 @@ bool RandomAd::init() {
     setTitle("Sponsored");
     setCloseButtonSpr(themes::createThemeCircleSprite(themes::getCircleBaseColor(theme)));
 
-    auto label = Label::create("Check out this cool level we found!", font::chat);
+    auto label = Label::create("Check out this cool level we found!", cw::font::chat);
     label->setID("message");
     label->setAlignment(Label::Alignment::Center);
     label->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, m_mainLayer->getScaledContentHeight() - 37.5f });
@@ -46,7 +46,7 @@ bool RandomAd::init() {
     auto playBtn = Button::createWithNode(
         ButtonSprite::create(
             "Play!",
-            font::big,
+            cw::font::big,
             themes::getButtonSquareSprite(theme)
         ),
         [this, loading = WeakRef(playBtnLoading)](Button* sender) {
@@ -71,7 +71,7 @@ bool RandomAd::init() {
     m_mainLayer->addChild(playBtn, 3);
     m_mainLayer->addChild(playBtnLoading, 2);
 
-    sfx::play(sfx::file::pop);
+    cw::sfx::play(sfx::file::pop);
 
     return true;
 }

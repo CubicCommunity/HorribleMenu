@@ -41,10 +41,10 @@ class $modify(MockMenuLayer, MenuLayer) {
             if (mockConfig.isOk()) {
                 log::debug("Path is ok!");
 
-                auto const mockConfigUnwr = mockConfig.unwrapOr(json::Value());
+                auto const mockConfigUnwr = mockConfig.unwrapOr(cw::json::Value());
 
                 auto const lvlUnwr = mockConfigUnwr.begin();
-                auto const lvl = lvlUnwr->get(cw::rng::get(lvlUnwr->size() - 1)).unwrapOr(json::Value());
+                auto const lvl = lvlUnwr->get(cw::rng::get(lvlUnwr->size() - 1)).unwrapOr(cw::json::Value());
 
                 auto const id = lvl.getKey().value_or("");
                 auto percent = lvl.asInt().unwrapOr(90);
@@ -67,9 +67,7 @@ class $modify(MockMenuLayer, MenuLayer) {
                         if (res.isOk()) {
                             log::info("Sprite loaded successfully from save dir PNG");
 
-                            auto const percLabelText = fmt::format("{}%", percent);
-
-                            auto percLabel = Label::create(percLabelText.c_str(), font::big);
+                            auto percLabel = Label::create(fmt::format("{}%", percent), cw::font::big);
                             percLabel->setID("percentage");
                             percLabel->setPosition(ss->getScaledContentSize() / 2.0f);
                             percLabel->ignoreAnchorPointForPosition(false);
@@ -140,18 +138,18 @@ class $modify(MockPlayLayer, PlayLayer) {
                     auto const mockConfigPath = mod->getSaveDir() / "mock.json";
                     auto const mockConfig = file::readJson(mockConfigPath);  // get the saved fails to mock the player with :)
 
-                    auto toWrite = json::Value();  // what we're gonna write in the mock.json file
+                    auto toWrite = cw::json::Value();  // what we're gonna write in the mock.json file
 
                     if (mockConfig.isOk()) {
                         // unwrap the whole thing
-                        auto mockConfigUnwr = mockConfig.unwrapOr(json::Value());
+                        auto mockConfigUnwr = mockConfig.unwrapOr(cw::json::Value());
 
                         // overwrite this field (or add it) with the percent
                         mockConfigUnwr[numToString(id)] = percentage;
 
                         toWrite = mockConfigUnwr;
                     } else {
-                        toWrite = json::makeObject({ { numToString(id), percentage } });
+                        toWrite = cw::json::makeObject({ { numToString(id), percentage } });
                     };
 
                     if (!toWrite.isNull()) {
@@ -187,7 +185,7 @@ class $modify(MockPlayLayer, PlayLayer) {
 
         if (mockConfig.isOk()) {
             log::trace("Clearing mock record for {}", id);
-            auto mockConfigUnwr = mockConfig.unwrapOr(json::Value());
+            auto mockConfigUnwr = mockConfig.unwrapOr(cw::json::Value());
             mockConfigUnwr[numToString(id)].clear();
 
             auto const mockJson = file::writeToJson(mockConfigPath, mockConfigUnwr);

@@ -25,7 +25,7 @@ class $modify(FakeDeathPlayLayer, PlayLayer) {
     void destroyPlayer(PlayerObject* player, GameObject* game) {
         if (game == m_anticheatSpike) return PlayLayer::destroyPlayer(player, game);
 
-        sfx::play(sfx::file::bad);
+        cw::sfx::play(sfx::file::bad);
         GJBaseGameLayer::shakeCamera(1.0f, 2.0f, 1.0f);
 
         playDeath(m_player1);

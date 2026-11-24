@@ -65,7 +65,7 @@ class $modify(ConfettiPlayLayer, PlayLayer) {
     void confetti(float) {
         log::debug("unleashing confetti!");
 
-        sfx::play(sfx::file::bad);
+        cw::sfx::play(sfx::file::bad);
         shakeCamera(0.875f, 2.5f, 0.00875f);
 
         for (int i = 0; i < cw::rng::get(150, 75); i++) createConfetti();

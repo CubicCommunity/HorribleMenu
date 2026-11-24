@@ -72,5 +72,5 @@ std::vector<std::string> options::getAllCategories() {
 }
 
 bool options::doesCategoryExist(ZStringView category) {
-    return str::containsAny(category, getAllCategories());
+    return cw::str::containsAny(category, getAllCategories());
 }

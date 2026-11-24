@@ -48,7 +48,7 @@ namespace cs::brkd::horrible::hooks {
     static void toggleSafeModeHooks(bool value) {
         for (auto const& hook : g_safeModeHooks) {
             if (auto h = hook.lock()) {
-                log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), str::isOnOff(value));
+                log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), cw::str::isOnOff(value));
                 (void)h->toggle(value);
             };
         };
@@ -87,7 +87,7 @@ $on_game(Loaded) {
 
             for (auto const& hook : g_floatingBtnHooks) {
                 if (auto h = hook.lock()) {
-                    log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), str::isOnOff(value));
+                    log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), cw::str::isOnOff(value));
                     (void)h->toggle(value);
                 };
             };
@@ -97,7 +97,7 @@ $on_game(Loaded) {
     OptionCheatingEvent()
         .listen([](bool cheating) {
             if (mod->getSettingValue<bool>(setting::DynamicSafeMode)) {
-                log::warn("Dynamic safe mode is now {}", str::isOnOff(cheating));
+                log::warn("Dynamic safe mode is now {}", cw::str::isOnOff(cheating));
                 hooks::toggleSafeModeHooks(cheating);
             };
         })
@@ -138,7 +138,7 @@ class $modify(HMEndLevelLayer, EndLevelLayer) {
             auto isSpriteSecret = cw::rng::fast() <= 5;
 
             auto btn = Button::createWithSpriteFrameName(themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default), [](auto) {
-                createQuickPopup(
+                cw::showAlert(
                     "Safe Mode",
                     "<cj>Safe Mode</c> is <cg>enabled</c> and your progress <cr>has not</c> been saved.",
                     "OK",

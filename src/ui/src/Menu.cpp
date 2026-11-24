@@ -2,7 +2,7 @@
 
 #include "../MenuOptionCell.hpp"
 #include "../MenuCredits.hpp"
-#include "../MenuExtras.hpp"
+// #include "../MenuExtras.hpp"
 #include "../MenuFilterCells.hpp"
 
 #include <Util.h>
@@ -60,7 +60,7 @@ struct Menu::Impl final {
         optionList->m_contentLayer->removeAllChildren();
 
         auto useCategory = !category.empty() && options::doesCategoryExist(category);
-        auto searchLower = str::toLower(searchText);
+        auto searchLower = cw::str::toLower(searchText);
 
         auto list = asp::iter::consume(optList)
                         .filter([this, tier, category, useCategory, search = std::move(searchLower)](SharedOption const& o) {
@@ -68,7 +68,7 @@ struct Menu::Impl final {
                             auto categoryMatches = !useCategory || (o->getCategory() == category);
 
                             auto searchMatches = true;
-                            if (!search.empty()) searchMatches = str::contains(str::toLower(o->getName()), search) || str::contains(str::toLower(o->getID()), search) || str::contains(str::toLower(o->getCategory()), search);
+                            if (!search.empty()) searchMatches = cw::str::contains(cw::str::toLower(o->getName()), search) || cw::str::contains(cw::str::toLower(o->getID()), search) || cw::str::contains(cw::str::toLower(o->getCategory()), search);
 
                             auto onlineCompat = o->isOnline() ? hasInternet || !hideIfOffline : true;
 
@@ -115,8 +115,8 @@ struct Menu::Impl final {
         optionList->scrollToTop();
     }
 
-    Label* createFilterLabel(ZStringView text, std::string id, CCPoint const& pos) {
-        auto label = Label::create(text.c_str(), font::big);
+    Label* createFilterLabel(std::string text, std::string id, CCPoint const& pos) {
+        auto label = Label::create(std::move(text), cw::font::big);
         label->setID(std::move(id));
         label->setScale(0.375f);
         label->setAnchorPoint(cw::anchor::center);
@@ -138,7 +138,7 @@ void Menu::setupSafeModeNode(bool safeMode) {
 
         m_impl->safeModeContainer->addChild(icon);
 
-        auto label = Label::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", font::big);
+        auto label = Label::create(safeMode ? "Safe Mode ON" : "Safe Mode OFF", cw::font::big);
         label->setScale(0.325f);
         label->setColor(safeMode ? cw::colors::green : cw::colors::red);
 
@@ -147,7 +147,7 @@ void Menu::setupSafeModeNode(bool safeMode) {
         auto infoBtn = Button::createWithSpriteFrameName(
             cw::sprites::info,
             [safeMode](auto) {
-                createQuickPopup(
+                cw::showAlert(
                     "Safe Mode",
                     fmt::format("{}\n\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in gameplay</c>.\n\n<cy>You can toggle Safe Mode in settings.</c>", safeMode ? "Currently <cc>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cf>progress on levels WILL save</c>!"),
                     "OK",
@@ -167,10 +167,10 @@ void Menu::setupSafeModeNode(bool safeMode) {
     if (m_impl->safeMode != safeMode) m_impl->safeMode = safeMode;
 }
 
-void Menu::setupImageBackground(fs::PathView path) {
+void Menu::setupImageBackground(cw::fs::PathView path) {
     cue::resetNode(m_impl->themeBackground);
 
-    if (fs::exists(path)) {
+    if (cw::fs::exists(path)) {
         if (m_impl->themeBgContainer) {
             m_impl->themeBackground = LazySprite::create(m_bgSprite->getScaledContentSize(), false);
             m_impl->themeBackground->setID("theme-bg");
@@ -327,7 +327,7 @@ bool Menu::init() {
     std::vector<std::string> sortedCats(cats.begin(), cats.end());
 
     std::sort(sortedCats.begin(), sortedCats.end(), [](auto const& a, auto const& b) {
-        return str::toLower(a) < str::toLower(b);
+        return cw::str::toLower(a) < cw::str::toLower(b);
     });
 
     auto misc = std::find_if(sortedCats.begin(), sortedCats.end(), [](auto const& s) {
@@ -406,7 +406,7 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->nothingLabel, 9);
 
     // add search bar
-    m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", font::big);
+    m_impl->searchInput = TextInput::create(m_impl->optionList->getScaledContentWidth() + 11.25f, "Search...", cw::font::big);
     m_impl->searchInput->setID("search-input");
     m_impl->searchInput->setAnchorPoint({ 0, 0.5 });
     m_impl->searchInput->setPosition({ 10.0f, mainLayerSize.height - 51.25f });
@@ -433,7 +433,7 @@ bool Menu::init() {
 
     m_mainLayer->addChild(filterContainerBg);
 
-    auto filterContainerLabel = Label::create("Filters", font::gold);
+    auto filterContainerLabel = Label::create("Filters", cw::font::gold);
     filterContainerLabel->setID("filter-container-label");
     filterContainerLabel->setScale(0.375f);
     filterContainerLabel->setAnchorPoint({ 0.5, 0 });
@@ -456,7 +456,7 @@ bool Menu::init() {
 
     auto filterHint = Label::create(
         "Use different filters to search for certain options faster. Press the pin icon on an option cell to pin it to the top of the list.",
-        font::chat
+        cw::font::chat
     );
     filterHint->setID("filter-hint");
     filterHint->setScale(0.5f);
@@ -514,7 +514,7 @@ bool Menu::init() {
                     NOTIFY_INTERNET_IF_OFFLINE;
 
                     // if (!argon::signedIn()) {
-                    createQuickPopup(
+                    cw::showAlert(
                         "Discord",
                         "Join the <cf>Cubic Studios</c> <cj>official community Discord server</c>?",
                         "Cancel",
@@ -574,7 +574,7 @@ bool Menu::init() {
     m_mainLayer->addChild(m_impl->safeModeContainer, 9);
 
     setupSafeModeNode(m_impl->safeMode);
-    setupImageBackground(mod->getSettingValue<fs::Path>("theme-background"));
+    setupImageBackground(mod->getSettingValue<cw::fs::Path>("theme-background"));
 
     auto loader = Loader::get();
 
@@ -631,7 +631,7 @@ bool Menu::init() {
     auto resetFiltersBtn = Button::createWithNode(
         resetFiltersBtnSpr,
         [this, dropdownPos](auto) {
-            createQuickPopup(
+            cw::showAlert(
                 "Reset Filters",
                 "Would you like to <cr>reset all search filters</c>?\n<cy>This will not clear your pins.</c>",
                 "Cancel",

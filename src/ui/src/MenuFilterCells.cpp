@@ -18,8 +18,6 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
 
     if (!CCMenu::init()) return false;
 
-    // lol
-    setID(str::join(asp::iter::split(str::filter(str::toLower(m_category), filterId), " ").collect(), "-"));
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
@@ -50,7 +48,7 @@ bool MenuCategoryFilterCell::init(CCSize const& size, std::string category) {
     addChild(m_toggler);
 
     // name of the joke
-    auto nameLabel = Label::create(m_category.c_str(), font::gold);
+    auto nameLabel = Label::create(m_category, cw::font::gold);
     nameLabel->setID("name-label");
     nameLabel->setScale(0.375f);
     nameLabel->setLimitLabelWidth(getScaledContentWidth() - 35.0f, 0.375f, 0.125f);
@@ -86,7 +84,7 @@ MenuCategoryFilterCell* MenuCategoryFilterCell::create(CCSize const& size, std::
     return nullptr;
 }
 
-bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string id, ZStringView label, ccColor3B const& color) {
+bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string id, std::string label, ccColor3B const& color) {
     m_silly = silly;
 
     if (!CCNode::init()) return false;
@@ -107,7 +105,7 @@ bool MenuSillyFilterCell::init(CCSize const& size, SillyTier silly, std::string 
     );
     bg->setColor(color);
 
-    auto tierLabel = Label::create(label.c_str(), font::big);
+    auto tierLabel = Label::create(std::move(label), cw::font::big);
     tierLabel->setID("label");
     tierLabel->setScale(0.5f);
     tierLabel->setAnchorPoint(cw::anchor::center);
@@ -122,9 +120,9 @@ SillyTier MenuSillyFilterCell::getSillyTier() const noexcept {
     return m_silly;
 }
 
-MenuSillyFilterCell* MenuSillyFilterCell::create(CCSize const& size, SillyTier silly, std::string id, ZStringView label, ccColor3B const& color) {
+MenuSillyFilterCell* MenuSillyFilterCell::create(CCSize const& size, SillyTier silly, std::string id, std::string label, ccColor3B const& color) {
     auto ret = new MenuSillyFilterCell();
-    if (ret->init(size, silly, std::move(id), label, color)) {
+    if (ret->init(size, silly, std::move(id), std::move(label), color)) {
         ret->autorelease();
         return ret;
     };

@@ -38,7 +38,7 @@ bool SpamChallenge::init() {
 
     auto const winSize = CCDirector::sharedDirector()->getWinSize();
 
-    auto label = Label::create("Quick! Spam or get sent back!", font::big);
+    auto label = Label::create("Quick! Spam or get sent back!", cw::font::big);
     label->setID("label");
     label->setMaxWidth(getScaledContentWidth() - 1.25f);
     label->setAlignment(Label::Alignment::Center);
@@ -47,7 +47,7 @@ bool SpamChallenge::init() {
 
     addChild(label, 1);
 
-    auto descLabel = Label::createRich("Use your <cg>mouse button</c> or <cy>tap the screen</c> to increase the count.", font::chat);
+    auto descLabel = Label::createRich("Use your <cg>mouse button</c> or <cy>tap the screen</c> to increase the count.", cw::font::chat);
     descLabel->setID("description-label");
     descLabel->setMaxWidth(getScaledContentWidth() - 1.25f);
     descLabel->setAlignment(Label::Alignment::Center);
@@ -56,7 +56,7 @@ bool SpamChallenge::init() {
 
     addChild(descLabel, 1);
 
-    m_impl->counter = Label::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget).c_str(), font::gold);
+    m_impl->counter = Label::create(fmt::format("{} / {}", m_impl->inputCount, m_impl->inputTarget), cw::font::gold);
     m_impl->counter->setID("counter");
     m_impl->counter->setScale(2.5f);
     m_impl->counter->setAlignment(Label::Alignment::Center);
@@ -81,7 +81,7 @@ bool SpamChallenge::init() {
 
     addChild(m_impl->countdown, 9);
 
-    sfx::play(sfx::file::pop);
+    cw::sfx::play(sfx::file::pop);
 
     scheduleUpdate();
 
@@ -123,7 +123,7 @@ void SpamChallenge::setSuccess(bool v) {
     addChild(symbol, 9);
     symbol->runAction(CCSequence::createWithTwoActions(CCEaseSineOut::create(CCScaleTo::create(0.0875f, 2.75f)), CCEaseSineOut::create(CCScaleTo::create(0.125f, 2.5f))));
 
-    sfx::play(m_impl->success ? sfx::file::good : sfx::file::bad);
+    cw::sfx::play(m_impl->success ? sfx::file::good : sfx::file::bad);
     scheduleOnce(schedule_selector(SpamChallenge::callAfterFeedback), 1.25f);
 }
 
@@ -133,7 +133,7 @@ void SpamChallenge::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        sfx::play(sfx::file::count);
+        cw::sfx::play(sfx::file::count);
         m_impl->timeDt = 0.0f;
     };
 

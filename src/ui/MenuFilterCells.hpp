@@ -32,10 +32,10 @@ namespace cs::brkd::horrible {
         SillyTier m_silly = SillyTier::None;
 
     protected:
-        bool init(cocos2d::CCSize const& size, SillyTier silly, std::string id, geode::ZStringView label, cocos2d::ccColor3B const& color);
+        bool init(cocos2d::CCSize const& size, SillyTier silly, std::string id, std::string label, cocos2d::ccColor3B const& color);
 
     public:
-        static MenuSillyFilterCell* create(cocos2d::CCSize const& size, SillyTier silly, std::string id, geode::ZStringView label, cocos2d::ccColor3B const& color);
+        static MenuSillyFilterCell* create(cocos2d::CCSize const& size, SillyTier silly, std::string id, std::string label, cocos2d::ccColor3B const& color);
 
         SillyTier getSillyTier() const noexcept;
     };

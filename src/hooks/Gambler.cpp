@@ -56,7 +56,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
             if (cw::rng::flip()) {
                 log::info("Gambler lost the bet!");
 
-                sfx::play(sfx::file::pop);
+                cw::sfx::play(sfx::file::pop);
                 Notification::create("Unlucky!", NotificationIcon::Error)->show();
 
                 m_player1->reversePlayer(nullptr);
@@ -67,7 +67,7 @@ class $modify(GamblerPlayLayer, PlayLayer) {
             } else {
                 log::info("Gambler won the bet! instant win.");
 
-                sfx::play(sfx::file::good);
+                cw::sfx::play(sfx::file::good);
                 Notification::create("You got lucky this time...", NotificationIcon::Success)->show();
 
                 levelComplete();

@@ -61,7 +61,7 @@ class $modify(OxygenPlayLayer, PlayLayer) {
 
         auto o2 = fmt::format("o2\n{}%", static_cast<uint8_t>(f->oxygenLevel));
         if (!f->oxygenLabel) {
-            f->oxygenLabel = Label::create(std::move(o2), font::big);
+            f->oxygenLabel = Label::create(std::move(o2), cw::font::big);
             f->oxygenLabel->setColor(cw::colors::cyan);
             f->oxygenLabel->setAnchorPoint({ 0.0f, 1.0f });
             f->oxygenLabel->setPosition({ 2.0f, (getScaledContentHeight() / 2.0f) - (f->oxygenBar->getScaledContentWidth() / 2.0f) - 1.25f });

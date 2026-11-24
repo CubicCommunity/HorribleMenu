@@ -46,33 +46,10 @@ namespace cs::brkd::horrible {
             inline constexpr auto click = "chestClick.ogg";
             inline constexpr auto count = "counter003.ogg";
         };
-
-        /**
-         * Play a sound effect using FMOD
-         *
-         * @param name Name of the audio file
-         */
-        inline void play(geode::ZStringView file) {
-            if (auto fmod = FMODAudioEngine::sharedEngine()) (void)fmod->playEffectAsync(file);
-        }
-    };
-
-    namespace font {
-        inline constexpr auto big = "bigFont.fnt";
-        inline constexpr auto gold = "goldFont.fnt";
-        inline constexpr auto chat = "chatFont.fnt";
     };
 
     namespace json = matjson;  // Shortcut for `matjson`
     namespace fs = asp::fs;    // Shortcut for `asp::fs`
-
-    namespace str {
-        using namespace geode::utils::string;
-
-        inline constexpr auto isOnOff(bool on) {
-            return on ? "ON" : "OFF";
-        }
-    };
 
     // For convenience
     namespace setting {

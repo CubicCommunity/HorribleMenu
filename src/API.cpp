@@ -195,7 +195,7 @@ void OptionManager::registerCategory(std::string category, SharedOption option) 
         m_impl->categoryMap[category] = {};
     };
 
-    if (!str::containsAny(category, m_impl->categories)) m_impl->categories.push_back(std::move(category));
+    if (!cw::str::containsAny(category, m_impl->categories)) m_impl->categories.push_back(std::move(category));
 }
 
 void OptionManager::registerMod(const Mod* mod) {
@@ -442,7 +442,7 @@ void cs::brkd::horrible::delegateHooks(ZStringView id, StringMap<std::shared_ptr
             [id, allHooks = std::move(allHooks)](bool value) {
                 for (auto const& hook : allHooks) {
                     if (auto const h = hook.lock()) {
-                        log::trace("Toggling {} hook '{}' {}...", id, h->getDisplayName(), str::isOnOff(value));
+                        log::trace("Toggling {} hook '{}' {}...", id, h->getDisplayName(), cw::str::isOnOff(value));
                         (void)h->toggle(value);
                     };
                 };

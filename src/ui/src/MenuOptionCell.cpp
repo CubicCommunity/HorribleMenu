@@ -18,7 +18,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
     setAnchorPoint(cw::anchor::center);
     setVisible(false);
 
-    auto label = Label::create("No options found :(", font::big);
+    auto label = Label::create("No options found :(", cw::font::big);
     label->setScale(0.5f);
     label->setOpacity(250);
     label->setAnchorPoint({ 0.5, 0 });
@@ -28,7 +28,7 @@ bool MenuNothingNode::init(CCSize const& size, CCPoint const& pos) {
 
     addChild(label, 1);
 
-    auto labelHint = Label::create("Try searching other keywords, or change some filters!", font::chat);
+    auto labelHint = Label::create("Try searching other keywords, or change some filters!", cw::font::chat);
     labelHint->setScale(0.625f);
     labelHint->setOpacity(200);
     labelHint->setAnchorPoint({ 0.5, 1 });
@@ -200,14 +200,14 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     auto labelWidth = getScaledContentWidth() - 80.0f;
 
     // name of the joke
-    auto nameLabel = Label::create(m_impl->option->getName().c_str(), font::big);
+    auto nameLabel = Label::create(m_impl->option->getName(), cw::font::big);
     nameLabel->setID("name-label");
     nameLabel->setScale(0.4f);
     nameLabel->setLimitLabelWidth(labelWidth, 0.4f, 0.125f);
     nameLabel->setAnchorPoint({ 0.0f, 0.5f });
     nameLabel->setPosition({ x, yCenter });
 
-    auto categoryLabel = Label::create(m_impl->option->getCategory().c_str(), font::gold);
+    auto categoryLabel = Label::create(m_impl->option->getCategory(), cw::font::gold);
     categoryLabel->setID("category-label");
     categoryLabel->setScale(0.25f);
     categoryLabel->setLimitLabelWidth(labelWidth, 0.25f, 0.125f);
@@ -241,13 +241,13 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
         [this](auto) {
             auto formatDesc = fmt::format("{}\n\n{}{}{}", (m_impl->option->getDescription().size() > 0) ? m_impl->option->getDescription() : "<cc>No description provided.</c>", m_impl->option->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(m_impl->option->getSillyTier(), m_impl->compatible), m_impl->option->isCheating() ? "\n<ca>Cheat Option</c>" : "");
 
-            createQuickPopup(
-                m_impl->option->getName().c_str(),
+            cw::showAlert(
+                m_impl->option->getName(),
                 std::move(formatDesc),
                 "OK",
                 nullptr,
-                375.0f,
-                nullptr
+                nullptr,
+                375.0f
             );
 
             auto saved = options::get(m_impl->option->getID());
@@ -304,7 +304,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     newIcon->setID("new-option-icon");
     newIcon->setScale(0.25f);
 
-    auto newLabel = Label::create("New!", font::big);
+    auto newLabel = Label::create("New!", cw::font::big);
     newLabel->setID("new-option-label");
     newLabel->setScale(0.25f);
     newLabel->setColor(cw::colors::cyan);
@@ -332,9 +332,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     };
 
     if (devMode) {
-        auto str = fmt::format("{} ({}) | {} delegate(s)", m_impl->option->getID(), m_impl->option->getIDHash(), options::getDelegates(m_impl->option->getID()));
-
-        auto idLabel = Label::create(str.c_str(), font::chat);
+        auto idLabel = Label::create(fmt::format("{} ({}) | {} delegate(s)", m_impl->option->getID(), m_impl->option->getIDHash(), options::getDelegates(m_impl->option->getID())), cw::font::chat);
         idLabel->setID("id-label");
         idLabel->setScale(0.375f);
         idLabel->setAlignment(Label::Alignment::Right);

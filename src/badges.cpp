@@ -205,7 +205,7 @@
 
 //     for (auto const& hook : g_badgeHooks) {
 //         if (auto h = hook.lock()) {
-//             log::trace("Toggling badge hook '{}' {}...", h->getDisplayName(), str::isOnOff(to));
+//             log::trace("Toggling badge hook '{}' {}...", h->getDisplayName(), cw::str::isOnOff(to));
 //             (void)h->toggle(to);
 //         };
 //     };

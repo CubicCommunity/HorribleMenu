@@ -62,7 +62,7 @@ void WhackButton::reload() {
         ),
         [this](auto) {
             m_impl->inputCount += 1;
-            sfx::play(sfx::file::click);
+            cw::sfx::play(sfx::file::click);
 
             if (m_impl->inputCount >= m_impl->inputTarget) return setSuccess(true);
             reload();
@@ -102,7 +102,7 @@ bool WhackButton::init() {
 
     addChild(m_impl->countdown, 9);
 
-    sfx::play(sfx::file::pop);
+    cw::sfx::play(sfx::file::pop);
 
     scheduleUpdate();
 
@@ -132,7 +132,7 @@ void WhackButton::setSuccess(bool v) {
     addChild(symbol, 9);
     symbol->runAction(CCSequence::createWithTwoActions(CCEaseSineOut::create(CCScaleTo::create(0.0875f, m_impl->scale * 2.5f)), CCEaseSineOut::create(CCScaleTo::create(0.125f, m_impl->scale * 1.25f))));
 
-    sfx::play(v ? sfx::file::good : sfx::file::bad);
+    cw::sfx::play(v ? sfx::file::good : sfx::file::bad);
     scheduleOnce(schedule_selector(WhackButton::callAfterFeedback), 1.25f);
 }
 
@@ -142,7 +142,7 @@ void WhackButton::update(float dt) {
 
     m_impl->timeDt += dt;
     if (m_impl->timeDt >= 0.5f) {
-        sfx::play(sfx::file::count);
+        cw::sfx::play(sfx::file::count);
         m_impl->timeDt = 0.0f;
     };
 
