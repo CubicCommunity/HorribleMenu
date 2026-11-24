@@ -6,6 +6,7 @@
 
 #include <ui/Menu.h>
 #include <ui/MenuButton.h>
+#include <ui/MenuSafeModePopup.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/LevelEditorLayer.hpp>
@@ -16,8 +17,8 @@
 using namespace geode::prelude;
 using namespace cs::brkd::horrible::prelude;
 
-static std::vector<std::weak_ptr<Hook>> g_safeModeHooks;
-static std::vector<std::weak_ptr<Hook>> g_floatingBtnHooks;
+inline std::vector<std::weak_ptr<Hook>> HOOKS_SAFE_MODE;
+inline std::vector<std::weak_ptr<Hook>> HOOKS_MENU_BTN;
 
 namespace cs::brkd::horrible::hooks {
     static void setup(auto& self, std::vector<std::weak_ptr<Hook>>& hookVector, std::string_view settingID) {
@@ -46,7 +47,7 @@ namespace cs::brkd::horrible::hooks {
     }
 
     static void toggleSafeModeHooks(bool value) {
-        for (auto const& hook : g_safeModeHooks) {
+        for (auto const& hook : HOOKS_SAFE_MODE) {
             if (auto h = hook.lock()) {
                 log::trace("Toggling safe mode hook '{}' {}...", h->getDisplayName(), cw::str::isOnOff(value));
                 (void)h->toggle(value);
@@ -85,7 +86,7 @@ $on_game(Loaded) {
                 fb->setVisible(value);
             };
 
-            for (auto const& hook : g_floatingBtnHooks) {
+            for (auto const& hook : HOOKS_MENU_BTN) {
                 if (auto h = hook.lock()) {
                     log::trace("Toggling floating button hook '{}' {}...", h->getDisplayName(), cw::str::isOnOff(value));
                     (void)h->toggle(value);
@@ -105,7 +106,7 @@ $on_game(Loaded) {
 }
 
 class $modify(HMSafeGJGameLevel, GJGameLevel) {
-    HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
+    HORRIBLE_HOOK_INTERNAL(HOOKS_SAFE_MODE, setting::SafeMode);
 
     void savePercentage(int, bool, int, int, bool) {
         log::warn("Safe mode is enabled, so progress will not be saved!");
@@ -114,13 +115,13 @@ class $modify(HMSafeGJGameLevel, GJGameLevel) {
 
 // safe mode
 class $modify(HMSafePlayLayer, PlayLayer) {
-    HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
+    HORRIBLE_HOOK_INTERNAL(HOOKS_SAFE_MODE, setting::SafeMode);
 
     // safe mode prevents level completion
     void levelComplete() {
         log::warn("Safe mode is enabled, so progress will not be saved");
 
-        bool testMode = m_isTestMode;
+        auto testMode = m_isTestMode;
 
         m_isTestMode = true;
         PlayLayer::levelComplete();
@@ -129,7 +130,7 @@ class $modify(HMSafePlayLayer, PlayLayer) {
 };
 
 class $modify(HMEndLevelLayer, EndLevelLayer) {
-    HORRIBLE_HOOK_INTERNAL(g_safeModeHooks, setting::SafeMode);
+    HORRIBLE_HOOK_INTERNAL(HOOKS_SAFE_MODE, setting::SafeMode);
 
     void customSetup() {
         EndLevelLayer::customSetup();
@@ -137,26 +138,26 @@ class $modify(HMEndLevelLayer, EndLevelLayer) {
         if (mod->getSettingValue<bool>("safe-mode-indicator")) {
             auto isSpriteSecret = cw::rng::fast() <= 5;
 
-            auto btn = Button::createWithSpriteFrameName(themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default), [](auto) {
-                cw::showAlert(
-                    "Safe Mode",
-                    "<cj>Safe Mode</c> is <cg>enabled</c> and your progress <cr>has not</c> been saved.",
-                    "OK",
-                    nullptr,
-                    nullptr
-                );
-            });
-            btn->setID("safe-mode-indicator-btn"_spr);
-            btn->setZOrder(2);
-            btn->setScale(0.425f);
+            auto btn = Button::createWithNode(
+                CircleButtonSprite::createWithSpriteFrameName(
+                    themes::getIconSprite(isSpriteSecret ? themes::icons::TheYellowOne : themes::icons::Default),
+                    0.875f
+                ),
+                [](auto) {
+                    MenuSafeModePopup::create()->show();
+                }
+            );
+            btn->setID("view-cheats-btn"_spr);
+            btn->setScale(0.5f);
+            btn->setZOrder(CW_HIGHEST_Z);
 
-            m_mainLayer->addChildAtPosition(btn, Anchor::Center, { 165.0f, -105.0f }, false);
+            m_mainLayer->addChildAtPosition(btn, Anchor::Center, { 160.0f, -100.0f }, false);
         };
     }
 };
 
 class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
-    HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
+    HORRIBLE_HOOK_INTERNAL(HOOKS_MENU_BTN, setting::FloatingBtn);
 
     struct Fields final {
         ~Fields() {
@@ -175,7 +176,7 @@ class $modify(HMFloatBtnLevelEditorLayer, LevelEditorLayer) {
 };
 
 class $modify(HMFloatBtnPauseLayer, PauseLayer) {
-    HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
+    HORRIBLE_HOOK_INTERNAL(HOOKS_MENU_BTN, setting::FloatingBtn);
 
     void customSetup() {
         auto toggle = mod->getSettingValue<bool>(setting::FloatingBtn);
@@ -191,7 +192,7 @@ class $modify(HMFloatBtnPauseLayer, PauseLayer) {
 };
 
 class $modify(HMFloatBtnPlayLayer, PlayLayer) {
-    HORRIBLE_HOOK_INTERNAL(g_floatingBtnHooks, setting::FloatingBtn);
+    HORRIBLE_HOOK_INTERNAL(HOOKS_MENU_BTN, setting::FloatingBtn);
 
     void setupHasCompleted() {
         hooks::toggleButton();

@@ -40,7 +40,7 @@ struct Menu::Impl final {
     MenuNothingNode* nothingLabel = nullptr;
 
     bool safeMode = OptionManager::get()->shouldBeSafeMode();
-    std::string const theme = mod->getSettingValue<std::string>("theme");
+    std::string theme;
 
     GLubyte bdOpacity = mod->getSettingValue<GLubyte>("menu-backdrop-opacity");
 
@@ -272,10 +272,12 @@ void Menu::showAnimation() {
     };
 }
 
-bool Menu::init() {
-    auto btns = themes::getCircleBaseColor(m_impl->theme);
+bool Menu::init(std::optional<std::string> theme) {
+    m_impl->theme = theme.has_value() ? std::move(*theme) : mod->getSettingValue<std::string>("theme");
 
     if (!Popup::init(450.0f, 280.0f, themes::getBackgroundSprite(m_impl->theme))) return false;
+
+    auto btns = themes::getCircleBaseColor(m_impl->theme);
 
     if (m_impl->useLegacy) {
         setOpacity(m_impl->bdOpacity);
@@ -735,9 +737,9 @@ Menu* Menu::get() noexcept {
     return s_inst;
 }
 
-Menu* Menu::create() {
+Menu* Menu::create(std::optional<std::string> theme) {
     auto ret = new Menu();
-    if (ret->init()) {
+    if (ret->init(std::move(theme))) {
         ret->autorelease();
         return ret;
     };

@@ -15,7 +15,7 @@ using namespace cs::brkd::horrible::prelude;
 static bool g_loadedOnce = false;
 
 $on_game(Loaded) {
-    OverlayManager::get()->addChild(MenuButton::get());
+    MenuButton::get();  // initialize the floating button
 
     listenForKeybindSettingPresses(
         "key-popup",
@@ -122,4 +122,8 @@ $on_game(Loaded) {
 $on_game(TexturesLoaded) {
     if (!g_loadedOnce) return;  // trigger the button setup to match graphics quality !!!
     if (auto fb = MenuButton::get()) fb->setTheme(mod->getSettingValue<std::string>("theme"));
+}
+
+$on_game(TexturesUnloaded) {
+    cue::resetNode(MenuButton::get());
 }

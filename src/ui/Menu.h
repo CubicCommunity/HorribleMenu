@@ -38,10 +38,10 @@ namespace cs::brkd::horrible {
         void onEnter() override;
         void onExit() override;
 
-        bool init() override;
+        bool init(std::optional<std::string> theme);
 
     public:
-        static Menu* create();
+        static Menu* create(std::optional<std::string> theme = std::nullopt);
 
         static Menu* get() noexcept;
     };

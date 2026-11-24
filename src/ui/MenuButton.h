@@ -18,6 +18,8 @@ namespace cs::brkd::horrible {
 
         void setupSprite();
 
+        static geode::Ref<MenuButton> s_inst;
+
     protected:
         MenuButton();
         ~MenuButton();
@@ -35,7 +37,7 @@ namespace cs::brkd::horrible {
         static MenuButton* create();
 
     public:
-        static geode::Ref<MenuButton> get();
+        static geode::Ref<MenuButton>& get();
 
         void setOpacity(GLubyte opacity);
 

@@ -143,7 +143,6 @@ uint64_t Option::getIDHash() const noexcept {
 
 struct OptionManager::Impl final {
     geode::utils::StringMap<SharedOption> options;  // Map of registered options
-    std::vector<std::string> categories;            // Array of auto-registered categories
 
     geode::utils::StringMap<std::vector<SharedOption>> categoryMap;  // Map of options bound to category name
     geode::utils::StringMap<const geode::Mod* const> integrations;   // Map of auto-registered external mods using this API
@@ -194,8 +193,6 @@ void OptionManager::registerCategory(std::string category, SharedOption option) 
     } else {
         m_impl->categoryMap[category] = {};
     };
-
-    if (!cw::str::containsAny(category, m_impl->categories)) m_impl->categories.push_back(std::move(category));
 }
 
 void OptionManager::registerMod(const Mod* mod) {
@@ -227,9 +224,7 @@ Result<> OptionManager::registerOption(SharedOption option) {
 
         auto cheats = m_impl->enabledCheats.size();
 
-        if (option->isCheating()) {
-            if (isEnabled(id)) m_impl->enabledCheats.emplace(option->getIDHash());
-        };
+        if (option->isCheating() && isEnabled(id)) m_impl->enabledCheats.emplace(option->getIDHash());
 
         m_impl->options.emplace(std::move(id), option);
         log::debug("Registered option {} of category {}", option->getID(), option->getCategory());
@@ -263,13 +258,18 @@ geode::utils::StringMap<SharedOption> const& OptionManager::getAllOptions() cons
     return m_impl->options;
 }
 
+std::vector<SharedOption> OptionManager::getEnabledCheats() const {
+    std::vector<SharedOption> out;
+    out.reserve(m_impl->enabledCheats.size());
+
+    for (auto const& id : m_impl->enabledCheats) out.push_back(getOptionInfo(id).lock());
+
+    return out;
+}
+
 std::span<const SharedOption> OptionManager::getAllOptionsForCategory(geode::ZStringView category) const noexcept {
     if (auto it = m_impl->categoryMap.find(category); it != m_impl->categoryMap.end()) return it->second;
     return {};
-}
-
-std::span<const std::string> OptionManager::getCategories() const noexcept {
-    return m_impl->categories;
 }
 
 geode::utils::StringMap<std::vector<SharedOption>> const& OptionManager::getAllCategories() const noexcept {

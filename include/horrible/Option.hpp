@@ -38,17 +38,17 @@ namespace cs::brkd::horrible {
         using SharedSelf = std::shared_ptr<Option>;
 
     private:
-        asp::BoxedString const m_id;                          // Unique ID of the option
-        std::string m_name = "Example Option";                // Name of the option
-        std::string m_description;                            // Description of the option
-        std::string m_category = "Uncategorized";             // Name of the category this option should be under
-        SillyTier m_silly = SillyTier::None;                  // How silly the option is
-        bool m_default = false;                               // Default toggle state for this option
-        bool m_online = false;                                // If the option requires an active internet connection to work properly
-        bool m_restart = false;                               // If the option requires a game restart to take effect
-        std::vector<Platform> m_platforms = {Platform::All};  // Platforms that the option supports
-        bool m_isCheating = false;                            // If the option counts as cheating and will trigger dynamic safe mode
-        const geode::Mod* const m_integration = nullptr;      // External mod that registered this option
+        asp::BoxedString const m_id;                            // Unique ID of the option
+        std::string m_name = "Example Option";                  // Name of the option
+        std::string m_description;                              // Description of the option
+        std::string m_category = "Uncategorized";               // Name of the category this option should be under
+        SillyTier m_silly = SillyTier::None;                    // How silly the option is
+        bool m_default = false;                                 // Default toggle state for this option
+        bool m_online = false;                                  // If the option requires an active internet connection to work properly
+        bool m_restart = false;                                 // If the option requires a game restart to take effect
+        std::vector<Platform> m_platforms = { Platform::All };  // Platforms that the option supports
+        bool m_isCheating = false;                              // If the option counts as cheating and will trigger dynamic safe mode
+        const geode::Mod* const m_integration = nullptr;        // External mod that registered this option
 
         uint64_t m_idHash = 0;  // FNV-1a-hashed unique ID of the option
 
@@ -72,26 +72,26 @@ namespace cs::brkd::horrible {
 
         SharedSelf autoRegister();
 
-        [[nodiscard]] geode::ZStringView getID() const noexcept;
-        [[nodiscard]] geode::ZStringView getName() const noexcept;
-        [[nodiscard]] geode::ZStringView getDescription() const noexcept;
-        [[nodiscard]] geode::ZStringView getCategory() const noexcept;
-        [[nodiscard]] bool getDefaultToggleState() const noexcept;
-        [[nodiscard]] SillyTier getSillyTier() const noexcept;
-        [[nodiscard]] bool isOnline() const noexcept;
-        [[nodiscard]] bool isRestartRequired() const noexcept;
-        [[nodiscard]] std::span<const Platform> getSupportedPlatforms() const noexcept;
-        [[nodiscard]] bool isCheating() const noexcept;
-        [[nodiscard]] const geode::Mod* getIntegration() const noexcept;
+        geode::ZStringView getID() const noexcept;
+        geode::ZStringView getName() const noexcept;
+        geode::ZStringView getDescription() const noexcept;
+        geode::ZStringView getCategory() const noexcept;
+        bool getDefaultToggleState() const noexcept;
+        SillyTier getSillyTier() const noexcept;
+        bool isOnline() const noexcept;
+        bool isRestartRequired() const noexcept;
+        std::span<const Platform> getSupportedPlatforms() const noexcept;
+        bool isCheating() const noexcept;
+        const geode::Mod* getIntegration() const noexcept;
 
-        [[nodiscard]] asp::BoxedString getIDShared() const noexcept;
-        [[nodiscard]] uint64_t getIDHash() const noexcept;
+        asp::BoxedString getIDShared() const noexcept;
+        uint64_t getIDHash() const noexcept;
 
         void enable() &;
         void disable() &;
 
-        [[nodiscard]] bool isEnabled() const&;
-        [[nodiscard]] bool isPinned() const&;
+        bool isEnabled() const&;
+        bool isPinned() const&;
     };
 
     // Alias for `std::shared_ptr<Option>`

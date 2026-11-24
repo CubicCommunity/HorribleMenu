@@ -359,6 +359,10 @@ bool MenuOptionCell::isCompatible() const noexcept {
     return m_impl->compatible;
 }
 
+MenuOptionCell* MenuOptionCell::createView(float width, SharedOption option, ZStringView theme) {
+    return create({ width, 30.0f }, option, theme, false, true, true);
+}
+
 MenuOptionCell* MenuOptionCell::create(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet, bool view) {
     auto ret = new MenuOptionCell();
     if (ret->init(size, std::move(option), theme, devMode, hasInternet, view)) {

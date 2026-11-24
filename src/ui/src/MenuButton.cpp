@@ -33,12 +33,14 @@ cw::json::Value cw::json::Serialize<CCPoint>::toJson(CCPoint const& value) {
     return obj;
 }
 
+Ref<MenuButton> MenuButton::s_inst = nullptr;
+
 struct MenuButton::Impl final {
     bool inLevel = mod->getSettingValue<bool>("floating-btn-level");
     bool inEditor = mod->getSettingValue<bool>("floating-btn-editor");
 
     float scale = mod->getSettingValue<float>("floating-btn-scale");
-    uint8_t opacity = mod->getSettingValue<uint8_t>("floating-btn-opacity");
+    GLubyte opacity = mod->getSettingValue<GLubyte>("floating-btn-opacity");
 
     bool isDragging = false;
     bool isMoving = false;
@@ -92,7 +94,7 @@ bool MenuButton::init() {
     setTouchMode(kCCTouchesOneByOne);
     setTouchEnabled(true);
     setTouchPriority(-512);  // ewww touch priority
-    setZOrder(99);
+    setZOrder(CW_HIGHEST_Z);
 
     setupSprite();
 
@@ -222,6 +224,10 @@ MenuButton* MenuButton::create() {
     auto ret = new MenuButton();
     if (ret->init()) {
         ret->autorelease();
+
+        cue::resetNode(s_inst);
+        s_inst = ret;
+
         return ret;
     };
 
@@ -229,7 +235,7 @@ MenuButton* MenuButton::create() {
     return nullptr;
 }
 
-Ref<MenuButton> MenuButton::get() {
-    static auto inst = Ref(MenuButton::create());
-    return inst;
+Ref<MenuButton>& MenuButton::get() {
+    if (!s_inst) OverlayManager::get()->addChild(MenuButton::create());
+    return s_inst;
 }

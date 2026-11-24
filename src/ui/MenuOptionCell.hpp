@@ -28,7 +28,7 @@ namespace cs::brkd::horrible {
 
     public:
         static MenuOptionCell* create(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false, bool view = false);
-        static MenuOptionCell* createView(float width, SharedOption option);
+        static MenuOptionCell* createView(float width, SharedOption option, geode::ZStringView theme);
 
         void setPinCallback(Callback&& callback);
 
