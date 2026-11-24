@@ -41,8 +41,11 @@ struct Menu::Impl final {
 
     bool safeMode = OptionManager::get()->shouldBeSafeMode();
     std::string const theme = mod->getSettingValue<std::string>("theme");
+
     GLubyte bdOpacity = mod->getSettingValue<GLubyte>("menu-backdrop-opacity");
+
     bool forceAnim = mod->getSettingValue<bool>("menu-force-animation");
+    bool useLegacy = mod->getSettingValue<bool>("menu-legacy-ui");
 
     CCNodeRGBA* extraMenu = nullptr;
     Label* debLabel = nullptr;
@@ -262,7 +265,7 @@ void Menu::showAnimation() {
         m_impl->extraMenu->runAction(HORRIBLE_FADEIN_ACTION);
         m_impl->debLabel->runAction(CCEaseExponentialInOut::create(CCFadeTo::create(dur, m_impl->devMode ? 200 : 100)));
 
-        runAction(CCSequence::createWithTwoActions(CCEaseExponentialInOut::create(CCFadeTo::create(dur, m_impl->bdOpacity)), CallFuncExt::create([this]() { setOpacity(m_impl->bdOpacity); })));
+        runAction(CCEaseExponentialInOut::create(CCFadeTo::create(dur, m_impl->bdOpacity)));
         m_mainLayer->runAction(CCEaseExponentialInOut::create(CCScaleTo::create(dur, 1.0f)));
     } else {
         setOpacity(m_impl->bdOpacity);
@@ -274,18 +277,23 @@ bool Menu::init() {
 
     if (!Popup::init(450.0f, 280.0f, themes::getBackgroundSprite(m_impl->theme))) return false;
 
-    cue::resetNode(m_closeBtn);
+    if (m_impl->useLegacy) {
+        setOpacity(m_impl->bdOpacity);
+        setCloseButtonSpr(themes::createThemeCircleSprite(btns));
+    } else {
+        cue::resetNode(m_closeBtn);
 
-    m_closeBtn = Button::createWithNode(
-        themes::createThemeCircleSprite(btns),
-        [this](Button* sender) {
-            this->onClose(sender);
-        }
-    );
-    m_closeBtn->setID("close-btn");
-    m_closeBtn->setScaleMultiplier(1.25f);
+        m_closeBtn = Button::createWithNode(
+            themes::createThemeCircleSprite(btns),
+            [this](Button* sender) {
+                this->onClose(sender);
+            }
+        );
+        m_closeBtn->setID("close-btn");
+        m_closeBtn->setScaleMultiplier(1.25f);
 
-    addChildAtPosition(m_closeBtn, Anchor::TopLeft, { m_closeBtn->getScaledContentWidth() * 0.625f, -(m_closeBtn->getScaledContentHeight() * 0.625f) }, false);
+        addChildAtPosition(m_closeBtn, Anchor::TopLeft, { m_closeBtn->getScaledContentWidth() * 0.625f, -(m_closeBtn->getScaledContentHeight() * 0.625f) }, false);
+    };
 
     setID("options"_spr);
     setTitle("Horrible Options");
@@ -530,15 +538,13 @@ bool Menu::init() {
                     // if (auto popup = MenuDiscord::create(m_impl->theme)) popup->show();
                 },
             },
-            // {
-            //     "btn_kofi.png"_spr,
-            //     "support-btn",
-            //     [this](auto) {
-            //         NOTIFY_INTERNET_IF_OFFLINE;
-            //         NOTIFY_IF_LOGGED_OUT;
-            //         if (auto popup = MenuKofi::create(m_impl->theme)) popup->show();
-            //     },
-            // },
+            {
+                "btn_kofi.png"_spr,
+                "support-us-btn",
+                [this](auto) {
+                    openSupportPopup(mod);
+                },
+            },
         }
     );
 
@@ -597,17 +603,19 @@ bool Menu::init() {
                                ->setAutoGrowAxis(0.0f)
                                ->setGrowCrossAxis(true);
 
-    m_impl->extraMenu = CCNodeRGBA::create();
-    m_impl->extraMenu->setID("extras-menu");
-    m_impl->extraMenu->setAnchorPoint({ 1, 0 });
-    m_impl->extraMenu->setCascadeOpacityEnabled(true);
-    m_impl->extraMenu->setLayout(extraMenuLayout);
+    if (!m_impl->useLegacy) {
+        m_impl->extraMenu = CCNodeRGBA::create();
+        m_impl->extraMenu->setID("extras-menu");
+        m_impl->extraMenu->setAnchorPoint({ 1, 0 });
+        m_impl->extraMenu->setCascadeOpacityEnabled(true);
+        m_impl->extraMenu->setLayout(extraMenuLayout);
 
-    addChildAtPosition(m_impl->extraMenu, Anchor::BottomRight, { -5.0f, 5.0f }, false);
+        addChildAtPosition(m_impl->extraMenu, Anchor::BottomRight, { -5.0f, 5.0f }, false);
+    };
 
     auto settingsBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
-            "geode.loader/settings.png",
+            "settings.png"_gode,
             1.0f,
             btns
         ),
@@ -618,10 +626,8 @@ bool Menu::init() {
     settingsBtn->setID("settings-btn");
     settingsBtn->setScale(0.625f);
 
-    m_impl->extraMenu->addChild(settingsBtn);
-
     auto resetFiltersBtnSpr = CircleButtonSprite::createWithSpriteFrameName(
-        "geode.loader/reload.png",
+        "reload.png"_gode,
         1.0f,
         btns,
         CircleBaseSize::Small
@@ -656,9 +662,15 @@ bool Menu::init() {
     resetFiltersBtn->setScale(0.75f);
     resetFiltersBtn->setPositionX(m_mainLayer->getScaledContentWidth());
 
-    m_impl->extraMenu->addChild(resetFiltersBtn);
+    if (m_impl->useLegacy) {
+        m_mainLayer->addChildAtPosition(settingsBtn, Anchor::BottomLeft, {}, false);
+        m_mainLayer->addChildAtPosition(resetFiltersBtn, Anchor::BottomRight, {}, false);
+    } else {
+        m_impl->extraMenu->addChild(settingsBtn);
+        m_impl->extraMenu->addChild(resetFiltersBtn);
 
-    m_impl->extraMenu->updateLayout();
+        m_impl->extraMenu->updateLayout();
+    };
 
     addEventListener(
         SettingChangedEvent(mod, setting::SafeMode),
@@ -701,7 +713,7 @@ void Menu::onEnter() {
     MenuEvent().send(this, true);
     s_inst = this;
 
-    showAnimation();
+    if (!m_impl->useLegacy) showAnimation();
 }
 
 void Menu::onExit() {

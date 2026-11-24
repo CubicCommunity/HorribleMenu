@@ -326,7 +326,7 @@ bool MenuCredits::init(ZStringView theme) {
 
     auto modBtn = Button::createWithNode(
         CircleButtonSprite::createWithSpriteFrameName(
-            isModBtnSecret ? themes::getIconSprite(themes::icons::SapphireSDK) : "geode.loader/geode-logo-outline-gold.png",
+            isModBtnSecret ? themes::getIconSprite(themes::icons::SapphireSDK) : "geode-logo-outline-gold.png"_gode,
             isModBtnSecret ? 1.125f : 1.0f,
             btns
         ),
@@ -353,7 +353,7 @@ bool MenuCredits::init(ZStringView theme) {
 
         auto integrationsBtn = Button::createWithNode(
             CircleButtonSprite::createWithSpriteFrameName(
-                "geode.loader/grid-view.png",
+                "grid-view.png"_gode,
                 0.75f,
                 btns
             ),

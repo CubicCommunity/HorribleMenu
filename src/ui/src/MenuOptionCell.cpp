@@ -126,7 +126,7 @@ struct MenuOptionCell::Impl final {
 MenuOptionCell::MenuOptionCell() : m_impl(std::make_unique<Impl>()) {}
 MenuOptionCell::~MenuOptionCell() = default;
 
-bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet) {
+bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet, bool view) {
     m_impl->option = std::move(option);
     m_impl->hasInternet = hasInternet;
 
@@ -138,14 +138,14 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
         };
     };
 
-    if (!CCMenu::init()) return false;
+    if (!CCNode::init()) return false;
 
     setID(m_impl->option->getID());
     setContentSize(size);
     setAnchorPoint({ 0.5, 1 });
 
-    auto bg = cue::attachBackground(
-        this,
+    auto bg = cue::createBackground(
+        getContentSize(),
         {
             .opacity = 175,
             .sidePadding = 0.0f,
@@ -156,48 +156,49 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     );
     bg->setColor(m_impl->getTierColor(m_impl->option->getSillyTier()));
 
+    addChildAtPosition(bg, Anchor::Center);
+
     // Horizontal layout: [toggle] [name] [info]
-    float yCenter = getScaledContentHeight() / 2.0f;
+    auto x = 2.5f;
 
-    auto x = 5.0f;
+    if (!view) {
+        // toggler for the option
+        m_impl->toggler = Toggler::createWithStandardSprites(
+            0.875f,
+            [this](auto, bool now) {
+                if (m_impl->compatible) {
+                    auto saved = options::get(m_impl->option->getID());
+                    options::set(m_impl->option->getID(), now, saved.pin, true);
 
-    // toggler for the option
-    m_impl->toggler = Toggler::createWithStandardSprites(
-        0.875f,
-        [this](auto, bool now) {
-            if (m_impl->compatible) {
-                auto saved = options::get(m_impl->option->getID());
-                options::set(m_impl->option->getID(), now, saved.pin, true);
+                    if (m_impl->option->isRestartRequired()) {
+                        Notification::create("Restart required!", NotificationIcon::Warning)->show();
+                        log::warn("Restart required to apply option {}", m_impl->option->getID());
+                    };
 
-                if (m_impl->option->isRestartRequired()) {
-                    Notification::create("Restart required!", NotificationIcon::Warning)->show();
-                    log::warn("Restart required to apply option {}", m_impl->option->getID());
+                    log::info("Option {} now set to {}", m_impl->option->getName(), now ? "enabled" : "disabled");
+
+                    m_impl->hideNewLabel();
+                } else {
+                    m_impl->toggler->setToggled(false);
                 };
 
-                log::info("Option {} now set to {}", m_impl->option->getName(), now ? "enabled" : "disabled");
+                m_impl->notifyIncompats();
+            }
+        );
+        m_impl->toggler->setID("toggler");
+        m_impl->toggler->setAnchorPoint(cw::anchor::center);
+        m_impl->toggler->setScaleMultiplier(1.25f);
+        m_impl->toggler->setScale(0.875f);
 
-                m_impl->hideNewLabel();
-            } else {
-                m_impl->toggler->setToggled(false);
-            };
+        // Set toggler state based on saved mod option value
+        m_impl->toggler->setToggled(options::isEnabled(m_impl->option->getID()));
 
-            m_impl->notifyIncompats();
-        }
-    );
-    m_impl->toggler->setID("toggler");
-    m_impl->toggler->setAnchorPoint(cw::anchor::center);
-    m_impl->toggler->setScaleMultiplier(1.25f);
-    m_impl->toggler->setPosition({ x + 12.0f, yCenter });
-    m_impl->toggler->setScale(0.875f);
+        addChildAtPosition(m_impl->toggler, Anchor::Left, { x + (m_impl->toggler->getScaledContentWidth() / 2.0f), 0.0f });
 
-    // Set toggler state based on saved mod option value
-    m_impl->toggler->setToggled(options::isEnabled(m_impl->option->getID()));
+        x += m_impl->toggler->getScaledContentWidth() + 2.5f;
+    };
 
-    addChild(m_impl->toggler);
-
-    x += 30.0f;
-
-    auto labelWidth = getScaledContentWidth() - 80.0f;
+    auto labelWidth = getContentWidth() - 50.0f - x;
 
     // name of the joke
     auto nameLabel = Label::create(m_impl->option->getName(), cw::font::big);
@@ -205,18 +206,16 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     nameLabel->setScale(0.4f);
     nameLabel->setLimitLabelWidth(labelWidth, 0.4f, 0.125f);
     nameLabel->setAnchorPoint({ 0.0f, 0.5f });
-    nameLabel->setPosition({ x, yCenter });
 
     auto categoryLabel = Label::create(m_impl->option->getCategory(), cw::font::gold);
     categoryLabel->setID("category-label");
     categoryLabel->setScale(0.25f);
     categoryLabel->setLimitLabelWidth(labelWidth, 0.25f, 0.125f);
     categoryLabel->setAnchorPoint({ 0.0f, 0.5f });
-    categoryLabel->setPosition({ x, yCenter + 10.0f });
     categoryLabel->setOpacity(200);
 
-    addChild(nameLabel);
-    addChild(categoryLabel);
+    addChildAtPosition(nameLabel, Anchor::Left, { x, 0.0f });
+    addChildAtPosition(categoryLabel, Anchor::Left, { x, 10.0f });
 
     auto menuLayout = RowLayout::create()
                           ->setGap(5.0f)
@@ -224,20 +223,19 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
                           ->setAxisReverse(true)
                           ->setAutoGrowAxis(0.0f);
 
-    auto menu = CCMenu::create();
+    auto menu = CCNode::create();
     menu->setID("menu");
-    menu->setAnchorPoint({ 1, 0.5 });
+    menu->setAnchorPoint({ 1.0f, 0.5f });
     menu->setContentSize({ 0.0f, 0.0f });
-    menu->setPosition({ getScaledContentWidth() - 7.5f, yCenter });
     menu->setLayout(menuLayout);
 
-    addChild(menu);
+    addChildAtPosition(menu, Anchor::Right, { -7.5f, 0.0f });
 
     auto onlineCompat = (m_impl->option->isOnline() ? m_impl->hasInternet : true);
 
     // info button
     auto infoBtn = Button::createWithSpriteFrameName(
-        (m_impl->compatible) ? (onlineCompat ? cw::sprites::info : "geode.loader/info-warning.png") : "geode.loader/info-alert.png",
+        (m_impl->compatible) ? (onlineCompat ? cw::sprites::info : "info-warning.png"_gode) : "info-alert.png"_gode,
         [this](auto) {
             auto formatDesc = fmt::format("{}\n\n{}{}{}", (m_impl->option->getDescription().size() > 0) ? m_impl->option->getDescription() : "<cc>No description provided.</c>", m_impl->option->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(m_impl->option->getSillyTier(), m_impl->compatible), m_impl->option->isCheating() ? "\n<ca>Cheat Option</c>" : "");
 
@@ -264,86 +262,87 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
 
     menu->addChild(infoBtn);
 
-    auto pinOff = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
-    pinOff->setOpacity(75);
-    auto pinOn = CCSprite::createWithSpriteFrameName("geode.loader/pin.png");
-    pinOn->setOpacity(225);
+    if (!view) {
+        auto pinOff = CCSprite::createWithSpriteFrameName("pin.png"_gode);
+        pinOff->setOpacity(75);
+        auto pinOn = CCSprite::createWithSpriteFrameName("pin.png"_gode);
+        pinOn->setOpacity(225);
 
-    pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
-    pinOn->setColor(themes::getColor(theme));
+        pinOff->setBlendFunc({ GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA });
+        pinOn->setColor(themes::getColor(theme));
 
-    auto pinBtn = Toggler::create(pinOff, pinOn, [this](auto, bool toggled) {
-        options::set(m_impl->option->getID(), options::isEnabled(m_impl->option->getID()), toggled, true);
+        auto pinBtn = Toggler::create(pinOff, pinOn, [this](auto, bool toggled) {
+            options::set(m_impl->option->getID(), options::isEnabled(m_impl->option->getID()), toggled, true);
 
-        if (m_impl->pinCallback) m_impl->pinCallback();
-        m_impl->hideNewLabel();
-    });
-    pinBtn->setID("pin-btn");
-    pinBtn->setScale(0.425f);
+            if (m_impl->pinCallback) m_impl->pinCallback();
+            m_impl->hideNewLabel();
+        });
+        pinBtn->setID("pin-btn");
+        pinBtn->setScale(0.425f);
 
-    pinBtn->setToggled(options::isPinned(m_impl->option->getID()));
+        pinBtn->setToggled(options::isPinned(m_impl->option->getID()));
 
-    menu->addChild(pinBtn);
+        menu->addChild(pinBtn);
+
+        auto newContainerLayout = RowLayout::create()
+                                      ->setGap(1.25f)
+                                      ->setAutoScale(false)
+                                      ->setAutoGrowAxis(0.0f);
+
+        m_impl->newContainer = CCNode::create();
+        m_impl->newContainer->setID("new-option-container");
+        m_impl->newContainer->setAnchorPoint({ 0, 0.5 });
+        m_impl->newContainer->setLayout(newContainerLayout);
+        m_impl->newContainer->setZOrder(9);
+
+        addChildAtPosition(m_impl->newContainer, Anchor::BottomLeft, { x, 5.25f });
+
+        auto newIcon = CCSprite::createWithSpriteFrameName("updates-available.png"_gode);
+        newIcon->setID("new-option-icon");
+        newIcon->setScale(0.25f);
+
+        auto newLabel = Label::create("New!", cw::font::big);
+        newLabel->setID("new-option-label");
+        newLabel->setScale(0.25f);
+        newLabel->setColor(cw::colors::cyan);
+
+        m_impl->newContainer->addChild(newIcon);
+        m_impl->newContainer->addChild(newLabel);
+
+        m_impl->newContainer->updateLayout();
+
+        m_impl->newContainer->setVisible(!options::isViewed(m_impl->option->getID()));
+        m_impl->newContainer->setScale(0.75f);
+
+        if (!m_impl->compatible) {
+            m_impl->toggler->setToggled(false);
+
+            static_cast<CCSprite*>(m_impl->toggler->getOffNode())->setColor(cw::colors::gray);
+            static_cast<CCSprite*>(m_impl->toggler->getOnNode())->setColor(cw::colors::gray);
+
+            bg->setColor(cw::colors::gray);
+
+            nameLabel->setColor(cw::colors::gray);
+            categoryLabel->setColor(cw::colors::gray);
+
+            m_impl->saveTogglerState();
+        };
+
+        if (devMode) {
+            auto idLabel = Label::create(fmt::format("{} ({}) | {} delegate(s)", m_impl->option->getID(), m_impl->option->getIDHash(), options::getDelegates(m_impl->option->getID())), cw::font::chat);
+            idLabel->setID("id-label");
+            idLabel->setScale(0.375f);
+            idLabel->setAlignment(Label::Alignment::Right);
+            idLabel->setLimitLabelWidth(getScaledContentWidth() - 65.0f);
+            idLabel->setAnchorPoint({ 1, 0 });
+            idLabel->setColor(cw::colors::black);
+            idLabel->setOpacity(125);
+
+            addChildAtPosition(idLabel, Anchor::BottomRight, { -2.5f, 2.5f });
+        };
+    };
 
     menu->updateLayout();
-
-    auto newContainerLayout = RowLayout::create()
-                                  ->setGap(1.25f)
-                                  ->setAutoScale(false)
-                                  ->setAutoGrowAxis(0.0f);
-
-    m_impl->newContainer = CCNode::create();
-    m_impl->newContainer->setID("new-option-container");
-    m_impl->newContainer->setAnchorPoint({ 0, 0.5 });
-    m_impl->newContainer->setPosition({ x, 5.25f });
-    m_impl->newContainer->setLayout(newContainerLayout);
-
-    addChild(m_impl->newContainer, 9);
-
-    auto newIcon = CCSprite::createWithSpriteFrameName("geode.loader/updates-available.png");
-    newIcon->setID("new-option-icon");
-    newIcon->setScale(0.25f);
-
-    auto newLabel = Label::create("New!", cw::font::big);
-    newLabel->setID("new-option-label");
-    newLabel->setScale(0.25f);
-    newLabel->setColor(cw::colors::cyan);
-
-    m_impl->newContainer->addChild(newIcon);
-    m_impl->newContainer->addChild(newLabel);
-
-    m_impl->newContainer->updateLayout();
-
-    m_impl->newContainer->setVisible(!options::isViewed(m_impl->option->getID()));
-    m_impl->newContainer->setScale(0.75f);
-
-    if (!m_impl->compatible) {
-        m_impl->toggler->setToggled(false);
-
-        static_cast<CCSprite*>(m_impl->toggler->getOffNode())->setColor(cw::colors::gray);
-        static_cast<CCSprite*>(m_impl->toggler->getOnNode())->setColor(cw::colors::gray);
-
-        bg->setColor(cw::colors::gray);
-
-        nameLabel->setColor(cw::colors::gray);
-        categoryLabel->setColor(cw::colors::gray);
-
-        m_impl->saveTogglerState();
-    };
-
-    if (devMode) {
-        auto idLabel = Label::create(fmt::format("{} ({}) | {} delegate(s)", m_impl->option->getID(), m_impl->option->getIDHash(), options::getDelegates(m_impl->option->getID())), cw::font::chat);
-        idLabel->setID("id-label");
-        idLabel->setScale(0.375f);
-        idLabel->setAlignment(Label::Alignment::Right);
-        idLabel->setLimitLabelWidth(getScaledContentWidth() - 65.0f);
-        idLabel->setPosition({ getScaledContentWidth() - 2.5f, 2.5f });
-        idLabel->setAnchorPoint({ 1, 0 });
-        idLabel->setColor(cw::colors::black);
-        idLabel->setOpacity(125);
-
-        addChild(idLabel);
-    };
 
     return true;
 }
@@ -360,9 +359,9 @@ bool MenuOptionCell::isCompatible() const noexcept {
     return m_impl->compatible;
 }
 
-MenuOptionCell* MenuOptionCell::create(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet) {
+MenuOptionCell* MenuOptionCell::create(CCSize const& size, SharedOption option, ZStringView theme, bool devMode, bool hasInternet, bool view) {
     auto ret = new MenuOptionCell();
-    if (ret->init(size, std::move(option), theme, devMode, hasInternet)) {
+    if (ret->init(size, std::move(option), theme, devMode, hasInternet, view)) {
         ret->autorelease();
         return ret;
     };

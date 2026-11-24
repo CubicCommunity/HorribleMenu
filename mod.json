@@ -1,5 +1,5 @@
 {
-    "geode": "6.0.0-beta.2",
+    "geode": "6.0.0-beta.3",
     "gd": {
         "win": "2.2091",
         "android": "2.2091",
@@ -175,6 +175,13 @@
             "type": "bool",
             "name": "Force Menu Animation",
             "description": "Always display the opening animation for the <cg>Horrible Options</c> menu regardless if you have <cg>Fast Menu</c> enabled.",
+            "default": false,
+            "enable-if": "!menu-legacy-ui"
+        },
+        "menu-legacy-ui": {
+            "type": "bool",
+            "name": "Legacy Menu UI",
+            "description": "Use the previous UI design for the <cg>Horrible Options</c> menu.",
             "default": false
         },
         "floating-btn-section": {

@@ -24,10 +24,11 @@ namespace cs::brkd::horrible {
         MenuOptionCell();
         ~MenuOptionCell();
 
-        bool init(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme, bool devMode, bool hasInternet);
+        bool init(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme, bool devMode, bool hasInternet, bool view);
 
     public:
-        static MenuOptionCell* create(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false);
+        static MenuOptionCell* create(cocos2d::CCSize const& size, SharedOption option, geode::ZStringView theme = "", bool devMode = false, bool hasInternet = false, bool view = false);
+        static MenuOptionCell* createView(float width, SharedOption option);
 
         void setPinCallback(Callback&& callback);
 
