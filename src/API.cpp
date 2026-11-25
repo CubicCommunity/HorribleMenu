@@ -15,8 +15,8 @@
 using namespace geode::prelude;
 using namespace cs::brkd::horrible;
 
-Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(Value const& value) {
-    HorribleOptionSave out;
+Result<OptionSave> matjson::Serialize<OptionSave>::fromJson(Value const& value) {
+    OptionSave out;
 
     GEODE_UNWRAP_INTO(out.enabled, value["enabled"].asBool());
     GEODE_UNWRAP_INTO(out.pin, value["pin"].asBool());
@@ -25,7 +25,7 @@ Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(Valu
     return Ok(out);
 }
 
-matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave const& value) {
+matjson::Value matjson::Serialize<OptionSave>::toJson(OptionSave const& value) {
     Value out;
     out["enabled"] = value.enabled;
     out["pin"] = value.pin;

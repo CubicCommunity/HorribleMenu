@@ -10,16 +10,13 @@
 
 #include <Geode/platform/platform.hpp>
 
-struct HorribleOptionSave final {
-    bool enabled = false;
-    bool pin = false;
-    bool viewed = false;
-};
-
 // Container for Horrible Menu API
 namespace cs::brkd::horrible {
-    // Alias for `HorribleOptionSave`
-    using OptionSave = HorribleOptionSave;
+    struct OptionSave final {
+        bool enabled = false;
+        bool pin = false;
+        bool viewed = false;
+    };
 
     // Alias for `geode::PlatformID`
     using Platform = geode::PlatformID;
@@ -93,4 +90,10 @@ namespace cs::brkd::horrible {
 
     // Alias for `std::shared_ptr<Option>`
     using SharedOption = Option::SharedSelf;
+};
+
+template <>
+struct matjson::Serialize<cs::brkd::horrible::OptionSave> final {
+    static geode::Result<cs::brkd::horrible::OptionSave> fromJson(Value const& value);
+    static matjson::Value toJson(cs::brkd::horrible::OptionSave const& value);
 };

@@ -15,12 +15,6 @@
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/ZStringView.hpp>
 
-template <>
-struct matjson::Serialize<HorribleOptionSave> final {
-    static geode::Result<HorribleOptionSave> fromJson(Value const& value);
-    static matjson::Value toJson(HorribleOptionSave const& value);
-};
-
 // Container for Horrible Menu API functions
 namespace cs::brkd::horrible {
     template <class T>
@@ -170,6 +164,10 @@ namespace cs::brkd::horrible {
 
     /// Check whether the current user supports Breakeode on Ko-fi
     BRKD_HORRIBLE_API_DLL bool isSupporter() noexcept;
+};
+
+namespace hm::api {
+    using namespace cs::brkd::horrible;
 };
 
 // Statically register an option

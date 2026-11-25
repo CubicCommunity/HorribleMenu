@@ -42,7 +42,7 @@ bool MenuSafeModePopup::init() {
 
         m_mainLayer->addChildAtPosition(nothing, Anchor::Center, { 0.0f, -6.75f });
 
-        auto nothingDesc = Label::createRich("<cr>Safe Mode</c> might be enabled <cy>manually</c>, or <co>another mod force-enabled it</c>.", cw::font::chat);
+        auto nothingDesc = Label::createRich("<cr>Safe Mode</c> might be enabled <cy>manually</c>, or <co>another mod enabled anti-cheat</c>.", cw::font::chat);
         nothingDesc->setScale(0.625f);
         nothingDesc->setAnchorPoint({ 0.5f, 1.0f });
         nothingDesc->setMaxWidth((bg->getScaledContentWidth() * 0.95f) / nothingDesc->getScale());

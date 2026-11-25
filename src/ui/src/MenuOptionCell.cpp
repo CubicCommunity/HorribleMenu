@@ -104,10 +104,10 @@ struct MenuOptionCell::Impl final {
         switch (silly) {
             default: [[fallthrough]];
 
+            case SillyTier::None: return "Silly Tier - UNKNOWN";
             case SillyTier::Low: return "<cg>Silly Tier - LOW</c>";
             case SillyTier::Medium: return "<cy>Silly Tier - MEDIUM</c>";
             case SillyTier::High: return "<cr>Silly Tier - HIGH</c>";
-            case SillyTier::None: return "Silly Tier - UNKNOWN";
         };
     }
 
@@ -371,7 +371,7 @@ SharedOption const& MenuOptionCell::getOption() const noexcept {
 }
 
 bool MenuOptionCell::isCompatible() const noexcept {
-    return m_impl->incompat != IncompatType::None;
+    return m_impl->incompat != IncompatType::Platform;
 }
 
 MenuOptionCell* MenuOptionCell::createView(float width, SharedOption option, ZStringView theme) {
