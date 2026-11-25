@@ -62,7 +62,7 @@ namespace cs::brkd::horrible::hooks {
     }
 
 $on_game(Loaded) {
-    if (auto om = OptionManager::get()) hooks::toggleSafeModeHooks(om->shouldBeSafeMode());
+    hooks::toggleSafeModeHooks(OptionManager::get()->shouldBeSafeMode());
 
     listenForSettingChanges<bool>(
         setting::SafeMode,
@@ -74,7 +74,7 @@ $on_game(Loaded) {
     listenForSettingChanges<bool>(
         setting::DynamicSafeMode,
         [](bool) {
-            if (auto om = OptionManager::get()) hooks::toggleSafeModeHooks(om->shouldBeSafeMode());
+            hooks::toggleSafeModeHooks(OptionManager::get()->shouldBeSafeMode());
         }
     );
 

@@ -172,25 +172,23 @@ OptionManager::OptionManager() : m_impl(std::make_unique<Impl>()) {}
 OptionManager::~OptionManager() = default;
 
 bool Option::isEnabled() const& {
-    if (auto om = OptionManager::get()) return om->isEnabled(getID());
-    return false;
+    return OptionManager::get()->isEnabled(getID());
 }
 
 bool Option::isPinned() const& {
-    if (auto om = OptionManager::get()) return om->isPinned(getID());
-    return false;
+    return OptionManager::get()->isPinned(getID());
 }
 
 void Option::enable() & {
-    if (auto om = OptionManager::get()) om->toggleOption(getID(), true);
+    OptionManager::get()->toggleOption(getID(), true);
 }
 
 void Option::disable() & {
-    if (auto om = OptionManager::get()) om->toggleOption(getID(), false);
+    OptionManager::get()->toggleOption(getID(), false);
 }
 
 Option::SharedSelf Option::autoRegister() {
-    if (auto om = OptionManager::get()) (void)om->registerOption(shared_from_this());
+    (void)OptionManager::get()->registerOption(shared_from_this());
     return shared_from_this();
 }
 
@@ -402,6 +400,8 @@ void OptionManager::toggleOption(uint64_t id, bool enable) {
 
 void OptionManager::setOption(std::string_view id, bool enable, bool pin, bool viewed) {
     if (auto opt = getOptionInfo(id).lock()) {
+        if (enable && isAnticheatEnabled() && opt->isCheating()) return log::error("Attempted to enable cheat option '{}', but anti-cheat is enabled!", id);
+
         auto const it = m_impl->delegates.find(id);
         if (it != m_impl->delegates.end()) {
             for (auto& cb : it->second) cb(enable);
@@ -452,31 +452,29 @@ OptionManager* OptionManager::get() noexcept {
 }
 
 void cs::brkd::horrible::delegateHooks(ZStringView id, StringMap<std::shared_ptr<Hook>> const& hooks) {
-    if (auto om = OptionManager::get()) {
-        auto value = om->isEnabled(id);
+    auto om = OptionManager::get();
 
-        std::vector<std::weak_ptr<Hook>> allHooks;
-        for (auto const& hook : hooks | std::views::values) {
-            hook->setAutoEnable(value);
-            log::trace("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
+    auto value = om->isEnabled(id);
 
-            allHooks.push_back(hook);
-        };
+    std::vector<std::weak_ptr<Hook>> allHooks;
+    for (auto const& hook : hooks | std::views::values) {
+        hook->setAutoEnable(value);
+        log::trace("Set default state of '{}' hook for option {} to {}", hook->getDisplayName(), id, value ? "ON" : "OFF");
 
-        om->addDelegate(
-            id,
-            [id, allHooks = std::move(allHooks)](bool value) {
-                for (auto const& hook : allHooks) {
-                    if (auto const h = hook.lock()) {
-                        log::trace("Toggling {} hook '{}' {}...", id, h->getDisplayName(), cw::str::isOnOff(value));
-                        (void)h->toggle(value);
-                    };
-                };
-            }
-        );
-    } else {
-        log::error("Failed to get OptionManager to delegate hooks for option {}", id);
+        allHooks.push_back(hook);
     };
+
+    om->addDelegate(
+        id,
+        [id, allHooks = std::move(allHooks)](bool value) {
+            for (auto const& hook : allHooks) {
+                if (auto const h = hook.lock()) {
+                    log::trace("Toggling {} hook '{}' {}...", id, h->getDisplayName(), cw::str::isOnOff(value));
+                    (void)h->toggle(value);
+                };
+            };
+        }
+    );
 }
 
 Result<> OptionManagerV2::registerOption(OptionV2 const& option) {

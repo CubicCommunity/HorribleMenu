@@ -3,6 +3,9 @@
   - Raised minimum Geode loader support to `v6.0.0`
 - Option *Parry Obstacles* is no longer in development
 - Adjusted randomization pacing for *Input Roulette* option
+- Added new Safe Mode pop-up to view active cheat options
+- Added anti-cheat mode for external mods to toggle via API
+  - This will auto-disable and prevent the activation of options marked as cheats
 - Added new *Horrible Options Menu* opening animation
   - Added toggle setting `Force Menu Animation`
 - Adjusted UI in *Horrible Options Menu*

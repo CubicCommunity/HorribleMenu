@@ -288,48 +288,48 @@ bool MenuCredits::init(ZStringView theme) {
 
     m_mainLayer->addChild(modBtn, 9);
 
-    if (auto om = OptionManager::get()) {
-        auto integrations = om->getMods();
-        auto str = (integrations.size() > 0) ? fmt::format("Here's the <cg>full list of your installed mods (**`{}`**)</c> which <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---", integrations.size()) : "If <cg>different mods</c> use this mod's API to <cy>add their own options</c>, they will all be listed here.";
+    auto om = OptionManager::get();
 
-        if (integrations.size() > 0) {
-            for (auto const& i : integrations) {
-                log::trace("Listing mod {}", i->getID());
-                str = fmt::format("{}\n\n<mod:{}>", str, i->getID());
-            };
+    auto integrations = om->getMods();
+    auto str = (integrations.size() > 0) ? fmt::format("Here's the <cg>full list of your installed mods (**`{}`**)</c> which <cy>currently add their own features as options to [Horrible Menu](mod:cubicstudios.horriblemenu)</c>.\n\n---", integrations.size()) : "If <cg>different mods</c> use this mod's API to <cy>add their own options</c>, they will all be listed here.";
+
+    if (integrations.size() > 0) {
+        for (auto const& i : integrations) {
+            log::trace("Listing mod {}", i->getID());
+            str = fmt::format("{}\n\n<mod:{}>", str, i->getID());
         };
-
-        auto integrationsBtn = Button::createWithNode(
-            CircleButtonSprite::createWithSpriteFrameName(
-                "grid-view.png"_gode,
-                0.75f,
-                btns
-            ),
-            [integrations = std::move(integrations), str = std::move(str)](auto) {
-                if (integrations.size() > 0) {
-                    MDPopup::create(
-                        "Integrations",
-                        str,
-                        "OK"
-                    )
-                        ->show();
-                } else {
-                    cw::showAlert(
-                        "Integrations",
-                        str,
-                        "OK",
-                        nullptr,
-                        nullptr
-                    );
-                };
-            }
-        );
-        integrationsBtn->setID("integrations-btn");
-        integrationsBtn->setScale(0.5f);
-        integrationsBtn->setPosition({ m_mainLayer->getScaledContentWidth() - 15.0f, 15.0f });
-
-        m_mainLayer->addChild(integrationsBtn, 9);
     };
+
+    auto integrationsBtn = Button::createWithNode(
+        CircleButtonSprite::createWithSpriteFrameName(
+            "grid-view.png"_gode,
+            0.75f,
+            btns
+        ),
+        [integrations = std::move(integrations), str = std::move(str)](auto) {
+            if (integrations.size() > 0) {
+                MDPopup::create(
+                    "Integrations",
+                    str,
+                    "OK"
+                )
+                    ->show();
+            } else {
+                cw::showAlert(
+                    "Integrations",
+                    str,
+                    "OK",
+                    nullptr,
+                    nullptr
+                );
+            };
+        }
+    );
+    integrationsBtn->setID("integrations-btn");
+    integrationsBtn->setScale(0.5f);
+    integrationsBtn->setPosition({ m_mainLayer->getScaledContentWidth() - 15.0f, 15.0f });
+
+    m_mainLayer->addChild(integrationsBtn, 9);
 
     cw::addHelpButton(
         m_mainLayer,
