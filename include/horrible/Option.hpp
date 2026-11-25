@@ -26,10 +26,17 @@ namespace cs::brkd::horrible {
 
     // How silly an option is
     enum class SillyTier : uint8_t {
-        None = 0,    // Null, act as placeholder
-        Low = 1,     // Not so silly
-        Medium = 2,  // Somewhat silly
-        High = 3     // Very silly
+        None,    // Null, act as placeholder
+        Low,     // Not so silly
+        Medium,  // Somewhat silly
+        High     // Very silly
+    };
+
+    enum class IncompatType : uint8_t {
+        None,       // Perfectly fine
+        Platform,   // Cannot work for the current platform
+        Internet,   // Requires internet connection
+        Anticheat,  // Disabled by anti-cheat
     };
 
     // Metadata for a horrible option
@@ -57,7 +64,7 @@ namespace cs::brkd::horrible {
         SharedSelf setDefaultToggleState(bool state);
         SharedSelf setOnline(bool online);
         SharedSelf setRequiresRestart(bool required);
-        SharedSelf setSupportedPlatforms(std::vector<Platform> platforms);
+        SharedSelf setSupportedPlatforms(std::unordered_set<Platform> platforms);
         SharedSelf setCheating(bool cheat);
 
         SharedSelf autoRegister();
@@ -70,7 +77,7 @@ namespace cs::brkd::horrible {
         SillyTier getSillyTier() const noexcept;
         bool isOnline() const noexcept;
         bool isRestartRequired() const noexcept;
-        std::span<const Platform> getSupportedPlatforms() const noexcept;
+        std::unordered_set<Platform> const& getSupportedPlatforms() const noexcept;
         bool isCheating() const noexcept;
         const geode::Mod* getIntegration() const noexcept;
 

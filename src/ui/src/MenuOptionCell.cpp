@@ -53,7 +53,7 @@ MenuNothingNode* MenuNothingNode::create(CCSize const& size, CCPoint const& pos)
 }
 
 struct MenuOptionCell::Impl final {
-    bool compatible = false;  // If this option is compatible with the current platform
+    IncompatType incompat = IncompatType::None;  // If this option is usable
 
     SharedOption option;  // A view into the option value :)
 
@@ -73,24 +73,33 @@ struct MenuOptionCell::Impl final {
     }
 
     // Notify the user if this option is not compatible for their current platform
-    void notifyIncompats() {
-        if (compatible) {
-            if (!(option->isOnline() ? hasInternet : true)) {  // woah evil gay ternaries !!!
+    void notifyIncompats() const {
+        switch (incompat) {
+            default: return;
+
+            case IncompatType::Platform: {
+                log::warn("Option {} is unavailable for platform {}", option->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
+                Notification::create(fmt::format("{} is not available for {}", option->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error)->show();
+            }; break;
+
+            case IncompatType::Internet: {
                 log::warn("Option {} requires a working internet connection to function", option->getID());
-                Notification::create(fmt::format("{} needs internet to work properly", option->getName()), NotificationIcon::Warning, 2.5f)->show();
-            };
-        } else {
-            log::warn("Option {} is unavailable for platform {}", option->getID(), GEODE_PLATFORM_SHORT_IDENTIFIER);
-            Notification::create(fmt::format("{} is not available for {}", option->getName(), GEODE_PLATFORM_NAME), NotificationIcon::Error, 1.25f)->show();
-        };
+                Notification::create(fmt::format("{} needs internet to work properly", option->getName()), NotificationIcon::Warning)->show();
+            }; break;
+
+            case IncompatType::Anticheat: {
+                log::warn("Option {} is unavailable due to anti-cheats", option->getID());
+                Notification::create(fmt::format("{} is not available with anti-cheat", option->getName()), NotificationIcon::Error)->show();
+            }; break;
+        }
     }
 
     void hideNewLabel() {
         newContainer->setVisible(false);
     }
 
-    constexpr auto getTierDescString(SillyTier silly, bool compat) noexcept {
-        if (!compat) return "<cp>OPTION UNAVAILABLE</c>";
+    constexpr auto getTierDescString(SillyTier silly, IncompatType incompat) const noexcept {
+        if (incompat != IncompatType::None) return "<cp>OPTION UNAVAILABLE</c>";
 
         switch (silly) {
             default: [[fallthrough]];
@@ -102,7 +111,7 @@ struct MenuOptionCell::Impl final {
         };
     }
 
-    constexpr auto getTierColor(SillyTier silly) noexcept {
+    constexpr auto getTierColor(SillyTier silly) const noexcept {
         switch (silly) {
             default:
                 return cw::colors::white;
@@ -130,11 +139,16 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     m_impl->option = std::move(option);
     m_impl->hasInternet = hasInternet;
 
-    // check for compatibility
-    for (auto const& p : m_impl->option->getSupportedPlatforms()) {
-        if (p & GEODE_PLATFORM_TARGET) {
-            m_impl->compatible = true;
-            break;
+    if (m_impl->option->isCheating() && OptionManager::get()->isAnticheatEnabled()) m_impl->incompat = IncompatType::Anticheat;
+
+    if (m_impl->incompat == IncompatType::None) {
+        // check for compatibility
+        m_impl->incompat = IncompatType::Platform;
+        for (auto const& p : m_impl->option->getSupportedPlatforms()) {
+            if (p & GEODE_PLATFORM_TARGET) {
+                m_impl->incompat = IncompatType::None;
+                break;
+            };
         };
     };
 
@@ -166,7 +180,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
         m_impl->toggler = Toggler::createWithStandardSprites(
             0.875f,
             [this](auto, bool now) {
-                if (m_impl->compatible) {
+                if (m_impl->incompat == IncompatType::None) {
                     auto saved = options::get(m_impl->option->getID());
                     options::set(m_impl->option->getID(), now, saved.pin, true);
 
@@ -232,12 +246,13 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
     addChildAtPosition(menu, Anchor::Right, { -7.5f, 0.0f });
 
     auto onlineCompat = (m_impl->option->isOnline() ? m_impl->hasInternet : true);
+    if (m_impl->incompat == IncompatType::None && !onlineCompat) m_impl->incompat = IncompatType::Internet;
 
     // info button
     auto infoBtn = Button::createWithSpriteFrameName(
-        (m_impl->compatible) ? (onlineCompat ? cw::sprites::info : "info-warning.png"_gode) : "info-alert.png"_gode,
+        (m_impl->incompat == IncompatType::None) ? (onlineCompat ? cw::sprites::info : "info-warning.png"_gode) : "info-alert.png"_gode,
         [this](auto) {
-            auto formatDesc = fmt::format("{}\n\n{}{}{}", (m_impl->option->getDescription().size() > 0) ? m_impl->option->getDescription() : "<cc>No description provided.</c>", m_impl->option->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(m_impl->option->getSillyTier(), m_impl->compatible), m_impl->option->isCheating() ? "\n<ca>Cheat Option</c>" : "");
+            auto formatDesc = fmt::format("{}\n\n{}{}{}", (m_impl->option->getDescription().size() > 0) ? m_impl->option->getDescription() : "<cc>No description provided.</c>", m_impl->option->isOnline() ? "<co>An internet connection is required.</c>\n" : "", m_impl->getTierDescString(m_impl->option->getSillyTier(), m_impl->incompat), m_impl->option->isCheating() ? "\n<ca>Cheat Option</c>" : "");
 
             cw::showAlert(
                 m_impl->option->getName(),
@@ -314,7 +329,7 @@ bool MenuOptionCell::init(CCSize const& size, SharedOption option, ZStringView t
         m_impl->newContainer->setVisible(!options::isViewed(m_impl->option->getID()));
         m_impl->newContainer->setScale(0.75f);
 
-        if (!m_impl->compatible) {
+        if (m_impl->incompat != IncompatType::None) {
             m_impl->toggler->setToggled(false);
 
             static_cast<CCSprite*>(m_impl->toggler->getOffNode())->setColor(cw::colors::gray);
@@ -356,7 +371,7 @@ SharedOption const& MenuOptionCell::getOption() const noexcept {
 }
 
 bool MenuOptionCell::isCompatible() const noexcept {
-    return m_impl->compatible;
+    return m_impl->incompat != IncompatType::None;
 }
 
 MenuOptionCell* MenuOptionCell::createView(float width, SharedOption option, ZStringView theme) {

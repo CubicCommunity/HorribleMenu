@@ -52,7 +52,7 @@ class $modify(FlicksPlayLayer, PlayLayer) {
         });
     }
 
-    bool platformCompat(std::span<const Platform> plats) {
+    bool platformCompat(std::unordered_set<Platform> const& plats) {
         for (auto const& p : plats) {
             if (p & GEODE_PLATFORM_TARGET) return true;
         };

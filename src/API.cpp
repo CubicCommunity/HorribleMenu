@@ -35,17 +35,17 @@ matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave
 }
 
 struct Option::Impl final {
-    asp::BoxedString const id;                         // Unique ID of the option
-    std::string name{ "Example Option" };              // Name of the option
-    std::string description;                           // Description of the option
-    std::string category{ "Uncategorized" };           // Name of the category this option should be under
-    SillyTier silly = SillyTier::None;                 // How silly the option is
-    bool defaultTo = false;                            // Default toggle state for this option
-    bool online = false;                               // If the option requires an active internet connection to work properly
-    bool restart = false;                              // If the option requires a game restart to take effect
-    std::vector<Platform> platforms{ Platform::All };  // Platforms that the option supports
-    bool isCheating = false;                           // If the option counts as cheating and will trigger dynamic safe mode
-    const Mod* const integration = nullptr;            // External mod that registered this option
+    asp::BoxedString const id;                                // Unique ID of the option
+    std::string name{ "Example Option" };                     // Name of the option
+    std::string description;                                  // Description of the option
+    std::string category{ "Uncategorized" };                  // Name of the category this option should be under
+    SillyTier silly = SillyTier::None;                        // How silly the option is
+    bool defaultTo = false;                                   // Default toggle state for this option
+    bool online = false;                                      // If the option requires an active internet connection to work properly
+    bool restart = false;                                     // If the option requires a game restart to take effect
+    std::unordered_set<Platform> platforms{ Platform::All };  // Platforms that the option supports
+    bool isCheating = false;                                  // If the option counts as cheating and will trigger dynamic safe mode
+    const Mod* const integration = nullptr;                   // External mod that registered this option
 
     uint64_t idHash = 0;  // FNV-1a-hashed unique ID of the option
 
@@ -90,7 +90,7 @@ Option::SharedSelf Option::setRequiresRestart(bool required) {
     return shared_from_this();
 }
 
-Option::SharedSelf Option::setSupportedPlatforms(std::vector<Platform> platforms) {
+Option::SharedSelf Option::setSupportedPlatforms(std::unordered_set<Platform> platforms) {
     m_impl->platforms = std::move(platforms);
     return shared_from_this();
 }
@@ -132,7 +132,7 @@ bool Option::isRestartRequired() const noexcept {
     return m_impl->restart;
 }
 
-std::span<const Platform> Option::getSupportedPlatforms() const noexcept {
+std::unordered_set<Platform> const& Option::getSupportedPlatforms() const noexcept {
     return m_impl->platforms;
 }
 
@@ -163,6 +163,9 @@ struct OptionManager::Impl final {
 
     StringMap<std::vector<Callback>> delegates;  // Map of option ID to array of delegates to call when that option is toggled
     std::unordered_set<uint64_t> enabledCheats;  // Map of currently enabled cheat options, used for dynamic safe mode
+
+    bool isAnticheat = false;                 // If a mod enabled anti-cheat mode
+    std::unordered_set<uint64_t> prevCheats;  // Options disable when anti-cheat was enabled
 };
 
 OptionManager::OptionManager() : m_impl(std::make_unique<Impl>()) {}
@@ -294,6 +297,18 @@ std::vector<const Mod*> OptionManager::getMods() const {
     for (auto const& [k, v] : m_impl->integrations) out.push_back(v);
 
     return out;
+}
+
+void OptionManager::toggleAnticheat(bool enable) {
+    m_impl->isAnticheat = enable;
+
+    if (enable) m_impl->prevCheats = m_impl->enabledCheats;
+    for (auto const& cheat : m_impl->prevCheats) toggleOption(cheat, !enable);
+    if (!enable) m_impl->prevCheats.clear();
+}
+
+bool OptionManager::isAnticheatEnabled() const noexcept {
+    return m_impl->isAnticheat;
 }
 
 bool OptionManager::isEnabled(std::string_view id) const {
@@ -490,4 +505,12 @@ void OptionManagerV2::toggleOption(std::string_view id, bool enable) {
 
 bool OptionManagerV2::isEnabled(std::string_view id) {
     return OptionManager::get()->isEnabled(id);
+}
+
+void OptionManagerV2::toggleAnticheat(bool enable) {
+    OptionManager::get()->toggleAnticheat(enable);
+}
+
+bool OptionManagerV2::isAnticheatEnabled() {
+    return OptionManager::get()->isAnticheatEnabled();
 }

@@ -154,6 +154,13 @@ namespace cs::brkd::horrible {
 
         /// Returns a vector of all registered Geode mod integrations
         std::vector<const geode::Mod*> getMods() const;
+
+        /// Set the state of anti-cheat
+        /// @param enable Boolean to toggle to
+        void toggleAnticheat(bool enable);
+
+        /// Check the state of anti-cheat
+        bool isAnticheatEnabled() const noexcept;
     };
 
     /// Delegate hooks to OptionManager for dynamic toggling

@@ -19,16 +19,16 @@ namespace cs::brkd::horrible {
         const geode::Mod* const integration = nullptr;  // External mod that registered this option
 
     public:
-        std::string id;                   // Unique ID of the option
-        std::string name;                 // Name of the option
-        std::string description;          // Description of the option
-        std::string category;             // Name of the category this option should be under
-        SillyTier silly;                  // How silly the option is
-        bool state;                       // Default toggle state for this option
-        bool online;                      // If the option requires an active internet connection to work properly
-        bool restart;                     // If the option requires a game restart to take effect
-        std::vector<Platform> platforms;  // Platforms that the option supports
-        bool cheating;                    // If the option counts as cheating and will trigger dynamic safe mode
+        std::string id;                          // Unique ID of the option
+        std::string name;                        // Name of the option
+        std::string description;                 // Description of the option
+        std::string category;                    // Name of the category this option should be under
+        SillyTier silly;                         // How silly the option is
+        bool state;                              // Default toggle state for this option
+        bool online;                             // If the option requires an active internet connection to work properly
+        bool restart;                            // If the option requires a game restart to take effect
+        std::unordered_set<Platform> platforms;  // Platforms that the option supports
+        bool cheating;                           // If the option counts as cheating and will trigger dynamic safe mode
 
         OptionV2() = default;  // Default constructor
 
@@ -42,7 +42,7 @@ namespace cs::brkd::horrible {
             bool state = false,
             bool online = false,
             bool restart = false,
-            std::vector<Platform> platforms = { Platform::All },
+            std::unordered_set<Platform> platforms = { Platform::All },
             bool cheating = false
         ) :
             id(std::move(id)),
@@ -65,26 +65,24 @@ namespace cs::brkd::horrible {
     // Optional bridge to option manager for Horrible Menu
     class OptionManagerV2 final {
     public:
-        /**
-         * Register a new option
-         *
-         * @param option Constructed option object
-         */
-        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, geode::Result<>, registerOption, (OptionV2 const& option), (option));
+        /// Register a new option
+        /// @param option Constructed option object
+        GEODE_EVENT_EXPORT_MEMBER_STATIC(geode::Result<>, registerOption, (OptionV2 const& option), (option));
 
-        /**
-         * Set the toggle state of an option
-         *
-         * @param id The ID of the option to toggle
-         * @param enable Boolean to toggle to
-         */
-        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, void, toggleOption, (std::string_view id, bool enable), (id, enable));
+        /// Set the toggle state of an option
+        /// @param id The ID of the option to toggle
+        /// @param enable Boolean to toggle to
+        GEODE_EVENT_EXPORT_MEMBER_STATIC(void, toggleOption, (std::string_view id, bool enable), (id, enable));
 
-        /**
-         * Quickly check the toggle state of an option
-         *
-         * @param id The ID of the option to check
-         */
-        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, bool, isEnabled, (std::string_view id), (id));
+        /// Quickly check the toggle state of an option
+        /// @param id The ID of the option to check
+        GEODE_EVENT_EXPORT_MEMBER_STATIC(bool, isEnabled, (std::string_view id), (id));
+
+        /// Set the state of anti-cheat
+        /// @param enable Boolean to toggle to
+        GEODE_EVENT_EXPORT_MEMBER_STATIC(void, toggleAnticheat, (bool enable), (enable));
+
+        /// Check the state of anti-cheat
+        GEODE_EVENT_EXPORT_MEMBER_STATIC(bool, isAnticheatEnabled, (), ());
     };
 };
