@@ -38,22 +38,12 @@ namespace cs::brkd::horrible {
         using SharedSelf = std::shared_ptr<Option>;
 
     private:
-        asp::BoxedString const m_id;                            // Unique ID of the option
-        std::string m_name = "Example Option";                  // Name of the option
-        std::string m_description;                              // Description of the option
-        std::string m_category = "Uncategorized";               // Name of the category this option should be under
-        SillyTier m_silly = SillyTier::None;                    // How silly the option is
-        bool m_default = false;                                 // Default toggle state for this option
-        bool m_online = false;                                  // If the option requires an active internet connection to work properly
-        bool m_restart = false;                                 // If the option requires a game restart to take effect
-        std::vector<Platform> m_platforms = { Platform::All };  // Platforms that the option supports
-        bool m_isCheating = false;                              // If the option counts as cheating and will trigger dynamic safe mode
-        const geode::Mod* const m_integration = nullptr;        // External mod that registered this option
-
-        uint64_t m_idHash = 0;  // FNV-1a-hashed unique ID of the option
+        struct Impl;
+        std::unique_ptr<Impl> m_impl;
 
     public:
         Option(std::string id, const geode::Mod* integration = geode::Mod::get());
+        ~Option();
 
         /// Create a new option metadata object
         /// @param id Unique ID for this option

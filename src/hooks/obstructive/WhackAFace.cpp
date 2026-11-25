@@ -24,14 +24,12 @@ class $modify(WhackAFacePlayLayer, PlayLayer) {
     struct Fields final {
         uint8_t chance = options::getChance(THIS_ID);
 
-        std::vector<WeakRef<WhackButton>> active;
+        std::vector<Ref<WhackButton>> active;
 
         void clearWhackBtns() {
             log::trace("Clearing {} whackable button references", active.size());
 
-            for (auto& whackBtn : active) {
-                if (auto btn = whackBtn.lock()) btn->removeFromParent();
-            };
+            for (auto& btn : active) cue::resetNode(btn);
 
             active.clear();
             active.shrink_to_fit();

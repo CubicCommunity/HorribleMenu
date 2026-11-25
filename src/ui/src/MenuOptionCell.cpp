@@ -86,7 +86,7 @@ struct MenuOptionCell::Impl final {
     }
 
     void hideNewLabel() {
-        if (auto label = WeakRef(newContainer).lock()) label->setVisible(false);
+        newContainer->setVisible(false);
     }
 
     constexpr auto getTierDescString(SillyTier silly, bool compat) noexcept {

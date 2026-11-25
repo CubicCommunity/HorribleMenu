@@ -147,8 +147,8 @@ bool Captcha::init() {
                 "Press on the images that correspond to the provided captcha hint. It is purposefully obscured to make this sillier.\n\n<cc>Refresh the captcha if you can't find any button that matches the hint.</c>",
                 "OK",
                 nullptr,  // captcha popup can exit asynchronously
-                [self = WeakRef(this)](auto, auto) {
-                    if (auto s = self.lock()) s->scheduleUpdate();
+                [this](auto, auto) {
+                    scheduleUpdate();
                 }
             );
         }

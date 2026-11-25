@@ -49,9 +49,9 @@ bool RandomAd::init() {
             cw::font::big,
             themes::getButtonSquareSprite(theme)
         ),
-        [this, loading = WeakRef(playBtnLoading)](Button* sender) {
+        [this, playBtnLoading](Button* sender) {
             sender->setVisible(false);
-            if (auto load = loading.lock()) load->setVisible(true);
+            playBtnLoading->setVisible(true);
 
             if (auto pl = PlayLayer::get()) {
                 if (pl->m_level->m_levelID == HORRIBLE_JUMPSCARES_CONGREG) return removeFromParent();

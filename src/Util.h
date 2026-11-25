@@ -69,21 +69,6 @@ namespace cs::brkd::horrible {
         inline constexpr auto misc = "Misc";
     };
 
-    // class SupporterState final : public base::Singleton<SupporterState> {
-    //     using Callback = geode::CopyableFunction<void(geode::Result<>)>;
-
-    // private:
-    //     bool m_supporter = false;
-
-    //     geode::async::TaskHolder<gdc::LinkResult> m_gdcTask;
-    //     geode::async::TaskHolder<geode::utils::web::WebResponse> m_task;
-
-    // public:
-    //     void validateSupporter(Callback&& cb);
-
-    //     bool isSupporter() const noexcept;
-    // };
-
     // All namespace includes
     namespace prelude {
         using namespace ::cs::brkd::horrible;

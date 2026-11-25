@@ -1,10 +1,17 @@
 # v1.4.0 
-- Raised minimum Geode loader support to `v5.10.0`
+- Ported to Geometry Dash `2.209x`
+  - Raised minimum Geode loader support to `v6.0.0`
 - Option *Parry Obstacles* is no longer in development
 - Adjusted randomization pacing for *Input Roulette* option
+- Added new *Horrible Options Menu* opening animation
+  - Added toggle setting `Force Menu Animation`
+- Adjusted UI in *Horrible Options Menu*
+  - Added toggle setting `Menu Backdrop Opacity`
+  - Added toggle setting `Legacy Menu UI`
 - Added version debug label to *Horrible Options Menu* interface
-- Fix some potential crashes
-- Internal optimizations
+- Removed clunky web-based features
+- Fix some potential crashes & leaks
+- Several internal refactors
 
 # v1.3.0 
 - Raised minimum Geode loader support to `v5.9.0`

@@ -57,11 +57,11 @@ namespace cs::brkd::horrible {
 
         /// Check if an option already exists
         /// @param id The ID of the option to check
-        bool doesOptionExist(geode::ZStringView id) const noexcept;
+        bool doesOptionExist(std::string_view id) const noexcept;
 
         /// Check if an external Geode mod has already been registered in the list of integrations
         /// @param id The ID of the option to check
-        bool isModRegistered(geode::ZStringView id) const noexcept;
+        bool isModRegistered(std::string_view id) const noexcept;
 
     public:
         // Get option manager singleton
@@ -82,39 +82,39 @@ namespace cs::brkd::horrible {
 
         /// Returns a reference to a vector of options for a specific category
         /// @param category The name of the category to check for its assigned options
-        std::span<const SharedOption> getAllOptionsForCategory(geode::ZStringView category) const noexcept;
+        geode::Result<std::vector<SharedOption>> getAllOptionsForCategory(std::string_view category) const noexcept;
 
         /// Quickly check the toggle state of an option
         /// @param id The ID of the option to check
-        bool isEnabled(geode::ZStringView id) const;
+        bool isEnabled(std::string_view id) const;
         bool isEnabled(uint64_t id) const;
 
         /// Quickly check the pin state of an option
         /// @param id The ID of the option to check
-        bool isPinned(geode::ZStringView id) const;
+        bool isPinned(std::string_view id) const;
         bool isPinned(uint64_t id) const;
 
         /// Quickly check the viewed state of an option
         /// @param id The ID of the option to check
-        bool isViewed(geode::ZStringView id) const;
+        bool isViewed(std::string_view id) const;
         bool isViewed(uint64_t id) const;
 
         /// Quickly check if an option is a cheat option
         /// @param id The ID of the option to check
-        bool isCheating(geode::ZStringView id) const;
+        bool isCheating(std::string_view id) const;
 
         /// Quickly check the default toggle state of an option
         /// @param id The ID of the option to check
-        bool getDefaultToggleState(geode::ZStringView id) const noexcept;
+        bool getDefaultToggleState(std::string_view id) const noexcept;
 
         /// Get the saved data of an option
         /// @param id The ID of the option to check
-        OptionSave getOption(geode::ZStringView id) const;
+        OptionSave getOption(std::string_view id) const;
         OptionSave getOption(uint64_t id) const;
 
         /// Returns the data of an option
         /// @param id The ID of the option to get
-        std::weak_ptr<Option> getOptionInfo(geode::ZStringView id) const noexcept;
+        std::weak_ptr<Option> getOptionInfo(std::string_view id) const noexcept;
         std::weak_ptr<Option> getOptionInfo(uint64_t id) const noexcept;
 
         /// Returns the string ID of an option via hash ID lookup
@@ -132,7 +132,7 @@ namespace cs::brkd::horrible {
         /// Set the toggle state of an option
         /// @param id The ID of the option to toggle
         /// @param enable Boolean to toggle to
-        void toggleOption(geode::ZStringView id, bool enable);
+        void toggleOption(std::string_view id, bool enable);
         void toggleOption(uint64_t id, bool enable);
 
         /// Set the state of an option
@@ -140,13 +140,13 @@ namespace cs::brkd::horrible {
         /// @param enable Boolean to toggle to
         /// @param pin If this option is pinned by the user
         /// @param viewed If this option was already viewed by the user
-        void setOption(geode::ZStringView id, bool enable, bool pin = false, bool viewed = true);
+        void setOption(std::string_view id, bool enable, bool pin = false, bool viewed = true);
         void setOption(uint64_t id, bool enable, bool pin = false, bool viewed = true);
 
         /// Upsert a new hook delegate
         /// @param id The ID of the option to set the delegate for
         /// @param callback The hook callback to register for this option's delegate
-        void addDelegate(geode::ZStringView id, Callback&& callback);
+        void addDelegate(std::string id, Callback&& callback);
         void addDelegate(uint64_t id, Callback&& callback);
 
         /// Returns a reference to the vector of all registered categories

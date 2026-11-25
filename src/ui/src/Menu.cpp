@@ -2,7 +2,6 @@
 
 #include "../MenuOptionCell.hpp"
 #include "../MenuCredits.hpp"
-// #include "../MenuExtras.hpp"
 #include "../MenuFilterCells.hpp"
 
 #include <Util.h>
@@ -179,20 +178,16 @@ void Menu::setupImageBackground(cw::fs::PathView path) {
             m_impl->themeBackground->setID("theme-bg");
             m_impl->themeBackground->setPosition(m_bgSprite->getScaledContentSize() / 2.0f);
 
-            m_impl->themeBackground->setLoadCallback([this, themeBg = WeakRef(m_impl->themeBackground)](Result<> res) {
-                if (auto bg = themeBg.lock()) {
-                    if (res.isOk()) {
-                        cue::rescaleToMatch(bg, m_bgSprite, true);
-                        bg->setOpacity(100);
+            m_impl->themeBackground->setLoadCallback([this, bg = m_impl->themeBackground](Result<> res) {
+                if (res.isOk()) {
+                    cue::rescaleToMatch(bg, m_bgSprite, true);
+                    bg->setOpacity(100);
 
-                        log::debug("Successfully loaded theme background");
-                    } else if (res.isErr()) {
-                        log::error("Failed to load theme background: {}", res.unwrapErr());
-                    } else {
-                        log::error("Failed to load theme background for an unknown reason");
-                    };
+                    log::debug("Successfully loaded theme background");
+                } else if (res.isErr()) {
+                    log::error("Failed to load theme background: {}", res.unwrapErr());
                 } else {
-                    log::error("Theme background sprite was destroyed before load callback");
+                    log::error("Failed to load theme background for an unknown reason");
                 };
             });
 

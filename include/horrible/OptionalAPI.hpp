@@ -78,15 +78,13 @@ namespace cs::brkd::horrible {
          * @param id The ID of the option to toggle
          * @param enable Boolean to toggle to
          */
-        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, void, toggleOption, (geode::ZStringView id, bool enable), (id, enable));
+        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, void, toggleOption, (std::string_view id, bool enable), (id, enable));
 
         /**
          * Quickly check the toggle state of an option
          *
          * @param id The ID of the option to check
-         *
-         * @returns Boolean of the current value
          */
-        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, geode::Result<bool>, isEnabled, (geode::ZStringView id), (id));
+        GEODE_EVENT_EXPORT_MEMBER(OptionManagerV2, bool, isEnabled, (std::string_view id), (id));
     };
 };
