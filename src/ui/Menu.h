@@ -43,19 +43,19 @@ namespace cs::brkd::horrible {
     public:
         static Menu* create(std::optional<std::string> theme = std::nullopt);
 
-        static Menu* get() noexcept;
+        static Menu*& get() noexcept;
     };
 
     // For convenience
     namespace menu {
         // Open the Horrible Menu mod option menu
-        inline void open(bool force = false) {
-            if (auto old = Menu::get()) {
+        inline void open(bool force = false, std::optional<std::string> theme = std::nullopt) {
+            if (auto& old = Menu::get()) {
                 cue::resetNode(old);
                 if (!force) return;
             };
 
-            if (auto popup = Menu::create()) popup->show();
+            if (auto popup = Menu::create(std::move(theme))) popup->show();
         }
     };
 };

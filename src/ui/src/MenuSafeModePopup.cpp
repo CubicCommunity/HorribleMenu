@@ -73,8 +73,9 @@ bool MenuSafeModePopup::init() {
             1.0f,
             themes::getCircleBaseColor(theme)
         ),
-        [](Button* sender) {
+        [this](Button* sender) {
             openSettingsPopup(mod);
+            this->onClose(sender);
         }
     );
     settingsBtn->setID("settings-btn");
@@ -90,7 +91,7 @@ bool MenuSafeModePopup::init() {
             0.875f
         ),
         [this, t = std::move(theme)](Button* sender) mutable {
-            Menu::create(std::move(t))->show();
+            menu::open(true, std::move(t));
             this->onClose(sender);
         }
     );

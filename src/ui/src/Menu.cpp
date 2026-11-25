@@ -3,6 +3,7 @@
 #include "../MenuOptionCell.hpp"
 #include "../MenuCredits.hpp"
 #include "../MenuFilterCells.hpp"
+#include "../MenuSafeModePopup.hpp"
 
 #include <Util.h>
 
@@ -153,8 +154,10 @@ void Menu::setupSafeModeNode(bool safeMode) {
                     "Safe Mode",
                     fmt::format("{}\n\nUsing this mod's features in gameplay <cr>can count as cheating</c>, be sure to <cl>keep Safe Mode enabled while using options in gameplay</c>.\n\n<cy>You can toggle Safe Mode in settings.</c>", safeMode ? "Currently <cc>enabled</c>, meaning <co>progress on levels WILL NOT save</c>!" : "Currently <cy>disabled</c>, meaning <cf>progress on levels WILL save</c>!"),
                     "OK",
-                    nullptr,
-                    nullptr
+                    safeMode ? "Manage" : nullptr,
+                    [](auto, bool ok) {
+                        if (ok) MenuSafeModePopup::create()->show();
+                    }
                 );
             }
         );
@@ -728,7 +731,7 @@ void Menu::onExit() {
     Popup::onExit();
 }
 
-Menu* Menu::get() noexcept {
+Menu*& Menu::get() noexcept {
     return s_inst;
 }
 
