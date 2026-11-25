@@ -22,9 +22,7 @@ By default, this mod implements its own anti-cheat system to prevent making acci
 Want to add your own insane stuff to this mod? You can <cy>register your very own troll options</c> by using <cg>this mod's API</c>! You can find its [documentation in the Wiki](https://github.com/CubicCommunity/HorribleMenu/wiki). We're hyped to see how much more you can really mess up this game.
 
 ```cpp
-using namespace cs::brkd::horrible;
-
-static auto const opt = Option::create("my-option"_spr)
+static auto const opt = hm::api::Option::create("my-option"_spr)
     ->setName("My Very Cool Option!");
     ->setDescription("This option is so very cool!");
     ->setCategory("Cool Options");
