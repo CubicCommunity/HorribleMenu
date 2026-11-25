@@ -17,7 +17,7 @@
 
 template <>
 struct matjson::Serialize<HorribleOptionSave> final {
-    static geode::Result<HorribleOptionSave> fromJson(matjson::Value const& value);
+    static geode::Result<HorribleOptionSave> fromJson(Value const& value);
     static matjson::Value toJson(HorribleOptionSave const& value);
 };
 

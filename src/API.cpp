@@ -23,23 +23,23 @@ using namespace cs::brkd::horrible;
 //         });
 // };
 
-Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(matjson::Value const& value) {
-    if (!value.isObject()) return Err("Expected an object");
+Result<HorribleOptionSave> matjson::Serialize<HorribleOptionSave>::fromJson(Value const& value) {
+    HorribleOptionSave out;
 
-    GEODE_UNWRAP_INTO(bool enabled, value["enabled"].asBool());
-    GEODE_UNWRAP_INTO(bool pin, value["pin"].asBool());
-    GEODE_UNWRAP_INTO(bool viewed, value["viewed"].asBool());
+    GEODE_UNWRAP_INTO(out.enabled, value["enabled"].asBool());
+    GEODE_UNWRAP_INTO(out.pin, value["pin"].asBool());
+    GEODE_UNWRAP_INTO(out.viewed, value["viewed"].asBool());
 
-    return Ok(HorribleOptionSave{ enabled, pin, viewed });
+    return Ok(out);
 }
 
 matjson::Value matjson::Serialize<HorribleOptionSave>::toJson(HorribleOptionSave const& value) {
-    auto obj = matjson::Value();
-    obj["enabled"] = value.enabled;
-    obj["pin"] = value.pin;
-    obj["viewed"] = value.viewed;
+    Value out;
+    out["enabled"] = value.enabled;
+    out["pin"] = value.pin;
+    out["viewed"] = value.viewed;
 
-    return obj;
+    return out;
 }
 
 Option::Option(std::string id, const Mod* integration) : m_idHash(fnv1aHash(id)), m_id(std::move(id)), m_integration(integration) {}

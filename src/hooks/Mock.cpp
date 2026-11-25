@@ -41,10 +41,10 @@ class $modify(MockMenuLayer, MenuLayer) {
             if (mockConfig.isOk()) {
                 log::debug("Path is ok!");
 
-                auto const mockConfigUnwr = mockConfig.unwrapOr(cw::json::Value());
+                auto const mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
                 auto const lvlUnwr = mockConfigUnwr.begin();
-                auto const lvl = lvlUnwr->get(cw::rng::get(lvlUnwr->size() - 1)).unwrapOr(cw::json::Value());
+                auto const lvl = lvlUnwr->get(cw::rng::get(lvlUnwr->size() - 1)).unwrapOr(matjson::Value());
 
                 auto const id = lvl.getKey().value_or("");
                 auto percent = lvl.asInt().unwrapOr(90);
@@ -138,18 +138,18 @@ class $modify(MockPlayLayer, PlayLayer) {
                     auto const mockConfigPath = mod->getSaveDir() / "mock.json";
                     auto const mockConfig = file::readJson(mockConfigPath);  // get the saved fails to mock the player with :)
 
-                    auto toWrite = cw::json::Value();  // what we're gonna write in the mock.json file
+                    auto toWrite = matjson::Value();  // what we're gonna write in the mock.json file
 
                     if (mockConfig.isOk()) {
                         // unwrap the whole thing
-                        auto mockConfigUnwr = mockConfig.unwrapOr(cw::json::Value());
+                        auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
 
                         // overwrite this field (or add it) with the percent
                         mockConfigUnwr[numToString(id)] = percentage;
 
                         toWrite = mockConfigUnwr;
                     } else {
-                        toWrite = cw::json::makeObject({ { numToString(id), percentage } });
+                        toWrite = matjson::makeObject({ { numToString(id), percentage } });
                     };
 
                     if (!toWrite.isNull()) {
@@ -185,7 +185,7 @@ class $modify(MockPlayLayer, PlayLayer) {
 
         if (mockConfig.isOk()) {
             log::trace("Clearing mock record for {}", id);
-            auto mockConfigUnwr = mockConfig.unwrapOr(cw::json::Value());
+            auto mockConfigUnwr = mockConfig.unwrapOr(matjson::Value());
             mockConfigUnwr[numToString(id)].clear();
 
             auto const mockJson = file::writeToJson(mockConfigPath, mockConfigUnwr);

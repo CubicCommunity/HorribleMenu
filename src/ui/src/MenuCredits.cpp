@@ -28,74 +28,34 @@ static auto constexpr g_defaultLicense =
     "Third-party assets, API modifications, libraries, and other external resources are credited in the credits interface.";
 
 $on_mod(Loaded) {
-    if (auto cm = CreditsManager::get()) {
-        cm->loadLeadDevs();
-        cm->loadLicense();
-    };
+    CreditsManager::get()->loadLeadDevs();
 }
 
-Result<LeadDevIcon> cw::json::Serialize<LeadDevIcon>::fromJson(cw::json::Value const& value) {
-    if (!value.isObject()) return Err("Expected an object");
+Result<LeadDevIcon> matjson::Serialize<LeadDevIcon>::fromJson(Value const& value) {
+    LeadDevIcon out;
 
-    GEODE_UNWRAP_INTO(std::string id, value["id"].asString());
-    GEODE_UNWRAP_INTO(std::string name, value["name"].asString());
-    GEODE_UNWRAP_INTO(int account, value["account"].asInt());
-    GEODE_UNWRAP_INTO(int icon, value["icon"].asInt());
-    GEODE_UNWRAP_INTO(int color1, value["color1"].asInt());
-    GEODE_UNWRAP_INTO(int color2, value["color2"].asInt());
-    GEODE_UNWRAP_INTO(int glowColor, value["glowColor"].asInt());
+    GEODE_UNWRAP_INTO(out.id, value["id"].asString());
+    GEODE_UNWRAP_INTO(out.name, value["name"].asString());
+    GEODE_UNWRAP_INTO(out.account, value["account"].asInt());
+    GEODE_UNWRAP_INTO(out.icon, value["icon"].asInt());
+    GEODE_UNWRAP_INTO(out.color1, value["color1"].asInt());
+    GEODE_UNWRAP_INTO(out.color2, value["color2"].asInt());
+    GEODE_UNWRAP_INTO(out.glowColor, value["glowColor"].asInt());
 
-    return Ok(
-        LeadDevIcon{
-            std::move(id),
-            std::move(name),
-            account,
-            icon,
-            color1,
-            color2,
-            glowColor,
-        }
-    );
+    return Ok(std::move(out));
 }
 
-cw::json::Value cw::json::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
-    auto obj = cw::json::Value();
+matjson::Value matjson::Serialize<LeadDevIcon>::toJson(LeadDevIcon const& value) {
+    Value out;
+    out["id"] = value.id;
+    out["name"] = value.name;
+    out["account"] = value.account;
+    out["icon"] = value.icon;
+    out["color1"] = value.color1;
+    out["color2"] = value.color2;
+    out["glowColor"] = value.glowColor;
 
-    obj["id"] = value.id;
-    obj["name"] = value.name;
-    obj["account"] = value.account;
-    obj["icon"] = value.icon;
-    obj["color1"] = value.color1;
-    obj["color2"] = value.color2;
-    obj["glowColor"] = value.glowColor;
-
-    return obj;
-}
-
-Result<LicenseData> cw::json::Serialize<LicenseData>::fromJson(cw::json::Value const& value) {
-    if (!value.isObject()) return Err("Expected an object");
-
-    GEODE_UNWRAP_INTO(std::string key, value["key"].asString());
-    GEODE_UNWRAP_INTO(std::string name, value["name"].asString());
-    GEODE_UNWRAP_INTO(std::string url, value["url"].asString());
-
-    return Ok(
-        LicenseData{
-            std::move(key),
-            std::move(name),
-            std::move(url),
-        }
-    );
-}
-
-cw::json::Value cw::json::Serialize<LicenseData>::toJson(LicenseData const& value) {
-    auto obj = cw::json::Value();
-
-    obj["key"] = value.key;
-    obj["name"] = value.name;
-    obj["url"] = value.url;
-
-    return obj;
+    return out;
 }
 
 bool MenuPlayer::init(ZStringView name, int account, int icon, int color1, int color2, int glowColor) {
@@ -215,8 +175,8 @@ bool MenuCredits::init(ZStringView theme) {
 
     m_mainLayer->addChild(resrcBtnContainer, 9);
 
-    auto resrcBtns = std::to_array<ResourceButton>({
-        {
+    auto resrcBtns = std::array{
+        ResourceButton{
             "breakeode-support-btn",
             "Need Help?",
             [](auto) {
@@ -232,26 +192,14 @@ bool MenuCredits::init(ZStringView theme) {
                 );
             },
         },
-        {
+        ResourceButton{
             "changelog-btn",
             "What's New?",
             [](auto) {
                 openChangelogPopup(mod);
             },
         },
-        {
-            "license-btn",
-            "Licensing",
-            [](auto) {
-                MDPopup::create(
-                    "License & Attribution",
-                    CreditsManager::get()->getLicense(),
-                    "OK"
-                )
-                    ->show();
-            },
-        },
-    });
+    };
 
     for (auto& b : resrcBtns) {
         auto btn = Button::createWithNode(
@@ -457,49 +405,6 @@ void CreditsManager::loadLeadDevs() {
     };
 }
 
-void CreditsManager::loadLicense() {
-    log::trace("Requested to fetch data on mod licensing");
-
-    if (m_license.empty()) {
-        log::debug("Sending web request for lead developer credits");
-
-        m_licenseTask.spawn(
-            cw::request::base().get(fmt::format("https://api.cubicstudios.xyz/breakeode/v1/horrible/license?v={}", mod->getVersion().toVString())),
-            [this](web::WebResponse res) {
-                auto const fallback = [this](std::string_view err = "") {
-                    log::error("Lead Developer credits web request failed ({}), falling back to defaults", err);
-                    m_license = g_defaultLicense;
-                };
-
-                if (res.error()) return fallback(res.errorMessage());
-
-                auto jsonRes = res.json();
-                if (jsonRes.isErr()) return fallback(std::move(jsonRes).unwrapErr());
-
-                auto json = std::move(jsonRes).unwrap();
-
-                auto licRes = json.as<LicenseData>();
-                if (licRes.isErr()) return fallback(std::move(licRes).unwrapErr());
-
-                auto lic = std::move(licRes).unwrap();
-
-                m_license = fmt::format(
-                    "[Horrible Menu](mod:cubicstudios.horriblemenu) is licensed under [{}]({}).\n\n"
-                    "Third-party assets, API modifications, libraries, and other external resources are credited in their respective sections in the Credits interface.",
-                    lic.name,
-                    lic.url
-                );
-            }
-        );
-    } else {
-        log::error("License data already populated");
-    };
-}
-
 std::span<const LeadDevIcon> CreditsManager::getLeadDevs() const noexcept {
     return m_leadDevs;
-}
-
-ZStringView CreditsManager::getLicense() const noexcept {
-    return m_license;
 }

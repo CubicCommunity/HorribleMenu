@@ -11,28 +11,6 @@
 using namespace geode::prelude;
 using namespace cs::brkd::horrible::prelude;
 
-Result<CCPoint> cw::json::Serialize<CCPoint>::fromJson(cw::json::Value const& value) {
-    if (!value.isObject()) return Err("Expected an object");
-
-    GEODE_UNWRAP_INTO(float x, value["x"].asDouble());
-    GEODE_UNWRAP_INTO(float y, value["y"].asDouble());
-
-    return Ok(
-        CCPoint{
-            x,
-            y,
-        }
-    );
-}
-
-cw::json::Value cw::json::Serialize<CCPoint>::toJson(CCPoint const& value) {
-    auto obj = cw::json::Value();
-    obj["x"] = value.x;
-    obj["y"] = value.y;
-
-    return obj;
-}
-
 Ref<MenuButton> MenuButton::s_inst = nullptr;
 
 struct MenuButton::Impl final {
@@ -77,10 +55,10 @@ void MenuButton::setupSprite() {
 
     m_impl->sprite->setPosition(getScaledContentSize() / 2.0f);
 
-    setScale(m_impl->scale);      // set initial scale
-    setOpacity(m_impl->opacity);  // set initial opacity
+    setScale(m_impl->scale);
+    setOpacity(m_impl->opacity);
 
-    setVisible(mod->getSettingValue<bool>(setting::FloatingBtn));  // set initial visibility
+    setVisible(mod->getSettingValue<bool>(setting::FloatingBtn));
 
     addChild(m_impl->sprite);
 }
