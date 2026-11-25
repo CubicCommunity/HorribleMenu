@@ -171,12 +171,12 @@ namespace hm::api {
 };
 
 // Statically register an option
-#define HORRIBLE_REGISTER_OPTION(opt)                                                    \
-    $on_mod(Loaded) {                                                                    \
-        if (auto om = cs::brkd::horrible::OptionManager::get()) om->registerOption(opt); \
+#define HORRIBLE_REGISTER_OPTION(opt)                       \
+    $on_mod(Loaded) {                                       \
+        hm::api::OptionManager::get()->registerOption(opt); \
     }
 
-#define HORRIBLE_DELEGATE_HOOKS_FUNC(optID) cs::brkd::horrible::delegateHooks(optID, self.m_hooks)
+#define HORRIBLE_DELEGATE_HOOKS_FUNC(optID) hm::api::delegateHooks(optID, self.m_hooks)
 
 // Delegate hooks to OptionManager for dynamic toggling
 #define HORRIBLE_DELEGATE_HOOKS(optID)       \
