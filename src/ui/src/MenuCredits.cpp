@@ -241,10 +241,9 @@ bool MenuCredits::init(ZStringView theme) {
         }
     );
     creditsMd->setID("credits");
-    creditsMd->setZOrder(1);
     creditsMd->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 90.0f });
 
-    m_mainLayer->addChildAtPosition(creditsMd, Anchor::Bottom, { 0.0f, 90.0f });
+    m_mainLayer->addChild(creditsMd, 1);
 
     auto websiteBtn = Button::createWithNode(
         ButtonSprite::create(
