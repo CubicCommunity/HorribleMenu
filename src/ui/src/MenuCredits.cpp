@@ -222,14 +222,14 @@ bool MenuCredits::init(ZStringView theme) {
         "# ![🛠](frame:GJ_hammerIcon_001.png?scale=0.875) Resources\n"
         "**[Geode Team](mod:geode.loader)**: '*[Geode SDK](https://github.com/geode-sdk/geode)*' Geometry Dash modding framework\n\n"
         "**[Presta](user:540196)**: '*[Congregation](level:68668045)*' jumpscare level\n\n"
-        "**[IcEDCave](user:1504161)**: '*Grief*' jumpscare level\n\n"
+        "**[IcEDCave](user:1504161)**: '*[Grief](level:149992717)*' jumpscare level\n\n"
         "**[sink](user:5871590)**: '*[Tidal Wave](level:93733469)*' jumpscare level\n\n"
         "**[jackaezie](user:9456524)**: '*[YOUVE BEEN TROLLED](level:57436521)*' jumpscare level\n\n"
-        "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://www.x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
+        "**[alk1m123](user:11535118)**: '*[Sapphire SDK](https://x.com/GeodeSDK/status/2039225279353176398/)*' logo\n\n"
         "**[Uproxide](user:25397826)**: '*The Yellow One*' sprite from [More Difficulties](mod:uproxide.more_difficulties)\n\n<mod:uproxide.more_difficulties>\n\n"
         "**[Cheeseworks](user:6408873)**: [Mod Developer Branding](mod:cheeseworks.moddevbranding) image for this mod\n\n<mod:cheeseworks.moddevbranding>\n\n"
         "**[Erymanthus](user:1941705)**: His socials' profile picture\n\n"
-        "**[dankmeme](user:9735891)**: '*[Argon](https://github.com/GlobedGD/argon)*' user authentication library, '*[cue](https://github.com/dankmeme01/cue)*' user interface library, '*[asp2](https://github.com/dankmeme01/asp2)*' utility library, '*[arc](https://github.com/dankmeme01/arc)*' async runtime library\n\n"
+        "**[dankmeme](user:9735891)**: ''*[cue](https://github.com/dankmeme01/cue)*' user interface library, '*[asp2](https://github.com/dankmeme01/asp2)*' utility library\n\n"
         "# ![💝](frame:GJ_diamondsIcon_001.png?scale=0.875) Special Thanks\n"
         "**[Cheeseworks](user:6408873)**: Internals, API/DX, UI/UX, options' features, mod branding\n\n"
         "**[ArcticWoof](user:7689052)**: UI, options' features, Horrible Menu logo, original idea for this mod\n\n"
@@ -241,9 +241,10 @@ bool MenuCredits::init(ZStringView theme) {
         }
     );
     creditsMd->setID("credits");
+    creditsMd->setZOrder(1);
     creditsMd->setPosition({ m_mainLayer->getScaledContentWidth() / 2.0f, 90.0f });
 
-    m_mainLayer->addChild(creditsMd, 1);
+    m_mainLayer->addChildAtPosition(creditsMd, Anchor::Bottom, { 0.0f, 90.0f });
 
     auto websiteBtn = Button::createWithNode(
         ButtonSprite::create(
