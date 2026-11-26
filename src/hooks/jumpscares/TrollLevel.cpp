@@ -21,16 +21,7 @@ static auto const o = Option::create(THIS_ID)
 
 namespace js_internal {
     static void saveTrollLevel() {
-        async::spawn(
-            jumpscares::coro::getLevel(HORRIBLE_JUMPSCARES_TROLL),
-            [](jumpscares::coro::LevelResult result) {
-                if (result.isOk()) {
-                    if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(std::move(result).unwrap());
-                } else if (result.isErr()) {
-                    log::error("Failed to get level {}: {}", HORRIBLE_JUMPSCARES_TROLL, result.unwrapErr());
-                };
-            }
-        );
+        jumpscares::downloadLevel(HORRIBLE_JUMPSCARES_TROLL, [](Ref<GJGameLevel> lvl) { log::info("Troll level '{}' downloaded and saved!", lvl->m_levelName); });
     }
 
     static void switchToTrollLevel(GJGameLevel* level, bool dontCreateObjects) {
@@ -58,10 +49,8 @@ class $modify(TrollLevelPlayLayer, PlayLayer) {
     };
 
     bool init(GJGameLevel* level, bool dontCreateObjects) {
-        if (auto jm = jumpscares::JumpscareLevelManager::get()) {
-            if (cw::rng::chance(m_fields->chance)) {
-                if (auto lvl = jm->getLevel(HORRIBLE_JUMPSCARES_TROLL)) return PlayLayer::init(lvl, dontCreateObjects);
-            };
+        if (cw::rng::chance(m_fields->chance)) {
+            if (auto lvl = GameLevelManager::sharedState()->getSavedLevel(HORRIBLE_JUMPSCARES_TROLL)) return PlayLayer::init(lvl, dontCreateObjects);
         };
 
         return PlayLayer::init(level, dontCreateObjects);

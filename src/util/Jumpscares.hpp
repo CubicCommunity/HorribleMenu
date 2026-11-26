@@ -8,23 +8,10 @@ namespace cs::brkd::horrible {
     namespace util {
         // Jumpscare level manager
         namespace jumpscares {
-            void switchLevel(int level, bool dontCreateObjects, geode::CopyableFunction<void()>&& callback = nullptr);
+            using Callback = geode::CopyableFunction<void(geode::Ref<GJGameLevel>)>;
 
-            namespace coro {
-                using LevelResult = geode::Result<GJGameLevel*>;
-                using LevelFuture = arc::Future<LevelResult>;
-                LevelFuture getLevel(int id);
-            };
-
-            class JumpscareLevelManager final : public base::Singleton<JumpscareLevelManager>, MusicDownloadDelegate {
-            private:
-                std::unordered_map<int, geode::Ref<GJGameLevel>> m_levels;
-
-            public:
-                void saveLevel(GJGameLevel* level);
-
-                GJGameLevel* getLevel(int id) const noexcept;
-            };
+            void switchLevel(int level, bool dontCreateObjects, Callback&& callback = nullptr);
+            void downloadLevel(int level, Callback&& callback);
         };
     };
 };

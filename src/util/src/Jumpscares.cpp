@@ -13,91 +13,30 @@
 using namespace geode::prelude;
 using namespace cs::brkd::horrible::util;
 
-void jumpscares::switchLevel(int level, bool dontCreateObjects, CopyableFunction<void()>&& callback) {
-    if (auto pl = PlayLayer::get()) {
-        if (pl->m_level->m_levelID == level) return;
-    };
+void jumpscares::downloadLevel(int level, Callback&& callback) {
+    cw::DelegateDirector::get()->downloadLevel(
+        level,
+        [cb = std::move(callback)](Result<Ref<GJGameLevel>> res) {
+            if (res.isOk()) {
+                auto lvl = std::move(res).unwrap();
 
-    async::spawn(
-        coro::getLevel(level),
-        [level, dontCreateObjects, cb = std::move(callback)](coro::LevelResult result) {
-            if (result.isOk()) {
-                auto lvl = std::move(result).unwrap();
-
-                if (auto jm = jumpscares::JumpscareLevelManager::get()) jm->saveLevel(lvl);
-
-                log::warn("Switching to {} level ({})", lvl->m_levelName, lvl->m_levelID.value());
-                CCDirector::sharedDirector()->replaceScene(PlayLayer::scene(lvl, dontCreateObjects));
-
-                if (cb) cb();
-            } else if (result.isErr()) {
-                log::error("Failed to get level {}: {}", level, result.unwrapErr());
+                GameLevelManager::sharedState()->saveLevel(lvl);
+                if (cb) cb(std::move(lvl));
             };
         }
     );
 }
 
-jumpscares::coro::LevelFuture jumpscares::coro::getLevel(int id) {
-    auto cache = *co_await async::waitForMainThread<LevelResult>([id]() -> LevelResult {
-        if (auto jm = jumpscares::JumpscareLevelManager::get()) {
-            log::trace("Checking cache for level {}...", id);
-            if (auto lvl = jm->getLevel(id)) return Ok(lvl);
-
-            log::debug("Level {} not found in cache, fetching...", id);
-            return Err("Level not found in cache");
-        };
-
-        return Err("Unknown error");
-    });
-    if (cache.isOk()) co_return cache;
-
-    auto auth = *co_await async::waitForMainThread<std::string>([]() {
-        auto gjam = GJAccountManager::sharedState();
-        if (gjam->m_accountID > 0) return fmt::format("&accountID={}&gjp2={}", gjam->m_accountID, gjam->m_GJP2);
-
-        return std::string{};
-    });
-
-    auto req = cw::request::base()
-                   .bodyString(fmt::format("secret=Wmfd2893gb7&levelID={}{}", id, auth))
-                   .userAgent("");  // robby why do you hate user agents and not ai agents
-
-    log::trace("Preparing web request for level {} download", id);
-
-    auto res = co_await req.post("https://www.boomlings.com/database/downloadGJLevel22.php");
-
-    auto strRes = res.string();
-    if (strRes.isErr()) co_return Err(std::move(strRes).unwrapErr());
-
-    auto str = std::move(strRes).unwrap();
-
-    if (res.error() || str == "-1") {
-        log::error("Error getting level data: {}", str);
-        co_return Err("An error occurred while fetching level data");
+void jumpscares::switchLevel(int level, bool dontCreateObjects, Callback&& callback) {
+    if (auto pl = PlayLayer::get()) {
+        if (pl->m_level->m_levelID == level) return;
     };
 
-    auto result = *co_await async::waitForMainThread<LevelResult>([lvl = std::move(str)]() -> LevelResult {
-        auto dict = CCDictionary::create();
-        auto splits = asp::iter::split(lvl, ":").collect();
-
-        for (size_t i = 0; i + 1 < splits.size(); i += 2) dict->setObject(CCString::create(std::string{ splits[i + 1] }), std::string{ splits[i] });
-        return Ok(GJGameLevel::create(dict, false));
-    });
-    co_return result;
-}
-
-void jumpscares::JumpscareLevelManager::saveLevel(GJGameLevel* level) {
-    if (auto mdm = MusicDownloadManager::sharedState()) {
-        // mdm->addMusicDownloadDelegate(jumpscares::JumpscareLevelManager::get());
-        mdm->downloadSong(level->m_songID);
-    };
-
-    if (auto glm = GameLevelManager::sharedState()) glm->saveLevel(level);
-
-    m_levels[level->m_levelID.value()] = level;
-}
-
-GJGameLevel* jumpscares::JumpscareLevelManager::getLevel(int id) const noexcept {
-    if (auto const it = m_levels.find(id); it != m_levels.end()) return it->second.data();
-    return nullptr;
+    downloadLevel(
+        level,
+        [dontCreateObjects, cb = std::move(callback)](Ref<GJGameLevel> lvl) {
+            CCDirector::sharedDirector()->replaceScene(PlayLayer::scene(lvl, dontCreateObjects));
+            if (cb) cb(lvl);
+        }
+    );
 }
